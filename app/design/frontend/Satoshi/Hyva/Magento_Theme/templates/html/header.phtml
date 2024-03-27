@@ -1,0 +1,105 @@
+<?php
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\ViewModel\Cart\Cart;
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var Cart $cartItems */
+$cart = $viewModels->require(Cart::class);
+$cartItemsCount = $cart->getCartItemsQty();
+
+?>
+
+<script>
+    function initHeader () {
+        return {
+            searchOpen: false,
+            cart: {},
+            isCartOpen: false,
+            isMenuVisible: false,
+            getData(data) {
+                const { cart } = data;
+
+                if (!cart) {
+                    return;
+                }
+
+                const { summary_count } = cart;
+
+                Alpine.store('main').totalCartQty = summary_count;
+            },
+            isCartEmpty() {
+                return !this.cart.summary_count
+            },
+        }
+    }
+</script>
+
+<!-- TODO: Intersect is not working. -->
+<div x-intersect:enter="$store.main.isHeaderShadowVisible = false" x-intersect:leave="$store.main.isHeaderShadowVisible = true"></div>
+<header
+    x-data="initHeader()"
+    x-init="
+        $store.main.totalCartQty  = <?= $cartItemsCount ?? 0 ?>;
+        $watch('$store.popup.currentPopup', (value) => {
+            if (value === 'menu') {
+                isMenuVisible = true
+            } else {
+                isMenuVisible = false
+            }
+        })
+    "
+    @private-content-loaded.window="getData(event.detail.data)"
+    class="header flex flex-col justify-items-stretch left-0 top-0 right-0 z-[36] p-3 sticky md:pointer-events-none"
+>
+    <div
+        id="header-shadow"
+        class="absolute left-0 right-0 -top-1 pointer-events-none -z-10 h-[calc(100%+20px)] bg-gradient-to-b from-shadow to-transparent will-change-transform transition-transform -translate-y-full duration-300 ease-linear md:hidden" :class="
+      {
+        'translate-y-0': $store.main.isHeaderShadowVisible,
+        '-translate-y-full': !$store.main.isHeaderShadowVisible,
+      }
+    "></div>
+    <div
+        class="grid col-start-1 w-full grid-cols-header md:flex items-center bg-fg md:bg-transparent p-3 rounded-md container m-auto"
+        x-data="{n:0}"
+    >
+        <div class="md:flex" :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}">
+            <?= $block->getChildHtml('resizable.menu'); ?>
+        </div>
+        <div class="flex col-start-3 items-center justify-center md:hidden">
+            <?= $block->getChildHtml('logo'); ?>
+        </div>
+        <div class="contents md:flex-grow md:flex md:justify-end">
+            <div
+                class="md:flex md:items-center"
+                :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}"
+            >
+                <?= $block->getChildHtml('resizable.search'); ?>
+                <?= $block->getChildHtml('resizable.minicart'); ?>
+            </div>
+            <a
+                href="<?= $block->getUrl('checkout/cart') ?>"
+                x-element-transition-trigger
+                class="button col-start-5 ghost-primary icon-button icon-button--size-lg md:hidden"
+            >
+                <?= $block->getChildHtml('minicart'); ?>
+            </a>
+        </div>
+    </div>
+    <div id="end-of-header"></div>
+</header>
+
+<!-- TODO: Should be done through logo.phtml or separate template for desktop version of logo -->
+<div class="z-30 max-md:hidden sticky top-[88px] h-[1px] mix-blend-difference pointer-events-none">
+  <div class="flex col-start-3 absolute inset-x-0 -top-16 items-center justify-center text-white">
+    <a href="/" x-element-transition-trigger class="rounded-sm py-2 px-3 text-xl font-bold pointer-events-auto">
+      Satoshi theme
+    </a>
+  </div>
+</div>
+
+<?= $block->getChildHtml('popup.menu'); ?>

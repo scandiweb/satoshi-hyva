@@ -1,0 +1,89 @@
+.element-transition {
+  @apply max-w-screen bg-fg pointer-events-none fixed top-0 left-0 z-[35] h-full w-full transition-opacity;
+
+  > * {
+    @apply absolute origin-top-left translate-x-0 translate-y-0 transition-all duration-300;
+  }
+}
+
+// .content-for-layout {
+//   &.transition-fallback-product {
+//     @apply mt-0;
+//   }
+
+//   &.transition-fallback-category {
+//     @apply transition-none mt-[72px];
+//   }
+// }
+
+// .is-animating [data-animated-content] {
+//   @apply animate-fadeIn;
+// }
+
+.transition-preview {
+  @apply fixed top-0 left-0 z-[35] h-full w-full overscroll-contain pointer-events-none bg-transparent;
+
+  transition: background 300ms ease-in-out;
+
+  &--active {
+    @apply pointer-events-auto bg-overlay;
+  }
+
+  &__wrapper {
+    @apply content-wrapper mx-auto relative;
+
+    transition: transform 300ms 150ms ease-in-out;
+    transform: translateY(100%);
+
+    .transition-preview--active & {
+      transform: translateY(0);
+    }
+  }
+
+  &__scroll {
+    @apply overflow-x-hidden overflow-y-scroll overscroll-contain max-h-screen;
+
+    padding-top: calc(var(--offset-top) * 1px);
+  }
+
+  &__content {
+    @apply pt-20 px-28;
+
+    min-height: calc(100vh + var(--offset-top) * 1px);
+  }
+
+  &__bg {
+    @apply bg-fg left-0 right-0 mx-auto -z-10 absolute;
+
+    --target-scale-x: calc(
+      var(--screen-width) / (var(--content-wrapper-width) - 16 * 4)
+    );
+
+    --target-scale-y: calc(
+      var(--screen-height) /
+        (var(--screen-height) - var(--offset-top) * 1px * 2)
+    );
+
+    top: calc(var(--offset-top) * 1px);
+    width: calc(100% - 16px * 2);
+    height: 100vh;
+    transform-origin: top center;
+
+    transition: transform 30ms linear, border-radius 30ms linear;
+
+    border-radius: calc(
+      12px * (1 - (var(--scroll-progress) * var(--scroll-progress)))
+    );
+
+    transform: scaleX(
+        calc(
+          1 + (var(--target-scale-x) - 1) *
+            (
+              var(--scroll-progress) * var(--scroll-progress) *
+                var(--scroll-progress)
+            )
+        )
+      )
+      translateY(calc(-1 * var(--offset-top) * 1px * var(--scroll-progress)));
+  }
+}

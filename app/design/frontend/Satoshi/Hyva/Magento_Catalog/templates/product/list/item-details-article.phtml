@@ -1,0 +1,68 @@
+<?php
+use Hyva\Theme\ViewModel\Wishlist;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Wishlist $wishlistViewModel */
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+
+$parentBlock = $block->getParentBlock();
+$imageLoading = $parentBlock->getData('imageLoading');
+$isAlpineTemplate = $parentBlock->getData('isAlpineTemplate');
+$showAddToWishlist = $wishlistViewModel->isEnabled();
+
+if (!$isAlpineTemplate) {
+    $product = $parentBlock->getData('product');
+    $featuredImage = $product->getImage();
+    $title = $product->getName();
+}
+?>
+
+<article
+    aria-label="Product details"
+    class="w-full h-full z-10 flex justify-start items-stretch flex-col text-start"
+    x-data="{
+        minimumPrice: product.price_range.minimum_price,
+        maximumPrice: product.price_range.maximum_price
+    }"
+>
+    <?php if($isAlpineTemplate || $featuredImage): ?>
+        <div class="bg-secondary-100 overflow-hidden rounded-md" x-element-transition-src="img">
+            <?php if($isAlpineTemplate): ?>
+                <img
+                    :src="product.small_image?.url ? product.small_image.url : ''"
+                    :alt="product.small_image?.label"
+                    class="aspect-product w-full h-full object-cover object-center"
+                    loading="<?= $imageLoading ?>"
+                    width=""
+                    height=""
+                >
+            <?php else: ?>
+                <!-- TODO: Render product image for Product list -->
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+    <div class="flex flex-col gap-1 mt-4 relative">
+        <h3
+            class="text-md w-[calc(100%-40px)] truncate"
+            <?php if($isAlpineTemplate): ?>
+                x-text="product.name"
+            <?php endif; ?>
+        >
+            <?php if(!$isAlpineTemplate): ?>
+                <?= $title ?>
+            <?php endif; ?>
+        </h3>
+        <?php if($showAddToWishlist): ?>
+            <button
+                class="absolute right-0 top-0 button button--ghost-secondary icon-button icon-button--size-sm"
+            >
+                <?= $hyvaicons->renderHtml('wishlist'); ?>
+            </button>
+        <?php endif; ?>
+        <?= $block->getChildHtml('product.card.price') ?>
+    </div>
+</article>

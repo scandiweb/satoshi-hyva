@@ -1,0 +1,55 @@
+input[type="number"] {
+  /* Firefox */
+  -moz-appearance: textfield;
+
+  /* Chrome, Safari, Edge, Opera */
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    @apply appearance-none;
+  }
+}
+
+input[type="search"] {
+  @apply -outline-offset-2;
+  -webkit-appearance: textfield;
+
+  &::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+}
+
+.input {
+  &--error {
+    & .input__field {
+      @apply shadow-error border-red-500;
+    }
+
+    & .input__message {
+      @apply text-red-500;
+    }
+  }
+
+  &__field {
+    @apply max-md:text-[16px] md:text-md focus-visible:focus-ring border-1 relative h-11 w-full min-w-0 appearance-none rounded-sm border-solid px-4;
+
+    &:focus-visible {
+      @apply shadow-input border-secondary-500;
+    }
+
+    &--outline {
+      @apply border-secondary-100 bg-transparent;
+    }
+
+    &--filled {
+      @apply bg-secondary-50;
+    }
+
+    &--ghost {
+      @apply bg-transparent;
+    }
+  }
+
+  &__message {
+    @apply text-secondary-500 ml-3 text-sm;
+  }
+}

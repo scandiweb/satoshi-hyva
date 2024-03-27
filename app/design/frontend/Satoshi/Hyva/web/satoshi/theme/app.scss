@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-body-family: 'Satoshi', sans-serif;
+  --font-body-style: 'normal';
+  --font-body-weight: 500;
+
+  --font-heading-family: 'Satoshi', sans-serif;
+  --font-heading-style: 'normal';
+  --font-heading-weight: 700;
+}
+
+
+body {
+  @apply text-md text-text-on-fg overflow-x-hidden;
+}
+
+svg {
+  @apply icon;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading-family);
+  font-style: var(--font-heading-style);
+  font-weight: var(--font-heading-weight);
+}
+
+.shopify-section {
+  @apply contents;
+}
+
+.breadcrumb {
+  @apply inline [&:not(:last-of-type)]:text-neutral-500 font-bold;
+}
+
+.shopify-challenge {
+  &__container {
+    @apply h-full flex flex-col justify-center;
+  }
+  &__message {
+    @apply text-md text-text-700 sm:text-center mb-7;
+  }
+
+  &__button {
+    @apply bg-primary-bg text-white w-full my-7 py-4 px-6 rounded-sm text-md #{!important};
+  }
+}
+
+:not(.scrollbar-enabled)::-webkit-scrollbar {
+  @apply hidden h-0 w-0 bg-transparent p-0;
+}
+
+// This element gets injected in body and breaks layout sometimes
+#WebPixelsManagerSandboxContainer {
+  @apply hidden;
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+@layer utilities {
+  .focus-ring {
+    @apply shadow-outline outline outline-2 outline-offset-2 outline-transparent;
+  }
+
+  .icon {
+    @apply fill-current stroke-current stroke-0;
+
+    height: 1em;
+    width: 1em;
+  }
+}
+
+@screen sm {
+  body {
+    --product-aspect-ratio: calc(3 / 4);
+  }
+}
+
+:root {
+  // https://tailwindcss.com/docs/using-with-preprocessors#using-sass-less-or-stylus
+  // can not use strip-unit with theme function
+
+  --content-wrapper-width: 640;
+
+  @screen md {
+    --content-wrapper-width: 780;
+  }
+
+  @screen lg {
+    --content-wrapper-width: 1024;
+  }
+
+  @screen xl {
+    --content-wrapper-width: 1280;
+  }
+
+  @screen 2xl {
+    --content-wrapper-width: 1536;
+  }
+}
+
+@layer components {
+  @import "components/content-wrapper";
+  @import "components/button";
+  @import "components/icon-button";
+  @import "components/checkbox";
+  @import "components/radio";
+  @import "components/input";
+  @import "components/divider";
+  @import "components/range-slider";
+  @import "components/header";
+  @import "components/popup";
+  @import "components/menu";
+  @import "components/resizable";
+  @import "components/transition";
+  @import "components/minicart";
+  @import "components/slider";
+  @import "components/unreset";
+}
+@import "components/progress-bar";

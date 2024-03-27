@@ -1,0 +1,65 @@
+<?php
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+?>
+<div>
+  <form
+    class="sticky top-0 left-0 w-full bg-fg z-20 px-3 pt-1 md:px-2 md:pt-0 md:w-[500px] md:bg-transparent md:transition-all md:duration-300 md:delay-150 lg:w-[800px] md:rounded-t-md md:border-b-1 md:border-transparent"
+    role="search"
+    :class="
+      {
+        'md:bg-fg md:border-primary-50': getIsSearchActive(),
+        'md:bg-transparent md:border-transparent': !getIsSearchActive(),
+      }
+    "
+  >
+    <div class="flex relative w-full isolate md:items-center md:min-h-[56px]">
+      <input
+        type="search"
+        placeholder="Search"
+        class="md:order-2 input__field input__field--filled border-transparent pr-11 focus:input__field--outline placeholder:text-gray-500 md:input__field--ghost md:focus:input__field--ghost md:focus:border-transparent md:focus:shadow-none md:focus:outline-0 md:px-2"
+        x-model="searchTermInput"
+        @input.debounce.300ms="setSearchTerm"
+      >
+      <div
+        class="max-md:icon-button--size-md max-md:px-0 max-md:text-lg max-md:text-secondary-500 max-md:absolute max-md:right-0 max-md:top-0 max-md:flex max-md:items-center max-md:justify-center max-md:z-10 max-md:pointer-events-none md:button md:icon-button md:icon-button--size-lg md:order-1"
+        x-show="!$store.main.isMobile || !searchTerm"
+      >
+        <?= $hyvaicons->renderHtml('search'); ?>
+      </div>
+      <button
+        type="button"
+        class="icon-button--size-md px-0 text-xxl text-secondary-500 absolute right-0 top-0 bottom-0 flex items-center justify-center z-10 m-auto"
+        aria-label="{{ 'general.search.clear' | t }}"
+        x-show="!!searchTerm"
+        @click="resetSearchTerm"
+      >
+        <?= $hyvaicons->renderHtml('close'); ?>
+      </button>
+    </div>
+  </form>
+  <div
+    x-show="getIsSearchActive() && !isLoading"
+    class="flex flex-col gap-3 pt-4 md:top-full md:inset-x-0 md:pt-0 md:rounded-t-none md:before:rounded-none duration-0 md:duration-300 transition-opacity"
+    x-transition:enter="md:delay-450"
+    x-transition:enter-start="md:opacity-0"
+    x-transition:enter-end="md:opacity-100"
+    x-transition:leave="md:duration-0"
+    x-transition:leave-start="md:opacity-100"
+    x-transition:leave-end="md:opacity-0"
+  >
+    <?= $block->getChildHtml('search.products') ?>
+    <div
+      class="md:sticky md:bottom-0 md:w-full md:z-10 md:bg-fg md:px-5 md:pb-5 md:rounded-b-md transition-opacity duration-300"
+      id="search-actions"
+      x-show="!isLoading"
+      x-transition.opacity
+      x-transition:leave.duration.300ms
+      x-transition:enter.delay.300ms
+      :class="{ 'opacity-0': isLoading, 'md:opacity-100': !isLoading}"
+    ></div>
+  </div>
+</div>

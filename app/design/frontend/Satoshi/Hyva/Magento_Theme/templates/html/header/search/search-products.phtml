@@ -1,0 +1,37 @@
+<div class="flex flex-col grow gap-4 p-3 pb-2 relative md:p-5 transition-opacity duration-300" :class="{ 'opacity-0': isLoading }">
+    <div class="pb-2">
+      <h2 class="text-lg"><?= __('Products') ?></h2>
+    </div>
+    <div class="flex flex-col gap-2 min-h-11 md:min-h-0">
+      <p x-show="!products.length && searchTerm && !isLoading" class="text-text-100">
+        <b class="text-secondary-700 font-bold"><?= __('Oops!') ?></b>
+        <?= __('We could not find any products matching your search.') ?>
+      </p>
+      <div
+        x-show="products.length"
+        class="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4"
+        x-transition.opacity
+        x-transition.delay.700ms
+      >
+        <template x-for="product in products" :key="product.id">
+          <?= $block->getChildHtml('search.products.card') ?>
+        </template>
+      </div>
+      <div x-show="products.length" class="min-h-24 md:hidden"></div>
+    </div>
+    <template x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('search-actions')">
+      <div
+        x-show="getIsSearchActive() && products.length"
+        class="relative px-4 pb-2 bg-fg md:p-0 transition-opacity duration-300"
+        :class="{ 'opacity-0': isLoading }"
+      >
+        <div class="absolute bg-gradient-to-t from-white to-transparent h-10 start-0 end-0 -top-10"></div>
+        <a class="button button--filled-primary w-full"
+          :href="getSearchUrl('{{ routes.search_url }}')"
+          x-element-transition-trigger
+        >
+          <?= __('View all') ?>
+        </a>
+      </div>
+    </template>
+  </div>
