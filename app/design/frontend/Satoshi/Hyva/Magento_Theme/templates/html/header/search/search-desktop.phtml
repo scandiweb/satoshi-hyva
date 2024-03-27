@@ -1,0 +1,11 @@
+<?php
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+?>
+
+<a class="md:button--filled-white button ghost-primary icon-button icon-button--size-lg md:m-2">
+    <?= $hyvaicons->renderHtml('search'); ?>
+</a>

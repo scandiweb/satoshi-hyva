@@ -1,0 +1,39 @@
+.checkbox {
+  @apply mb-4 flex cursor-pointer items-center;
+
+  &__control {
+    @apply rounded-xs border-secondary-100 text-2xs inline-flex h-5 w-5 items-center justify-center border-2 border-solid text-white transition-colors duration-200;
+
+    svg {
+      @apply scale-50 stroke-current stroke-2 opacity-0 transition-transform duration-200;
+
+      width: 1.2em;
+      stroke-dasharray: 16;
+    }
+  }
+
+  &__input {
+    @apply absolute h-1 w-1 overflow-hidden whitespace-nowrap border-0 p-0;
+
+    margin: -1px;
+    clip: rect(0px, 0px, 0px, 0px);
+
+    &:focus-visible + .checkbox__control {
+      @apply focus-ring;
+    }
+
+    &:checked + .checkbox__control {
+      @apply bg-primary-500 border-primary-500;
+
+      svg {
+        @apply scale-100 transform opacity-100;
+
+        stroke-dashoffset: 0;
+      }
+    }
+  }
+
+  &__label {
+    @apply ml-3;
+  }
+}

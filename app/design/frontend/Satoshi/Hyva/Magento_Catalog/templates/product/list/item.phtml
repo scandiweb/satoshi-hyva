@@ -1,0 +1,82 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\ProductCompare;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Block\Product\AbstractProduct;
+use Magento\Catalog\Helper\Output as CatalogOutputHelper;
+use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
+use Magento\Framework\Escaper;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var AbstractProduct $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+/** @var ProductListItem $productListItemViewModel */
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+
+/** @var CatalogOutputHelper $catalogOutputHelper */
+$catalogOutputHelper = $this->helper(CatalogOutputHelper::class);
+
+/** @var ProductCompare $compareViewModel */
+$compareViewModel = $viewModels->require(ProductCompare::class);
+/** @var Wishlist $wishlistViewModel */
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var HeroiconsSolid $heroiconsSolid */
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+
+$productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
+
+$isLarge = $block->getData('isLarge');
+$isAlpineTemplate = $block->getData('isAlpineTemplate');
+$featuredImage = false;
+
+if (!$isAlpineTemplate) {
+  $product = $block->getData('product');
+
+  if (!$product) {
+    return '';
+  }
+
+  $id = $product->getId();
+}
+?>
+
+<div
+    <?php if(!$isAlpineTemplate): ?>
+      x-element-transition-area="p-<?= $id ?>"
+    <?php endif; ?>
+    <?php if($isLarge): ?>
+      class="col-span-2 md:col-auto"
+    <?php endif; ?>
+>
+    <a
+      x-element-transition-trigger:product.animate="{'img': '{{ card_product.media[0] | image_url }}'}"
+      <?php if($isAlpineTemplate): ?>
+        :href="product.url_key"
+      <?php else: ?>
+          href="<?= $escaper->escapeUrl($product->getUrlKey()) ?>"
+      <?php endif; ?>
+      class="flex rounded-md min-w-0 relative"
+    >
+        <div class="w-0 h-0" style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"></div>
+        <?= $block->getChildHtml('product.card.details') ?>
+    </a>
+</div>

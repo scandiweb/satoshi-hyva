@@ -1,0 +1,147 @@
+<?php
+use Hyva\Theme\ViewModel\Navigation;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\View\Element\Template;
+
+/** @var Navigation $viewModelNavigation */
+$viewModelNavigation = $viewModels->require(Navigation::class, $block);
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$id = $block->getId();
+$title = $block->getData('title');
+$path = $block->getData('path');
+$menuItems = $block->getData('menuItems');
+$url = $block->getData('url');
+$level = $block->getData('level') ?? 1;
+$menuItemBlock = $block->getLayout()->createBlock(Template::class)->setTemplate("Magento_Theme::html/header/menu/menu-items.phtml");
+
+if (!$menuItems) {
+    $menuItems = $viewModelNavigation->getNavigation(4);
+    $block->setData('cache_tags', $viewModelNavigation->getIdentities());
+}
+
+?>
+<div
+    class="menu__level"
+    :class="
+      {
+        'menu__level--current': history[history.length - 1] === '<?= $id ?>',
+        'menu__level--visible': history.includes('<?= $id ?>'),
+        'menu__level--same-depth': <?= $level ?> <= delayedLevel
+      }
+    "
+  >
+  <div class="menu__header">
+      <div class="menu__header-container">
+            <?php if($id === 'all'): ?>
+                <template x-if="!$store.main.isMobile">
+                    <button
+                    @click="$store.resizable.hideAll();"
+                    type="button"
+                    class="button icon-button icon-button--size-lg h-auto w-auto gap-3"
+                    >
+                        <div class="contents">
+                            <?= $hyvaicons->renderHtml('close'); ?>
+                        </div>
+                        <span class="text-md font-bold">Close</span>
+                    </button>
+                </template>
+            <?php endif; ?>
+            <button
+                @click="history.pop()"
+                aria-label="Go to back to previous menu page"
+                class="menu__back-button"
+                :class="{'menu__back-button--visible': history.length !== 1}"
+                :tab-index="history.length === 1 ? -1 : 0"
+                :aria-hidden="history.length === 1"
+            >
+                <?= $hyvaicons->renderHtml('chevron-left'); ?>
+            </button>
+            <h2
+                class="menu__heading"
+                :class="{'menu__heading--root': '<?= $id ?>' === 'all'}"
+                x-show="$store.main.isMobile || '<?= $id ?>' !== 'all'"
+            >
+                <?= $title ?>
+            </h2>
+            <div id="menu-actions-<?= $id ?>" class="md:flex-none md:flex-row"></div>
+        </div>
+        <hr class="divider -mx-5 md:hidden">
+  </div>
+  <ul role="list" class="menu__links">
+        <?php foreach($menuItems as $menuItem): ?>
+            <li>
+                <?php if(count($menuItem['childData'])): ?>
+                    <button
+                        class="menu__link"
+                        @click="setHistory([...'<?= $path ?>'.split(','), '<?= $menuItem['id'] ?>'])"
+                        :class="{ 'menu__link--active': history.includes('<?= $menuItem['id'] ?>') }"
+                    >
+                        <span>
+                            <?= $menuItem['name'] ?>
+                        </span>
+                        <span class="text-xl">
+                            <?= $hyvaicons->renderHtml('chevron-right'); ?>
+                        </span>
+                    </button>
+                    <template x-portal="document.getElementById('menu-sections')">
+                        <?=
+                            $menuItemBlock
+                                ->setData('menuItems', $menuItem['childData'])
+                                ->setData('level', $level + 1)
+                                ->setData('title', $menuItem['name'])
+                                ->setData('path', $path . ',' . $menuItem['id'])
+                                ->setData('id', $menuItem['id'])
+                                ->setData('url', $menuItem['url'])
+                                ->toHtml();
+                        ?>
+                    </template>
+                <?php else: ?>
+                    <a
+                        href="<?= $menuItem['url'] ?>"
+                        x-element-transition-trigger:category="{'title': '<?= $menuItem['name'] ?>', 'url': '<?= $menuItem['url'] ?>'}"
+                        class="flex items-center justify-between min-h-11 py-1 text-secondary-600"
+                        :class="{ 'text-primary-500 font-bold': history.includes('<?= $menuItem['id'] ?>') }"
+                    >
+                        <span class="text-secondary-600">
+                            <?= $menuItem['name'] ?>
+                        </span>
+                    </a>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+  </ul>
+  <?php if ($url && $id !== 'all'): ?>
+        <template x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('menu-actions-<?= $id ?>')">
+            <div
+            class="bg-fg px-4 pb-2 md:bg-transparent"
+            x-transition.opacity
+            x-show="$store.main.isMobile ? history[history.length - 1] === '<?= $id ?>' && !getIsSearchActive() : history.includes('<?= $id ?>')"
+            >
+                <a
+                    x-element-transition-trigger
+                    :class="$store.main.isMobile ? 'button button--filled-primary w-full': 'flex items-center'"
+                    href="<?= $url ?>"
+                >
+                    <template x-if="$store.main.isMobile">
+                        <span>
+                            <?= __('View All') ?> <span class="lowercase"><?= $title ?></span>
+                        </span>
+                    </template>
+                    <template x-if="!$store.main.isMobile">
+                        <span class="flex items-center">
+                            <span class='border-b-2 border-primary-100'>
+                                <?= __('View all') ?>
+                            </span>
+                            <span class='ps-2'>
+                                <?= $hyvaicons->renderHtml('menu-view-all'); ?>
+                            </span>
+                        </span>
+                    </template>
+                </a>
+            </div>
+        </template>
+    <?php endif; ?>
+</div>

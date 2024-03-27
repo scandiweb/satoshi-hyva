@@ -1,0 +1,5 @@
+<template x-if="!$store.main.isMobile">
+  <template x-portal="document.getElementById('cart-desktop')">
+    {% render 'cart' %}
+  </template>
+</template>

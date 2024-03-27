@@ -1,0 +1,33 @@
+.icon-button {
+  @apply px-0 text-xl;
+
+  svg {
+    @apply icon;
+  }
+
+  &--size {
+    &-xs {
+      @apply min-w-7 h-7 w-7;
+    }
+
+    &-sm {
+      @apply min-w-9 h-9 w-9;
+    }
+
+    &-md {
+      @apply min-w-11 h-11 w-11;
+    }
+
+    &-lg {
+      @apply min-w-10 text-xxl h-10 w-10;
+
+      @screen md {
+        @apply min-w-12 h-12 w-12;
+      }
+
+      svg {
+        @apply h-6 w-6;
+      }
+    }
+  }
+}

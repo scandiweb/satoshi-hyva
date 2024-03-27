@@ -1,0 +1,9 @@
+.wishlist-widget .price-box {
+    & .price-label {
+        @apply sr-only;
+    }
+
+    & .old-price {
+        @apply sr-only;
+    }
+}

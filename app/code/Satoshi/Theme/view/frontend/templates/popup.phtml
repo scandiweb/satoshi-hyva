@@ -1,0 +1,32 @@
+<?php
+$id = $block->getId();
+$isFocused = $block->getData('isFocused') ?? false;
+$isFullScreen = $block->getData('isFullScreen')  ?? false;
+$isAlwaysVisible = $block->getData('isAlwaysVisible')  ?? false;
+$isPreventOverlayClose = $block->getData('isPreventOverlayClose')  ?? false;
+$desktopTarget = $block->getData('desktopTarget') ?? 'popup-content-portal';
+$cssClass = $block->getData('cssClass');
+?>
+
+<div
+  class="contents"
+  x-init="
+    console.log(document.getElementById('<?= $desktopTarget ?>'), '****')
+    $store.popup._registerPopup({
+      id: '<?= $id ?>',
+      isFocused: <?=  $isFocused ? 'true' : 'false' ?>,
+      isFullScreen: <?= $isFullScreen  ? 'true' : 'false'  ?>,
+      isAlwaysVisible: <?= $isAlwaysVisible  ? 'true' : 'false'  ?>,
+      isPreventOverlayClose: <?= $isPreventOverlayClose  ? 'true' : 'false'  ?>
+    });
+  "
+>
+  <template x-portal="$store.main.isMobile ? document.getElementById('popup-content-portal') : document.getElementById('<?= $desktopTarget ?>')">
+    <div
+      x-show="$store.main.isMobile ? $store.popup._nextPopup === '<?= $id ?>' : true"
+      class="contents <?= $cssClass ?>"
+    >
+        <?= $block->getChildHtml() ?>
+    </div>
+  </template>
+</div>

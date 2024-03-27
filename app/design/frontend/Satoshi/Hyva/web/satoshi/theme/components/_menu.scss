@@ -1,0 +1,115 @@
+.menu {
+  &__wrapper {
+    @apply relative flex-grow;
+
+    @screen md {
+      @apply flex;
+    }
+  }
+
+  &__level {
+    @apply absolute left-0 top-0 hidden w-full;
+
+    @screen md {
+      // animate content to fade OUT
+      @apply relative flex min-h-[250px] w-0 flex-col overflow-hidden opacity-0 pb-2;
+
+      // opacity -> wait for container -> instant width
+      transition: opacity 300ms 0ms;
+    }
+
+    @screen lg {
+      @apply min-h-[300px];
+    }
+
+    &--current {
+      @screen max-md {
+        @apply block;
+      }
+    }
+
+    &--visible {
+      @screen md {
+        // animate content to fade IN
+        @apply w-[250px] opacity-100;
+
+        // instant width -> wait for container -> opacity
+        transition: opacity 300ms 400ms;
+
+        &:not(:first-child) {
+          @apply border-l-1 border-primary-50;
+        }
+      }
+
+      @screen lg {
+        @apply w-[300px];
+      }
+    }
+
+    &--same-depth {
+      @screen md {
+        transition: opacity 0ms 0ms;
+      }
+    }
+  }
+
+  &__header {
+    @apply bg-fg sticky top-[42px] z-10 flex flex-col gap-3 px-3 pt-6;
+
+    @screen md {
+      @apply top-0 bg-transparent p-5;
+    }
+  }
+
+  &__header-container {
+    @apply relative -mt-3 overflow-hidden py-3;
+
+    @screen md {
+      @apply flex;
+    }
+  }
+
+  &__back-button {
+    @apply button button--ghost-primary icon-button icon-button--size-md min-w-8 absolute inset-y-2 left-2 m-auto h-8 w-8 -translate-x-full transition-transform duration-300;
+
+    @screen md {
+      @apply hidden;
+    }
+
+    &--visible {
+      @apply translate-x-0;
+    }
+  }
+
+  &__heading {
+    @apply translate-x-[52px] text-lg transition-transform duration-300;
+
+    @screen md {
+      @apply text-md translate-x-0 flex-1;
+    }
+
+    &--root {
+      @apply translate-x-0;
+
+      @screen md {
+        @apply translate-x-[52px];
+      }
+    }
+  }
+
+  &__links {
+    @apply flex flex-col gap-3 py-3 px-3;
+
+    @screen md {
+      @apply flex-grow p-5 pt-0;
+    }
+  }
+
+  &__link {
+    @apply min-h-11 text-secondary-600 flex	w-full items-center justify-between py-1;
+
+    &--active {
+      @apply text-primary-500 font-bold;
+    }
+  }
+}

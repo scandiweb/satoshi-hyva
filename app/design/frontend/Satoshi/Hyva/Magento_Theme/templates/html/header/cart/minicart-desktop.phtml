@@ -1,0 +1,16 @@
+<?php
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\ViewModel\Cart\Cart;
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var Cart $cartItems */
+$cart = $viewModels->require(Cart::class);
+$cartItemsCount = $cart->getCartItemsQty();
+?>
+<a class="md:button--filled-white button col-start-5 ghost-primary icon-button icon-button--size-lg md:m-2">
+    <?= $block->getChildHtml('minicart-desktop-button'); ?>
+</a>

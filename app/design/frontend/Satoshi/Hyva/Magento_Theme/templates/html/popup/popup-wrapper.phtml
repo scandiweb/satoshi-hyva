@@ -1,0 +1,82 @@
+<div
+  x-data
+  class="contents"
+  :style="
+    {
+      '--popup-end-of-header-height': $store.popup.__endOfHeaderHeight + 'px',
+      '--popup-content-ratio': $store.popup._popupContentRatio,
+      '--popup-content-height': $store.popup.__popupContentHeight + 'px',
+      '--popup-max-height': Math.min($store.popup.__popupContentHeight, $store.popup.__getWindowHeight() - $store.popup.__endOfHeaderHeight - 8 * 4) + 'px',
+    }
+  "
+>
+  <div
+    class="popup__overlay"
+    :class="
+      {
+        'popup__overlay--full-screen': $store.popup.isCurrentPopupFullScreen,
+        'popup__overlay--focused': $store.main.isMobile ? $store.popup.isCurrentPopupFocused : Object.keys($store.resizable._current).length > 0,
+      }
+    "
+    @click="$store.popup.onPopupOverlayClick(); $store.resizable.hideAll();"
+  ></div>
+  <div class="popup__main">
+    <div
+      class="popup__shadow"
+      :class="
+        {
+          'popup__shadow--large': $store.popup._isPopupSimple
+        }
+      "
+    ></div>
+    <div
+      class="popup__wrapper"
+      :class="
+        {
+          'popup__wrapper--visible': $store.popup._isPopupVisible,
+        }
+      "
+    >
+      <div class="popup__content-wrapper">
+        <div
+          class="popup__content-top"
+          :class="
+            {
+              'popup__content-top--full-screen': $store.popup.isCurrentPopupFullScreen,
+            }
+          "
+        ></div>
+        <div
+          id="popup-content"
+          class="popup__content"
+          :class="
+            {
+              'popup__content--visible': !$store.popup._isPopupContentHidden,
+              'popup__content--full-screen': $store.popup.isCurrentPopupFullScreen,
+            }
+          "
+        >
+          <div
+            id="popup-content-portal"
+            class="popup__content-portal"
+            :class="
+              {
+                'popup__content-portal--full-screen': $store.popup.isCurrentPopupFullScreen,
+              }
+            "
+          ></div>
+        </div>
+        <div
+          id="popup-fixed-content-portal"
+          class="popup__fixed-content-portal"
+          :class="
+            {
+              'popup__fixed-content-portal--visible': $store.popup._isPopupVisible,
+            }
+          "
+        ></div>
+      </div>
+      <div class="popup__bottom"></div>
+    </div>
+  </div>
+</div>
