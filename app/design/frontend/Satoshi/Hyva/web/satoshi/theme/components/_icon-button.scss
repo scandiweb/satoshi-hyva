@@ -7,22 +7,22 @@
 
   &--size {
     &-xs {
-      @apply min-w-7 h-7 w-7;
+      @apply h-7 w-7 min-w-7;
     }
 
     &-sm {
-      @apply min-w-9 h-9 w-9;
+      @apply h-9 w-9 min-w-9;
     }
 
     &-md {
-      @apply min-w-11 h-11 w-11;
+      @apply h-11 w-11 min-w-11;
     }
 
     &-lg {
-      @apply min-w-10 text-xxl h-10 w-10;
+      @apply h-10 w-10 min-w-10 text-xxl;
 
       @screen md {
-        @apply min-w-12 h-12 w-12;
+        @apply h-12 w-12 min-w-12;
       }
 
       svg {

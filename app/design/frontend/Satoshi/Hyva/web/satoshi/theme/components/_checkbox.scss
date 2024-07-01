@@ -2,7 +2,7 @@
   @apply mb-4 flex cursor-pointer items-center;
 
   &__control {
-    @apply rounded-xs border-secondary-100 text-2xs inline-flex h-5 w-5 items-center justify-center border-2 border-solid text-white transition-colors duration-200;
+    @apply inline-flex h-5 w-5 items-center justify-center rounded-xs border-2 border-solid border-secondary-100 text-2xs text-white transition-colors duration-200;
 
     svg {
       @apply scale-50 stroke-current stroke-2 opacity-0 transition-transform duration-200;
@@ -23,7 +23,7 @@
     }
 
     &:checked + .checkbox__control {
-      @apply bg-primary-500 border-primary-500;
+      @apply border-primary-500 bg-primary-500;
 
       svg {
         @apply scale-100 transform opacity-100;

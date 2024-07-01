@@ -1,8 +1,8 @@
-// TODO: move to template to avoid layout shift
+/* TODO: move to template to avoid layout shift */
 
 @screen md {
   .resizable {
-    @apply relative block;
+    @apply relative block motion-reduce:transition-none;
 
     --corner-size-unitless: 10;
     --corner-size: calc(var(--corner-size-unitless) * 1px);
@@ -50,12 +50,12 @@
     &__side,
     &__bg,
     &__full-w,
-    &__full-h {
-      @apply origin-top-left;
-
+    &__full-h,
+    &__fixed {
       transition: transform 300ms var(--t-delay) ease-in-out,
         border-radius 300ms var(--b-delay) ease-in-out;
 
+      @apply origin-top-left motion-reduce:transition-none;
       .resizable--right & {
         @apply origin-top-right;
       }
@@ -66,16 +66,15 @@
     }
 
     &__corner {
-      @apply bg-fg absolute;
-
-      // @apply bg-red-500;
+      /* @apply bg-red-500; */
 
       transition-property: transform, border-radius;
+      @apply absolute bg-fg motion-reduce:transition-none;
       width: var(--corner-size);
       height: var(--corner-size);
 
       &--tl {
-        @apply top-0 left-0;
+        @apply left-0 top-0;
 
         border-top-left-radius: var(--border-top-left-radius);
 
@@ -85,7 +84,7 @@
       }
 
       &--tr {
-        @apply top-0 right-0;
+        @apply right-0 top-0;
 
         border-top-right-radius: var(--border-top-right-radius);
 
@@ -127,9 +126,9 @@
     }
 
     &__side {
-      @apply bg-fg absolute;
+      @apply absolute bg-fg;
 
-      // @apply bg-blue-500;
+      /* @apply bg-blue-500; */
 
       &--b,
       &--t {
@@ -182,16 +181,20 @@
     }
 
     &__bg {
-      @apply bg-fg absolute z-10;
+      @apply absolute z-10 bg-fg;
 
-      // @apply bg-green-500;
+      /* @apply bg-green-500; */
 
       inset: calc(var(--bg-extension-unitless) * 1px);
       transform: scale(var(--bg-scale-x), var(--bg-scale-y));
     }
 
     &__content {
-      @apply delay-450 absolute top-0 z-20 transition-opacity duration-300;
+      @apply absolute top-0 z-20 -mx-[1px] rounded-md transition-opacity delay-450 duration-300 motion-reduce:transition-none;
+
+      .resizable--visible & {
+        @apply contrast-more:border contrast-more:border-secondary-700;
+      }
 
       .resizable--right & {
         @apply right-0;
@@ -203,23 +206,41 @@
 
       &--trigger {
         .resizable--visible & {
-          @apply delay-0 pointer-events-none opacity-0;
+          @apply pointer-events-none opacity-0 delay-0;
         }
       }
 
       &--portal {
-        @apply delay-0 pointer-events-none opacity-0;
+        @apply pointer-events-none opacity-0 delay-0;
 
-        max-height: calc(100vh - 16px * 2 - 34px);
-        overflow-y: auto;
+        max-height: calc(100dvh - 16px * 2 - 34px);
 
         .resizable--visible & {
-          @apply delay-450 pointer-events-auto opacity-100;
+          @apply pointer-events-auto opacity-100 delay-450;
         }
       }
     }
 
-    &__full {
+    &__scroll {
+      @apply overflow-hidden;
+
+      max-height: calc(100dvh - 16px * 2 - 34px);
+    }
+
+    &__fixed {
+      transform: translateY(calc(var(--target-height) * 1px - 100%));
+      @apply pointer-events-none absolute left-0 top-0 w-full motion-reduce:transition-none;
+
+      > * {
+        @apply pointer-events-none;
+
+        .resizable--visible & {
+          @apply pointer-events-auto;
+        }
+      }
+    }
+
+    & &__full {
       &-w {
         @apply w-[1px];
         transform: scaleX(calc(var(--target-width) - var(--full-w-offset, 0)));

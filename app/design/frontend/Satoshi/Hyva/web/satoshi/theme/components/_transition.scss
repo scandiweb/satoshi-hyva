@@ -1,27 +1,25 @@
 .element-transition {
-  @apply max-w-screen bg-fg pointer-events-none fixed top-0 left-0 z-[35] h-full w-full transition-opacity;
+  @apply pointer-events-none fixed left-0 top-0 z-[35] h-full w-full max-w-screen bg-fg transition-opacity;
 
   > * {
     @apply absolute origin-top-left translate-x-0 translate-y-0 transition-all duration-300;
   }
 }
 
-// .content-for-layout {
-//   &.transition-fallback-product {
-//     @apply mt-0;
-//   }
+.is-transition .animate-on-transition {
+  @apply animate-fadeIn;
+}
 
-//   &.transition-fallback-category {
-//     @apply transition-none mt-[72px];
-//   }
-// }
+.disable-fade .animate-on-transition {
+  @apply animate-none;
+}
 
-// .is-animating [data-animated-content] {
-//   @apply animate-fadeIn;
-// }
+.hide-unless-transition:not(.is-transition .hide-unless-transition) {
+  @apply hidden;
+}
 
 .transition-preview {
-  @apply fixed top-0 left-0 z-[35] h-full w-full overscroll-contain pointer-events-none bg-transparent;
+  @apply pointer-events-none fixed left-0 top-0 z-[9] h-full w-full overscroll-contain bg-transparent;
 
   transition: background 300ms ease-in-out;
 
@@ -30,30 +28,30 @@
   }
 
   &__wrapper {
-    @apply content-wrapper mx-auto relative;
-
     transition: transform 300ms 150ms ease-in-out;
     transform: translateY(100%);
 
     .transition-preview--active & {
       transform: translateY(0);
     }
+
+    @apply motion-reduce:transition-none;
   }
 
   &__scroll {
-    @apply overflow-x-hidden overflow-y-scroll overscroll-contain max-h-screen;
+    @apply max-h-screen overflow-x-hidden overflow-y-scroll overscroll-contain;
 
     padding-top: calc(var(--offset-top) * 1px);
   }
 
   &__content {
-    @apply pt-20 px-28;
+    @apply px-8 pt-12 lg:px-16 xl:px-28 xl:pt-20;
 
-    min-height: calc(100vh + var(--offset-top) * 1px);
+    min-height: calc(110vh + var(--offset-top) * 1px);
   }
 
   &__bg {
-    @apply bg-fg left-0 right-0 mx-auto -z-10 absolute;
+    @apply absolute left-0 right-0 -z-10 mx-auto bg-fg;
 
     --target-scale-x: calc(
       var(--screen-width) / (var(--content-wrapper-width) - 16 * 4)
@@ -85,5 +83,9 @@
         )
       )
       translateY(calc(-1 * var(--offset-top) * 1px * var(--scroll-progress)));
+  }
+
+  .product-details {
+    top: calc(var(--offset-top) * (3 / 4) * -1px + var(--scroll-top));
   }
 }

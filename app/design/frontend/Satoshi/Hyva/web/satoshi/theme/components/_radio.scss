@@ -2,7 +2,7 @@
   @apply mb-4 flex cursor-pointer items-center;
 
   &__control {
-    @apply rounded-full border-secondary-100 text-2xs inline-flex h-5 w-5 items-center justify-center border-2 border-solid text-white transition-colors duration-200;
+    @apply inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-solid border-secondary-100 text-2xs text-white transition-colors duration-200;
   }
 
   &__input {
@@ -16,10 +16,10 @@
     }
 
     &:checked + .radio__control {
-      @apply bg-primary-500 border-primary-500;
+      @apply border-primary-500 bg-primary-500;
 
       &::before {
-        @apply bg-current content-[''] rounded-full h-1/2 w-1/2;
+        @apply h-1/2 w-1/2 rounded-full bg-current content-[''];
       }
     }
   }
