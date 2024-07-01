@@ -13,6 +13,9 @@
         <attribute name="class" value="gradient" />
         <attribute name="class" value="bg-fg" />
 
+        <referenceContainer name="main.content"  htmlClass="page-main overflow-x-hidden"/>
+        <referenceContainer name="header.container"  htmlClass="page-header contents"/>
+
         <referenceBlock name="header-content">
             <block name="resizable.menu" template="Satoshi_Theme::resizable.phtml">
                 <arguments>
