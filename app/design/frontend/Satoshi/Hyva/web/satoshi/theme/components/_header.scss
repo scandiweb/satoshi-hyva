@@ -1,3 +1,13 @@
+:root {
+  --minicart-width: 400px;
+
+  --search-width: 500px;
+
+  @screen lg {
+    --search-width: 800px;
+  }
+}
+
 .header {
   --button-gap: theme(space.5);
   --button-width: 56px;
@@ -7,13 +17,14 @@
     --b-delay: 450ms;
 
     transition: transform 300ms 300ms ease-in-out;
+    @apply motion-reduce:transition-none;
 
     &:first-of-type {
       --b-tl-radius: theme(borderRadius.md);
       --b-bl-radius: theme(borderRadius.md);
 
       &.resizable--visible {
-        // is the active container
+        /* is the active container */
       }
     }
 
@@ -22,12 +33,12 @@
       --b-br-radius: theme(borderRadius.md);
 
       &.resizable--visible {
-        // is the active container
+        /* is the active container */
       }
     }
 
     &:has(+ .resizable--visible) {
-      // comes before the active container
+      /* comes before the active container */
       --b-tr-radius: theme(borderRadius.md);
       --b-br-radius: theme(borderRadius.md);
       --b-delay: 0ms;
@@ -40,7 +51,7 @@
       transition-delay: 0ms;
 
       + .resizable {
-        // comes after the active container
+        /* comes after the active container */
         --b-tl-radius: theme(borderRadius.md);
         --b-bl-radius: theme(borderRadius.md);
         --b-delay: 0ms;
@@ -61,7 +72,7 @@
       &:has(+ .resizable--cart.resizable--visible) {
         transition-delay: 100ms;
 
-        // has cart active
+        /* has cart active */
         transform: translateX(
           calc(
             (var(--minicart-width) - var(--button-width) + var(--button-gap)) *

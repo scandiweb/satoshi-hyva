@@ -21,7 +21,7 @@ input[type="search"] {
 .input {
   &--error {
     & .input__field {
-      @apply shadow-error border-red-500;
+      @apply border-red-500 shadow-error;
     }
 
     & .input__message {
@@ -30,14 +30,14 @@ input[type="search"] {
   }
 
   &__field {
-    @apply max-md:text-[16px] md:text-md focus-visible:focus-ring border-1 relative h-11 w-full min-w-0 appearance-none rounded-sm border-solid px-4;
+    @apply focus-visible:focus-ring relative h-11 w-full min-w-0 appearance-none rounded-sm border-1 border-solid px-4 text-[16px] contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700;
 
     &:focus-visible {
-      @apply shadow-input border-secondary-500;
+      @apply border-secondary-500 shadow-input;
     }
 
     &--outline {
-      @apply border-secondary-100 bg-transparent;
+      @apply border-secondary-100 bg-transparent contrast-more:border-secondary-700;
     }
 
     &--filled {
@@ -50,6 +50,6 @@ input[type="search"] {
   }
 
   &__message {
-    @apply text-secondary-500 ml-3 text-sm;
+    @apply ml-3 text-sm text-secondary-500;
   }
 }

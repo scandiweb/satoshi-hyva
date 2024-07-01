@@ -3,18 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --font-body-family: 'Satoshi', sans-serif;
-  --font-body-style: 'normal';
+  --font-body-family: "Satoshi", sans-serif;
+  --font-body-style: "normal";
   --font-body-weight: 500;
 
-  --font-heading-family: 'Satoshi', sans-serif;
-  --font-heading-style: 'normal';
+  --font-heading-family: "Satoshi", sans-serif;
+  --font-heading-style: "normal";
   --font-heading-weight: 700;
 }
 
+html {
+  scrollbar-width: none;
+}
+
+img {
+  @apply text-transparent;
+}
 
 body {
-  @apply text-md text-text-on-fg overflow-x-hidden;
+  @apply overflow-x-hidden text-md text-text-on-fg;
 }
 
 svg {
@@ -29,34 +36,26 @@ h3 {
   font-weight: var(--font-heading-weight);
 }
 
-.shopify-section {
-  @apply contents;
-}
-
 .breadcrumb {
-  @apply inline [&:not(:last-of-type)]:text-neutral-500 font-bold;
+  @apply inline font-bold [&:not(:last-of-type)]:text-neutral-500 contrast-more:[&:not(:last-of-type)]:text-secondary-700;
 }
 
-.shopify-challenge {
-  &__container {
-    @apply h-full flex flex-col justify-center;
-  }
-  &__message {
-    @apply text-md text-text-700 sm:text-center mb-7;
-  }
-
-  &__button {
-    @apply bg-primary-bg text-white w-full my-7 py-4 px-6 rounded-sm text-md #{!important};
-  }
+.order-cell {
+  @apply whitespace-nowrap text-text-700 before:mb-2 before:flex-1 before:text-black before:content-[attr(data-label)] contrast-more:text-secondary-700 md:before:block max-md:mb-2 max-md:flex;
 }
 
-:not(.scrollbar-enabled)::-webkit-scrollbar {
-  @apply hidden h-0 w-0 bg-transparent p-0;
-}
+@screen md {
+  ::-webkit-scrollbar {
+    @apply h-1 w-1;
+  }
 
-// This element gets injected in body and breaks layout sometimes
-#WebPixelsManagerSandboxContainer {
-  @apply hidden;
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-sm bg-[#888];
+  }
 }
 
 [x-cloak] {
@@ -105,10 +104,31 @@ h3 {
   }
 }
 
+.skip-to-content-link:focus-visible {
+  @apply not-sr-only fixed left-6 top-6 z-40 h-auto w-auto bg-white p-4 text-base font-semibold shadow-outline;
+  clip: auto;
+}
+
+:focus-visible {
+  @apply shadow-outline outline-none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    /* Chrome, Safari and Opera */
+    display: none;
+  }
+}
+
+.disable-fade .faded-img {
+  @apply !opacity-100;
+}
+
 @layer components {
   @import "components/content-wrapper";
-  @import "components/button";
-  @import "components/icon-button";
   @import "components/checkbox";
   @import "components/radio";
   @import "components/input";
@@ -119,8 +139,10 @@ h3 {
   @import "components/menu";
   @import "components/resizable";
   @import "components/transition";
-  @import "components/minicart";
   @import "components/slider";
+  @import "components/button";
+  @import "components/icon-button";
   @import "components/unreset";
+  @import "components/card-product";
 }
 @import "components/progress-bar";

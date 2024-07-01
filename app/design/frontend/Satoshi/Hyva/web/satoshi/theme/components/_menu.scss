@@ -1,3 +1,8 @@
+:root {
+  --menu-width: 250px;
+  --menu-links-container-max-height: calc(100dvh - 132px);
+}
+
 .menu {
   &__wrapper {
     @apply relative flex-grow;
@@ -11,15 +16,14 @@
     @apply absolute left-0 top-0 hidden w-full;
 
     @screen md {
-      // animate content to fade OUT
-      @apply relative flex min-h-[250px] w-0 flex-col overflow-hidden opacity-0 pb-2;
+      /* animate content to fade OUT */
+      @apply static flex h-0 w-0 flex-col overflow-clip pb-2 opacity-0;
 
-      // opacity -> wait for container -> instant width
       transition: opacity 300ms 0ms;
     }
 
-    @screen lg {
-      @apply min-h-[300px];
+    &:not(.menu__level--visible) {
+      @apply pointer-events-none;
     }
 
     &--current {
@@ -30,34 +34,30 @@
 
     &--visible {
       @screen md {
-        // animate content to fade IN
-        @apply w-[250px] opacity-100;
+        /* animate content to fade IN */
+        @apply h-auto w-[--menu-width] opacity-100;
 
-        // instant width -> wait for container -> opacity
+        /* instant width -> wait for container -> opacity */
         transition: opacity 300ms 400ms;
 
         &:not(:first-child) {
           @apply border-l-1 border-primary-50;
         }
       }
-
-      @screen lg {
-        @apply w-[300px];
-      }
     }
 
     &--same-depth {
       @screen md {
-        transition: opacity 0ms 0ms;
+        /* transition: opacity 0ms 0ms; */
       }
     }
   }
 
   &__header {
-    @apply bg-fg sticky top-[42px] z-10 flex flex-col gap-3 px-3 pt-6;
+    @apply sticky top-[42px] z-10 flex flex-col gap-3 bg-fg px-3 pt-6;
 
     @screen md {
-      @apply top-0 bg-transparent p-5;
+      @apply top-0 rounded-t-md bg-transparent bg-gradient-to-b from-white from-70% p-5;
     }
   }
 
@@ -70,7 +70,7 @@
   }
 
   &__back-button {
-    @apply button button--ghost-primary icon-button icon-button--size-md min-w-8 absolute inset-y-2 left-2 m-auto h-8 w-8 -translate-x-full transition-transform duration-300;
+    @apply button button--ghost-primary icon-button icon-button--size-md absolute inset-y-2 left-2 m-auto h-8 w-8 min-w-8 -translate-x-full transition-transform duration-300;
 
     @screen md {
       @apply hidden;
@@ -85,7 +85,7 @@
     @apply translate-x-[52px] text-lg transition-transform duration-300;
 
     @screen md {
-      @apply text-md translate-x-0 flex-1;
+      @apply flex-1 translate-x-0 text-md;
     }
 
     &--root {
@@ -98,18 +98,18 @@
   }
 
   &__links {
-    @apply flex flex-col gap-3 py-3 px-3;
+    @apply flex flex-col gap-3 px-3 py-3 pt-12;
 
     @screen md {
-      @apply flex-grow p-5 pt-0;
+      @apply max-h-[--menu-links-container-max-height] flex-grow overflow-auto p-5 pt-0;
     }
   }
 
   &__link {
-    @apply min-h-11 text-secondary-600 flex	w-full items-center justify-between py-1;
+    @apply focus-visible:focus-ring flex min-h-11	w-full items-center justify-between py-1 text-secondary-600 contrast-more:text-secondary-700;
 
     &--active {
-      @apply text-primary-500 font-bold;
+      @apply font-bold text-primary-500;
     }
   }
 }
