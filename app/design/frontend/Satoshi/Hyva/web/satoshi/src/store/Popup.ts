@@ -7,9 +7,11 @@ import {
   unfreezeScroll,
 } from "../utils/scroll2";
 import { isMobile } from "../utils/device";
+import { ESC_KEY } from "../utils/keyboard-keys";
+import { SELECTOR_LIST } from "../plugins/Accessibility";
 
 // const POPUP_CONTENT_CHANGE_REQUEST_EVENT = "popup-content-change-request";
-const POPUP_OVERLAY_CLICK_EVENT = "popup-overlay-click";
+export const POPUP_OVERLAY_CLICK_EVENT = "popup-overlay-click";
 export const POPUP_APPEARANCE_DURATION = 500;
 
 export type PopupConfigType = {
@@ -25,6 +27,7 @@ export type PopupStoreType = {
   currentPopup: string | null;
   isCurrentPopupFullScreen: boolean;
   isCurrentPopupFocused: boolean;
+  originalFocusableEl: HTMLElement | null;
 
   __currentPopupRef: string | null;
   __nextPopupRef: string | null;
@@ -47,6 +50,7 @@ export type PopupStoreType = {
   _registerPopup(popup: PopupConfigType): void;
   _unregisterPopup(popup: PopupConfigType): void;
   _updatePopupConfig(popup: PopupConfigType): void;
+  _onKeyDown(event: KeyboardEvent): void;
   extendPopupConfig(popup: PopupConfigType): void;
   hideAllPopups(): Promise<void>;
   hideCurrentPopup(): void;
@@ -73,6 +77,7 @@ export const PopupStore = <PopupStoreType>{
   currentPopup: null,
   isCurrentPopupFullScreen: false,
   isCurrentPopupFocused: false,
+  originalFocusableEl: null,
 
   __currentPopupRef: null,
   __nextPopupRef: null,
@@ -96,11 +101,11 @@ export const PopupStore = <PopupStoreType>{
   init() {
     Alpine.effect(() => {
       const currentPopupConfig = __popups.find(
-        (popup) => popup.id === this.__currentPopupRef
+        (popup) => popup.id === this.__currentPopupRef,
       );
 
       const nextPopupConfig = __popups.find(
-        (popup) => popup.id === this.__nextPopupRef
+        (popup) => popup.id === this.__nextPopupRef,
       );
 
       const isPopupContentHidden = this.__nextPopupRef !== null;
@@ -146,7 +151,8 @@ export const PopupStore = <PopupStoreType>{
           {
             childList: true,
             subtree: true,
-          }
+            attributeFilter: ["class"],
+          },
         );
       } else {
         unfreezeScroll();
@@ -158,7 +164,9 @@ export const PopupStore = <PopupStoreType>{
       }
 
       if (!this._isMaxHeightReached) {
-        this.updateContentSize();
+        Alpine.nextTick(() => {
+          this.updateContentSize();
+        });
       }
 
       setTimeout(() => {
@@ -243,6 +251,11 @@ export const PopupStore = <PopupStoreType>{
       return;
     }
 
+    document.removeEventListener("keydown", this._onKeyDown);
+
+    this.originalFocusableEl?.focus();
+    this.originalFocusableEl = null;
+
     const popup = this.__currentPopupRef;
     const popupConfig = __popups.find((p) => p.id === popup);
 
@@ -294,8 +307,8 @@ export const PopupStore = <PopupStoreType>{
     this.__nextPopupRef = popup;
     this._nextPopup = popup;
 
-    if (!popup) {
-      // skip waiting for animation if closing popup
+    if (!popup || Alpine.store("main").isReducedMotion) {
+      // skip waiting for animation if closing popup or motion is reduced
       return;
     }
 
@@ -305,7 +318,7 @@ export const PopupStore = <PopupStoreType>{
         () => {
           resolve();
         },
-        { once: true }
+        { once: true },
       );
     });
   },
@@ -313,6 +326,27 @@ export const PopupStore = <PopupStoreType>{
   async showPopup(popup: string, isClosePrevious: boolean = true) {
     if (!isMobile()) {
       return;
+    }
+
+    // Store closest tabbable element (i.e: clicked element is svg)
+    this.originalFocusableEl = document.activeElement!.closest(SELECTOR_LIST);
+
+    document.addEventListener("keydown", this._onKeyDown.bind(this));
+
+    if (this.__currentPopupRef) {
+      const currentPopupConfig = __popups.find(
+        (p) => p.id === this.__currentPopupRef,
+      );
+
+      const nextPopupConfig = __popups.find((p) => p.id === popup);
+
+      if (
+        currentPopupConfig &&
+        currentPopupConfig.isFullScreen &&
+        nextPopupConfig?.isFullScreen
+      ) {
+        this.__popupHistory.pop();
+      }
     }
 
     if (!isClosePrevious && this.__currentPopupRef) {
@@ -347,8 +381,25 @@ export const PopupStore = <PopupStoreType>{
 
     if (isFocused) {
       freezeScroll();
+
+      this.__mutationObserver = new MutationObserver(() => {
+        this.__updateScrollLockIfNeeded();
+      });
+
+      this.__mutationObserver.observe(
+        document.getElementById("popup-content-portal")!,
+        {
+          childList: true,
+          subtree: true,
+        },
+      );
     } else {
       unfreezeScroll();
+
+      if (this.__mutationObserver) {
+        this.__mutationObserver.disconnect();
+        this.__mutationObserver = null;
+      }
     }
 
     try {
@@ -373,6 +424,14 @@ export const PopupStore = <PopupStoreType>{
       });
     } catch (e) {
       // ignore
+    }
+  },
+
+  _onKeyDown(e: KeyboardEvent) {
+    const isEscPressed = e.key === ESC_KEY;
+
+    if (isEscPressed) {
+      this.hideCurrentPopup();
     }
   },
 
@@ -415,9 +474,9 @@ export const PopupStore = <PopupStoreType>{
   },
 
   onPopupOverlayClick() {
-    this.hideCurrentPopup();
     const event = new CustomEvent(POPUP_OVERLAY_CLICK_EVENT);
     document.dispatchEvent(event);
+    this.hideCurrentPopup();
   },
 
   updateContentSize() {
@@ -455,7 +514,7 @@ export const PopupStore = <PopupStoreType>{
     if (this.__attachedOverlayCallback) {
       document.removeEventListener(
         POPUP_OVERLAY_CLICK_EVENT,
-        this.__attachedOverlayCallback
+        this.__attachedOverlayCallback,
       );
       this.__attachedOverlayCallback = null;
     }

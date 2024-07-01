@@ -42,7 +42,7 @@ export const doElementTransitionFromSrcToDest = async ({
   clonedElement.style.left = `${sl}px`;
   clonedElement.style.width = `${sw}px`;
   clonedElement.style.height = `${sh}px`;
-
+  clonedElement.setAttribute("x-ignore", "");
   transitionContainer.appendChild(clonedElement);
 
   // wait until condition is met
@@ -80,7 +80,7 @@ export const doElementTransitionFromSrcToDest = async ({
   }px, 0) scale(${tw / sw}, ${th / sh})`;
 
   clonedElement.style.borderRadius = window.getComputedStyle(
-    destEl!
+    destEl!,
   ).borderRadius;
 
   await new Promise<void>((resolve) => {
@@ -89,7 +89,7 @@ export const doElementTransitionFromSrcToDest = async ({
       () => {
         resolve();
       },
-      { once: true }
+      { once: true },
     );
   });
 };

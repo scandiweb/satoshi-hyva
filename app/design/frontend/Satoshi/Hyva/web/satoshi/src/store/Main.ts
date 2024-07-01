@@ -1,5 +1,6 @@
 import type { Magics } from "alpinejs";
 import { isMobile } from "../utils/device";
+import { unfreezeScroll } from "../utils/scroll2";
 
 export type MainStoreType = {
   [key: string | symbol]: any;
@@ -9,10 +10,11 @@ export type MainStoreType = {
   yOffset: number;
   totalCartQty: number;
   isMobile: boolean;
+  isReducedMotion: boolean;
 
+  onResize(): void;
   init(): void;
   setTransformValues(): void;
-  setMobile(): void;
   getPrice(value: number | string): string;
   isPopupFocused(): boolean;
   hideAllPopupsAndResizables(): void;
@@ -24,16 +26,44 @@ export const Main = <MainStoreType>{
   yOffset: 0,
   totalCartQty: 0,
   isMobile: isMobile(),
+  isReducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)")
+    .matches,
 
   init() {
     this.setTransformValues();
+    this.onResize();
 
     // listen to resize and compute if is mobile
-    window.addEventListener("resize", this.setMobile.bind(this));
+    window.addEventListener("resize", this.onResize.bind(this));
+
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    mediaQuery.addEventListener("change", (e: any) => {
+      this.isReducedMotion = e.matches;
+    });
   },
 
-  setMobile() {
-    this.isMobile = isMobile();
+  onResize() {
+    const newIsMobile = isMobile();
+
+    if (this.isMobile !== newIsMobile) {
+      // cleanup popups and resizables on resolution change
+      Alpine.store("popup").currentPopup = null;
+      Alpine.store("resizable")._current = {};
+      unfreezeScroll();
+    }
+
+    this.isMobile = newIsMobile;
+
+    document.documentElement.style.setProperty(
+      "--screen-width",
+      window.innerWidth.toString(),
+    );
+
+    document.documentElement.style.setProperty(
+      "--screen-height",
+      window.innerHeight.toString(),
+    );
   },
 
   setTransformValues() {
@@ -72,13 +102,11 @@ export const Main = <MainStoreType>{
   isPopupFocused() {
     return this.isMobile
       ? Alpine.store("popup").isCurrentPopupFocused
-      : Object.keys(Alpine.store("resizable")._current).length > 0 ||
-          !!Alpine.store("popupProductDetails")._currentProductHandle;
+      : Object.keys(Alpine.store("resizable")._current).length > 0;
   },
 
   hideAllPopupsAndResizables() {
     Alpine.store("popup").onPopupOverlayClick();
-    Alpine.store("popupProductDetails").hide();
     Alpine.store("resizable").hideAll();
   },
 };

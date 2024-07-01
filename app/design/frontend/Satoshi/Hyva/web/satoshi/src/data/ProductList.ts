@@ -52,14 +52,18 @@ export const ProductList = (...args: unknown[]) => {
           resultHtml.innerHTML = data;
 
           const productGridHtml = resultHtml.querySelector(
-            "#ProductGridContainer"
+            "#ProductGridContainer",
           );
           const productGridElem = this.$refs.ProductGridContainer;
 
           replaceElement(productGridElem, productGridHtml, isReset);
 
           // update url without refreshing the page
-          history.replaceState(null, "", queryString || location.pathname);
+          history.replaceState(
+            history.state,
+            "",
+            queryString || location.pathname,
+          );
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => (this.isLoadingProducts = false));

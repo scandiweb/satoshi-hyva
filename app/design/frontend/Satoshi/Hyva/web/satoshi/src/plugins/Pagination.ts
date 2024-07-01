@@ -1,4 +1,5 @@
 import type { Alpine as AlpineType } from "alpinejs";
+import { cachePage, enableFadeInImages, fetchPage } from "./Transition";
 
 const appendPaginationContent = (rawContent: string) => {
   const regex =
@@ -7,25 +8,19 @@ const appendPaginationContent = (rawContent: string) => {
   const newContent = content ? content[0] : "";
   const el = document.querySelector("[data-content-wrapper]");
 
+  const newElements = document.createElement("div");
+  newElements.style.display = "contents";
+  newElements.innerHTML = newContent;
+
   if (el) {
-    el.innerHTML += newContent;
+    el.appendChild(newElements);
   }
-};
-
-const fetchPage = (url: string) => {
-  return fetch(url).then((res) => {
-    if (res.ok) {
-      return res.text();
-    }
-
-    throw new Error("Failed to get page");
-  });
 };
 
 export default function (Alpine: AlpineType) {
   let isPaginating = false;
   let currentPage = parseInt(
-    new URLSearchParams(window.location.search).get("page") || "1"
+    new URLSearchParams(window.location.search).get("page") || "1",
   );
 
   Alpine.directive(
@@ -37,17 +32,23 @@ export default function (Alpine: AlpineType) {
         e.preventDefault();
         e.stopPropagation();
 
+        enableFadeInImages();
+
         if (isPaginating) {
           return;
         }
 
         isPaginating = true;
+        el.ariaBusy = "1";
 
         if (currentPage < lastPage) {
           const nextPage = currentPage + 1;
           const nextUrl = `${window.location.pathname}?page=${nextPage}`;
+          const fullUrl = window.location.pathname + window.location.search;
           const html = await fetchPage(nextUrl);
           appendPaginationContent(html);
+          cachePage(fullUrl, document.documentElement.outerHTML);
+          history.replaceState({ page: nextPage }, "", fullUrl);
           currentPage = nextPage;
 
           if (nextPage === lastPage) {
@@ -56,6 +57,7 @@ export default function (Alpine: AlpineType) {
         }
 
         isPaginating = false;
+        el.ariaBusy = "0";
       };
 
       el.addEventListener("click", onClick);
@@ -64,9 +66,9 @@ export default function (Alpine: AlpineType) {
         el.removeEventListener("click", onClick);
         isPaginating = false;
         currentPage = parseInt(
-          new URLSearchParams(window.location.search).get("page") || "1"
+          new URLSearchParams(window.location.search).get("page") || "1",
         );
       });
-    }
+    },
   );
 }

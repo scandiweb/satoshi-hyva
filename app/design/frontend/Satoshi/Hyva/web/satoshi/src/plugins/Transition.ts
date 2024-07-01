@@ -1,31 +1,38 @@
 import type { Alpine as AlpineType } from "alpinejs";
 import { freezeScroll, unfreezeScroll } from "../utils/scroll2";
 import { doElementTransitionFromSrcToDest } from "../utils/element-transition";
-import { replacePage } from "../utils/morph";
+import { replaceElement } from "../utils/morph";
 import nProgress from "nprogress";
+
+nProgress.configure({ showSpinner: false });
+
+let lastMainContentUpdateUrl = window.location.href;
+const cachedResponses: Record<string, string> = {};
+
+export const isExternalURL = (url: string) => {
+  if (url.startsWith("//")) {
+    return new URL(location.protocol + url).origin !== location.origin;
+  }
+
+  if (url.includes("://")) {
+    return new URL(url).origin !== location.origin;
+  }
+
+  return false;
+};
 
 export type TransitionStoreType = {
   isTransitioning: boolean;
   pageData: Record<string, any> | undefined;
   pageType: string | undefined;
   isAnimating: Boolean;
-  _registerSrcElement: (
-    id: string,
-    areaId: string,
-    element: HTMLElement
-  ) => void;
-  _unregisterSrcElement: (id: string, areaId: string) => void;
-  _registerDestElement: (id: string, element: HTMLElement) => void;
-  _unregisterDestElement: (id: string) => void;
-  _registerTemplateElement: (type: string, element: HTMLElement) => void;
-  _unregisterTemplateElement: (type: string) => void;
+  isPreviewAnimating: Boolean;
+  originalFocusableEl?: HTMLElement | null;
   _doTransition: (areaId: string, callback: () => void) => Promise<void>;
-  _showTransitionFallback: () => void;
+  _showTransitionFallback: (isPreview: boolean) => void;
   _clearFallback: () => void;
   __activeTransitionAreaRef: string | null;
-  __transitionAreaSrcElementsRef: Record<string, Record<string, HTMLElement>>;
-  __transitionDestElementsRef: Record<string, HTMLElement>;
-  __transitionTemplateElementsRef: Record<string, HTMLElement>;
+  isPreviewActive: boolean;
 };
 
 const TransitionStore = <TransitionStoreType>{
@@ -33,54 +40,23 @@ const TransitionStore = <TransitionStoreType>{
   pageData: undefined,
   pageType: undefined,
   isAnimating: false,
+  isPreviewAnimating: false,
+  originalFocusableEl: null,
   __activeTransitionAreaRef: null,
-  __transitionAreaSrcElementsRef: {},
-  __transitionDestElementsRef: {},
-  __transitionTemplateElementsRef: {},
-
-  _registerSrcElement(id, areaId, element) {
-    if (!this.__transitionAreaSrcElementsRef[areaId]) {
-      this.__transitionAreaSrcElementsRef[areaId] = {};
-    }
-
-    this.__transitionAreaSrcElementsRef[areaId][id] = element;
-  },
-
-  _unregisterSrcElement(id, areaId) {
-    if (!this.__transitionAreaSrcElementsRef[areaId]) {
-      return;
-    }
-
-    if (this.__activeTransitionAreaRef === areaId) {
-      return;
-    }
-
-    delete this.__transitionAreaSrcElementsRef[areaId][id];
-
-    if (Object.keys(this.__transitionAreaSrcElementsRef[areaId]).length === 0) {
-      delete this.__transitionAreaSrcElementsRef[areaId];
-    }
-  },
-
-  _registerDestElement(id, element) {
-    this.__transitionDestElementsRef[id] = element;
-  },
-
-  _unregisterDestElement(id) {
-    delete this.__transitionDestElementsRef[id];
-  },
-
-  _registerTemplateElement(type, element) {
-    this.__transitionTemplateElementsRef[type] = element;
-  },
-
-  _unregisterTemplateElement(type) {
-    delete this.__transitionTemplateElementsRef[type];
-  },
+  isPreviewActive: false,
 
   async _doTransition(areaId, callback) {
+    if (
+      !Alpine.store("main").isMobile ||
+      Alpine.store("main").isReducedMotion
+    ) {
+      // DO NOT Animate on desktop or if user prefers reduced motion.
+      callback();
+      return;
+    }
+
     const transitionContainerRef = document.querySelector(
-      "[x-element-transition-wrapper]"
+      "[x-element-transition-wrapper]",
     ) as HTMLElement;
 
     if (!transitionContainerRef) {
@@ -92,9 +68,26 @@ const TransitionStore = <TransitionStoreType>{
 
     this.__activeTransitionAreaRef = areaId;
 
-    const srcElements = this.__transitionAreaSrcElementsRef[areaId];
+    const areaElement = document.querySelector(
+      `[x-element-transition-area="${areaId}"]`,
+    );
 
-    if (!srcElements) {
+    if (!areaElement) {
+      return;
+    }
+
+    const srcElements = Object.fromEntries(
+      [
+        ...(areaElement.querySelectorAll(
+          "[x-element-transition-src]",
+        ) as NodeListOf<HTMLElement>),
+      ].map((srcElement) => [
+        srcElement.getAttribute("x-element-transition-src")!,
+        srcElement,
+      ]),
+    );
+
+    if (!srcElements || Object.entries(srcElements).length === 0) {
       return;
     }
 
@@ -106,33 +99,36 @@ const TransitionStore = <TransitionStoreType>{
         () => {
           resolve();
         },
-        { once: true }
+        { once: true },
       );
     });
+
+    const currentPage = window.location.href;
 
     const animationPromise = Promise.all(
       Object.entries(srcElements).map(([key, srcElem]) =>
         doElementTransitionFromSrcToDest({
           srcElem,
           destElementCallback: () => {
-            const destEl = this.__transitionDestElementsRef[key];
-            const destTargetEl = destEl?.querySelector(key);
-
-            if (
-              !destEl ||
-              !destTargetEl ||
-              (destTargetEl instanceof HTMLImageElement &&
-                !destTargetEl.complete)
-            ) {
+            if (currentPage === window.location.href) {
+              // wait until page changes
               return null;
             }
 
-            return this.__transitionDestElementsRef[key];
+            const destEl = document.querySelector(
+              `[x-element-transition-dest="${key}"]`,
+            ) as HTMLElement | null;
+
+            if (!destEl) {
+              return null;
+            }
+
+            return destEl;
           },
           transitionContainer: transitionContainerRef,
           isCopyCssProperties: true,
-        })
-      )
+        }),
+      ),
     );
 
     await new Promise<void>((resolve) => {
@@ -141,7 +137,7 @@ const TransitionStore = <TransitionStoreType>{
         () => {
           resolve();
         },
-        { once: true }
+        { once: true },
       );
     });
 
@@ -158,7 +154,7 @@ const TransitionStore = <TransitionStoreType>{
         () => {
           resolve();
         },
-        { once: true }
+        { once: true },
       );
     });
 
@@ -168,7 +164,7 @@ const TransitionStore = <TransitionStoreType>{
         () => {
           resolve();
         },
-        { once: true }
+        { once: true },
       );
     });
 
@@ -183,39 +179,256 @@ const TransitionStore = <TransitionStoreType>{
     unfreezeScroll();
   },
 
-  _showTransitionFallback() {
-    const template = this.__transitionTemplateElementsRef[this.pageType!];
-    const content = template.innerHTML;
-    const el = document.getElementById("MainContent");
+  _showTransitionFallback(isPreview: boolean) {
+    const target = isPreview
+      ? document.getElementById("PreviewContent")
+      : document.getElementById("MainContent");
 
-    if (el) {
-      el.innerHTML = content;
+    const template = document.querySelector(
+      `[x-fallback-template-type="${this.pageType!}"]`,
+    );
+
+    if (!template) {
+      return;
+    }
+
+    const content = template.innerHTML;
+
+    if (target) {
+      target.innerHTML = content;
+    }
+
+    if (!isPreview) {
+      window.scrollTo(0, 0);
     }
   },
 
   _clearFallback() {
     this.pageType = undefined;
-    this.pageData = undefined;
+    // this.pageData = undefined;
   },
 };
 
-const replaceMainContent = (rawContent: string) => {
-  const regex = /<!-- main-content -->([\s\S]*?)<!-- end-main-content -->/g;
-  const el = document.getElementById("MainContent");
+const replaceMeta = (rawContent: string) => {
+  const regex = /<!-- page-meta -->([\s\S]*?)<!-- end-page-meta -->/;
   const content = rawContent.match(regex);
   const newContent = content ? content[0] : "";
 
-  replacePage(el, newContent);
+  if (!newContent) {
+    return;
+  }
+
+  const metaNodes = [];
+
+  // get nodes between comments in document.head.childNodes
+  let foundStart = false;
+  let foundEnd = false;
+  let endComment: Comment | null = null;
+
+  for (let i = 0; i < document.head.childNodes.length; i++) {
+    const node = document.head.childNodes[i];
+
+    if (node.nodeType === 8) {
+      if (node.nodeValue === " page-meta ") {
+        foundStart = true;
+        continue;
+      }
+
+      if (node.nodeValue === " end-page-meta ") {
+        endComment = node as Comment;
+        foundEnd = true;
+        break;
+      }
+    }
+
+    if (foundStart && !foundEnd) {
+      metaNodes.push(node);
+    }
+  }
+
+  if (!endComment) {
+    return;
+  }
+
+  // remove existing meta nodes
+  metaNodes.forEach((node) => node.remove());
+
+  // prepare for parsing
+  const newMetaContent = newContent
+    .replace("<!-- page-meta -->", "<head>")
+    .replace("<!-- end-page-meta -->", "</head>");
+
+  // add new meta nodes
+  const parser = new DOMParser();
+  const newMetaNodes = parser.parseFromString(newMetaContent, "text/html");
+
+  [...newMetaNodes.head.childNodes].forEach((node) => {
+    document.head.insertBefore(node, endComment);
+  });
 };
 
-const fetchPage = (url: string) => {
+export const morphContent = (
+  rawContent: string,
+  lookup: string,
+  target: HTMLElement,
+) => {
+  const regex = new RegExp(
+    `<!-- ${lookup} -->([\\s\\S]*?)<!-- end-${lookup} -->`,
+    "g",
+  );
+  const content = rawContent.match(regex);
+  const newContent = content ? content[0] : "";
+  replaceElement(target, newContent);
+};
+
+export const replaceContent = (
+  rawContent: string,
+  lookup: string,
+  target: HTMLElement,
+) => {
+  const regex = new RegExp(
+    `<!-- ${lookup} -->([\\s\\S]*?)<!-- end-${lookup} -->`,
+    "g",
+  );
+  const content = rawContent.match(regex);
+  const newContent = content ? content[0] : "";
+  target.innerHTML = newContent;
+};
+
+const replaceMainContent = (rawContent: string) => {
+  lastMainContentUpdateUrl = window.location.href;
+  replaceMeta(rawContent);
+  return morphContent(
+    rawContent,
+    "main-content",
+    document.getElementById("MainContent")!,
+  );
+};
+
+const replacePreviewContent = (rawContent: string) => {
+  // TODO: use section_id when fetching page ...
+  replaceMeta(rawContent);
+  return replaceContent(
+    rawContent,
+    "preview-content",
+    document.getElementById("PreviewContent")!,
+  );
+};
+
+const pushStateAndNotify = (...args: Parameters<History["pushState"]>) => {
+  history.pushState(...args);
+
+  const pushStateEvent = new CustomEvent("pushstate", {
+    detail: {
+      state: args[0],
+      url: args[2],
+    },
+  });
+
+  window.dispatchEvent(pushStateEvent);
+};
+
+export const fetchPage = (url: string) => {
+  // Disable un-fade images (Added here to work with popstate & history.replace)
+  enableFadeInImages();
+
   return fetch(url).then((res) => {
-    if (res.ok) {
+    if (res.ok || res.status === 404) {
       return res.text();
     }
 
     throw new Error("Failed to get page for transition");
   });
+};
+
+export const enableFadeInImages = () => {
+  // Disable un-fade images
+  document.body.classList.remove("[&_.no-fade]:opacity-100");
+  document.body.classList.remove(
+    "max-md:[&_.card-product:nth-child(-n+2)_.no-fade]:opacity-100",
+  );
+  document.body.classList.remove("md:[&_.card-product_.no-fade]:opacity-100");
+};
+
+export const cachePage = (url: string, html: string) => {
+  cachedResponses[url!] = html;
+};
+
+export const fetchAndCachePage = async (url: string) => {
+  const html = await fetchPage(url);
+  cachePage(url, html);
+
+  return html;
+};
+
+export const navigateWithTransition = (
+  nextUrl: string,
+  options: {
+    preview?: boolean;
+    animate?: boolean;
+    type?: string;
+    data?: Record<string, any>;
+    areaId?: string;
+    target?: HTMLElement | null;
+  } = {},
+) => {
+  Alpine.store("transition").isAnimating = false;
+  Alpine.store("transition").isPreviewAnimating = false;
+
+  const currentUrl = window.location.pathname + window.location.search;
+  const scrollPosition = window.scrollY;
+
+  if (currentUrl === nextUrl) {
+    Alpine.store("popup").hideAllPopups();
+    Alpine.store("resizable").hideAll();
+    window.scrollTo(0, 0);
+    return;
+  }
+
+  nProgress.start();
+
+  const isPreview = !!options.preview && !Alpine.store("main").isMobile;
+
+  const isAnimating = !!options.animate;
+
+  const navigate = async () => {
+    if (options.type && options.data) {
+      if (isPreview) {
+        Alpine.store("transition").isPreviewAnimating = isAnimating;
+        Alpine.store("transition").originalFocusableEl = options.target;
+      } else {
+        Alpine.store("transition").isAnimating = isAnimating;
+      }
+
+      Alpine.store("transition").pageType = options.type;
+      Alpine.store("transition").pageData = options.data;
+      Alpine.store("transition")._showTransitionFallback(isPreview);
+    }
+
+    Alpine.nextTick(async () => {
+      Alpine.store("popup").hideAllPopups();
+      Alpine.store("resizable").hideAll();
+      history.replaceState({ ...history.state, scrollPosition }, "");
+      pushStateAndNotify({ isPreview }, "", nextUrl!);
+      const html = await fetchAndCachePage(nextUrl!);
+
+      if (isPreview) {
+        replacePreviewContent(html);
+      } else {
+        replaceMainContent(html);
+        window.scrollTo(0, 0);
+      }
+
+      Alpine.store("transition")._clearFallback();
+      nProgress.done();
+    });
+  };
+
+  if (options.areaId) {
+    Alpine.store("transition")._doTransition(options.areaId!, navigate);
+  } else {
+    navigate();
+  }
 };
 
 function TransitionPlugin(Alpine: AlpineType) {
@@ -224,55 +437,33 @@ function TransitionPlugin(Alpine: AlpineType) {
   Alpine.directive(
     "element-transition-trigger",
     (el, { value, modifiers, expression }, { evaluate, cleanup }) => {
+      if (modifiers.includes("desktop") && Alpine.store("main").isMobile) {
+        return;
+      }
+
       const transitionAreaEl = el.closest("[x-element-transition-area]");
       const areaId = transitionAreaEl
         ? transitionAreaEl.getAttribute("x-element-transition-area")
         : null;
 
       const onClick = (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        Alpine.store("transition").isAnimating = false;
-        nProgress.configure({ showSpinner: false });
-        nProgress.start();
+        const link = el.getAttribute("href");
 
-        const currentUrl = window.location.pathname + window.location.search;
-        const nextUrl = el.getAttribute("href");
-
-        if (currentUrl === nextUrl) {
-          Alpine.store("popup").hideAllPopups();
-          Alpine.store("resizable").hideAll();
-          window.scrollTo(0, 0);
+        if (!link || isExternalURL(link)) {
           return;
         }
 
-        const navigate = async () => {
-          if (value && expression) {
-            Alpine.store("transition").isAnimating =
-              modifiers.includes("animate");
-            Alpine.store("transition").pageType = value;
-            Alpine.store("transition").pageData = evaluate(expression);
-            Alpine.store("transition")._showTransitionFallback();
-          }
+        e.preventDefault();
+        e.stopPropagation();
 
-          Alpine.nextTick(async () => {
-            Alpine.store("popup").hideAllPopups();
-            Alpine.store("resizable").hideAll();
-            history.pushState({}, "", nextUrl!);
-            const nextPage = fetchPage(nextUrl!);
-            const html = await nextPage;
-            replaceMainContent(html);
-            window.scrollTo(0, 0);
-            Alpine.store("transition")._clearFallback();
-            nProgress.done();
-          });
-        };
-
-        if (areaId) {
-          Alpine.store("transition")._doTransition(areaId!, navigate);
-        } else {
-          navigate();
-        }
+        navigateWithTransition(link || "", {
+          preview: modifiers.includes("preview"),
+          animate: modifiers.includes("animate"),
+          type: value,
+          data: expression ? evaluate(expression) : undefined,
+          areaId: areaId || undefined,
+          target: e.target as HTMLElement,
+        });
       };
 
       el.addEventListener("click", onClick);
@@ -280,103 +471,80 @@ function TransitionPlugin(Alpine: AlpineType) {
       cleanup(() => {
         el.removeEventListener("click", onClick);
       });
-    }
+    },
   );
 
-  window.addEventListener("popstate", async ({ state }) => {
-    const { productHandle, fallBackData } = state || {};
+  let lastPopStateUrl = window.location.href;
 
-    if (
-      Alpine.store("popupProductDetails")._currentProductHandle &&
-      productHandle
-    ) {
-      Alpine.store("popupProductDetails").show(
-        productHandle,
-        fallBackData,
-        true
-      );
+  window.addEventListener("popstate", async (event) => {
+    Alpine.store("transition").isAnimating = false;
+    Alpine.store("transition").isPreviewAnimating = false;
 
-      // vvv It's just popup state so lets not fetch any pages again.
+    history.scrollRestoration = "manual";
+
+    if (window.location.href === lastMainContentUpdateUrl) {
+      // skip unnecessary fetch
       return;
     }
 
-    // An edge case for product popup that need to go 1 more step back to prevent blank step back
-    if (
-      !Alpine.store("popupProductDetails")._currentProductHandle &&
-      Alpine.store("popupProductDetails")._initialLoadedPopupLevel === 1
-    ) {
-      Alpine.store("popupProductDetails")._initialLoadedPopupLevel = 0;
-      history.go(-1);
+    const currentPopStateUrl = window.location.href;
+    lastPopStateUrl = window.location.href;
 
-      return;
-    }
-
-    if (
-      productHandle &&
-      !Alpine.store("popupProductDetails")._currentProductHandle
-    ) {
-      history.replaceState({}, "", `/products/${productHandle}`);
-    }
-
-    const html = await fetchPage(
-      window.location.pathname + window.location.search
-    );
-
-    replaceMainContent(html);
     Alpine.store("popup").hideAllPopups();
     Alpine.store("resizable").hideAll();
-    Alpine.store("popupProductDetails").hide();
-  });
 
-  Alpine.directive(
-    "element-transition-src",
-    (el, { expression: transitionElementId }, { cleanup }) => {
-      const transitionAreaEl = el.closest("[x-element-transition-area]");
+    nProgress.start();
 
-      if (!transitionAreaEl) {
-        return;
+    const { pathname, search } = new URL(window.location.href);
+    const cachedHtml = cachedResponses[pathname + search];
+
+    if (cachedHtml) {
+      if (event.state?.isPreview) {
+        replacePreviewContent(cachedHtml);
+      } else {
+        replaceMainContent(cachedHtml);
+
+        if (event.state?.scrollPosition) {
+          window.scrollTo({
+            top: event.state.scrollPosition,
+            behavior: "instant",
+          });
+        }
       }
 
-      const areaId = transitionAreaEl!.getAttribute(
-        "x-element-transition-area"
-      );
-
-      Alpine.store("transition")._registerSrcElement(
-        transitionElementId,
-        areaId!,
-        el
-      );
-
-      cleanup(() => {
-        Alpine.store("transition")._unregisterSrcElement(
-          transitionElementId,
-          areaId!
-        );
-      });
+      nProgress.done();
+      return;
     }
-  );
 
-  Alpine.directive(
-    "element-transition-dest",
-    (el, { expression: transitionElementId }, { cleanup }) => {
-      Alpine.store("transition")._registerDestElement(transitionElementId, el);
-
-      cleanup(() => {
-        Alpine.store("transition")._unregisterDestElement(transitionElementId);
-      });
+    if (lastPopStateUrl !== currentPopStateUrl) {
+      // if there was another popstate, exit early
+      return;
     }
-  );
 
-  Alpine.directive(
-    "fallback-template-type",
-    (el, { expression: pageType }, { cleanup }) => {
-      Alpine.store("transition")._registerTemplateElement(pageType, el);
+    const html = await fetchAndCachePage(
+      window.location.pathname + window.location.search,
+    );
 
-      cleanup(() => {
-        Alpine.store("transition")._unregisterTemplateElement(pageType);
-      });
+    if (lastPopStateUrl !== currentPopStateUrl) {
+      // if there was another popstate, exit early
+      return;
     }
-  );
+
+    if (event.state?.isPreview) {
+      replacePreviewContent(html);
+    } else {
+      replaceMainContent(html);
+
+      if (event.state?.scrollPosition) {
+        window.scrollTo({
+          top: event.state.scrollPosition,
+          behavior: "instant",
+        });
+      }
+    }
+
+    nProgress.done();
+  });
 }
 
 export default TransitionPlugin;

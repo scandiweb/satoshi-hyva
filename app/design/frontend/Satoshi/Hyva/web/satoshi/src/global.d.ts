@@ -3,7 +3,7 @@ import { PopupStoreType } from "./store/Popup";
 import { TransitionStoreType } from "./plugins/Transition";
 import { MainStoreType } from "./store/Main";
 import { ResizableStoreType } from "./store/Resizable";
-import { PopupProductDetailsStoreType } from "./store/PopupProductDetails";
+import { CartStoreType } from "./store/Cart";
 
 declare global {
   var Alpine: AlpineType;
@@ -17,8 +17,16 @@ declare global {
       routes: {
         root: string;
       };
+      cdnHost: string;
+      PaymentButton: {
+        init: function;
+      };
+      loadFeatures: function;
     };
-    BASE_URL: string;
+    ShopifyXR?: {
+      addModels: function;
+      setupXRElements: function;
+    };
   }
 }
 
@@ -26,8 +34,12 @@ declare module "alpinejs" {
   interface Stores {
     popup: PopupStoreType;
     resizable: ResizableStoreType;
-    popupProductDetails: PopupProductDetailsStoreType;
     main: MainStoreType;
     transition: TransitionStoreType;
+    cart: CartStoreType;
+  }
+
+  interface XAttributes {
+    _x_visible: boolean;
   }
 }
