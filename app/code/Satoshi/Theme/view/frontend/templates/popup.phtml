@@ -11,7 +11,6 @@ $cssClass = $block->getData('cssClass');
 <div
   class="contents"
   x-init="
-    console.log(document.getElementById('<?= $desktopTarget ?>'), '****')
     $store.popup._registerPopup({
       id: '<?= $id ?>',
       isFocused: <?=  $isFocused ? 'true' : 'false' ?>,
