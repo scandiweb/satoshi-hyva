@@ -42,9 +42,7 @@ export const Accordion = (isExpanded: unknown = false, duration: unknown = 0) =>
       }
 
       if (this._panelRef) {
-        this._panelRef.style.transitionProperty = "max-height, opacity";
         this._panelRef.style.transitionDuration = `${this.duration}ms`;
-        this._panelRef.style.overflow = "hidden";
       }
 
       if (this._iconRef) {
@@ -62,7 +60,7 @@ export const Accordion = (isExpanded: unknown = false, duration: unknown = 0) =>
         this._panelRef.style.opacity = this.isExpanded ? "1" : "0";
         const containerMaxheight = this._panelRef.scrollHeight
           ? `${String(this._panelRef.scrollHeight)}px`
-          : "none";
+          : "1000px";
         this._panelRef.style.maxHeight = this.isExpanded
           ? containerMaxheight
           : "0";

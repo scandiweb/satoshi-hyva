@@ -1,7 +1,9 @@
+import { ARROW_DOWN_KEY, ARROW_UP_KEY } from "./keyboard-keys";
 import { isMobile } from "./device";
 
 let globalTargetElement: HTMLElement | null = null;
-let isDocumentFreezed = false;
+
+export let isDocumentFreezed = false;
 
 function onDocumentTouchMove(e: Event) {
   // Allow default functionality of range slider
@@ -18,13 +20,13 @@ function onElementTouchMove(e: Event) {
 }
 
 function onDocumentArrowKeys(e: KeyboardEvent) {
-  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+  if (e.key === ARROW_DOWN_KEY || e.key === ARROW_UP_KEY) {
     e.preventDefault();
   }
 }
 
 function onElementArrowKeys(e: KeyboardEvent) {
-  if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+  if (e.key === ARROW_DOWN_KEY || e.key === ARROW_UP_KEY) {
     e.stopPropagation();
     e.stopImmediatePropagation();
   }
@@ -44,7 +46,7 @@ export const freezeScroll = () => {
       passive: false,
     });
 
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     isDocumentFreezed = true;
   }
@@ -58,7 +60,7 @@ export const makeElementScrollable = (targetElement?: HTMLElement) => {
     globalTargetElement.addEventListener("wheel", onElementTouchMove);
     globalTargetElement.style.setProperty(
       "-webkit-overflow-scrolling",
-      "touch"
+      "touch",
     );
   }
 };
@@ -79,7 +81,7 @@ export const unfreezeScroll = () => {
     document.removeEventListener("touchmove", onDocumentTouchMove);
     document.removeEventListener("wheel", onDocumentTouchMove);
     isDocumentFreezed = false;
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
   }
 
   makeElementNotScrollable();

@@ -1,45 +1,109 @@
 import { Magics } from "alpinejs";
+import { SELECTOR_LIST } from "../plugins/Accessibility";
+
+type SlidesAmountInViewType = {
+  xs: number;
+  sm: number;
+  md: number;
+  lg: number;
+  xl: number;
+  xxl: number;
+};
+
+type SliderConfig = {
+  slidesAmountInView: SlidesAmountInViewType;
+  gap: number;
+  isAutoplay: boolean;
+  autoplaySpeed?: number;
+};
 
 export type SliderType = {
   [key: string | symbol]: any;
 
-  touchStartX: number;
-  touchEndX: number;
   isPrevBtnDisabled: boolean;
   isNextBtnDisabled: boolean;
-  step: number;
-  scrollWidth: number;
-  offsetWidth: number;
+  config: SliderConfig;
+  currentSlideIndex: number;
   resizeObserver: ResizeObserver | null;
+  slideWidth: number | null;
+  autoplayInterval: number | null;
 
+  configureAndStart(config: SliderConfig): void;
+  play(): void;
+  start(): void;
+  debouncedHandleManualScroll: () => void;
+  debounce: (func: Function, wait: number) => (...args: any[]) => void;
   init(): void;
   destroy(): void;
   updateCachedValues(): void;
-  calculateStepSize(): number;
-  scroll(value: number): void;
+  goToSlide(index: number, focus?: boolean): void;
+  showNextSlide(): void;
+  showPrevSlide(): void;
   touchStart(e: any): void;
   touchMove(e: any): void;
-  handleButtonStatus(): void;
+  handleManualScroll(): void;
+  getSlidesAmountInView(): number;
 } & Magics<{}>;
 
-export const Slider = (step: number = 2) =>
+export const Slider = () =>
   <SliderType>{
-    touchStartX: 0,
-    touchEndX: 0,
     isPrevBtnDisabled: true,
     isNextBtnDisabled: false,
-    step,
-    scrollWidth: 0,
-    offsetWidth: 0,
+    currentSlideIndex: 1,
     resizeObserver: null,
+    slideWidth: null,
+    config: {},
+    autoplayInterval: null,
 
-    init() {
-      this.updateCachedValues();
-      this.resizeObserver = new ResizeObserver(() => {
+    debouncedHandleManualScroll: () => {},
+
+    configureAndStart(config) {
+      this.config = config;
+      this.start();
+      this.play();
+    },
+
+    play() {
+      const { isAutoplay, autoplaySpeed = 5000 } = this.config;
+      if (!isAutoplay) {
+        return;
+      }
+
+      if (this.autoplayInterval) {
+        window.clearInterval(this.autoplayInterval);
+      }
+
+      this.autoplayInterval = window.setInterval(() => {
+        if (this.currentSlideIndex < this.$refs.slider.childElementCount) {
+          this.goToSlide(this.currentSlideIndex + 1);
+        } else {
+          this.goToSlide(1);
+        }
+      }, autoplaySpeed);
+    },
+
+    start() {
+      const debouncedResizeHandler = Alpine.debounce(() => {
         this.updateCachedValues();
-        this.handleButtonStatus();
-      });
+        this.handleManualScroll();
+      }, 100);
+
+      this.updateCachedValues();
+      this.resizeObserver = new ResizeObserver(debouncedResizeHandler);
       this.resizeObserver.observe(this.$refs.slider);
+      this.debouncedHandleManualScroll = Alpine.debounce(() => {
+        this.handleManualScroll();
+      }, 100);
+      this.debouncedHandleManualScroll();
+
+      const { gap } = this.config;
+      const proxScrollTarget =
+        (this.currentSlideIndex - 1) * ((this.slideWidth || 1) + gap);
+
+      this.$refs.slider.scrollTo({
+        left: proxScrollTarget,
+        behavior: "smooth",
+      });
     },
 
     destroy() {
@@ -49,59 +113,120 @@ export const Slider = (step: number = 2) =>
     },
 
     updateCachedValues() {
-      this.scrollWidth = this.$refs.slider.scrollWidth;
-      this.offsetWidth = this.$refs.slider.offsetWidth;
+      if (!this.$refs.slider) {
+        return;
+      }
+
+      if (this.$refs.slider.childElementCount) {
+        this.slideWidth = (
+          this.$refs.slider.children[0] as HTMLElement
+        ).offsetWidth;
+      }
     },
 
-    calculateStepSize() {
-      return (
-        (this.scrollWidth / (this.$refs.slider.children?.length || 1)) *
-        this.step
+    goToSlide(index: number, focus: boolean = false) {
+      const { gap } = this.config;
+      const maxIndex = this.$refs.slider.childElementCount;
+      const validIndex = Math.max(1, Math.min(index, maxIndex));
+      const proxScrollTarget =
+        (validIndex - 1) * ((this.slideWidth || 1) + gap);
+
+      this.$refs.slider.scrollTo({
+        left: proxScrollTarget,
+        behavior: Alpine.store("main").isReducedMotion ? "instant" : "smooth",
+      });
+
+      if (focus) {
+        setTimeout(
+          () => {
+            const slide = this.$refs.slider.children[index - 1].querySelector(
+              SELECTOR_LIST,
+            ) as HTMLElement;
+            slide.focus();
+          },
+          Alpine.store("main").isReducedMotion ? 0 : 500,
+        );
+      }
+
+      this.currentSlideIndex = validIndex;
+    },
+
+    showNextSlide() {
+      const nextIndex =
+        this.currentSlideIndex + Math.floor(this.getSlidesAmountInView()) <=
+        this.$refs.slider.childElementCount
+          ? this.currentSlideIndex + Math.floor(this.getSlidesAmountInView())
+          : this.$refs.slider.childElementCount;
+
+      this.goToSlide(nextIndex);
+      this.play();
+    },
+
+    showPrevSlide() {
+      const prevIndex =
+        this.currentSlideIndex - Math.floor(this.getSlidesAmountInView()) >= 1
+          ? this.currentSlideIndex - Math.floor(this.getSlidesAmountInView())
+          : 1;
+
+      this.goToSlide(prevIndex);
+      this.play();
+    },
+
+    handleManualScroll() {
+      if (!this.$refs.slider) {
+        return;
+      }
+
+      const { gap } = this.config;
+      const containerScrollLeft = this.$refs.slider.scrollLeft;
+      // vvv Amount of scrolled over + 1
+      const currentSlideIndex =
+        Math.ceil(containerScrollLeft / ((this.slideWidth || 1) + gap)) + 1;
+
+      this.currentSlideIndex = currentSlideIndex;
+
+      this.isNextBtnDisabled =
+        currentSlideIndex >
+        Math.ceil(
+          this.$refs.slider.childElementCount - this.getSlidesAmountInView(),
+        );
+      this.isPrevBtnDisabled = currentSlideIndex <= 1;
+    },
+
+    getSlidesAmountInView() {
+      const {
+        slidesAmountInView: { xs, sm, md, lg, xl, xxl },
+      } = this.config;
+      const viewWidth = Math.max(
+        document.documentElement.clientWidth || 0,
+        window.innerWidth || 0,
       );
-    },
+      const screenSm = 640;
+      const screenMd = 768;
+      const screenLg = 1024;
+      const screenXl = 1280;
+      const screen2xl = 1536;
 
-    scroll(value) {
-      const maxScroll = this.scrollWidth - this.offsetWidth;
-      const nextScroll =
-        this.$refs.slider.scrollLeft + value * this.calculateStepSize();
-
-      if (nextScroll < 0) {
-        this.$refs.slider.scrollLeft = 0;
-
-        return;
+      if (viewWidth >= screen2xl) {
+        return xxl;
       }
 
-      if (nextScroll > maxScroll) {
-        this.$refs.slider.scrollLeft = maxScroll;
-
-        return;
+      if (viewWidth >= screenXl) {
+        return xl;
       }
 
-      this.$refs.slider.scrollLeft = nextScroll;
-    },
-
-    touchStart(e) {
-      this.touchStartX = e.changedTouches[0].screenX;
-    },
-
-    touchMove(e) {
-      this.touchEndX = e.changedTouches[0].screenX;
-
-      if (this.touchStartX - this.touchEndX > 75) {
-        this.scroll(1);
-
-        return;
+      if (viewWidth >= screenLg) {
+        return lg;
       }
 
-      if (this.touchStartX - this.touchEndX < -75) {
-        this.scroll(-1);
+      if (viewWidth >= screenMd) {
+        return md;
       }
-    },
 
-    handleButtonStatus() {
-      const maxScroll = this.scrollWidth - this.offsetWidth;
+      if (viewWidth >= screenSm) {
+        return sm;
+      }
 
-      this.isNextBtnDisabled = this.$refs.slider.scrollLeft >= maxScroll;
-      this.isPrevBtnDisabled = this.$refs.slider.scrollLeft <= 0;
+      return xs;
     },
   };

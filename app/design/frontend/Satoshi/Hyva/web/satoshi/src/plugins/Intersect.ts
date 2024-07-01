@@ -9,7 +9,7 @@ export default function (Alpine: AlpineType) {
       (
         element,
         { value, expression, modifiers },
-        { evaluateLater, cleanup, effect }
+        { evaluateLater, cleanup, effect },
       ) => {
         // call when the element is intersecting
         const evaluate = evaluateLater(expression);
@@ -31,6 +31,7 @@ export default function (Alpine: AlpineType) {
             }
 
             isVisibleRef = newIsVisible;
+            element._x_visible = newIsVisible;
 
             // Ignore entry if intersecting in leave mode, or not intersecting in enter mode
             if (newIsVisible === (value === "leave")) {
@@ -68,8 +69,8 @@ export default function (Alpine: AlpineType) {
         cleanup(() => {
           observer.disconnect();
         });
-      }
-    )
+      },
+    ),
   );
 }
 

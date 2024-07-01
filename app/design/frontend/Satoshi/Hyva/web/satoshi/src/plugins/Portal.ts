@@ -15,13 +15,13 @@ export default function (Alpine: AlpineType) {
 
   const getAllClones = () => {
     return Array.from(
-      document.querySelectorAll("[data-from-portal]")
+      document.querySelectorAll("[data-from-portal]"),
     ) as ElementWithXAttributes<HTMLElement>[];
   };
 
   const getAllTemplates = () => {
     return Array.from(
-      document.querySelectorAll("[data-portal]")
+      document.querySelectorAll("[data-portal]"),
     ) as ElementWithXAttributes<HTMLTemplateElement>[];
   };
 
@@ -48,7 +48,7 @@ export default function (Alpine: AlpineType) {
   const initClone = (
     clone: ElementWithXAttributes<HTMLElement>,
     targetEl: HTMLElement,
-    templateEl: ElementWithXAttributes<HTMLTemplateElement>
+    templateEl: ElementWithXAttributes<HTMLTemplateElement>,
   ) => {
     try {
       // Add reference to element on <template x-teleport, and visa versa.
@@ -87,7 +87,7 @@ export default function (Alpine: AlpineType) {
   };
 
   const createPortal = (
-    templateEl: ElementWithXAttributes<HTMLTemplateElement>
+    templateEl: ElementWithXAttributes<HTMLTemplateElement>,
   ) => {
     const targetEl = getTarget(templateEl);
 
@@ -104,14 +104,46 @@ export default function (Alpine: AlpineType) {
     initClone(clone, targetEl, templateEl);
   };
 
+  function cloneWithCleanup(originalElement: HTMLElement): HTMLElement {
+    // Function to copy properties starting with "_x_"
+    const doCleanup = (source: HTMLElement) => {
+      const cSource = source as Record<string, any>;
+
+      if (cSource._x_currentIfEl) {
+        // support x-if (cleanup the copied element)
+        cSource._x_currentIfEl.remove();
+      }
+
+      if (cSource._x_lookup) {
+        // support x-for (cleanup the copied elements)
+        Object.values(cSource._x_lookup).forEach((element: any) => {
+          (element as HTMLElement).remove();
+        });
+      }
+    };
+
+    const recursivelyCloneChildren = (originalParent: HTMLElement) => {
+      const originalChildren = originalParent.children;
+
+      for (let i = 0; i < originalChildren.length; i++) {
+        doCleanup(originalChildren[i] as HTMLElement);
+        recursivelyCloneChildren(originalChildren[i] as HTMLElement);
+      }
+    };
+
+    // Start the recursive cloning for child elements
+    recursivelyCloneChildren(originalElement);
+
+    // Clone the element deeply
+    return originalElement.cloneNode(true) as HTMLElement;
+  }
+
   const teleportClone = (
     templateEl: ElementWithXAttributes<HTMLTemplateElement>,
-    oldClone: ElementWithXAttributes<HTMLElement>
+    oldClone: ElementWithXAttributes<HTMLElement>,
   ) => {
     // make a copy of the old clone
-    const newClone = oldClone.cloneNode(
-      true
-    ) as ElementWithXAttributes<HTMLElement>;
+    const newClone = cloneWithCleanup(oldClone);
 
     // simply copy the old node to a new place
     const targetEl = getTarget(templateEl);
@@ -126,7 +158,7 @@ export default function (Alpine: AlpineType) {
       if (templateEl) {
         const newTeleportTarget = Alpine.evaluate(
           templateEl,
-          templateEl.getAttribute("x-portal") || ""
+          templateEl.getAttribute("x-portal") || "",
         );
 
         if (!document.body.contains(templateEl)) {

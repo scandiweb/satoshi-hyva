@@ -1,28 +1,3 @@
-const _handleElementTransition = (from: Node, to: Node) => {
-  if (
-    !(from instanceof Element) ||
-    !from.hasAttribute("x-element-transition-src")
-  ) {
-    return;
-  }
-
-  const id = (to as Element).getAttribute("x-element-transition-src");
-  const areaId = (to as Element)
-    .closest("[x-element-transition-area]")
-    ?.getAttribute("x-element-transition-area");
-
-  if (!id || !areaId) {
-    return;
-  }
-
-  // Re-register elements so that transitions would work after morphing
-  Alpine.store("transition")._registerSrcElement(
-    id,
-    areaId,
-    from as HTMLElement
-  );
-};
-
 const _handleInputValue = (from: Node, to: Node) => {
   if (
     !(from instanceof HTMLInputElement) ||
@@ -56,7 +31,7 @@ const _handleTemplates = (from: Node, to: Node) => {
 export const replaceElement = (
   from: Node | null,
   to: string | Node | null,
-  resetInputValues?: boolean
+  resetInputValues?: boolean,
 ) => {
   if (!from || !to) {
     return;
@@ -65,16 +40,28 @@ export const replaceElement = (
   Alpine.morph(from, to, {
     updating(
       from: Node,
-      _to: Node,
+      to: Node,
       _childrenOnly: VoidFunction,
-      skip: VoidFunction
+      skip: VoidFunction,
     ) {
+      // ignore elements with x-morph-ignore attribute
       if (from instanceof Element && from.hasAttribute("x-morph-ignore")) {
-        return skip();
+        skip();
+        return;
+      }
+
+      // handle images
+      if (from instanceof HTMLImageElement && to instanceof HTMLImageElement) {
+        const fromSrc = from.src.replace(/^https?:\/\//, "//");
+        const toSrc = to.src.replace(/^https?:\/\//, "//");
+
+        if (fromSrc === toSrc && from.complete) {
+          skip();
+          return;
+        }
       }
     },
     updated(from, to) {
-      _handleElementTransition(from, to);
       _handleTemplates(from, to);
 
       if (resetInputValues) {

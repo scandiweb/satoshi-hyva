@@ -1,4 +1,26 @@
 import { ProductListType } from "./ProductList";
+import { formatPrice } from "../utils/price";
+
+export type FilterValueType = {
+  label: string;
+  value: string;
+  param_name: string;
+};
+
+export type FilterType = {
+  type: string;
+  label: string;
+  param_name: string;
+  active_values: FilterValueType[];
+  min_value: FilterValueType;
+  max_value: FilterValueType;
+  values: FilterValueType[];
+};
+
+export type SortOptionType = {
+  value: string;
+  name: string;
+};
 
 type RemovedAttributesType = {
   [key: string]: string;
@@ -11,11 +33,23 @@ export type FiltersType = {
   searchQuery: string;
   isTopLevel: boolean;
   isTopFilterVisible: null | boolean;
+  filters: FilterType[] | [];
+  sortOptions: SortOptionType[] | [];
+  sortBy: string | boolean;
 
   init(): void;
   onResetButtonClick(): void;
   showFilters(isTopLevel?: boolean, currentName?: string): void;
   hideFilters(): void;
+  getPriceFilter(): FilterType;
+  getFormattedMinPrice(): string;
+  getFormattedMaxPrice(): string;
+  resetSelectedFiltersState(): void;
+  setSortBy(value: string): void;
+  getSelectedSortOption(): SortOptionType;
+  getIsFilterValueSelected(param_name: string, value: string): boolean;
+  getIsFilterSelected(param_name: string): boolean;
+  getIsDefault(): boolean;
   updateFilters(removedAttr?: RemovedAttributesType): void;
   removeFilter(name: string, value?: string): void;
   resetCurrent(): void;
@@ -24,7 +58,7 @@ export type FiltersType = {
   _isFilterRemoved(
     key: string,
     value: string,
-    removedAttr: RemovedAttributesType
+    removedAttr: RemovedAttributesType,
   ): boolean;
 } & ProductListType;
 
@@ -33,19 +67,26 @@ const POPUP_BOTTOM_FILTERS = "bottom-filters";
 
 export const FILTER_SORT = "sort_by";
 export const FILTER_PRICE = "Price";
+export const FILTER_PRICE_PARAM_NAME = "filter.v.price";
 export const FILTER_PRICE_MIN = "filter.v.price.gte";
 export const FILTER_PRICE_MAX = "filter.v.price.lte";
 
 export const Filters = (
   defaultSort: string | unknown,
   minPrice: string | unknown,
-  maxPrice: string | unknown
+  maxPrice: string | unknown,
+  currency: string,
 ) =>
   <FiltersType>{
     currentName: "",
     searchQuery: "",
     isTopLevel: true,
     isTopFilterVisible: null,
+    filters: [],
+    sortOptions: [],
+    // If the default sort option is selected, then this.sortBy will be false.
+    // otherwise, this.sortBy will have the string value of the selected sort option.
+    sortBy: false,
 
     init() {
       this.updateFilters = this.updateFilters.bind(this);
@@ -92,7 +133,7 @@ export const Filters = (
     showFilters(isTopLevel = true, currentName = "") {
       this.isTopLevel = isTopLevel;
       this.currentName = currentName;
-      this.$store.popup.showPopup(POPUP_FILTERS);
+      this.$store.popup.showPopup(POPUP_FILTERS, true);
     },
 
     hideFilters() {
@@ -101,8 +142,114 @@ export const Filters = (
       this.currentName = "";
     },
 
+    getPriceFilter() {
+      return this.filters.find((f) => f.param_name === FILTER_PRICE_PARAM_NAME);
+    },
+
+    getFormattedMinPrice() {
+      return formatPrice(
+        parseFloat(this.getPriceFilter().min_value.value),
+        currency,
+      );
+    },
+
+    getFormattedMaxPrice() {
+      return formatPrice(
+        parseFloat(this.getPriceFilter().max_value.value),
+        currency,
+      );
+    },
+
+    // Remove all of the selected filters from this.filters and this.sortBy
+    // This function only changes the state data. so it only affects the UI.
+    resetSelectedFiltersState() {
+      this.filters.forEach((filter: FilterType) => {
+        if (filter.param_name === FILTER_PRICE_PARAM_NAME) {
+          filter.min_value.value = "";
+          filter.max_value.value = "";
+        } else {
+          filter.active_values = [];
+        }
+      });
+
+      this.sortBy = false;
+    },
+
+    setSortBy(value: string) {
+      this.sortBy = value || false;
+
+      if (this.sortBy === defaultSort) {
+        this.sortBy = false;
+      }
+    },
+
+    getSelectedSortOption() {
+      if (this.sortBy) {
+        return this.sortOptions.find((option) => option.value === this.sortBy);
+      } else {
+        return this.sortOptions.find((option) => option.value === defaultSort);
+      }
+    },
+
+    // Determine if a specific filter value is selected or not. For example it can be used to see if a filter checkbox/radio should be checked or not.
+    getIsFilterValueSelected(param_name: string, value: string) {
+      if (param_name === FILTER_SORT) {
+        return this.getSelectedSortOption().value === value;
+      } else {
+        const filter = this.filters.find(
+          (filter) => filter.param_name === param_name,
+        );
+        const activeValue = filter?.active_values.find(
+          (a) => a.value === value,
+        );
+        return Boolean(activeValue);
+      }
+    },
+
+    // Determine if a specific filter is selected or not. For example it can be used to check if "reset" button should be rendered or not.
+    getIsFilterSelected(param_name: string) {
+      if (param_name === FILTER_SORT) {
+        return Boolean(this.sortBy);
+      } else if (param_name === FILTER_PRICE_PARAM_NAME) {
+        const priceFilter = this.getPriceFilter();
+        return (
+          Boolean(priceFilter.min_value.value) ||
+          Boolean(priceFilter.max_value.value)
+        );
+      } else {
+        const filter = this.filters.find(
+          (filter) => filter.param_name === param_name,
+        );
+        return Boolean(filter?.active_values.length);
+      }
+    },
+
+    // If there is no filter selected then isDefault is true otherwise it's false.
+    getIsDefault() {
+      let isDefault = true;
+
+      this.filters.forEach((filter) => {
+        if (filter.param_name === FILTER_PRICE_PARAM_NAME) {
+          if (filter.min_value.value || filter.max_value.value) {
+            isDefault = false;
+          }
+        } else {
+          if (filter.active_values.length) {
+            isDefault = false;
+          }
+        }
+      });
+
+      if (this.sortBy) {
+        isDefault = false;
+      }
+
+      return isDefault;
+    },
+
     updateFilters(removedAttr: RemovedAttributesType = {}) {
-      const formData = new FormData(this.$refs.FilterForm as HTMLFormElement);
+      const form = document.getElementById("FilterForm");
+      const formData = new FormData(form as HTMLFormElement);
       let urlParams = new URLSearchParams(formData as any);
 
       // Remove empty filter values and attributes that equal default value
@@ -135,6 +282,31 @@ export const Filters = (
         return;
       }
 
+      // Remove old selected filters from this.filters and this.sortBy
+      this.resetSelectedFiltersState();
+
+      // Add the new selected filters to this.filters and this.sortBy
+      [...urlParams.entries()].forEach(([key, value]) => {
+        if (key === FILTER_SORT) {
+          this.setSortBy(value);
+        } else if (key === FILTER_PRICE_MIN) {
+          this.getPriceFilter().min_value.value = value;
+        } else if (key === FILTER_PRICE_MAX) {
+          this.getPriceFilter().max_value.value = value;
+        } else {
+          const filter = this.filters.find((f) => f.param_name === key);
+          const label =
+            filter?.values.find(
+              (v) => v.param_name === key && v.value === value,
+            )?.label || "";
+          filter?.active_values.push({
+            label,
+            param_name: key,
+            value,
+          });
+        }
+      });
+
       this._fetchPage(queryString, !!Object.keys(removedAttr).length);
 
       setTimeout(() => {
@@ -150,8 +322,10 @@ export const Filters = (
       this.$dispatch("reset-filters", { name: name });
     },
 
-    resetCurrent() {
-      const filterWrapper = this.$refs[`Filter${this.currentName}`];
+    resetCurrent(filterWrapperId?: string) {
+      const filterWrapper = document.getElementById(
+        filterWrapperId || `filter-${this.currentName.toLowerCase()}`,
+      );
 
       if (!filterWrapper) {
         return;
@@ -168,7 +342,7 @@ export const Filters = (
           ) {
             removedAttr[item.name] = "";
           }
-        }
+        },
       );
 
       if (Object.keys(removedAttr).length) {
@@ -189,7 +363,7 @@ export const Filters = (
     _isFilterRemoved(
       key: string,
       value: string,
-      removedAttr: RemovedAttributesType
+      removedAttr: RemovedAttributesType,
     ) {
       if (!(key in removedAttr)) {
         return false;

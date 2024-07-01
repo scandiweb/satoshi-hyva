@@ -25,7 +25,7 @@ export const RangeSlider = (
   min: number | unknown,
   max: number | unknown,
   minValue: number | unknown,
-  maxValue: number | unknown
+  maxValue: number | unknown,
 ) =>
   <RangeSliderType>{
     isLeftThumbActive: false,
