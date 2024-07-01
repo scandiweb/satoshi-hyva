@@ -124,7 +124,7 @@ h3 {
 }
 
 .disable-fade .faded-img {
-  @apply !opacity-100;
+  @apply opacity-100 #{!important};
 }
 
 @layer components {
