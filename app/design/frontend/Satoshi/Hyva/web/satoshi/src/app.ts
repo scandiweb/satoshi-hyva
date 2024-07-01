@@ -1,5 +1,5 @@
 // import Alpine from "alpinejs";
-import "../css/app.css";
+import "../theme/app.scss";
 
 import persist from "@alpinejs/persist";
 import morph from "@alpinejs/morph";
