@@ -27,27 +27,20 @@ $logoSrc = $logoPathResolver && method_exists($logoPathResolver, 'getLogoSrc')
     ? $logoPathResolver->getLogoSrc($block->getData('logo_file'))
     : $block->getLogoSrc();
 ?>
-<a
-    class="rounded-sm py-2 px-3 text-xl font-bold w-full text-center"
-    x-element-transition-trigger
-    href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
-    aria-label="<?= $escaper->escapeHtmlAttr(__('Go to Home page')) ?>"
->
-    <?php if ($logoSrc): ?>
-        <img
-            src="<?= $escaper->escapeUrl($logoSrc) ?>"
-            alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : __('Store logo')) ?>"
-            <?= $logoWidth
-                ? 'width="' . $escaper->escapeHtmlAttr($logoWidth) . '"'
-                : 'width="100"'
-            ?>
-            <?= $logoHeight
-                ? 'height="' . $escaper->escapeHtmlAttr($logoHeight) . '"'
-                : 'height="150"'
-            ?>
-        />
-    <?php else: ?>
-        <!-- <?= $escaper->escapeHtml($storeName) ?> -->
-        Satoshi theme
-    <?php endif; ?>
-</a>
+<?php if ($logoSrc): ?>
+    <img
+        src="<?= $escaper->escapeUrl($logoSrc) ?>"
+        alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : __('Store logo')) ?>"
+        <?= $logoWidth
+            ? 'width="' . $escaper->escapeHtmlAttr($logoWidth) . '"'
+            : 'width="100"'
+        ?>
+        <?= $logoHeight
+            ? 'height="' . $escaper->escapeHtmlAttr($logoHeight) . '"'
+            : 'height="150"'
+        ?>
+    />
+<?php else: ?>
+    <!-- <?= $escaper->escapeHtml($storeName) ?> -->
+    Satoshi theme
+<?php endif; ?>

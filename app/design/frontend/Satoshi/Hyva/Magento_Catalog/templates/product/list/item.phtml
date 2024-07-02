@@ -45,6 +45,8 @@ $heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
 $productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
 
 $isLarge = $block->getData('isLarge');
+$class = $block->getData('class');
+$isSearchCard = $block->getData('isSearchCard');
 $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $featuredImage = false;
 
@@ -62,21 +64,27 @@ if (!$isAlpineTemplate) {
 <div
     <?php if(!$isAlpineTemplate): ?>
       x-element-transition-area="p-<?= $id ?>"
+      key="<?= $id ?>"
     <?php endif; ?>
-    <?php if($isLarge): ?>
-      class="col-span-2 md:col-auto"
-    <?php endif; ?>
+    class="<?= $class ?> <?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product"
 >
     <a
-      x-element-transition-trigger:product.animate="{'img': '{{ card_product.media[0] | image_url }}'}"
       <?php if($isAlpineTemplate): ?>
-        :href="product.url_key"
+        :href="product.url"
+        x-element-transition-trigger:product<?= $isSearchCard ? '' : '.preview' ?>.animate="
+          {
+            'productImg': product.image,
+            'title': product.title
+          }
+        "
       <?php else: ?>
           href="<?= $escaper->escapeUrl($product->getUrlKey()) ?>"
+          <?php // TODO: Pass product data ?>
+          x-element-transition-trigger:product.preview.animate
       <?php endif; ?>
-      class="flex rounded-md min-w-0 relative"
+      class="group relative flex min-w-0 rounded-md"
     >
-        <div class="w-0 h-0" style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"></div>
+        <div class="h-0 w-0" style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"></div>
         <?= $block->getChildHtml('product.card.details') ?>
     </a>
 </div>

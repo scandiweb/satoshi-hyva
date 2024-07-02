@@ -7,43 +7,56 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 <div>
   <form
-    class="sticky top-0 left-0 w-full bg-fg z-20 px-3 pt-1 md:px-2 md:pt-0 md:w-[500px] md:bg-transparent md:transition-all md:duration-300 md:delay-150 lg:w-[800px] md:rounded-t-md md:border-b-1 md:border-transparent"
+    class="fixed left-0 z-20 w-full bg-fg px-5 md:sticky md:w-[--search-width] md:rounded-t-md md:border-b-1 md:border-transparent md:bg-transparent md:px-2 md:pt-0 md:transition-all md:delay-150 md:duration-300 max-md:top-0 max-md:pb-3 max-md:pt-[18px]"
     role="search"
     :class="
       {
         'md:bg-fg md:border-primary-50': getIsSearchActive(),
         'md:bg-transparent md:border-transparent': !getIsSearchActive(),
+        'md:max-w-24': !$store.resizable.isVisible('search-desktop')
       }
     "
+    <?php // TODO: Replace with magento search url ?>
+    action="/"
+    method="GET"
+    @submit.prevent="goToSearchPage('/')"
   >
-    <div class="flex relative w-full isolate md:items-center md:min-h-[56px]">
+    <div class="relative isolate flex w-full md:min-h-[56px] md:items-center">
+      <label for="searchInput" class="sr-only tracking-widest">
+        <?= __('Search') ?>
+      </label>
       <input
         type="search"
-        placeholder="Search"
-        class="md:order-2 input__field input__field--filled border-transparent pr-11 focus:input__field--outline placeholder:text-gray-500 md:input__field--ghost md:focus:input__field--ghost md:focus:border-transparent md:focus:shadow-none md:focus:outline-0 md:px-2"
+        placeholder="<?= __('Search') ?>"
+        class="input__field input__field--filled focus-visible:input__field--outline md:input__field--ghost md:focus-visible:input__field--ghost border-transparent pr-11 placeholder:text-gray-500 contrast-more:border contrast-more:border-secondary-700 md:order-2 md:px-2 md:focus-visible:border-transparent md:focus-visible:shadow-none md:focus-visible:outline-0"
         x-model="searchTermInput"
         @input.debounce.300ms="setSearchTerm"
+        name="q"
+        id="searchInput"
+        x-ref="searchInput"
+        :tabindex="$store.main.isMobile && $store.popup.currentPopup === 'menu' ? 0 : -1"
       >
       <div
-        class="max-md:icon-button--size-md max-md:px-0 max-md:text-lg max-md:text-secondary-500 max-md:absolute max-md:right-0 max-md:top-0 max-md:flex max-md:items-center max-md:justify-center max-md:z-10 max-md:pointer-events-none md:button md:icon-button md:icon-button--size-lg md:order-1"
+        class="max-md:icon-button--size-md md:button md:icon-button md:icon-button--size-lg contrast-more:text-secondary-700 md:order-1 max-md:pointer-events-none max-md:absolute max-md:right-0 max-md:top-0 max-md:z-10 max-md:flex max-md:items-center max-md:justify-center max-md:px-0 max-md:text-lg max-md:text-secondary-500"
         x-show="!$store.main.isMobile || !searchTerm"
       >
         <?= $hyvaicons->renderHtml('search'); ?>
       </div>
       <button
         type="button"
-        class="icon-button--size-md px-0 text-xxl text-secondary-500 absolute right-0 top-0 bottom-0 flex items-center justify-center z-10 m-auto"
-        aria-label="{{ 'general.search.clear' | t }}"
+        class="icon-button--size-md absolute bottom-0 right-0 top-0 z-10 m-auto flex items-center justify-center px-0 text-xxl text-secondary-500 contrast-more:text-secondary-700"
+        aria-label="<?= __('Clear search') ?>"
         x-show="!!searchTerm"
         @click="resetSearchTerm"
+        :tabindex="$store.resizable.isVisible('search-desktop') ? 0 : -1"
       >
         <?= $hyvaicons->renderHtml('close'); ?>
       </button>
     </div>
   </form>
   <div
-    x-show="getIsSearchActive() && !isLoading"
-    class="flex flex-col gap-3 pt-4 md:top-full md:inset-x-0 md:pt-0 md:rounded-t-none md:before:rounded-none duration-0 md:duration-300 transition-opacity"
+    x-show="getIsSearchActive()"
+    class="flex flex-col gap-3 overflow-x-hidden pt-2 transition-opacity duration-0 md:inset-x-0 md:top-full md:max-h-[calc(100dvh-125px)] md:rounded-t-none md:pt-0 md:duration-300 md:before:rounded-none"
     x-transition:enter="md:delay-450"
     x-transition:enter-start="md:opacity-0"
     x-transition:enter-end="md:opacity-100"
@@ -51,15 +64,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     x-transition:leave-start="md:opacity-100"
     x-transition:leave-end="md:opacity-0"
   >
+    <?php // TODO: Implement search suggestions and categories ?>
     <?= $block->getChildHtml('search.products') ?>
     <div
-      class="md:sticky md:bottom-0 md:w-full md:z-10 md:bg-fg md:px-5 md:pb-5 md:rounded-b-md transition-opacity duration-300"
+      class="transition-opacity duration-300 md:sticky md:bottom-0 md:z-10 md:w-full md:rounded-b-md md:bg-fg md:px-5 md:pb-5"
       id="search-actions"
       x-show="!isLoading"
       x-transition.opacity
       x-transition:leave.duration.300ms
       x-transition:enter.delay.300ms
       :class="{ 'opacity-0': isLoading, 'md:opacity-100': !isLoading}"
-    ></div>
+     ></div>
   </div>
 </div>

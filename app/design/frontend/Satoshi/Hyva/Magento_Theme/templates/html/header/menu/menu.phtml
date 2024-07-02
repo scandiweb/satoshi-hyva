@@ -1,7 +1,8 @@
 <nav
-  class="flex flex-col h-full"
-  aria-label="Main menu and search"
+  class="flex h-full flex-col"
+  aria-label="<?= __('Main menu') ?>"
   x-data="Search"
+  :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'menu' : !$store.resizable.isVisible('menu-desktop')"
 >
   <template x-portal="document.getElementById($store.main.isMobile ? 'search-mobile' : 'search-desktop')">
     <?= $block->getChildHtml('search-field'); ?>
@@ -18,23 +19,15 @@
 
         setTimeout(() => {
           this.delayedLevel = history.length;
+
+          if (history.length) {
+            const level = history[history.length - 1]
+            document.querySelector(`[data-menu-level='${level}'] a`)?.focus();
+          }
         }, 300);
       }
     }"
-    x-show="!getIsSearchActive()"
-    x-init="
-      $watch('$store.popup.currentPopup', (value) => {
-        if (value !== 'menu') {
-          setHistory(['all']);
-        }
-      });
-
-      $watch('$store.resizable._current', (value) => {
-        if (!value['menu-desktop']) {
-          setHistory(['all']);
-        }
-      })
-    "
+    x-show="!$store.main.isMobile || !getIsSearchActive()"
   >
     <?= $block->getChildHtml('menu-items'); ?>
   </div>

@@ -4,6 +4,7 @@ $initialWidth = $block->getData('initialWidth');
 $id = $block->getId();
 $cssClasses = $block->getData('cssClass');
 $isRight = $block->getData('right');
+$onTransitionEnd = $block->getData('onTransitionEnd');
 
 if ($isRight) {
   $cssClasses  = $cssClasses . ' resizable--right';
@@ -43,7 +44,7 @@ if ($isRight) {
         <div
             class="resizable__bg"
             @transitionstart="isTransitioning = true"
-            @transitionend="isTransitioning = false"
+            @transitionend="isTransitioning = false; <?= $onTransitionEnd ?>"
         ></div>
         <div
             @click="$store.resizable.show('<?= $id ?>')"
@@ -52,6 +53,12 @@ if ($isRight) {
         >
             <?= $block->getChildHtml() ?>
         </div>
-        <div id="<?= $id ?>" class="resizable__content resizable__content--portal"></div>
+        <div
+          class="resizable__content resizable__content--portal"
+          x-a11y-trap="$store.resizable._current['<?= $id ?>']"
+        >
+          <div id="<?= $id ?>" class="resizable__scroll" :inert="!$store.resizable._current['<?= $id ?>']"></div>
+          <div id="<?= $id ?>-fixed" class="resizable__fixed"></div>
+        </div>
     </div>
 </div>
