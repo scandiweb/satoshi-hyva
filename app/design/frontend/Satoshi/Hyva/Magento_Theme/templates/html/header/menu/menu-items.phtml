@@ -51,7 +51,7 @@ if (!$menuItems) {
             <?php endif; ?>
             <button
                 @click="history.pop()"
-                aria-label="Go to back to previous menu page"
+                aria-label="<?= __('Go to back to previous menu page') ?>"
                 class="menu__back-button"
                 :class="{'menu__back-button--visible': history.length !== 1}"
                 :tab-index="history.length === 1 ? -1 : 0"

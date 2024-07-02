@@ -21,11 +21,13 @@ $cssClass = $block->getData('cssClass');
   "
 >
   <template x-portal="$store.main.isMobile ? document.getElementById('popup-content-portal') : document.getElementById('<?= $desktopTarget ?>')">
-    <div
-      x-show="$store.main.isMobile ? $store.popup._nextPopup === '<?= $id ?>' : true"
-      class="contents <?= $cssClass ?>"
-    >
+    <template x-if="$store.main.isMobile ? $store.popup._nextPopup === '<?= $id ?>' : true">
+      <div
+        class="contents <?= $cssClass ?>"
+        id="<?= $id ?>"
+      >
         <?= $block->getChildHtml() ?>
-    </div>
+      </div>
+    </template>
   </template>
 </div>

@@ -1,10 +1,10 @@
-<div class="flex flex-col grow gap-4 p-3 pb-2 relative md:p-5 transition-opacity duration-300" :class="{ 'opacity-0': isLoading }">
+<div class="relative flex grow flex-col gap-4 p-3 pb-2 transition-opacity duration-300 md:p-5" :class="{ 'opacity-0': isLoading }">
     <div class="pb-2">
       <h2 class="text-lg"><?= __('Products') ?></h2>
     </div>
-    <div class="flex flex-col gap-2 min-h-11 md:min-h-0">
-      <p x-show="!products.length && searchTerm && !isLoading" class="text-text-100">
-        <b class="text-secondary-700 font-bold"><?= __('Oops!') ?></b>
+    <div class="flex min-h-11 flex-col gap-2 md:min-h-0">
+    <p x-show="!products.length && searchTerm" class="text-text-100 contrast-more:text-secondary-700">
+      <b class="font-bold text-secondary-700"><?= __('Oops!') ?></b>
         <?= __('We could not find any products matching your search.') ?>
       </p>
       <div
@@ -21,14 +21,17 @@
     </div>
     <template x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('search-actions')">
       <div
-        x-show="getIsSearchActive() && products.length"
-        class="relative px-4 pb-2 bg-fg md:p-0 transition-opacity duration-300"
+        x-show="$store.main.isMobile ? $store.popup.currentPopup == 'menu' && getIsSearchActive() && products.length : getIsSearchActive() && products.length"
+        class="relative bg-fg px-4 pb-2 transition-opacity duration-300 md:p-0"
         :class="{ 'opacity-0': isLoading }"
       >
-        <div class="absolute bg-gradient-to-t from-white to-transparent h-10 start-0 end-0 -top-10"></div>
-        <a class="button button--filled-primary w-full"
-          :href="getSearchUrl('{{ routes.search_url }}')"
-          x-element-transition-trigger
+      <div class="absolute -top-10 end-0 start-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
+      <a class="button button--filled-primary w-full"
+          <?php // TODO: Replace with magento search url ?>
+          :href="getSearchUrl('/')"
+          x-element-transition-trigger:search.animate="{
+            search: searchTermInput
+          }"
         >
           <?= __('View all') ?>
         </a>
