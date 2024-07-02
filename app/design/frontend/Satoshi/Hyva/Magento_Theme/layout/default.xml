@@ -45,7 +45,10 @@
                     <argument name="isFullScreen" xsi:type="boolean">true</argument>
                     <argument name="desktopTarget" xsi:type="string">cart-desktop</argument>
                 </arguments>
-                <block name="cart" template="Magento_Theme::html/header/cart/minicart-overlay.phtml" />
+                <block name="cart" template="Magento_Theme::html/header/cart/minicart-overlay.phtml">
+                    <block name="cart-items" template="Magento_Theme::html/header/cart/cart-items.phtml"/>
+                    <block name="cart-totals" template="Magento_Theme::html/header/cart/cart-totals.phtml"/>
+                </block>
             </block>
             <block name="minicart"
                 template="Magento_Theme::html/header/cart/minicart.phtml"

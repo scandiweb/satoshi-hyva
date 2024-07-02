@@ -1,0 +1,179 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+
+/** @var ViewModelRegistry $viewModels */
+/** @var Escaper $escaper */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$is_cart_page = false;
+?>
+
+<?php
+$quantity_controls = <<<HTML
+    <button
+        type="button"
+        class="button button--outline-secondary icon-button icon-button--size-sm bg-white text-secondary-600 transition-opacity duration-300 active:bg-secondary-100"
+        :aria-label="item.qty < 2 ? `{$escaper->escapeHtml(__('Remove from cart'))}` : `{$escaper->escapeHtml(__('Decrease quantity'))}`"
+        @click.prevent.stop="\$store.cart.decreaseQty(item.key);"
+        @transitionend.stop
+        :aria-busy="\$store.cart.isLoading"
+    >
+        <span
+            class="[&_svg]:contrast-more:text-secondary-700"
+            :class="{ 'hidden': item.qty > 1 }"
+            x-show="item.qty < 2"
+        >
+          {$hyvaicons->renderHtml('remove')}
+        </span>
+        <span :class="{ 'hidden': item.qty < 2 }" x-show="item.qty > 1">
+          {$hyvaicons->renderHtml('minus')}
+        </span>
+    </button>
+    <label :for="'quantity_' + item.key" class="sr-only tracking-widest">
+        {$escaper->escapeHtml(__('Quantity'))}
+    </label>
+    <input
+        type="number"
+        name="quantity"
+        class="input__field h-9 min-w-14 basis-14 text-center"
+        min="0"
+        :id="'quantity_' + item.key"
+        x-model="item.qty"
+        @change="\$store.cart.setQty(\$event.target.value, item.key)"
+        aria-label="{$escaper->escapeHtml(__('Quantity'))}"
+        :aria-busy="\$store.cart.isLoading"
+    >
+    <button
+        type="button"
+        class="button button--outline-secondary icon-button icon-button--size-sm bg-white text-secondary-600 transition-opacity duration-300 active:bg-secondary-100"
+        aria-label="{$escaper->escapeHtml(__('Increase'))}"
+        @click.prevent.stop="\$store.cart.increaseQty(item.key)"
+        :aria-busy="\$store.cart.isLoading"
+    >
+        {$hyvaicons->renderHtml('plus')}
+    </button>
+HTML;
+
+?>
+
+<div
+  class="flex flex-col gap-5 overflow-auto md:max-h-[calc(100dvh-255px)] <?= $is_cart_page ? 'flex-1' : 'md:px-4' ?>">
+  <div
+    class="flex flex-col gap-5 md:gap-4 md:pb-3 <?= $is_cart_page ? 'md:grid md:gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4' : 'md:pt-4' ?>">
+    <template x-for="item in cartItems" :key="item.item_id">
+      <div
+        :key="item.item_id"
+        class="max-h-80 <?= $is_cart_page ? 'md:max-h-none' : '' ?> transition-all duration-300"
+        :class="
+          {
+            'opacity-0 -mt-5 md:-mt-4 max-h-0 overflow-hidden': item.isDeleted,
+            'max-h-80': !item.isDeleted,
+            'md:animate-[pop_300ms_1000ms_ease-in-out_forwards] animate-[pop_300ms_400ms_ease-in-out_forwards]': Date.now() < item.focusedUntil
+          }
+        "
+      >
+        <a
+          x-element-transition-trigger:product.animate="
+            {
+              'variantImg': item.product_image.src,
+              'title': item.product_name
+            }
+          "
+          :href="item.product_url"
+          class="grid grid-cols-[94px_1fr] content-center gap-5 rounded-md <?= $is_cart_page ? 'md:flex md:flex-col' : '' ?>"
+        >
+          <div class="relative overflow-hidden rounded-md bg-secondary-100">
+            <template x-if="item.product_image.src">
+              <img
+                :src="item.product_image.src"
+                class="aspect-product h-full w-full object-cover object-center"
+                loading="lazy"
+                width=""
+                height=""
+              >
+            </template>
+
+            <div
+              class="absolute bottom-5 left-1/2 hidden max-w-min -translate-x-1/2 items-center gap-3 <?= $is_cart_page ? 'md:flex' : '' ?>">
+              <?= $quantity_controls ?>
+            </div>
+          </div>
+          <div
+            class="flex min-w-0 flex-col items-stretch justify-center gap-5 text-text-on-fg <?= $is_cart_page ? 'md:gap-0' : '' ?>">
+            <div class="w-full">
+              <h2 class="text-md">
+                <span x-text="item.product_name"></span>
+              </h2>
+              <template x-if="item.options.length">
+                <template x-for="(option, o) in item.options" :key="o">
+                  <p
+                    class="text-md text-text-100 contrast-more:text-secondary-700"
+                    x-text="`${option.label}: ${option.value}`"
+                  ></p>
+                </template>
+              </template>
+              <!-- Gift card recipient email -->
+              <template x-if="false">
+                <p
+                  class="text-md text-text-100 contrast-more:text-secondary-700"
+                  x-text="`{{ 'recipient.form.email_label' | t }}: ${item.properties['Recipient email']}`"
+                ></p>
+              </template>
+
+              <!-- Selling plan -->
+              <template x-if="false">
+                <p
+                  class="mt-2 text-md text-text-100 contrast-more:text-secondary-700"
+                  x-text="item.selling_plan_allocation.selling_plan.name"
+                ></p>
+              </template>
+            </div>
+            <div class="flex flex-wrap items-center justify-between">
+              <div class="flex max-w-min items-center gap-3 <?= $is_cart_page ? 'md:hidden' : '' ?>">
+                <?= $quantity_controls ?>
+              </div>
+              <div
+                class="flex flex-col items-center text-md <?= $is_cart_page ? 'md:items-start md:w-full md:mt-3' : '' ?>">
+                <template x-if="false">
+                  <div class="contents">
+                    <span
+                      class="text-red-700"
+                      x-text="Alpine.store('cart').money(item.product_price_value)"
+                    ></span>
+                    <s x-text="Alpine.store('cart').money(item.product_price_value)"></s>
+                  </div>
+                </template>
+                <template x-if="false">
+                  <span
+                    x-text="Alpine.store('cart').money(item.product_price_value)"></span>
+                </template>
+                <template x-if="item.unit_price">
+                  <div class="text-md text-text-100 contrast-more:text-secondary-700">
+                    <span class="sr-only"><?= __('Unit price') ?></span>
+                    <span>
+                      <span
+                        x-text="Alpine.store('cart').money(item.unit_price)"></span>
+                      <span aria-hidden="true">/</span>
+                      <span class="sr-only">&nbsp;<?= __('per') ?>&nbsp;</span>
+                      <span>
+                        <template x-if="item.unit_price_measurement.reference_value !== 1">
+                          <span x-text="item.unit_price_measurement.reference_value"></span>
+                        </template>
+                        <span x-text="item.unit_price_measurement.reference_unit"></span>
+                      </span>
+                    </span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </template>
+  </div>
+</div>

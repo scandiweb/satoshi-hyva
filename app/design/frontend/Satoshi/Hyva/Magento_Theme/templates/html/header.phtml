@@ -141,6 +141,7 @@ $cartItemsCount = $cart->getCartItemsQty();
                         <button
                             @private-content-loaded.window="(event) => {
                                 if (!\$store.cart.isCartInitialized) {
+                                console.log('xxx items', event.detail.data.cart.items)
                                     \$store.cart.setCartItems(event.detail.data.cart.items);
                                     \$store.cart.isCartInitialized = true;
                                 }

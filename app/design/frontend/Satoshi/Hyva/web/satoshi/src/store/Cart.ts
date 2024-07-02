@@ -15,16 +15,15 @@ export type CartItem = {
   id: number;
   key: string;
   variant_id: number;
-  quantity: number;
+  qty: number;
   image: string;
   title: string;
-  url: string;
-  product_title: string;
+  product_url: string;
+  product_name: string;
   product_has_only_default_variant: Boolean;
   options_with_values: { name: string; value: string }[];
   line_level_discount_allocations: Array<any>;
-  original_price: number;
-  final_price: number;
+  product_price_value: number;
   isDeleted?: Boolean;
   focusedUntil?: number;
   properties: GiftProps;
@@ -37,7 +36,7 @@ export type CartItem = {
 
 export type itemProps = {
   id: number;
-  quantity: number;
+  qty: number;
   properties: GiftProps;
   [key: string]: any;
 };
@@ -61,11 +60,11 @@ export type CartStoreType = {
   focusInCart(key: string): void;
   increaseQty(key: string): void;
   decreaseQty(key: string): void;
-  setQty(quantity: number, key: string): void;
+  setQty(qty: number, key: string): void;
   setDiscounts(discounts: any): void;
   subtotalPrice(): string;
   totalPrice(): string;
-  money(money: number, currency: string): string;
+  money(money: number): string;
   addToCart(itemProps: itemProps): void;
   showCart(): void;
   hideCart(): void;
@@ -163,7 +162,7 @@ export const CartStore = <CartStoreType>{
       return;
     }
 
-    if (cartItem.quantity === 0) {
+    if (cartItem.qty === 0) {
       cartItem.isDeleted = true;
       this.removingItemKey = key;
     }
@@ -201,8 +200,8 @@ export const CartStore = <CartStoreType>{
     const cartItem = this.cartItems.find((item) => item.key === key);
 
     if (cartItem) {
-      cartItem.quantity = Number(cartItem.quantity) + 1;
-      this.updateCartItem(key, cartItem.quantity);
+      cartItem.qty = Number(cartItem.qty) + 1;
+      this.updateCartItem(key, cartItem.qty);
     }
   },
 
@@ -237,18 +236,18 @@ export const CartStore = <CartStoreType>{
     const cartItem = this.cartItems.find((item) => item.key === key);
 
     if (cartItem) {
-      cartItem.quantity = Number(cartItem.quantity) - 1;
+      cartItem.qty = Number(cartItem.qty) - 1;
 
-      this.updateCartItem(key, cartItem.quantity);
+      this.updateCartItem(key, cartItem.qty);
     }
   },
 
-  setQty(quantity, key) {
+  setQty(qty, key) {
     const cartItem = this.cartItems.find((item) => item.key === key);
 
     if (cartItem) {
-      cartItem.quantity = Math.max(0, Number(quantity));
-      this.updateCartItem(key, cartItem.quantity);
+      cartItem.qty = Math.max(0, Number(qty));
+      this.updateCartItem(key, cartItem.qty);
     }
   },
 
@@ -258,15 +257,15 @@ export const CartStore = <CartStoreType>{
 
   subtotalPrice() {
     const subtotalPrice = this.cartItems.reduce(
-      (total, item) => total + item.final_price * item.quantity,
+      (total, item) => total + item.product_price_value * item.qty,
       0,
     );
-    return this.money(subtotalPrice, window.Shopify.currency.active);
+    return this.money(subtotalPrice);
   },
 
   totalPrice() {
     const subtotalPrice = this.cartItems.reduce(
-      (total, item) => total + item.final_price * item.quantity,
+      (total, item) => total + item.product_price_value * item.qty,
       0,
     );
 
@@ -276,18 +275,15 @@ export const CartStore = <CartStoreType>{
     );
 
     return this.money(
-      subtotalPrice - discounts,
-      window.Shopify.currency.active,
+      subtotalPrice
     );
   },
 
-  money(money, currency) {
-    const originalPrice = money / 100;
-    const formattedPrice = originalPrice.toLocaleString("en-US", {
+  money(money) {
+    return new Intl.NumberFormat("en", {
       style: "currency",
-      currency,
-    });
-    return formattedPrice;
+      currency: "USD",
+    }).format(Number(money) || 0);
   },
 
   _updateFocusAnimation() {
