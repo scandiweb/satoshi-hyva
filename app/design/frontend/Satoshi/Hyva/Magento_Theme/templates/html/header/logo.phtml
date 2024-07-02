@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Logo\LogoPathResolver;
 use Magento\Framework\Escaper;
 use Magento\Theme\Block\Html\Header\Logo;
 use Hyva\Theme\ViewModel\Logo\LogoSizeResolver;
@@ -21,7 +22,7 @@ $logoHeight = $logoSizeResolver && $logoSizeResolver->getHeight()
     ? $logoSizeResolver->getHeight()
     : $block->getLogoHeight();
 
-/** @var \Hyva\Theme\ViewModel\Logo\LogoPathResolver $logoPathResolver */
+/** @var LogoPathResolver $logoPathResolver */
 $logoPathResolver = $block->getData('logoPathResolver');
 $logoSrc = $logoPathResolver && method_exists($logoPathResolver, 'getLogoSrc')
     ? $logoPathResolver->getLogoSrc($block->getData('logo_file'))

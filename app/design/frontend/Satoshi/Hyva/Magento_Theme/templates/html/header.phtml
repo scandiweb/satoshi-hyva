@@ -1,8 +1,15 @@
 <?php
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
 use Satoshi\Theme\ViewModel\Cart\Cart;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var Template $block */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
@@ -10,33 +17,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 /** @var Cart $cartItems */
 $cart = $viewModels->require(Cart::class);
 $cartItemsCount = $cart->getCartItemsQty();
-
 ?>
-
-<script>
-    function initHeader () {
-        return {
-            searchOpen: false,
-            cart: {},
-            isMenuVisible: false,
-            isCartVisible: false,
-            getData(data) {
-                const { cart } = data;
-
-                if (!cart) {
-                    return;
-                }
-
-                const { summary_count } = cart;
-
-                Alpine.store('main').totalCartQty = summary_count;
-            },
-            isCartEmpty() {
-                return !this.cart.summary_count
-            },
-        }
-    }
-</script>
 
 <div
   x-intersect:enter="$store.main.isHeaderShadowVisible = false"
@@ -44,25 +25,29 @@ $cartItemsCount = $cart->getCartItemsQty();
 ></div>
 
 <header
-    x-data="initHeader()"
+    x-data="
+    {
+      isMenuVisible: false,
+      isCartVisible: false
+    }
+  "
     x-init="
-        $watch('$store.popup.currentPopup', (value) => {
-            isMenuVisible = value === 'menu';
-            isCartVisible = value === 'cart';
-        })
+    $watch('$store.popup.currentPopup', (value) => {
+      isMenuVisible = value === 'menu';
+      isCartVisible = value === 'cart';
+    })
     "
     class="header sticky left-0 right-0 top-0 z-[36] flex flex-col justify-items-stretch p-3 md:pointer-events-none"
-    @private-content-loaded.window="getData(event.detail.data)"
 >
     <div
         id="header-shadow"
         class="pointer-events-none absolute -top-1 left-0 right-0 -z-10 h-[calc(100%+20px)] -translate-y-full bg-gradient-to-b from-shadow to-transparent transition-transform duration-300 ease-linear will-change-transform md:hidden"
         :class="
-            {
-                'translate-y-0': $store.main.isHeaderShadowVisible,
-                '-translate-y-full': !$store.main.isHeaderShadowVisible,
-            }
-        "
+      {
+        'translate-y-0': $store.main.isHeaderShadowVisible,
+        '-translate-y-full': !$store.main.isHeaderShadowVisible
+      }
+    "
     ></div>
 
     <div
@@ -70,21 +55,144 @@ $cartItemsCount = $cart->getCartItemsQty();
         x-data="{n:0}"
     >
         <div class="md:flex" :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}">
-            <?= $block->getChildHtml('resizable.menu'); ?>
+            <?php $menu = function () use ($hyvaicons, $escaper) {
+                return <<<HTML
+                    <button
+                        x-data
+                        @click="!isMenuVisible ? \$store.popup.showPopup('menu') : \$store.popup.hidePopup('menu')"
+                        type="button"
+                        class="md:button--filled-white button icon-button icon-button--size-lg md:w-auto md:px-4 md:gap-3 md:m-2"
+                    >
+                        <div class="contents" x-show="!isMenuVisible">
+                            {$hyvaicons->renderHtml('menu')}
+                        </div>
+                        <div class="contents" x-show="isMenuVisible" style="display: none;">
+                            {$hyvaicons->renderHtml('close')}
+                        </div>
+                        <span class="text-md font-bold max-md:hidden">{$escaper->escapeHTML(__('Menu'))}</span>
+                    </button>
+                HTML;
+            } ?>
+            <?= $block
+                ->getLayout()
+                ->createBlock(Template::class)
+                ->setTemplate('Satoshi_Theme::resizable.phtml')
+                ->setData([
+                    'id' => 'menu-desktop',
+                    'initialWidth' => 100,
+                    'initialHeight' => 56,
+                    'cssClass' => 'resizable--menu md:pointer-events-auto',
+                    'content' => $menu()
+                ])
+                ->toHtml()
+            ?>
         </div>
 
         <div class="col-start-3 flex items-center justify-center md:hidden">
-            <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>" x-element-transition-trigger class="rounded-sm px-3 py-2 text-xl font-bold" aria-label="<?= __('Go to Home page') ?>">
-                <?= $block->getChildHtml('logo'); ?>
+            <a
+                href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
+                x-element-transition-trigger
+                class="rounded-sm px-3 py-2 text-xl font-bold"
+                aria-label="<?= __('Go to Home page') ?>"
+            >
+                <?= $block->getChildHtml('logo') ?>
             </a>
         </div>
         <div class="contents md:flex md:flex-grow md:justify-end">
             <div
                 class="col-start-5 md:flex md:items-center"
-                :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}"
+                :class="{ 'md:drop-shadow-lg': $store.main.isHeaderShadowVisible }"
             >
-                <?= $block->getChildHtml('resizable.search'); ?>
-                <?= $block->getChildHtml('resizable.minicart'); ?>
+                <?php $search = function () use ($hyvaicons, $escaper) {
+                    return <<<HTML
+                        <button
+                            tabindex="0"
+                            class="md:button--filled-white button ghost-primary icon-button icon-button--size-lg md:m-2 contrast-more:md:border contrast-more:md:border-secondary-700"
+                            aria-label="{$escaper->escapeHtml(__('Open search'))}"
+                            @keydown.space.prevent="\$store.resizable.show('search-desktop')"
+                            @keydown.enter.prevent="\$store.resizable.show('search-desktop')"
+                            x-a11y-trap-element="\$store.transition.isPreviewActive && !\$store.resizable.isVisible()"
+                        >
+                            {$hyvaicons->renderHtml('search')}
+                        </button>
+                    HTML;
+                } ?>
+                <?= $block
+                    ->getLayout()
+                    ->createBlock(Template::class)
+                    ->setTemplate('Satoshi_Theme::resizable.phtml')
+                    ->setData([
+                        'id' => 'search-desktop',
+                        'initialWidth' => 56,
+                        'initialHeight' => 56,
+                        'right' => true,
+                        'cssClass' => 'resizable--search max-md:hidden md:pointer-events-auto',
+                        'content' => $search()
+                    ])
+                    ->toHtml()
+                ?>
+
+                <?php $cart = function () use ($hyvaicons, $escaper, $cartItemsCount) {
+                    $hiddenEmptyIcon = $cartItemsCount > 0 ? 'style="display: none"' : '';
+                    $hiddenCartIcon = $cartItemsCount !== 1 ? 'style="display: none"' : '';
+                    $hiddenCartsIcon = $cartItemsCount < 2 ? 'style="display: none"' : '';
+
+                    return <<<HTML
+                        <button
+                            @private-content-loaded.window="(event) => {
+                                if (!\$store.cart.isCartInitialized) {
+                                    \$store.cart.setCartItems(event.detail.data.cart.items);
+                                    \$store.cart.isCartInitialized = true;
+                                }
+                            }"
+                            class="md:button--filled-white button ghost-primary icon-button icon-button--size-lg col-start-5 md:m-2 contrast-more:md:border contrast-more:md:border-secondary-700"
+                            x-a11y-trap-element="\$store.transition.isPreviewActive && !\$store.resizable.isVisible()"
+                            @click="!isCartVisible ? \$store.cart.showCart() : \$store.cart.hideCart()"
+                            type="button"
+                            aria-label="{$escaper->escapeHtml(__('View shopping cart'))}"
+                            :class="{'hidden': !\$store.main.isMobile &&   \$store.resizable.isVisible('cart-desktop')}"
+                        >
+                            <div class="contents" x-show="!isCartVisible">
+                                <span
+                                    $hiddenEmptyIcon
+                                    x-show="\$store.main.totalCartQty === 0"
+                                >
+                                    {$hyvaicons->renderHtml('cart-empty')}
+                                </span>
+                                <span
+                                    $hiddenCartIcon
+                                    x-show="\$store.main.totalCartQty === 1"
+                                >
+                                    {$hyvaicons->renderHtml('cart')}
+                                </span>
+                                <span
+                                    $hiddenCartsIcon
+                                    x-show="\$store.main.totalCartQty > 1"
+                                    class="-scale-x-100"
+                                >
+                                    {$hyvaicons->renderHtml('carts')}
+                                </span>
+                            </div>
+                            <div class="contents" x-show="isCartVisible" style="display: none;">
+                                {$hyvaicons->renderHtml('close')}
+                            </div>
+                        </button>
+                    HTML;
+                } ?>
+                <?= $block
+                    ->getLayout()
+                    ->createBlock(Template::class)
+                    ->setTemplate('Satoshi_Theme::resizable.phtml')
+                    ->setData([
+                        'id' => 'cart-desktop',
+                        'initialWidth' => 56,
+                        'initialHeight' => 56,
+                        'right' => true,
+                        'cssClass' => 'resizable--cart md:pointer-events-auto',
+                        'content' => $cart()
+                    ])
+                    ->toHtml()
+                ?>
             </div>
         </div>
     </div>
@@ -93,18 +201,18 @@ $cartItemsCount = $cart->getCartItemsQty();
 
 <div class="pointer-events-none sticky top-[88px] z-30 h-[1px] mix-blend-difference contrast-more:mix-blend-normal max-md:hidden">
   <div class="absolute inset-x-0 -top-16 col-start-3 flex items-center justify-center text-white">
-        <a
-            href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
-            x-element-transition-trigger
-            class="pointer-events-auto rounded-sm px-3 py-2 text-xl font-bold contrast-more:flex contrast-more:h-14 contrast-more:items-center contrast-more:border contrast-more:border-secondary-700 contrast-more:bg-fg contrast-more:px-3 contrast-more:text-black"
-            tabindex="3"
-            x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
-            aria-label="<?= __('Go to Home page') ?>"
-        >
-            <?= $block->getChildHtml('logo'); ?>
-        </a>
+      <a
+          href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
+          x-element-transition-trigger
+          class="pointer-events-auto rounded-sm px-3 py-2 text-xl font-bold contrast-more:flex contrast-more:h-14 contrast-more:items-center contrast-more:border contrast-more:border-secondary-700 contrast-more:bg-fg contrast-more:px-3 contrast-more:text-black"
+          tabindex="3"
+          x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
+          aria-label="<?= __('Go to Home page') ?>"
+      >
+          <?= $block->getChildHtml('logo') ?>
+      </a>
   </div>
 </div>
 
-<?= $block->getChildHtml('popup.menu'); ?>
-<?= $block->getChildHtml('popup.cart'); ?>
+<?= $block->getChildHtml('popup.menu') ?>
+<?= $block->getChildHtml('popup.cart') ?>
