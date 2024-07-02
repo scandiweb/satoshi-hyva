@@ -45,7 +45,8 @@
                     <argument name="id" xsi:type="string">cart-desktop</argument>
                     <argument name="initialWidth" xsi:type="number">56</argument>
                     <argument name="initialHeight" xsi:type="number">56</argument>
-                    <argument name="cssClass" xsi:type="string">resizable--cart max-md:hidden md:pointer-events-auto</argument>
+                    <argument name="cssClass" xsi:type="string">resizable--cart md:pointer-events-auto</argument>
+                    <argument name="right" xsi:type="boolean">true</argument>
                 </arguments>
                 <block  name="minicart-desktop" template="Magento_Theme::html/header/cart/minicart-desktop.phtml">
                     <block name="minicart-desktop-button" template="Magento_Theme::html/header/cart/minicart.phtml" />
@@ -71,6 +72,15 @@
                         <block name="search.products" template="Magento_Theme::html/header/search/search-products.phtml" />
                     </block>
                 </block>
+            </block>
+            <block name="popup.cart" template="Satoshi_Theme::popup.phtml">
+                <arguments>
+                    <argument name="id" xsi:type="string">cart</argument>
+                    <argument name="isFocused" xsi:type="boolean">true</argument>
+                    <argument name="isFullScreen" xsi:type="boolean">true</argument>
+                    <argument name="desktopTarget" xsi:type="string">cart-desktop</argument>
+                </arguments>
+                <block name="cart" template="Magento_Theme::html/header/cart/minicart-overlay.phtml" />
             </block>
             <block name="minicart"
                 template="Magento_Theme::html/header/cart/minicart.phtml"
