@@ -12,6 +12,7 @@
         <!-- Attributes in body element which required to show correct color of logo text -->
         <attribute name="class" value="gradient" />
         <attribute name="class" value="bg-fg" />
+        <attribute name="x-data" value="{}" />
 
         <referenceContainer name="main.content"  htmlClass="page-main overflow-x-hidden"/>
         <referenceContainer name="header.container"  htmlClass="page-header contents"/>
