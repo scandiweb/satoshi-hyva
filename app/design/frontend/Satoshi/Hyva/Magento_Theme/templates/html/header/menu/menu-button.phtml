@@ -1,0 +1,23 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+?>
+
+<button @click="!isMenuVisible ? $store.popup.showPopup('menu') : $store.popup.hidePopup('menu')" type="button" class="md:button--filled-white button icon-button icon-button--size-lg md:w-auto md:px-4 md:gap-3 md:m-2">
+  <div class="contents" x-show="!isMenuVisible">
+    <?= $hyvaicons->renderHtml('menu') ?>
+  </div>
+  <div class="contents" x-show="isMenuVisible" style="display: none;">
+    <?= $hyvaicons->renderHtml('close') ?>
+  </div>
+  <span class="text-md font-bold max-md:hidden"><?= $escaper->escapeHTML(__('Menu')) ?></span>
+</button>
