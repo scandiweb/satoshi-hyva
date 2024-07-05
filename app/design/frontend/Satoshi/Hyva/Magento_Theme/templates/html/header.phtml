@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Hyva\Theme\ViewModel\SvgIcons;
@@ -13,96 +14,85 @@ $cartItemsCount = $cart->getCartItemsQty();
 
 ?>
 
-<script>
-    function initHeader () {
-        return {
-            searchOpen: false,
-            cart: {},
-            isMenuVisible: false,
-            isCartVisible: false,
-            getData(data) {
-                const { cart } = data;
-
-                if (!cart) {
-                    return;
-                }
-
-                const { summary_count } = cart;
-
-                Alpine.store('main').totalCartQty = summary_count;
-            },
-            isCartEmpty() {
-                return !this.cart.summary_count
-            },
-        }
-    }
-</script>
-
 <div
   x-intersect:enter="$store.main.isHeaderShadowVisible = false"
   x-intersect:leave="$store.main.isHeaderShadowVisible = true"
 ></div>
 
 <header
-    x-data="initHeader()"
-    x-init="
-        $watch('$store.popup.currentPopup', (value) => {
-            isMenuVisible = value === 'menu';
-            isCartVisible = value === 'cart';
-        })
-    "
-    class="header sticky left-0 right-0 top-0 z-[36] flex flex-col justify-items-stretch p-3 md:pointer-events-none"
-    @private-content-loaded.window="getData(event.detail.data)"
+  x-data="
+    {
+      isMenuVisible: false,
+      isCartVisible: false
+    }
+  "
+  x-init="
+    $watch('$store.popup.currentPopup', (value) => {
+      isMenuVisible = value === 'menu';
+      isCartVisible = value === 'cart';
+    })
+  "
+  class="header sticky left-0 right-0 top-0 z-[36] flex flex-col justify-items-stretch p-3 md:pointer-events-none"
 >
-    <div
-        id="header-shadow"
-        class="pointer-events-none absolute -top-1 left-0 right-0 -z-10 h-[calc(100%+20px)] -translate-y-full bg-gradient-to-b from-shadow to-transparent transition-transform duration-300 ease-linear will-change-transform md:hidden"
-        :class="
-            {
-                'translate-y-0': $store.main.isHeaderShadowVisible,
-                '-translate-y-full': !$store.main.isHeaderShadowVisible,
-            }
-        "
-    ></div>
+  <div
+    id="header-shadow"
+    class="pointer-events-none absolute -top-1 left-0 right-0 -z-10 h-[calc(100%+20px)] -translate-y-full bg-gradient-to-b from-shadow to-transparent transition-transform duration-300 ease-linear will-change-transform md:hidden"
+    :class="
+      {
+        'translate-y-0': $store.main.isHeaderShadowVisible,
+        '-translate-y-full': !$store.main.isHeaderShadowVisible
+      }
+    "
+  ></div>
 
+  <div
+    class="content-wrapper col-start-1 m-auto grid w-full grid-cols-header items-center rounded-md bg-fg py-3 md:flex md:bg-transparent md:px-3 contrast-more:max-md:border contrast-more:max-md:border-secondary-700"
+    x-data="{n:0}"
+  >
     <div
-        class="content-wrapper col-start-1 m-auto grid w-full grid-cols-header items-center rounded-md bg-fg py-3 md:flex md:bg-transparent md:px-3 contrast-more:max-md:border contrast-more:max-md:border-secondary-700"
-        x-data="{n:0}"
+      class="md:flex"
+      :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}"
     >
-        <div class="md:flex" :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}">
-            <?= $block->getChildHtml('resizable.menu'); ?>
-        </div>
-
-        <div class="col-start-3 flex items-center justify-center md:hidden">
-            <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>" x-element-transition-trigger class="rounded-sm px-3 py-2 text-xl font-bold" aria-label="<?= __('Go to Home page') ?>">
-                <?= $block->getChildHtml('logo'); ?>
-            </a>
-        </div>
-        <div class="contents md:flex md:flex-grow md:justify-end">
-            <div
-                class="col-start-5 md:flex md:items-center"
-                :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}"
-            >
-                <?= $block->getChildHtml('resizable.search'); ?>
-                <?= $block->getChildHtml('resizable.minicart'); ?>
-            </div>
-        </div>
+      <?= $block->getChildHtml('resizable.menu'); ?>
     </div>
-    <div id="end-of-header"></div>
+
+    <div class="col-start-3 flex items-center justify-center md:hidden">
+      <a
+        href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
+        x-element-transition-trigger
+        class="rounded-sm px-3 py-2 text-xl font-bold"
+        aria-label="<?= __('Go to Home page') ?>"
+      >
+        <?= $block->getChildHtml('logo') ?>
+      </a>
+    </div>
+    <div class="contents md:flex md:flex-grow md:justify-end">
+      <div
+        class="col-start-5 md:flex md:items-center"
+        :class="{ 'md:drop-shadow-lg': $store.main.isHeaderShadowVisible }"
+      >
+        <?= $block->getChildHtml('resizable.search'); ?>
+        <?= $block->getChildHtml('resizable.minicart'); ?>
+      </div>
+    </div>
+  </div>
+  <div id="end-of-header"></div>
 </header>
 
-<div class="pointer-events-none sticky top-[88px] z-30 h-[1px] mix-blend-difference contrast-more:mix-blend-normal max-md:hidden">
+<div
+  class="pointer-events-none sticky top-[88px] z-30 h-[1px] mix-blend-difference contrast-more:mix-blend-normal max-md:hidden"
+>
   <div class="absolute inset-x-0 -top-16 col-start-3 flex items-center justify-center text-white">
-        <a
-            href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
-            x-element-transition-trigger
-            class="pointer-events-auto rounded-sm px-3 py-2 text-xl font-bold contrast-more:flex contrast-more:h-14 contrast-more:items-center contrast-more:border contrast-more:border-secondary-700 contrast-more:bg-fg contrast-more:px-3 contrast-more:text-black"
-            tabindex="3"
-            x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
-            aria-label="<?= __('Go to Home page') ?>"
-        >
-            <?= $block->getChildHtml('logo'); ?>
-        </a>
+    <a
+      href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
+      x-element-transition-trigger
+      class="pointer-events-auto rounded-sm px-3 py-2 text-xl font-bold contrast-more:flex contrast-more:h-14 contrast-more:items-center contrast-more:border contrast-more:border-secondary-700 contrast-more:bg-fg contrast-more:px-3 contrast-more:text-black"
+      tabindex="3"
+      x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
+      aria-label="<?= __('Go to Home page') ?>"
+    >
+      <?= $block->getChildHtml('logo') ?>
+    </a>
   </div>
 </div>
 
