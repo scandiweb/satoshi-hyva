@@ -1,17 +1,24 @@
-<nav
-  class="flex h-full flex-col"
-  aria-label="<?= __('Main menu') ?>"
-  x-data="Search"
-  :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'menu' : !$store.resizable.isVisible('menu-desktop')"
->
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+?>
+
+<nav class="flex h-full flex-col" aria-label="<?= __('Main menu') ?>" x-data="Search" :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'menu' : !$store.resizable.isVisible('menu-desktop')">
   <template x-portal="document.getElementById($store.main.isMobile ? 'search-mobile' : 'search-desktop')">
-    <?= $block->getChildHtml('search-field'); ?>
+    <?=
+    $block
+      ->getLayout()
+      ->createBlock(Template::class)
+      ->setTemplate('Magento_Theme::html/header/search/search.phtml')
+      ->toHtml();
+    ?>
   </template>
   <div class="contents md:hidden" id="search-mobile"></div>
-  <div
-    id="menu-sections"
-    class="menu__wrapper"
-    x-data="{
+  <div id="menu-sections" class="menu__wrapper" x-data="{
       history: ['all'],
       delayedLevel: 1,
       setHistory(history) {
@@ -26,9 +33,18 @@
           }
         }, 300);
       }
-    }"
-    x-show="!$store.main.isMobile || !getIsSearchActive()"
-  >
-    <?= $block->getChildHtml('menu-items'); ?>
+    }" x-show="!$store.main.isMobile || !getIsSearchActive()">
+    <?=
+    $block
+      ->getLayout()
+      ->createBlock(Template::class)
+      ->setTemplate('Magento_Theme::html/header/menu/menu-items.phtml')
+      ->setData([
+        'id' => 'all',
+        'title' => 'All categories',
+        'path' => 'all'
+      ])
+      ->toHtml();
+    ?>
   </div>
 </nav>

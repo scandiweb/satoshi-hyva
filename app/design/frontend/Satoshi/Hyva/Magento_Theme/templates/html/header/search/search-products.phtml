@@ -1,40 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+
+?>
+
 <div class="relative flex grow flex-col gap-4 p-3 pb-2 transition-opacity duration-300 md:p-5" :class="{ 'opacity-0': isLoading }">
-    <div class="pb-2">
-      <h2 class="text-lg"><?= __('Products') ?></h2>
-    </div>
-    <div class="flex min-h-11 flex-col gap-2 md:min-h-0">
+  <div class="pb-2">
+    <h2 class="text-lg"><?= __('Products') ?></h2>
+  </div>
+  <div class="flex min-h-11 flex-col gap-2 md:min-h-0">
     <p x-show="!products.length && searchTerm" class="text-text-100 contrast-more:text-secondary-700">
       <b class="font-bold text-secondary-700"><?= __('Oops!') ?></b>
-        <?= __('We could not find any products matching your search.') ?>
-      </p>
-      <div
-        x-show="products.length"
-        class="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4"
-        x-transition.opacity
-        x-transition.delay.700ms
-      >
-        <template x-for="product in products" :key="product.id">
-          <?= $block->getChildHtml('search.products.card') ?>
-        </template>
-      </div>
-      <div x-show="products.length" class="min-h-24 md:hidden"></div>
+      <?= __('We could not find any products matching your search.') ?>
+    </p>
+    <div x-show="products.length" class="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4" x-transition.opacity x-transition.delay.700ms>
+      <template x-for="product in products" :key="product.id">
+
+        <?=
+        $block
+          ->getLayout()
+          ->createBlock(Template::class)
+          ->setTemplate('Magento_Catalog::product/list/item.phtml')
+          ->setData([
+            'isAlpineTemplate' => true,
+            'isLarge' => false,
+          ])
+          ->toHtml();
+        ?>
+
+
+      </template>
     </div>
-    <template x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('search-actions')">
-      <div
-        x-show="$store.main.isMobile ? $store.popup.currentPopup == 'menu' && getIsSearchActive() && products.length : getIsSearchActive() && products.length"
-        class="relative bg-fg px-4 pb-2 transition-opacity duration-300 md:p-0"
-        :class="{ 'opacity-0': isLoading }"
-      >
-      <div class="absolute -top-10 end-0 start-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
-      <a class="button button--filled-primary w-full"
-          <?php // TODO: Replace with magento search url ?>
-          :href="getSearchUrl('/')"
-          x-element-transition-trigger:search.animate="{
-            search: searchTermInput
-          }"
-        >
-          <?= __('View all') ?>
-        </a>
-      </div>
-    </template>
+    <div x-show="products.length" class="min-h-24 md:hidden"></div>
   </div>
+  <template x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('search-actions')">
+    <div x-show="$store.main.isMobile ? $store.popup.currentPopup == 'menu' && getIsSearchActive() && products.length : getIsSearchActive() && products.length" class="relative bg-fg px-4 pb-2 transition-opacity duration-300 md:p-0" :class="{ 'opacity-0': isLoading }">
+      <div class="absolute -top-10 end-0 start-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
+      <a class="button button--filled-primary w-full" <?php // TODO: Replace with magento search url 
+                                                      ?> :href="getSearchUrl('/')" x-element-transition-trigger:search.animate="{
+            search: searchTermInput
+          }">
+        <?= __('View all') ?>
+      </a>
+    </div>
+  </template>
+</div>

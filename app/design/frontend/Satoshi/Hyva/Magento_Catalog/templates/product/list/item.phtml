@@ -13,6 +13,7 @@ use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Helper\Output as CatalogOutputHelper;
 use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
 use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
 
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
@@ -61,30 +62,26 @@ if (!$isAlpineTemplate) {
 }
 ?>
 
-<div
-    <?php if(!$isAlpineTemplate): ?>
-      x-element-transition-area="p-<?= $id ?>"
-      key="<?= $id ?>"
-    <?php endif; ?>
-    class="<?= $class ?> <?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product"
->
-    <a
-      <?php if($isAlpineTemplate): ?>
-        :href="product.url"
-        x-element-transition-trigger:product<?= $isSearchCard ? '' : '.preview' ?>.animate="
+<div <?php if (!$isAlpineTemplate) : ?> x-element-transition-area="p-<?= $id ?>" key="<?= $id ?>" <?php endif; ?> class="<?= $class ?> <?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product">
+  <?php // TODO: Pass product data 
+  ?>
+  <a <?php if ($isAlpineTemplate) : ?> :href="product.url" x-element-transition-trigger:product<?= $isSearchCard ? '' : '.preview' ?>.animate="
           {
             'productImg': product.image,
             'title': product.title
           }
-        "
-      <?php else: ?>
-          href="<?= $escaper->escapeUrl($product->getUrlKey()) ?>"
-          <?php // TODO: Pass product data ?>
-          x-element-transition-trigger:product.preview.animate
-      <?php endif; ?>
-      class="group relative flex min-w-0 rounded-md"
-    >
-        <div class="h-0 w-0" style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"></div>
-        <?= $block->getChildHtml('product.card.details') ?>
-    </a>
+        " <?php else : ?> href="<?= $escaper->escapeUrl($product->getUrlKey()) ?>" x-element-transition-trigger:product.preview.animate <?php endif; ?> class="group relative flex min-w-0 rounded-md">
+    <div class="h-0 w-0" style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"></div>
+    <?=
+    $block
+      ->getLayout()
+      ->createBlock(Template::class)
+      ->setTemplate('Magento_Catalog::product/list/item-details-article.phtml')
+      ->setData([
+        'imageLoading' => 'lazy',
+        'isAlpineTemplate' => false
+      ])
+      ->toHtml();
+    ?>
+  </a>
 </div>

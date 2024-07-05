@@ -13,62 +13,13 @@
         <attribute name="class" value="gradient" />
         <attribute name="class" value="bg-fg" />
 
-        <referenceContainer name="main.content"  htmlClass="page-main overflow-x-hidden"/>
-        <referenceContainer name="header.container"  htmlClass="page-header contents"/>
+        <referenceContainer name="main.content" htmlClass="page-main overflow-x-hidden"/>
+        <referenceContainer name="header.container" htmlClass="page-header contents"/>
 
         <referenceBlock name="header-content">
-            <block name="popup.menu" template="Satoshi_Theme::popup.phtml">
-                <arguments>
-                    <argument name="id" xsi:type="string">menu</argument>
-                    <argument name="isFocused" xsi:type="boolean">true</argument>
-                    <argument name="isFullScreen" xsi:type="boolean">true</argument>
-                    <argument name="desktopTarget" xsi:type="string">menu-desktop</argument>
-                </arguments>
-                <block name="menu" template="Magento_Theme::html/header/menu/menu.phtml">
-                    <block name="menu-items" template="Magento_Theme::html/header/menu/menu-items.phtml">
-                        <arguments>
-                            <argument name="id" xsi:type="string">all</argument>
-                            <argument name="title" xsi:type="string">All categories</argument>
-                            <argument name="path" xsi:type="string">all</argument>
-                        </arguments>
-                    </block>
-                    <block name="search-field" template="Magento_Theme::html/header/search/search.phtml">
-                        <block name="search.suggestions" template="Magento_Theme::html/header/search/search-suggestions.phtml" />
-                        <block name="search.products" template="Magento_Theme::html/header/search/search-products.phtml" />
-                    </block>
-                </block>
-            </block>
-            <block name="popup.cart" template="Satoshi_Theme::popup.phtml">
-                <arguments>
-                    <argument name="id" xsi:type="string">cart</argument>
-                    <argument name="isFocused" xsi:type="boolean">true</argument>
-                    <argument name="isFullScreen" xsi:type="boolean">true</argument>
-                    <argument name="desktopTarget" xsi:type="string">cart-desktop</argument>
-                </arguments>
-                <block name="cart" template="Magento_Theme::html/header/cart/minicart-overlay.phtml">
-                    <block name="cart-items" template="Magento_Theme::html/header/cart/cart-items.phtml"/>
-                    <block name="cart-totals" template="Magento_Theme::html/header/cart/cart-totals.phtml"/>
-                </block>
-            </block>
             <block name="minicart"
                 template="Magento_Theme::html/header/cart/minicart.phtml"
             />
-        </referenceBlock>
-
-        <referenceBlock name="search.products">
-            <block name="search.products.card" template="Magento_Catalog::product/list/item.phtml">
-                <arguments>
-                    <argument name="isAlpineTemplate" xsi:type="boolean">true</argument>
-                    <argument name="isLarge" xsi:type="boolean">false</argument>
-                </arguments>
-                <block name="product.card.details" template="Magento_Catalog::product/list/item-details-article.phtml">
-                    <block name="product.card.price" template="Magento_Catalog::product/view/price.phtml">
-                        <arguments>
-                            <argument name="isAlpineTemplate" xsi:type="boolean">true</argument>
-                        </arguments>
-                    </block>
-                </block>
-            </block>
         </referenceBlock>
 
         <!-- Render popup wrapper -->

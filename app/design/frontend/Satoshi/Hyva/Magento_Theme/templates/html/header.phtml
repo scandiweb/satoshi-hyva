@@ -5,6 +5,8 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Popup;
+use Satoshi\Theme\Block\Resizable;
 use Satoshi\Theme\ViewModel\Cart\Cart;
 use Magento\Framework\View\Element\Template;
 
@@ -12,6 +14,7 @@ use Magento\Framework\View\Element\Template;
 /** @var ViewModelRegistry $viewModels */
 /** @var Template $block */
 /** @var Resizable $resizable */
+/** @var Popup $popup */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
@@ -99,5 +102,24 @@ $cartItemsCount = $cart->getCartItemsQty();
   </div>
 </div>
 
-<?= $block->getChildHtml('popup.menu') ?>
-<?= $block->getChildHtml('popup.cart') ?>
+<?= $popup
+  ->setData([
+    'id' => 'menu',
+    'isFocused' => true,
+    'isFullScreen' => true,
+    'desktopTarget' => 'menu-desktop',
+  ])
+  ->setChildTemplate('Magento_Theme::html/header/menu/menu.phtml')
+  ->toHtml()
+?>
+
+<?= $popup
+  ->setData([
+    'id' => 'cart',
+    'isFocused' => true,
+    'isFullScreen' => true,
+    'desktopTarget' => 'cart-desktop',
+  ])
+  ->setChildTemplate('Magento_Theme::html/header/cart/minicart-overlay.phtml')
+  ->toHtml()
+?>
