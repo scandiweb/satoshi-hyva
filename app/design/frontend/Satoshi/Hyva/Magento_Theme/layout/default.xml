@@ -26,9 +26,10 @@
                     <argument name="cssClass" xsi:type="string">resizable--menu md:pointer-events-auto</argument>
                 </arguments>
                 <block name="menu-desktop"
-                    template="Magento_Theme::html/header/menu/menu-desktop.phtml"
+                    template="Magento_Theme::html/header/menu/menu-button.phtml"
                 />
             </block>
+
             <block name="resizable.search" template="Satoshi_Theme::resizable.phtml">
                 <arguments>
                     <argument name="id" xsi:type="string">search-desktop</argument>
@@ -38,7 +39,7 @@
                     <argument name="cssClass" xsi:type="string">resizable--search max-md:hidden md:pointer-events-auto</argument>
                 </arguments>
                 <block name="search-desktop"
-                    template="Magento_Theme::html/header/search/search-desktop.phtml"
+                    template="Magento_Theme::html/header/search/search-button.phtml"
                 />
             </block>
             <block name="resizable.minicart" template="Satoshi_Theme::resizable.phtml">
@@ -49,9 +50,7 @@
                     <argument name="cssClass" xsi:type="string">resizable--cart md:pointer-events-auto</argument>
                     <argument name="right" xsi:type="boolean">true</argument>
                 </arguments>
-                <block  name="minicart-desktop" template="Magento_Theme::html/header/cart/minicart-desktop.phtml">
-                    <block name="minicart-desktop-button" template="Magento_Theme::html/header/cart/minicart.phtml" />
-                </block>
+                <block  name="minicart-desktop" template="Magento_Theme::html/header/cart/minicart-button.phtml" />
             </block>
             <block name="popup.menu" template="Satoshi_Theme::popup.phtml">
                 <arguments>
