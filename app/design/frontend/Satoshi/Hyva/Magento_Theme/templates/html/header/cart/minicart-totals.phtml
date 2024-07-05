@@ -1,0 +1,181 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Satoshi\Theme\ViewModel\Cart\Cart;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var Cart $cartItems */
+$cart = $viewModels->require(Cart::class);
+$cartItemsCount = $cart->getCartItemsQty();
+$is_cart_page = false;
+?>
+<div
+  class="absolute left-0 right-0 top-0 origin-bottom -translate-y-[2.5rem] text-text-on-fg transition-transform duration-700 motion-reduce:transition-none md:mb-0 md:w-full <?= $is_cart_page ? 'md:relative md:translate-y-0 md:pointer-events-auto' : '' ?>"
+  :class="
+  {
+    '-translate-y-full': isTotalsExpanded,
+    '-translate-y-[2.5rem] pointer-events-none': !isTotalsExpanded
+  }
+"
+>
+  <div
+    class="pointer-events-none <?= $is_cart_page ? 'md:hidden' : '' ?> relative top-0 h-10 bg-gradient-to-t from-[#00000010] via-transparent to-transparent"
+  ></div>
+  <div
+    class="flex flex-col gap-4 bg-white <?= $is_cart_page ? 'max-md:px-4 md:pb-4' : 'px-4 pointer-events-none' ?> pt-4 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto"
+    :inert="<?= $is_cart_page ? '$store.main.isMobile && ' : '' ?>!isTotalsExpanded"
+  >
+    <div class="flex items-center justify-between pt-2">
+      <h2><?= __('Order summary') ?></h2>
+      <button
+        type="button"
+        class="button button--outline-secondary icon-button icon-button--size-xs <?= $is_cart_page ? 'md:hidden' : '' ?>"
+        :aria-label="isTotalsExpanded ? `<?= __('Collapse') ?>` : `<?= __('Expand') ?>`"
+        @click="isNoteExpanded = false; isTotalsExpanded = !isTotalsExpanded"
+        @transitionend.stop
+      >
+        <span :class="{ 'rotate-180': isTotalsExpanded }">
+          <?= $hyvaicons->renderHtml('chevron-up') ?>
+        </span>
+      </button>
+    </div>
+    <div class="flex flex-col gap-3 text-text-100 contrast-more:text-secondary-700">
+      <div class="flex justify-between">
+        <p><?= __('Subtotal') ?></p>
+        <p x-text="$store.cart.subtotalPrice()"></p>
+      </div>
+      <?php // TODO: Implement discounts ?>
+      <div
+        class="contents"
+        x-init='$store.cart.setDiscounts([])'
+      >
+        <template x-if="$store.cart.discounts">
+          <template x-for="(discount, i) in $store.cart.discounts">
+            <div
+              class="flex justify-between"
+              :key="`discount-${discount.title}`"
+            >
+              <p x-text="`<?= __('Discount') ?> (${discount.title})`"></p>
+              <p x-text="`-${$store.cart.money(discount.total_allocated_amount)}`"></p>
+            </div>
+          </template>
+        </template>
+      </div>
+    </div>
+    <hr class="divider -mx-4 contrast-more:bg-secondary-700 <?php $is_cart_page ? 'md:hidden' : '' ?>">
+  </div>
+</div>
+
+<div
+  class="absolute left-0 right-0 top-0 origin-bottom -translate-y-[2.5rem] text-text-on-fg transition-transform duration-700 motion-reduce:transition-none md:mb-0 md:w-full <?= $is_cart_page ? 'md:relative md:translate-y-0 md:pointer-events-auto' : '' ?>"
+  :class="
+    {
+      '-translate-y-full': isNoteExpanded,
+      '-translate-y-[2.5rem] pointer-events-none': !isNoteExpanded
+    }
+  "
+>
+  <div
+    class="pointer-events-none <?= $is_cart_page ? 'md:hidden' : '' ?> relative top-0 h-10 bg-gradient-to-t from-[#00000010] via-transparent to-transparent"
+  ></div>
+  <div
+    class="flex flex-col gap-4 bg-white <?= $is_cart_page ? 'max-md:px-4 md:pb-4 md:border-t md:border-b md:-mx-4 md:px-4' : 'px-4 pointer-events-none' ?> pt-4 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto"
+    :inert="<?= $is_cart_page ? '$store.main.isMobile && ' : '' ?>!isNoteExpanded"
+  >
+    <?php if ($is_cart_page) : ?>
+    <h2 class="max-md:hidden"><?= __('Order note') ?></h2>
+    <?php endif; ?>
+    <div class="flex flex-col gap-3 text-text-100 contrast-more:text-secondary-700">
+      <label
+        class="sr-only"
+        for="cart-note"
+      ><?= __('Order special instructions') ?></label>
+      <textarea
+        name="note"
+        form="CartForm"
+        id="cart-note"
+        placeholder="<?= __('Order special instructions') ?>"
+        class="resize-none rounded-sm border px-5 py-4 transition-all duration-1000 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+      ></textarea>
+    </div>
+    <hr class="divider -mx-4 contrast-more:bg-secondary-700 <?= $is_cart_page ? 'md:hidden' : '' ?>">
+  </div>
+</div>
+
+<div
+  class="<?= !$is_cart_page ? 'pointer-events-none' : '' ?> relative -mx-4 rounded-b-md bg-white px-4 text-text-on-fg transition-opacity duration-300 md:pb-4 max-md:px-3 max-md:pb-5 [.popup\_\_main_&]:pb-3 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto "
+  :class="
+      {
+        'opacity-0': isCartEmpty,
+        'opacity-1': !isCartEmpty,
+        'hidden': isRemoveContent
+      }
+    "
+>
+  <div class="flex items-center justify-between overflow-x-hidden bg-fg pt-4 max-md:px-3">
+    <h2><?= __('Order total') ?></h2>
+    <div
+      class="flex translate-x-0 items-center gap-5 transition-transform delay-200 duration-300 motion-reduce:transition-none"
+      :class="
+        {
+          'translate-x-11': isTotalsExpanded,
+          'translate-x-0 delay-200': !isTotalsExpanded,
+        }
+      "
+    >
+      <div>
+        <p
+          class="font-bold"
+          x-text="$store.cart.totalPrice()"
+        ></p>
+      </div>
+
+      <button
+        type="button"
+        class="button button--outline-secondary icon-button icon-button--size-xs <?= $is_cart_page ? 'md:hidden' : '' ?>"
+        :aria-label="isTotalsExpanded ? `<?= __('Collapse') ?>` : `<?= __('Expand') ?>`"
+        @click="isNoteExpanded = false; isTotalsExpanded = !isTotalsExpanded"
+        @transitionend.stop
+      >
+        <span :class="{ 'rotate-180': isTotalsExpanded }">
+          <?= $hyvaicons->renderHtml('chevron-up') ?>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mt-4 flex flex-col gap-4 rounded-b-xl bg-fg max-md:px-3">
+    <div class="flex gap-4">
+      <button
+        type="submit"
+        form="CartForm"
+        name="checkout"
+        class="button button--filled-primary h-11 w-full"
+      >
+        <?= __('Secure checkout') ?>
+        <span class="button__icon ml-3">
+          <?= $hyvaicons->renderHtml('lock') ?>
+        </span>
+      </button>
+
+      <button
+        class="button button--outline-primary h-11 <?= $is_cart_page ? 'md:hidden' : '' ?>"
+        :class="{ 'bg-primary-50': isNoteExpanded }"
+        @click.prevent="isTotalsExpanded = false; isNoteExpanded = !isNoteExpanded"
+      >
+        <?= __('Add note') ?>
+        <span class="button__icon ml-3">
+          <?= $hyvaicons->renderHtml('note') ?>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div class="mt-2 text-md text-text-100 contrast-more:text-secondary-700 max-md:px-3">
+    <?= __('Tax included and shipping calculated at checkout') ?>
+  </div>
+</div>

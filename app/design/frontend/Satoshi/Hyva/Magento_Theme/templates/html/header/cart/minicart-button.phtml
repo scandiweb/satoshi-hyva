@@ -12,7 +12,6 @@ $cart = $viewModels->require(Cart::class);
 $cartItemsCount = $cart->getCartItemsQty();
 ?>
 
-
 <button
   @private-content-loaded.window="(event) => {
     if (!$store.cart.isCartInitialized) {

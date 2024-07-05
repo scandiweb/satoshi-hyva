@@ -146,7 +146,6 @@ export const ProductPage = () =>
 
     init() {
       // Initialize Dynamic checkout button
-      window.Shopify.PaymentButton?.init();
       this._formRef = this.$refs.ProductForm;
 
       this.$watch("$store.cart.cartItems", () => {
@@ -328,8 +327,6 @@ export const ProductPage = () =>
       }
 
       // Initialize Dynamic checkout button
-      window.Shopify.PaymentButton?.init();
-
       nProgress.done();
     },
 
