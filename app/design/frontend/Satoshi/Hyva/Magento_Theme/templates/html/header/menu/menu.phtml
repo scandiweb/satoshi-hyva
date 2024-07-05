@@ -1,3 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $template */
+?>
+
 <nav
   class="flex h-full flex-col"
   aria-label="<?= __('Main menu') ?>"
@@ -5,9 +14,14 @@
   :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'menu' : !$store.resizable.isVisible('menu-desktop')"
 >
   <template x-portal="document.getElementById($store.main.isMobile ? 'search-mobile' : 'search-desktop')">
-    <?= $block->getChildHtml('search-field'); ?>
+    <?= $template->render('Magento_Theme::html/header/search/search.phtml') ?>
   </template>
-  <div class="contents md:hidden" id="search-mobile"></div>
+
+  <div
+    class="contents md:hidden"
+    id="search-mobile"
+  ></div>
+
   <div
     id="menu-sections"
     class="menu__wrapper"
@@ -29,6 +43,14 @@
     }"
     x-show="!$store.main.isMobile || !getIsSearchActive()"
   >
-    <?= $block->getChildHtml('menu-items'); ?>
+    <?=
+      $template
+        ->setData([
+          'id' => 'all',
+          'title' => 'All categories',
+          'path' => 'all'
+        ])
+        ->render('Magento_Theme::html/header/menu/menu-items.phtml')
+    ?>
   </div>
 </nav>

@@ -1,10 +1,17 @@
 <?php
+
+declare(strict_types=1);
+
+use Satoshi\Theme\Block\Template;
 use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Template $block */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
 ?>
+
 <div>
   <form
     class="fixed left-0 z-20 w-full bg-fg px-5 md:sticky md:w-[--search-width] md:rounded-t-md md:border-b-1 md:border-transparent md:bg-transparent md:px-2 md:pt-0 md:transition-all md:delay-150 md:duration-300 max-md:top-0 max-md:pb-3 max-md:pt-[18px]"
@@ -22,7 +29,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     @submit.prevent="goToSearchPage('/')"
   >
     <div class="relative isolate flex w-full md:min-h-[56px] md:items-center">
-      <label for="searchInput" class="sr-only tracking-widest">
+      <label
+        for="searchInput"
+        class="sr-only tracking-widest"
+      >
         <?= __('Search') ?>
       </label>
       <input
@@ -54,6 +64,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
       </button>
     </div>
   </form>
+
   <div
     x-show="getIsSearchActive()"
     class="flex flex-col gap-3 overflow-x-hidden pt-2 transition-opacity duration-0 md:inset-x-0 md:top-full md:max-h-[calc(100dvh-125px)] md:rounded-t-none md:pt-0 md:duration-300 md:before:rounded-none"
@@ -65,7 +76,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     x-transition:leave-end="md:opacity-0"
   >
     <?php // TODO: Implement search suggestions and categories ?>
-    <?= $block->getChildHtml('search.products') ?>
+    <?= $template->render('Magento_Theme::html/header/search/search-products.phtml') ?>
     <div
       class="transition-opacity duration-300 md:sticky md:bottom-0 md:z-10 md:w-full md:rounded-b-md md:bg-fg md:px-5 md:pb-5"
       id="search-actions"
@@ -74,6 +85,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
       x-transition:leave.duration.300ms
       x-transition:enter.delay.300ms
       :class="{ 'opacity-0': isLoading, 'md:opacity-100': !isLoading}"
-     ></div>
+    ></div>
   </div>
 </div>
