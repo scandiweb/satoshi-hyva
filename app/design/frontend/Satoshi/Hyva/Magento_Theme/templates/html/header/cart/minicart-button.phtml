@@ -1,0 +1,67 @@
+<?php
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\ViewModel\Cart\Cart;
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var Cart $cartItems */
+$cart = $viewModels->require(Cart::class);
+$cartItemsCount = $cart->getCartItemsQty();
+?>
+
+
+<button
+  @private-content-loaded.window="(event) => {
+    if (!$store.cart.isCartInitialized) {
+      $store.cart.setCartItems(event.detail.data.cart.items);
+      $store.cart.isCartInitialized = true;
+    }
+  }"
+  class="md:button--filled-white button ghost-primary icon-button icon-button--size-lg col-start-5 md:m-2 contrast-more:md:border contrast-more:md:border-secondary-700"
+  x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
+  @click="!isCartVisible ? $store.cart.showCart() : $store.cart.hideCart()"
+  type="button"
+  aria-label="<?= __('View shopping cart') ?>"
+  :class="{'hidden': !$store.main.isMobile &&   $store.resizable.isVisible('cart-desktop')}"
+>
+  <div
+    class="contents"
+    x-show="!isCartVisible"
+  >
+    <span
+      <?php if ($cartItemsCount > 0) : ?>
+      style="display: none"
+      <?php endif; ?>
+      x-show="$store.main.totalCartQty === 0"
+    >
+      <?= $hyvaicons->renderHtml('cart-empty') ?>
+    </span>
+    <span
+      <?php if ($cartItemsCount !== 1) : ?>
+      style="display: none"
+      <?php endif; ?>
+      x-show="$store.main.totalCartQty === 1"
+    >
+      <?= $hyvaicons->renderHtml('cart') ?>
+    </span>
+    <span
+      <?php if ($cartItemsCount < 2) : ?>
+      style="display: none"
+      <?php endif; ?>
+      x-show="$store.main.totalCartQty > 1"
+      class="-scale-x-100"
+    >
+      <?= $hyvaicons->renderHtml('carts') ?>
+    </span>
+  </div>
+  <div
+    class="contents"
+    x-show="isCartVisible"
+    style="display: none;"
+  >
+    <?= $hyvaicons->renderHtml('close') ?>
+  </div>
+</button>
