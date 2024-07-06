@@ -15,7 +15,6 @@ export type MainStoreType = {
   onResize(): void;
   init(): void;
   setTransformValues(): void;
-  getPrice(value: number | string): string;
   isPopupFocused(): boolean;
   hideAllPopupsAndResizables(): void;
 } & Magics<{}>;
@@ -87,16 +86,6 @@ export const Main = <MainStoreType>{
 
     this.scaleFactor = newScaleFactor;
     this.yOffset = newYOffset;
-  },
-
-  getPrice(value) {
-    const locale = window?.Shopify?.locale || "en";
-    const currency = window?.Shopify?.currency?.active || "USD";
-
-    return new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency: currency,
-    }).format(Number(value) || 0);
   },
 
   isPopupFocused() {
