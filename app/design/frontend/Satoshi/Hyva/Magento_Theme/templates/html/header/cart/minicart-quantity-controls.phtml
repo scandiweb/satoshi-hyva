@@ -16,7 +16,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
   type="button"
   class="button button--outline-secondary icon-button icon-button--size-sm bg-white text-secondary-600 transition-opacity duration-300 active:bg-secondary-100"
   :aria-label="item.qty < 2 ? `{$escaper->escapeHtml(__('Remove from cart'))}` : `{$escaper->escapeHtml(__('Decrease quantity'))}`"
-  @click.prevent.stop="$store.cart.decreaseQty(item.key);"
+  @click.prevent.stop="$store.cart.decreaseQty(item.item_id);"
   @transitionend.stop
   :aria-busy="$store.cart.isLoading"
 >
@@ -35,7 +35,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
   </span>
 </button>
 <label
-  :for="'quantity_' + item.key"
+  :for="'quantity_' + item.item_id"
   class="sr-only tracking-widest"
 >
   <?= $escaper->escapeHtml(__('Quantity')) ?>
@@ -45,9 +45,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
   name="quantity"
   class="input__field h-9 min-w-14 basis-14 text-center"
   min="0"
-  :id="'quantity_' + item.key"
+  :id="'quantity_' + item.item_id"
   x-model="item.qty"
-  @change="$store.cart.setQty(\$event.target.value, item.key)"
+  @click.prevent.stop=""
+  @change="$store.cart.setQty($event.target.value, item.item_id)"
   aria-label="{$escaper->escapeHtml(__('Quantity'))}"
   :aria-busy="$store.cart.isLoading"
 >
@@ -55,7 +56,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
   type="button"
   class="button button--outline-secondary icon-button icon-button--size-sm bg-white text-secondary-600 transition-opacity duration-300 active:bg-secondary-100"
   aria-label="{$escaper->escapeHtml(__('Increase'))}"
-  @click.prevent.stop="$store.cart.increaseQty(item.key)"
+  @click.prevent.stop="$store.cart.increaseQty(item.item_id)"
   :aria-busy="$store.cart.isLoading"
 >
   <?= $hyvaicons->renderHtml('plus') ?>

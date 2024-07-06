@@ -9,6 +9,12 @@ declare global {
   var Alpine: AlpineType;
 
   interface Window {
+    hyva: {
+      getFormKey: function;
+      formatPrice: function;
+    },
+
+    // TODO: Remove
     Shopify: {
       currency: {
         active: string;
