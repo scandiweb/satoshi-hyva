@@ -12,29 +12,31 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 /** @var Cart $cartItems */
 $cart = $viewModels->require(Cart::class);
 $cartItemsCount = $cart->getCartItemsQty();
-$is_cart_page = false;
+$isCartPage = $block->getData('isCartPage');
+
 ?>
 <div
-  class="absolute left-0 right-0 top-0 origin-bottom -translate-y-[2.5rem] text-text-on-fg transition-transform duration-700 motion-reduce:transition-none md:mb-0 md:w-full <?= $is_cart_page ? 'md:relative md:translate-y-0 md:pointer-events-auto' : '' ?>"
+  class="absolute left-0 right-0 top-0 origin-bottom -translate-y-[2.5rem] text-text-on-fg transition-transform duration-700 motion-reduce:transition-none md:mb-0 md:w-full <?= $isCartPage ? 'md:relative md:translate-y-0 md:pointer-events-auto' : '' ?>"
   :class="
   {
     '-translate-y-full': isTotalsExpanded,
-    '-translate-y-[2.5rem] pointer-events-none': !isTotalsExpanded
+    '-translate-y-[2.5rem] pointer-events-none': !isTotalsExpanded,
+    '-z-10': isNoteExpanded
   }
 "
 >
   <div
-    class="pointer-events-none <?= $is_cart_page ? 'md:hidden' : '' ?> relative top-0 h-10 bg-gradient-to-t from-[#00000010] via-transparent to-transparent"
+    class="pointer-events-none <?= $isCartPage ? 'md:hidden' : '' ?> relative top-0 h-10 bg-gradient-to-t from-[#00000010] via-transparent to-transparent"
   ></div>
   <div
-    class="flex flex-col gap-4 bg-white <?= $is_cart_page ? 'max-md:px-4 md:pb-4' : 'px-4 pointer-events-none' ?> pt-4 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto"
-    :inert="<?= $is_cart_page ? '$store.main.isMobile && ' : '' ?>!isTotalsExpanded"
+    class="flex flex-col gap-4 bg-white <?= $isCartPage ? 'max-md:px-4 md:pb-4' : 'px-4 pointer-events-none' ?> pt-4 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto"
+    :inert="<?= $isCartPage ? '$store.main.isMobile && ' : '' ?>!isTotalsExpanded"
   >
     <div class="flex items-center justify-between pt-2">
       <h2><?= __('Order summary') ?></h2>
       <button
         type="button"
-        class="button button--outline-secondary icon-button icon-button--size-xs <?= $is_cart_page ? 'md:hidden' : '' ?>"
+        class="button button--outline-secondary icon-button icon-button--size-xs <?= $isCartPage ? 'md:hidden' : '' ?>"
         :aria-label="isTotalsExpanded ? `<?= __('Collapse') ?>` : `<?= __('Expand') ?>`"
         @click="isNoteExpanded = false; isTotalsExpanded = !isTotalsExpanded"
         @transitionend.stop
@@ -67,27 +69,28 @@ $is_cart_page = false;
         </template>
       </div>
     </div>
-    <hr class="divider -mx-4 contrast-more:bg-secondary-700 <?php $is_cart_page ? 'md:hidden' : '' ?>">
+    <hr class="divider -mx-4 contrast-more:bg-secondary-700 <?php $isCartPage ? 'md:hidden' : '' ?>">
   </div>
 </div>
 
 <div
-  class="absolute left-0 right-0 top-0 origin-bottom -translate-y-[2.5rem] text-text-on-fg transition-transform duration-700 motion-reduce:transition-none md:mb-0 md:w-full <?= $is_cart_page ? 'md:relative md:translate-y-0 md:pointer-events-auto' : '' ?>"
+  class="absolute left-0 right-0 top-0 origin-bottom -translate-y-[2.5rem] text-text-on-fg transition-transform duration-700 motion-reduce:transition-none md:mb-0 md:w-full <?= $isCartPage ? 'md:relative md:translate-y-0 md:pointer-events-auto' : '' ?>"
   :class="
     {
       '-translate-y-full': isNoteExpanded,
-      '-translate-y-[2.5rem] pointer-events-none': !isNoteExpanded
+      '-translate-y-[2.5rem] pointer-events-none': !isNoteExpanded,
+      '-z-10': isTotalsExpanded
     }
   "
 >
   <div
-    class="pointer-events-none <?= $is_cart_page ? 'md:hidden' : '' ?> relative top-0 h-10 bg-gradient-to-t from-[#00000010] via-transparent to-transparent"
+    class="pointer-events-none <?= $isCartPage ? 'md:hidden' : '' ?> relative top-0 h-10 bg-gradient-to-t from-[#00000010] via-transparent to-transparent"
   ></div>
   <div
-    class="flex flex-col gap-4 bg-white <?= $is_cart_page ? 'max-md:px-4 md:pb-4 md:border-t md:border-b md:-mx-4 md:px-4' : 'px-4 pointer-events-none' ?> pt-4 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto"
-    :inert="<?= $is_cart_page ? '$store.main.isMobile && ' : '' ?>!isNoteExpanded"
+    class="flex flex-col gap-4 bg-white <?= $isCartPage ? 'max-md:px-4 md:pb-4 md:border-t md:border-b md:-mx-4 md:px-4' : 'px-4 pointer-events-none' ?> pt-4 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto"
+    :inert="<?= $isCartPage ? '$store.main.isMobile && ' : '' ?>!isNoteExpanded"
   >
-    <?php if ($is_cart_page) : ?>
+    <?php if ($isCartPage) : ?>
     <h2 class="max-md:hidden"><?= __('Order note') ?></h2>
     <?php endif; ?>
     <div class="flex flex-col gap-3 text-text-100 contrast-more:text-secondary-700">
@@ -103,12 +106,12 @@ $is_cart_page = false;
         class="resize-none rounded-sm border px-5 py-4 transition-all duration-1000 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
       ></textarea>
     </div>
-    <hr class="divider -mx-4 contrast-more:bg-secondary-700 <?= $is_cart_page ? 'md:hidden' : '' ?>">
+    <hr class="divider -mx-4 contrast-more:bg-secondary-700 <?= $isCartPage ? 'md:hidden' : '' ?>">
   </div>
 </div>
 
 <div
-  class="<?= !$is_cart_page ? 'pointer-events-none' : '' ?> relative -mx-4 rounded-b-md bg-white px-4 text-text-on-fg transition-opacity duration-300 md:pb-4 max-md:px-3 max-md:pb-5 [.popup\_\_main_&]:pb-3 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto "
+  class="<?= !$isCartPage ? 'pointer-events-none' : '' ?> relative -mx-4 rounded-b-md bg-white px-4 text-text-on-fg transition-opacity duration-300 md:pb-4 max-md:px-3 max-md:pb-5 [.popup\_\_main_&]:pb-3 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto "
   :class="
       {
         'opacity-0': isCartEmpty,
@@ -137,7 +140,7 @@ $is_cart_page = false;
 
       <button
         type="button"
-        class="button button--outline-secondary icon-button icon-button--size-xs <?= $is_cart_page ? 'md:hidden' : '' ?>"
+        class="button button--outline-secondary icon-button icon-button--size-xs <?= $isCartPage ? 'md:hidden' : '' ?>"
         :aria-label="isTotalsExpanded ? `<?= __('Collapse') ?>` : `<?= __('Expand') ?>`"
         @click="isNoteExpanded = false; isTotalsExpanded = !isTotalsExpanded"
         @transitionend.stop
@@ -164,7 +167,7 @@ $is_cart_page = false;
       </button>
 
       <button
-        class="button button--outline-primary h-11 <?= $is_cart_page ? 'md:hidden' : '' ?>"
+        class="button button--outline-primary h-11 <?= $isCartPage ? 'md:hidden' : '' ?>"
         :class="{ 'bg-primary-50': isNoteExpanded }"
         @click.prevent="isTotalsExpanded = false; isNoteExpanded = !isNoteExpanded"
       >
