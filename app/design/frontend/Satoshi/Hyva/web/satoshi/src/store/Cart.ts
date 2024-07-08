@@ -158,6 +158,7 @@ export const CartStore = <CartStoreType>{
       .then(() => {
         this.isLoading = false;
         this.removingItemId = null;
+        this.cartItems = this.cartItems.filter(item => item.qty);
       })
       .catch((error) => {
         if (error.name !== ABORT_ERROR_NAME) {

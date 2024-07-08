@@ -123,6 +123,10 @@ h3 {
   }
 }
 
+.page-wrapper {
+  @apply -mt-[88px] flex-1 max-md:overflow-hidden;
+}
+
 .disable-fade .faded-img {
   @apply opacity-100 #{!important};
 }

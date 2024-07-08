@@ -79,21 +79,6 @@ $isCartPage = $block->getData('isCartPage');
                   ></p>
                 </template>
               </template>
-              <!-- Gift card recipient email -->
-              <template x-if="false">
-                <p
-                  class="text-md text-text-100 contrast-more:text-secondary-700"
-                  x-text="`{{ 'recipient.form.email_label' | t }}: ${item.properties['Recipient email']}`"
-                ></p>
-              </template>
-
-              <!-- Selling plan -->
-              <template x-if="false">
-                <p
-                  class="mt-2 text-md text-text-100 contrast-more:text-secondary-700"
-                  x-text="item.selling_plan_allocation.selling_plan.name"
-                ></p>
-              </template>
             </div>
             <div class="flex flex-wrap items-center justify-between">
               <div class="flex max-w-min items-center gap-3 <?= $isCartPage ? 'md:hidden' : '' ?>">
