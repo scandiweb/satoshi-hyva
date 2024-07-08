@@ -16,6 +16,7 @@
 
         <referenceContainer name="main.content"  htmlClass="page-main overflow-x-hidden"/>
         <referenceContainer name="header.container"  htmlClass="page-header contents"/>
+        <move element="header.container" destination="root" before="page.wrapper" />
 
         <!-- Render popup wrapper -->
         <referenceContainer name="before.body.end">
