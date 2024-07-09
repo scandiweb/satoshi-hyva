@@ -5,7 +5,8 @@
     xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd"
 >
     <!-- Injecting global variables through scripts -->
-    <referenceContainer name="before.head.end">
+    <referenceContainer name="head.additional">
+        <block name="satoshi-head-styles" template="Magento_Theme::head/head-styles.phtml" />
         <block name="satoshi-head" template="Magento_Theme::head/inject-variables.phtml" />
     </referenceContainer>
     <body>
