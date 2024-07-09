@@ -71,4 +71,5 @@ atlassian*
 
 .idea
 .DS_Store
-.vscode
+!.vscode
+!.prettierrc
