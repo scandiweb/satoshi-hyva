@@ -1,4 +1,6 @@
 <?php
+
+/** @var \Satoshi\Theme\Block\Resizable $block */
 $initialHeight = $block->getData('initialHeight');
 $initialWidth = $block->getData('initialWidth');
 $id = $block->getId();
@@ -32,33 +34,40 @@ if ($isRight) {
   "
   x-init="$store.resizable._register({id: '<?= $id ?>'})"
 >
-    <div class="resizable__wrapper">
-        <div class="resizable__side resizable__side--l"></div>
-        <div class="resizable__corner resizable__corner--tl"></div>
-        <div class="resizable__side resizable__side--t"></div>
-        <div class="resizable__corner resizable__corner--tr"></div>
-        <div class="resizable__side resizable__side--r"></div>
-        <div class="resizable__corner resizable__corner--br"></div>
-        <div class="resizable__side resizable__side--b"></div>
-        <div class="resizable__corner resizable__corner--bl"></div>
-        <div
-            class="resizable__bg"
-            @transitionstart="isTransitioning = true"
-            @transitionend="isTransitioning = false; <?= $onTransitionEnd ?>"
-        ></div>
-        <div
-            @click="$store.resizable.show('<?= $id ?>')"
-            id="<?= $id ?>-initial"
-            class="resizable__content resizable__content--trigger"
-        >
-            <?= $block->getChildHtml() ?>
-        </div>
-        <div
-          class="resizable__content resizable__content--portal"
-          x-a11y-trap="$store.resizable._current['<?= $id ?>']"
-        >
-          <div id="<?= $id ?>" class="resizable__scroll" :inert="!$store.resizable._current['<?= $id ?>']"></div>
-          <div id="<?= $id ?>-fixed" class="resizable__fixed"></div>
-        </div>
+  <div class="resizable__wrapper">
+    <div class="resizable__side resizable__side--l"></div>
+    <div class="resizable__corner resizable__corner--tl"></div>
+    <div class="resizable__side resizable__side--t"></div>
+    <div class="resizable__corner resizable__corner--tr"></div>
+    <div class="resizable__side resizable__side--r"></div>
+    <div class="resizable__corner resizable__corner--br"></div>
+    <div class="resizable__side resizable__side--b"></div>
+    <div class="resizable__corner resizable__corner--bl"></div>
+    <div
+      class="resizable__bg"
+      @transitionstart="isTransitioning = true"
+      @transitionend="isTransitioning = false; <?= $onTransitionEnd ?>"
+    ></div>
+    <div
+      @click="$store.resizable.show('<?= $id ?>')"
+      id="<?= $id ?>-initial"
+      class="resizable__content resizable__content--trigger"
+    >
+      <?= $block->getChildHtml() ?>
     </div>
+    <div
+      class="resizable__content resizable__content--portal overflow-y-hidden"
+      x-a11y-trap="$store.resizable._current['<?= $id ?>']"
+    >
+      <div
+        id="<?= $id ?>"
+        class="resizable__scroll"
+        :inert="!$store.resizable._current['<?= $id ?>']"
+      ></div>
+      <div
+        id="<?= $id ?>-fixed"
+        class="resizable__fixed"
+      ></div>
+    </div>
+  </div>
 </div>
