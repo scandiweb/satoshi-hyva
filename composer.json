@@ -101,7 +101,7 @@
     "repositories": {
         "private-packagist": {
             "type": "composer",
-            "url": "https://hyva-themes.repo.packagist.com/zvaigzne-lv/"
+            "url": "https://hyva-themes.repo.packagist.com/scandiweb-com/"
         },
         "0": {
             "type": "composer",
