@@ -6,21 +6,7 @@ playbooks:
     - npm:
         command: run build-prod
 environments:
-  - name: readymage-prod
-    build:
-      themes:
-        Magento/backend:
-          area: adminhtml
-          languages: ["en_US"]
-        Magento/luma:
-          area: frontend
-          languages: ["lv_LV"]
-        Satoshi/Hyva:
-          area: frontend
-          directory: app/design/frontend/Satoshi/Hyva/web/tailwind
-          playbook: hyva
-          languages: ["lv_LV"]
-  - name: readymage-dev
+  - name: readymage-satoshi-bmk-1720548019-dev-ddo
     build:
       themes:
         Magento/backend:
