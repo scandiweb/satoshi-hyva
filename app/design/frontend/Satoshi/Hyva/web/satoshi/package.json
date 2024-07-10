@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "tailwind.config.js",
   "dependencies": {
+    "@alpinejs/intersect": "^3.13.7",
     "@alpinejs/morph": "^3.13.7",
     "@alpinejs/persist": "^3.13.7",
     "@hyva-themes/hyva-modules": "^1.0.9",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "@types/alpinejs": "^3.13.9",
+    "@types/alpinejs__intersect": "^3.13.4",
     "@types/alpinejs__morph": "^3.13.4",
     "@types/alpinejs__persist": "^3.13.4",
     "@types/nprogress": "^0.2.3",
@@ -31,6 +33,6 @@
     "build": "tsc && vite build"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   }
 }
