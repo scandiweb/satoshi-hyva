@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<page
+    layout="3columns"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd"
+>
+    <!-- Injecting global variables through scripts -->
+    <referenceContainer name="head.additional">
+        <block name="satoshi-head-styles" template="Magento_Theme::head/head-styles.phtml" />
+        <block name="satoshi-head" template="Magento_Theme::head/inject-variables.phtml" />
+    </referenceContainer>
+    <body>
+        <!-- Attributes in body element which required to show correct color of logo text -->
+        <attribute name="class" value="gradient" />
+        <attribute name="class" value="bg-fg" />
+        <attribute name="x-data" value="{}" />
+
+        <referenceContainer name="main.content"  htmlClass="page-main overflow-x-hidden"/>
+        <referenceContainer name="header.container"  htmlClass="page-header contents"/>
+        <move element="header.container" destination="root" before="page.wrapper" />
+
+        <!-- Render popup wrapper -->
+        <referenceContainer name="before.body.end">
+            <block name="popup-wrapper" template="Magento_Theme::html/popup/popup-wrapper.phtml" />
+        </referenceContainer>
+    </body>
+</page>

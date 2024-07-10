@@ -1,0 +1,124 @@
+<?php
+
+use Hyva\Theme\ViewModel\Wishlist;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $template */
+
+/** @var Wishlist $wishlistViewModel */
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+
+$imageLoading = $block->getData('imageLoading');
+$isAlpineTemplate = $block->getData('isAlpineTemplate');
+$showAddToWishlist = $wishlistViewModel->isEnabled();
+
+if (!$isAlpineTemplate) {
+  $product = $block->getData('product');
+  $featuredImage = $product?->getImage();
+  $title = $product?->getName();
+}
+?>
+
+<article
+  class="z-10 flex h-full w-full flex-col items-stretch justify-start text-start"
+  x-data="ProductPage()"
+  <?php if (!$isAlpineTemplate) : ?>
+  <?php // TODO: Create x-init to set correct product data ?>
+  <?php endif; ?>
+>
+  <?php if (!$isAlpineTemplate) : // this image is needed to avoid blink in preview on desktop as there, the select variant is shown, not featured image ?>
+  <?php // TODO: Replace with correct image url ?>
+  <img
+    width="0"
+    height="0"
+    class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
+    src="{{ card_product.selected_or_first_available_variant.image | image_url }}"
+    alt=""
+  >
+  <?php endif; ?>
+
+  <div
+    class="relative overflow-hidden rounded-md bg-secondary-100"
+    x-element-transition-src="img"
+  >
+    <?php if ($isAlpineTemplate) : ?>
+    <template x-if="product.featured_image?.url">
+      <img
+        :src="product.featured_image.url"
+        :alt="product.featured_image?.alt"
+        class="aspect-product h-full w-full object-cover object-center transition-transform md:group-hover:scale-105"
+        loading="<?= $imageLoading ?>"
+        width=""
+        height=""
+      >
+    </template>
+    <?php else : ?>
+    <?php if ($product?->getImage()) : ?>
+    <?php // TODO: Create and move into an image snippet/template ?>
+    <div
+      class="bg-secondary-100 overflow-hidden rounded-md"
+      x-element-transition-src="img"
+    >
+      <img
+        <?php // TODO: Update with real dynamic data ?>
+        :src="product.small_image?.url ? product.small_image.url : ''"
+        :alt="product.small_image?.label"
+        class="aspect-product w-full h-full object-cover object-center"
+        loading="<?= $imageLoading ?>"
+        width=""
+        height=""
+      >
+    </div>
+    <?php else : ?>
+    <div class="flex aspect-product w-full items-center justify-center bg-secondary-100">
+      <?= __('Missing image') ?>
+    </div>
+    <?php endif; ?>
+    <?php endif; ?>
+
+    <?php // TODO: Make dynamic discount badge ?>
+    <div class="card-product__badge-container bottom left">
+      <span class="card-product__badge bg-white px-3 py-2 text-sm font-bold">
+        <?= __("-12% OFF") ?>
+      </span>
+    </div>
+  </div>
+
+  <div class="relative mt-4 flex flex-col gap-1">
+    <h2
+      class="w-[calc(100%-40px)] text-md truncate"
+      <?php if ($isAlpineTemplate) : ?>
+      x-text="product.name"
+      <?php endif; ?>
+    >
+      <?php if (!$isAlpineTemplate) : ?>
+      <?= $title ?>
+      <?php endif; ?>
+    </h2>
+
+    <?php // TODO: Make dynamic ?>
+    <p class="w-[calc(100%-40px)] truncate text-text-100 contrast-more:text-secondary-700">
+      Vendor
+    </p>
+
+    <?php // TODO: Make Quick buy button work ?>
+    <button
+      class="absolute right-0 top-1/2 -translate-y-1/2 text-xl md:hidden"
+      @click.prevent.stop="quickBuy()"
+      aria-label="<?= __('Add to cart') ?>"
+    >
+      <?= $hyvaicons->renderHtml('cart'); ?>
+    </button>
+
+    <?= ''
+      // $template
+      //   ->setData(['isAlpineTemplate' => true])
+      //   ->render('Magento_Catalog::product/view/price.phtml')
+    ?>
+  </div>
+</article>

@@ -1,0 +1,10 @@
+@layer components {
+    .swatch-attribute-options {
+        @apply flex flex-row flex-wrap;
+    }
+
+    .swatch-option {
+        @apply px-2 py-1 m-1 flex border justify-center;
+        min-width: 40px;
+    }
+}
