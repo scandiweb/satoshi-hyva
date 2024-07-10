@@ -17,6 +17,6 @@ environments:
           languages: ["lv_LV"]
         Satoshi/Hyva:
           area: frontend
-          directory: app/design/frontend/Satoshi/Hyva/web/tailwind
+          directory: app/design/frontend/Satoshi/Hyva/web/satoshi/tailwind
           playbook: hyva
           languages: ["lv_LV"]
