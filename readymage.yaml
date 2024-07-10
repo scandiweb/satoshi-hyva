@@ -14,9 +14,9 @@ environments:
           languages: ["en_US"]
         Magento/luma:
           area: frontend
-          languages: ["lv_LV"]
+          languages: ["en_US"]
         Satoshi/Hyva:
           area: frontend
-          directory: app/design/frontend/Satoshi/Hyva/web/satoshi/tailwind
+          directory: app/design/frontend/Satoshi/Hyva/web/satoshi
           playbook: hyva
-          languages: ["lv_LV"]
+          languages: ["en_US"]
