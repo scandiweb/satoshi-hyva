@@ -2,9 +2,9 @@ schema_version: 1.0.0
 playbooks:
   hyva:
     - npm:
-        command: ci
+        command: install
     - npm:
-        command: run build-prod
+        command: run build
 environments:
   - name: readymage-satoshi-bmk-1720548019-dev-ddo
     build:
