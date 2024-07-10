@@ -1,0 +1,55 @@
+input[type="number"] {
+  /* Firefox */
+  -moz-appearance: textfield;
+
+  /* Chrome, Safari, Edge, Opera */
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    @apply appearance-none;
+  }
+}
+
+input[type="search"] {
+  @apply -outline-offset-2;
+  -webkit-appearance: textfield;
+
+  &::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+}
+
+.input {
+  &--error {
+    & .input__field {
+      @apply border-red-500 shadow-error;
+    }
+
+    & .input__message {
+      @apply text-red-500;
+    }
+  }
+
+  &__field {
+    @apply focus-visible:focus-ring relative h-11 w-full min-w-0 appearance-none rounded-sm border-1 border-solid px-4 text-[16px] contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700;
+
+    &:focus-visible {
+      @apply border-secondary-500 shadow-input;
+    }
+
+    &--outline {
+      @apply border-secondary-100 bg-transparent contrast-more:border-secondary-700;
+    }
+
+    &--filled {
+      @apply bg-secondary-50;
+    }
+
+    &--ghost {
+      @apply bg-transparent;
+    }
+  }
+
+  &__message {
+    @apply ml-3 text-sm text-secondary-500;
+  }
+}

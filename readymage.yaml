@@ -1,0 +1,36 @@
+schema_version: 1.0.0
+playbooks:
+  hyva:
+    - npm:
+        command: ci
+    - npm:
+        command: run build-prod
+environments:
+  - name: readymage-prod
+    build:
+      themes:
+        Magento/backend:
+          area: adminhtml
+          languages: ["en_US"]
+        Magento/luma:
+          area: frontend
+          languages: ["lv_LV"]
+        Satoshi/Hyva:
+          area: frontend
+          directory: app/design/frontend/Satoshi/Hyva/web/tailwind
+          playbook: hyva
+          languages: ["lv_LV"]
+  - name: readymage-dev
+    build:
+      themes:
+        Magento/backend:
+          area: adminhtml
+          languages: ["en_US"]
+        Magento/luma:
+          area: frontend
+          languages: ["lv_LV"]
+        Satoshi/Hyva:
+          area: frontend
+          directory: app/design/frontend/Satoshi/Hyva/web/tailwind
+          playbook: hyva
+          languages: ["lv_LV"]

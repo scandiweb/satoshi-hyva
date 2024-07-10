@@ -1,5 +1,4 @@
 /*
-!/scandipwa
 !/app
 /app/etc/env.php
 /app/etc/NonComposerComponentRegistration.php
@@ -7,6 +6,7 @@
 /app/etc/di.xml
 /app/etc/registration_globlist.php
 /app/etc/vendor_path.php
+/app/etc/hyva-themes.json
 /app/.htaccess
 /app/autoload.php
 /app/bootstrap.php
@@ -16,9 +16,13 @@
 !/package-lock.json
 !/yarn.lock
 !.gitignore
-!**/.gitkeep
 !README.md
-
+!readymage.yaml
+!**/.gitkeep
+!/var/.htaccess
+!/vendor/.htaccess
+!/generated/.htaccess
 .idea
 .DS_Store
-.vscode
+!.vscode
+!.prettierrc

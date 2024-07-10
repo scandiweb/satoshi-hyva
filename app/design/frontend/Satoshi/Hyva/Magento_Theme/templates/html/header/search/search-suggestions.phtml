@@ -1,0 +1,21 @@
+<div class="relative flex flex-col grow gap-4 p-3 pb-2 md:p-5 transition-opacity duration-300" :class="{ 'opacity-0': isLoading }">
+    <div class="pb-2">
+      <h2 class="text-lg"><?= __('Suggestions') ?></h2>
+    </div>
+    <div class="flex flex-col gap-2 min-h-11 md:min-h-[48px]">
+      <p x-show="!suggestions.length && searchTerm && !isLoading" class="text-text-100">
+        <b class="text-secondary-700 font-bold"><?= __('Oops!') ?></b>
+        <?= __('We could not find any suggestions matching your search.') ?>
+      </p>
+      <div x-show="suggestions.length" class="flex gap-3 overflow-x-auto -mx-5 px-5">
+        <template x-for="suggestion in suggestions">
+        <a
+            :href="'/catalogsearch/result/?q=' + suggestion.title"
+            class="button button--outline-secondary"
+            x-element-transition-trigger
+            x-text="suggestion.title"
+        ></a>
+        </template>
+      </div>
+    </div>
+  </div>

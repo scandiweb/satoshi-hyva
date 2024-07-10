@@ -1,0 +1,60 @@
+<style>
+  @font-face {
+    font-family: 'Satoshi';
+    src: url("<?= $this->getViewFileUrl('fonts/Satoshi-Medium.woff2') ?>") format('woff2'),
+      url("<?= $this->getViewFileUrl('fonts/Satoshi-Medium.woff') ?>") format('woff');
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'Satoshi';
+    src: url("<?= $this->getViewFileUrl('fonts/Satoshi-Bold.woff2') ?>") format('woff2'),
+      url("<?= $this->getViewFileUrl('fonts/Satoshi-Bold.woff') ?>") format('woff');
+    font-weight: 700;
+    font-display: swap;
+    font-style: normal;
+  }
+
+  :root {
+    --font-body-family: 'Satoshi', sans-serif;
+    --font-body-style: 'normal';
+    --font-body-weight: 500;
+
+    --font-heading-family: 'Satoshi', sans-serif;
+    --font-heading-style: 'normal';
+    --font-heading-weight: 700;
+
+    --progress-bar-color: #29d;
+    --progress-bar-height: 2px;
+
+    --fade-in-bg: #F3F3F3;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: inherit;
+  }
+
+  html {
+    box-sizing: border-box;
+    height: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 14px;
+  }
+
+  body {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: 100%;
+    margin: 0;
+    font-size: 1rem;
+    font-family: var(--font-body-family);
+    font-style: var(--font-body-style);
+    font-weight: var(--font-body-weight);
+  }
+</style>

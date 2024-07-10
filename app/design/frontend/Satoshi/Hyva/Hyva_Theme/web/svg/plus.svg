@@ -1,0 +1,11 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="0"
+    aria-hidden="true"
+    class="contrast-more:text-secondary-700"
+    viewBox="0 0 24 24"
+>
+    <path stroke="none" d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"/>
+</svg>

@@ -1,0 +1,143 @@
+body {
+    overflow-y: scroll;
+}
+
+.clearfix::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.page-main {
+    @apply my-8;
+}
+
+.columns {
+    @apply grid grid-cols-1 gap-x-8 gap-y-4 container;
+    grid-template-rows: auto minmax(0, 1fr);
+
+    .main {
+        @apply order-2;
+    }
+
+    .sidebar {
+        @apply order-3;
+    }
+
+    .product-main-full-width & {
+        @apply max-w-none;
+    }
+
+    .page-main-full-width & {
+        @apply max-w-none px-0;
+    }
+}
+
+.page-with-filter {
+    .columns {
+        .sidebar-main {
+            @apply order-1;
+        }
+    }
+}
+
+@screen sm {
+    .page-layout-2columns-left,
+    .page-layout-2columns-right,
+    .page-layout-3columns {
+        .columns {
+            @apply grid-cols-2;
+
+            .main {
+                @apply col-span-2;
+            }
+
+            .sidebar {
+                @apply order-3;
+            }
+        }
+    }
+
+    .page-with-filter {
+        .columns {
+            .sidebar-main {
+                @apply order-1 col-span-2;
+            }
+        }
+    }
+}
+
+@screen md {
+    .page-layout-2columns-left,
+    .page-layout-2columns-right,
+    .page-layout-3columns {
+        .columns {
+            @apply grid-cols-3;
+
+            .main {
+                @apply row-span-2;
+            }
+
+            .sidebar {
+                @apply col-span-1;
+            }
+        }
+    }
+
+    .page-layout-2columns-left,
+    .page-layout-3columns {
+        .columns {
+            .main {
+                @apply col-start-2 !important;
+            }
+            .sidebar {
+                @apply order-1;
+            }
+
+            .sidebar ~ .sidebar-additional {
+                @apply order-3;
+            }
+        }
+    }
+
+    .page-layout-2columns-right,
+    .page-layout-2columns-right.page-with-filter {
+        .sidebar-main {
+            @apply order-3;
+        }
+    }
+}
+
+@screen lg {
+    .page-layout-2columns-left,
+    .page-layout-2columns-right,
+    .page-layout-3columns {
+        .columns {
+            @apply grid-cols-4;
+        }
+    }
+
+    .page-layout-2columns-left,
+    .page-layout-2columns-right {
+        .columns {
+            .main {
+                @apply col-span-3;
+            }
+        }
+    }
+    .page-layout-3columns {
+        .columns {
+            .sidebar-additional {
+                @apply col-start-4;
+            }
+        }
+    }
+}
+
+.product-image-container {
+    width: 100% !important;
+
+    img {
+        width: 100%;
+    }
+}

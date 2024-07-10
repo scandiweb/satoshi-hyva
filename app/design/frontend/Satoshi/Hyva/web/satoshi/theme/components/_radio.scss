@@ -1,0 +1,30 @@
+.radio {
+  @apply mb-4 flex cursor-pointer items-center;
+
+  &__control {
+    @apply inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-solid border-secondary-100 text-2xs text-white transition-colors duration-200;
+  }
+
+  &__input {
+    @apply absolute h-1 w-1 overflow-hidden whitespace-nowrap border-0 p-0;
+
+    margin: -1px;
+    clip: rect(0px, 0px, 0px, 0px);
+
+    &:focus-visible + .radio__control {
+      @apply focus-ring;
+    }
+
+    &:checked + .radio__control {
+      @apply border-primary-500 bg-primary-500;
+
+      &::before {
+        @apply h-1/2 w-1/2 rounded-full bg-current content-[''];
+      }
+    }
+  }
+
+  &__label {
+    @apply ml-5;
+  }
+}
