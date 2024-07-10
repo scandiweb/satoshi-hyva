@@ -2,7 +2,7 @@ import { withXAttributes } from "alpinejs";
 import { fetchPage, replaceContent } from "../plugins/Transition";
 import nProgress from "nprogress";
 import { POPUP_OVERLAY_CLICK_EVENT } from "../store/Popup";
-import { CartItem, GiftProps } from "../store/Cart";
+import { CartItem } from "../store/Cart";
 
 const initialGiftProperties = {
   __shopify_send_gift_card_to_recipient: false,
@@ -28,7 +28,7 @@ export type ProductPageType = {
   selectedVariantId?: number;
   productId?: number;
   XRMediaModels: Record<string, any>[];
-  properties: GiftProps;
+  properties: any;
   cartItemKey: string | undefined;
   readonly isProductBeingRemoved: boolean;
   readonly isProductBeingAdded: boolean;
@@ -131,7 +131,7 @@ export const ProductPage = () =>
     },
 
     get isProductBeingRemoved() {
-      return Alpine.store("cart").removingItemKey === this.cartItemKey;
+      return Alpine.store("cart").removingItemId === this.cartItemKey;
     },
 
     get isProductBeingAdded() {
@@ -230,8 +230,8 @@ export const ProductPage = () =>
       );
 
       this.isVariantInCart = !!cartItem;
-      this.variantQty = cartItem?.quantity || 1;
-      this.cartItemKey = cartItem?.key;
+      this.variantQty = cartItem?.qty || 1;
+      this.cartItemKey = cartItem?.item_id;
     },
 
     checkIsItemInCart(item: CartItem) {
@@ -241,30 +241,21 @@ export const ProductPage = () =>
       }
 
       // Match variant id
-      if (item.id !== this.selectedVariantId) {
+      if (false) {
         return false;
       }
 
-      // Check selling plan
-      const selling_plan = this._formRef?.querySelector(
-        "input[name=selling_plan]",
-      ) as HTMLInputElement | null;
-
-      if (
-        Number(selling_plan?.value || null) !==
-        Number(item.selling_plan_allocation?.selling_plan.id || null)
-      ) {
-        return false;
-      }
+      // Check selling plan, TODO: Check equivalent or remove
 
       const isDifferentRecipient = Object.keys(this.properties).some((key) => {
-        const value = this.properties[key as keyof GiftProps];
+        const value = this.properties[key as keyof any];
         const valueToCheck = value === "" ? null : value;
-        const itemProps = Object.keys(item.properties).length
-          ? item.properties
+        const itemProps = Object.keys(item).length
+          ? item
           : initialGiftProperties;
 
-        return itemProps[key as keyof GiftProps] !== valueToCheck;
+        // @ts-ignore
+        return itemProps[key] !== valueToCheck;
       });
 
       // Match gift recipient
