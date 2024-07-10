@@ -6,7 +6,7 @@
 /app/etc/di.xml
 /app/etc/registration_globlist.php
 /app/etc/vendor_path.php
-/app/etc/hyva-themes.json
+!/app/etc/hyva-themes.json
 /app/.htaccess
 /app/autoload.php
 /app/bootstrap.php

@@ -1,0 +1,7 @@
+{
+    "extensions": [
+        {
+            "src": "vendor\/hyva-themes\/magento2-theme-module\/src"
+        }
+    ]
+}
