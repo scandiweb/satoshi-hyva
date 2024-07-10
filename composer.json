@@ -16,16 +16,14 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "version": "2.4.6",
+    "version": "2.4.6-p3",
     "require": {
-        "magento/composer-dependency-version-audit-plugin": "~0.1",
-        "magento/composer-root-update-plugin": "~2.0",
-        "magento/module-elasticsearch-8": "^100.4",
-        "magento/product-community-edition": "2.4.6-p3",
         "readymage/logger": "^1.1",
         "readymage/maintenance": "^1.0",
         "hyva-themes/magento2-default-theme": "^1.3",
         "hyva-themes/magento2-luma-checkout": "^1.1",
+        "magento/composer-dependency-version-audit-plugin": "~0.1",
+        "magento/composer-root-update-plugin": "~2.0",
         "magento/module-bundle-sample-data": "100.4.*",
         "magento/module-catalog-rule-sample-data": "100.4.*",
         "magento/module-catalog-sample-data": "100.4.*",
@@ -33,6 +31,7 @@
         "magento/module-configurable-sample-data": "100.4.*",
         "magento/module-customer-sample-data": "100.4.*",
         "magento/module-downloadable-sample-data": "100.4.*",
+        "magento/module-elasticsearch-8": "^100.4",
         "magento/module-grouped-product-sample-data": "100.4.*",
         "magento/module-msrp-sample-data": "100.4.*",
         "magento/module-offline-shipping-sample-data": "100.4.*",
@@ -45,6 +44,7 @@
         "magento/module-theme-sample-data": "100.4.*",
         "magento/module-widget-sample-data": "100.4.*",
         "magento/module-wishlist-sample-data": "100.4.*",
+        "magento/product-community-edition": "2.4.6-p3",
         "magento/sample-data-media": "100.4.*"
     },
     "autoload": {
