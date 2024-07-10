@@ -2,7 +2,7 @@ schema_version: 1.0.0
 playbooks:
   hyva:
     - npm:
-        command: install
+        command: ci
     - npm:
         command: run build
 environments:
