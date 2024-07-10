@@ -1,0 +1,81 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "jsx": "react",
+        "paths": {
+            "SourceStyle/*": [
+                "node_modules/@scandipwa/scandipwa/src/style/*"
+            ],
+            "SourceComponent/*": [
+                "node_modules/@scandipwa/scandipwa/src/component/*"
+            ],
+            "SourceRoute/*": [
+                "node_modules/@scandipwa/scandipwa/src/route/*"
+            ],
+            "SourceStore/*": [
+                "node_modules/@scandipwa/scandipwa/src/store/*"
+            ],
+            "SourceUtil/*": [
+                "node_modules/@scandipwa/scandipwa/src/util/*"
+            ],
+            "SourceQuery/*": [
+                "node_modules/@scandipwa/scandipwa/src/query/*"
+            ],
+            "SourceType/*": [
+                "node_modules/@scandipwa/scandipwa/src/type/*"
+            ],
+            "SourcePages/*": [
+                "node_modules/@scandipwa/scandipwa/src/pages/*"
+            ],
+            "SourceUi/*": [
+                "node_modules/@scandipwa/scandipwa/src/ui/*"
+            ],
+            "SourceSrc/*": [
+                "node_modules/@scandipwa/scandipwa/src/*"
+            ],
+            "Source/*": [
+                "node_modules/@scandipwa/scandipwa/src/*"
+            ],
+            "Style/*": [
+                "node_modules/@scandipwa/scandipwa/src/style/*",
+                "src/style/*"
+            ],
+            "Component/*": [
+                "node_modules/@scandipwa/scandipwa/src/component/*",
+                "src/component/*"
+            ],
+            "Route/*": [
+                "node_modules/@scandipwa/scandipwa/src/route/*",
+                "src/route/*"
+            ],
+            "Store/*": [
+                "node_modules/@scandipwa/scandipwa/src/store/*",
+                "src/store/*"
+            ],
+            "Util/*": [
+                "node_modules/@scandipwa/scandipwa/src/util/*",
+                "src/util/*"
+            ],
+            "Query/*": [
+                "node_modules/@scandipwa/scandipwa/src/query/*",
+                "src/query/*"
+            ],
+            "Type/*": [
+                "node_modules/@scandipwa/scandipwa/src/type/*",
+                "src/type/*"
+            ],
+            "Pages/*": [
+                "node_modules/@scandipwa/scandipwa/src/pages/*",
+                "src/pages/*"
+            ],
+            "Ui/*": [
+                "node_modules/@scandipwa/scandipwa/src/ui/*",
+                "src/ui/*"
+            ],
+            "Src/*": [
+                "node_modules/@scandipwa/scandipwa/src/*",
+                "src/*"
+            ]
+        }
+    }
+}

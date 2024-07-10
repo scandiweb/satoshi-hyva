@@ -1,0 +1,36 @@
+{
+  "extends": "./mosaic.jsconfig.json",
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "plugins": [
+      {
+        "name": "@scandipwa/ts-server-plugin"
+      }
+    ]
+  },
+  "include": [
+    "./node_modules/@scandipwa/scandipwa/src/**/*",
+    "./src/**/*",
+    "src/**/*",
+    "node_modules/@scandipwa/scandipwa/src/**/*"
+  ],
+  "exclude": []
+}
