@@ -21,7 +21,7 @@
         "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "~2.0",
         "magento/module-elasticsearch-8": "^100.4",
-        "magento/product-community-edition": "2.4.6",
+        "magento/product-community-edition": "2.4.6-p3",
         "readymage/logger": "^1.1",
         "readymage/maintenance": "^1.0",
         "hyva-themes/magento2-default-theme": "^1.3",
