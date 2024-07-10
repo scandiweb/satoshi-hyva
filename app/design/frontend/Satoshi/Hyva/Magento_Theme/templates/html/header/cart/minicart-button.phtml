@@ -15,7 +15,7 @@ $cartItemsCount = $cart->getCartItemsQty();
 <button
   @private-content-loaded.window="(event) => {
     if (!$store.cart.isCartInitialized) {
-      $store.cart.setCartItems(event.detail.data.cart.items);
+      $store.cart.setCartItems(event.detail.data.cart.items || []);
       $store.cart.isCartInitialized = true;
     }
   }"
