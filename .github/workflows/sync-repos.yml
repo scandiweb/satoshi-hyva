@@ -10,7 +10,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync repos
+      - name: Sync
         shell: bash
         run: |
           git config --global user.email "bot@satoshi.com"
