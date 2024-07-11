@@ -5,17 +5,17 @@
 1. `git clone git@github.com:satoshiux/hyva.git`
 2. `cd hyva`
 3. Copy `auth.json` content from slack.
-4. `yarn` or `npm install`
-5. `yarn start` or `npm run start`
+4. `npm install`
+5. `npm run start`
 
 ## Work guide and tips
 
 - Disable magento cache for full_page and block_html.
-  - `yarn cli` then `m cache:disable full_page block_html`
+  - `npm run cli` then `m cache:disable full_page block_html`
 - Run Vite to watch your changes in alpine & scss files.
   - `cd app/design/frontend/Satoshi/Hyva/web/satoshi`
-  - `yarn` or `npm install`
-  - `yarn dev` or `npm run dev`
+  - `npm install`
+  - `npm run dev`
 
 ## Tips
 
