@@ -27,3 +27,4 @@
 .DS_Store
 !.vscode
 !.prettierrc
+!.github
