@@ -82,40 +82,37 @@ export const CartStore = <CartStoreType>{
   },
 
   addToCart() {
-  //   const { id } = itemProps;
-
-  //   if (!this.addingItemIds.includes(id)) {
-  //     this.addingItemIds.push(id);
-  //   }
-
-  //   const formData = {
-  //     items: [itemProps],
-  //   };
-
-  //   fetch(`${window.Shopify.routes.root}cart/add.js`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(formData),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((response) => {
-  //       if (response.status === 422) {
-  //         this.errors = response.errors;
-  //         return;
-  //       }
-  //       const items = this.processCartItems(response.items);
-  //       this.addCartItems(items);
-  //       this.focusInCart(response.items[0]?.key);
-  //       this.errors = {};
-  //     })
-  //     .catch((error) => console.error("Error:", error))
-  //     .finally(() => {
-  //       this.addingItemIds = this.addingItemIds.filter(
-  //         (itemId) => itemId !== id,
-  //       );
-  //     });
+    //   const { id } = itemProps;
+    //   if (!this.addingItemIds.includes(id)) {
+    //     this.addingItemIds.push(id);
+    //   }
+    //   const formData = {
+    //     items: [itemProps],
+    //   };
+    //   fetch(`${window.Shopify.routes.root}cart/add.js`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(formData),
+    //   })
+    //     .then((response) => response.json())
+    //     .then((response) => {
+    //       if (response.status === 422) {
+    //         this.errors = response.errors;
+    //         return;
+    //       }
+    //       const items = this.processCartItems(response.items);
+    //       this.addCartItems(items);
+    //       this.focusInCart(response.items[0]?.key);
+    //       this.errors = {};
+    //     })
+    //     .catch((error) => console.error("Error:", error))
+    //     .finally(() => {
+    //       this.addingItemIds = this.addingItemIds.filter(
+    //         (itemId) => itemId !== id,
+    //       );
+    //     });
   },
 
   updateCartItem(item_id, qty) {
@@ -137,16 +134,16 @@ export const CartStore = <CartStoreType>{
     const params: Record<string, string> = {
       item_id,
       item_qty: qty.toString(),
-      form_key: window.hyva.getFormKey()
-    }
-    let url = '/checkout/sidebar/updateItemQty';
+      form_key: window.hyva.getFormKey(),
+    };
+    let url = "/checkout/sidebar/updateItemQty";
 
     if (cartItem.qty === 0) {
       cartItem.isDeleted = true;
       this.removingItemId = item_id;
 
       delete params.item_qty;
-      url = '/checkout/sidebar/removeItem';
+      url = "/checkout/sidebar/removeItem";
     }
 
     const queryParams = new URLSearchParams(params);
@@ -158,7 +155,7 @@ export const CartStore = <CartStoreType>{
       .then(() => {
         this.isLoading = false;
         this.removingItemId = null;
-        this.cartItems = this.cartItems.filter(item => item.qty);
+        this.cartItems = this.cartItems.filter((item) => item.qty);
       })
       .catch((error) => {
         if (error.name !== ABORT_ERROR_NAME) {
@@ -179,12 +176,11 @@ export const CartStore = <CartStoreType>{
     }
   },
 
-  focusInCart(key) {
+  focusInCart(_key) {
     // this.cartItems.forEach((cartItem) => {
     //   const isFocused = cartItem.key === key;
     //   cartItem.focusedUntil = isFocused ? Date.now() + 2000 : undefined;
     // });
-
     // this.showCart();
   },
 
@@ -199,7 +195,7 @@ export const CartStore = <CartStoreType>{
   },
 
   setQty(qty, item_id) {
-    console.log('xxx setting qty')
+    console.log("xxx setting qty");
     const cartItem = this.cartItems.find((item) => item.item_id === item_id);
 
     if (cartItem) {
@@ -208,7 +204,7 @@ export const CartStore = <CartStoreType>{
     }
   },
 
-  setDiscounts(discounts: any) {
+  setDiscounts(_discounts: any) {
     // this.discounts = discounts;
   },
 
