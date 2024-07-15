@@ -38,6 +38,11 @@ $isCartPage = $block->getData('isCartPage');
       class="flex flex-col gap-4 bg-white <?= $isCartPage ? 'max-md:px-4 md:pb-4' : 'px-4 pointer-events-none' ?> pt-4 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto"
       :inert="<?= $isCartPage ? '$store.main.isMobile && ' : '' ?>!isTotalsExpanded"
     >
+
+      <?php if ($isCartPage): ?>
+      <?= $template->render('Magento_Checkout::cart/shipping.phtml') ?>
+      <?php endif; ?>
+
       <div class="flex items-center justify-between pt-2">
         <h2><?= __('Order summary') ?></h2>
         <button
@@ -84,7 +89,7 @@ $isCartPage = $block->getData('isCartPage');
           </div>
         </template>
       </div>
-      <hr class="divider -mx-4 contrast-more:bg-secondary-700 <?php $isCartPage ? 'md:hidden' : '' ?>">
+      <hr class="divider -mx-4 contrast-more:bg-secondary-700">
     </div>
   </div>
 
@@ -99,7 +104,7 @@ $isCartPage = $block->getData('isCartPage');
       "
   >
     <div class="flex items-center justify-between overflow-x-hidden bg-fg pt-4 max-md:px-3">
-      <h2 x-text="`<?= __('Grand total') ?> (${excludingTaxMessage})`"></h2>
+      <h2><?= __('Grand total') ?></h2>
       <div
         class="flex translate-x-0 items-center gap-5 transition-transform delay-200 duration-300 motion-reduce:transition-none"
         :class="

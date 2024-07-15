@@ -15,7 +15,7 @@
   </template>
 
   <!-- display subtotal including tax -->
-  <template x-if="!cartTotals.include_tax_in_grand_total">
+  <template x-if="!cartTotals.include_tax_in_grand_total && segment.value !== cartTotals.grand_total">
     <div class="flex justify-between">
       <p x-text="`${segment.title} (${includingTaxMessage})`"></p>
       <p x-text="hyva.formatPrice(segment.value)"></p>

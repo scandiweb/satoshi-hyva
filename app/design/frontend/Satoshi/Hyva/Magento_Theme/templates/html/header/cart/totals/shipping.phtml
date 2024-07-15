@@ -4,26 +4,14 @@
     x-if="cartTotals.is_virtual === 0 && !!cartTotals.selected_shipping_method && cartTotals.review_shipping_display_mode === 'both'"
   >
     <div>
-      <div class="flex pb-2 my-2 border-b text-md lg:text-sm md:grid md:grid-cols-2 md:w-full border-container">
-        <div
-          class="w-7/12 text-left md:w-auto"
-          x-html="`${segment.title} (${excludingTaxMessage})`"
-        ></div>
-        <div
-          class="w-5/12 text-right md:w-auto"
-          x-text="hyva.formatPrice(totalsData.shipping_amount)"
-        ></div>
+      <div class="flex justify-between">
+        <p x-text="`${segment.title} (${excludingTaxMessage})`"></p>
+        <p x-text="hyva.formatPrice(cartTotals.shipping_amount)"></p>
       </div>
 
-      <div class="flex pb-2 my-2 border-b text-md lg:text-sm md:grid md:grid-cols-2 md:w-full border-container">
-        <div
-          class="w-7/12 text-left md:w-auto"
-          x-html="`${segment.title} (${includingTaxMessage})`"
-        ></div>
-        <div
-          class="w-5/12 text-right md:w-auto"
-          x-text="hyva.formatPrice(totalsData.shipping_incl_tax)"
-        ></div>
+      <div class="flex justify-between">
+        <p x-text="`${segment.title} (${includingTaxMessage})`"></p>
+        <p x-text="hyva.formatPrice(cartTotals.shipping_incl_tax)"></p>
       </div>
     </div>
   </template>
@@ -32,15 +20,9 @@
   <template
     x-if="cartTotals.is_virtual === 0 && !!cartTotals.selected_shipping_method && cartTotals.review_shipping_display_mode === 'excluding'"
   >
-    <div class="flex pb-2 my-2 border-b text-md lg:text-sm md:grid md:grid-cols-2 md:w-full border-container">
-      <div
-        class="w-7/12 text-left md:w-auto"
-        x-html="segment.title"
-      ></div>
-      <div
-        class="w-5/12 text-right md:w-auto"
-        x-text="hyva.formatPrice(segment.value)"
-      ></div>
+    <div class="flex justify-between">
+      <p x-text="segment.title"></p>
+      <p x-text="hyva.formatPrice(segment.value)"></p>
     </div>
   </template>
 
@@ -48,15 +30,9 @@
   <template
     x-if="cartTotals.is_virtual === 0 && !!cartTotals.selected_shipping_method && cartTotals.review_shipping_display_mode === 'including'"
   >
-    <div class="flex pb-2 my-2 border-b text-md lg:text-sm md:grid md:grid-cols-2 md:w-full border-container">
-      <div
-        class="w-7/12 text-left md:w-auto"
-        x-html="segment.title"
-      ></div>
-      <div
-        class="w-5/12 text-right md:w-auto"
-        x-text="hyva.formatPrice(totalsData.shipping_incl_tax)"
-      ></div>
+    <div class="flex justify-between">
+      <p x-text="segment.title"></p>
+      <p x-text="hyva.formatPrice(cartTotals.shipping_incl_tax)"></p>
     </div>
   </template>
 </div>
