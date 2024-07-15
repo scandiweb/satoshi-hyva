@@ -1,26 +1,11 @@
 <?php
 
 use Hyva\Theme\ViewModel\SvgIcons;
-use Hyva\Theme\ViewModel\Cart\CheckoutConfig;
-use Satoshi\Theme\ViewModel\Cart\Cart;
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-/** @var Cart $cartItems */
-$cart = $viewModels->require(Cart::class);
-$cartItemsCount = $cart->getCartItemsQty();
-
-/** @var CheckoutConfig $checkoutConfigViewModel */
-$checkoutConfigViewModel = $viewModels->require(CheckoutConfig::class);
-$serializedCheckoutConfig = $cartItemsCount ? $checkoutConfigViewModel->getSerializedCheckoutConfig() : 'false';
 ?>
-
-<script>
-window.checkoutConfig = <?= /* @noEscape  */ $serializedCheckoutConfig ?>;
-window.customerData = window.checkoutConfig.customerData;
-window.isCustomerLoggedIn = window.checkoutConfig.isCustomerLoggedIn;
-</script>
 
 <div x-data="Shipping()">
   <div
