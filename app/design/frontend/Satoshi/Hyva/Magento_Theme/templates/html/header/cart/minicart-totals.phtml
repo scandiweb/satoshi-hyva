@@ -112,6 +112,7 @@ $isCartPage = $block->getData('isCartPage');
         href="<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>"
         x-element-transition-trigger
         class="button button--filled-primary h-11 w-full"
+        :class="{ 'button--disabled': $store.cart.isLoading }"
       >
         <?= __('Secure checkout') ?>
         <span class="button__icon ml-3">
