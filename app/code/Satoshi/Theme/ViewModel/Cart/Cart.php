@@ -8,6 +8,9 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Api\CartTotalRepositoryInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Serialize\Serializer\JsonHexTag;
+use Magento\Tax\Model\Config;
+use Magento\Quote\Api\ShippingMethodManagementInterface as ShippingMethodManager;
+use Magento\Quote\Api\CartRepositoryInterface;
 
 class Cart implements ArgumentInterface
 {
@@ -32,19 +35,36 @@ class Cart implements ArgumentInterface
     protected $jsonHexTagSerializer;
 
     /**
-     * Items constructor.
-     * @param Session $checkoutSession
+     * @var Config
      */
+    protected $taxConfig;
+
+    /**
+     * @var CartRepositoryInterface
+     */
+    protected $quoteRepository;
+
+    /**
+     * @var ShippingMethodManager
+     */
+    protected $shippingMethodManager;
+
     public function __construct(
         Session $checkoutSession,
         CartTotalRepositoryInterface $cartTotalRepository,
         ScopeConfigInterface $scopeConfig,
         JsonHexTag $jsonHexTagSerializer,
+        Config $taxConfig,
+        CartRepositoryInterface $quoteRepository,
+        ShippingMethodManager $shippingMethodManager,
     ) {
         $this->checkoutSession = $checkoutSession;
         $this->cartTotalRepository = $cartTotalRepository;
         $this->scopeConfig = $scopeConfig;
         $this->jsonHexTagSerializer = $jsonHexTagSerializer;
+        $this->taxConfig = $taxConfig;
+        $this->quoteRepository = $quoteRepository;
+        $this->shippingMethodManager = $shippingMethodManager;
     }
 
     /**
@@ -63,7 +83,6 @@ class Cart implements ArgumentInterface
      */
     public function getCartTotals(): array
     {
-        // TODO: Refactor to return only what we need.
         if (!$this->getCartItemsQty()) {
             return [];
         }
@@ -79,11 +98,10 @@ class Cart implements ArgumentInterface
             if (is_object($totalSegment->getExtensionAttributes())) {
                 $totalSegmentArray['extension_attributes'] = $totalSegment->getExtensionAttributes()->__toArray();
             }
-            // if (floatval($totalSegmentArray['value']) > 0) {
-                $totalSegmentsData[] = $totalSegmentArray;
-            // }
+            $totalSegmentsData[] = $totalSegmentArray;
         }
 
+        // Sort segments according Stores > Configuration > Sales > Sales > Checkout Totals Sort Order
         usort($totalSegmentsData, function($a, $b) use ($totalsSort) {
             $valueA = isset($totalsSort[$a['code']]) ? $totalsSort[$a['code']] : 0;
             $valueB = isset($totalsSort[$b['code']]) ? $totalsSort[$b['code']] : 0;
@@ -95,6 +113,15 @@ class Cart implements ArgumentInterface
         if (is_object($totals->getExtensionAttributes())) {
             $totalsArray['extension_attributes'] = $totals->getExtensionAttributes()->__toArray();
         }
+
+        $quote = $this->quoteRepository->get($this->checkoutSession->getQuote()->getId());
+        $totalsArray['is_virtual'] = $quote->getIsVirtual();
+        $totalsArray['review_totals_display_mode'] = $this->getReviewTotalsDisplayMode();
+        $totalsArray['review_shipping_display_mode'] = $this->getDisplayShippingMode();
+        $totalsArray['include_tax_in_grand_total'] = $this->taxConfig->displayCartTaxWithGrandTotal();
+        $totalsArray['selected_shipping_method'] = $this->getSelectedShippingMethod();
+        $totalsArray['is_zero_tax_displayed'] = $this->taxConfig->displayCartZeroTax();
+        $totalsArray['is_full_tax_summary_displayed'] = $this->taxConfig->displayCartZeroTax();
         return $totalsArray;
     }
 
@@ -106,6 +133,58 @@ class Cart implements ArgumentInterface
     public function getSerializedCartTotals()
     {
         return $this->jsonHexTagSerializer->serialize($this->getCartTotals());
+    }
+
+    /**
+     * Get review item price display mode
+     *
+     * @return string 'both', 'including', 'excluding'
+     */
+    public function getReviewTotalsDisplayMode()
+    {
+        if ($this->taxConfig->displayCartSubtotalBoth()) {
+            return 'both';
+        }
+        if ($this->taxConfig->displayCartSubtotalExclTax()) {
+            return 'excluding';
+        }
+        return 'including';
+    }
+
+    /**
+     * Shipping mode: 'both', 'including', 'excluding'
+     *
+     * @return string
+     */
+    public function getDisplayShippingMode()
+    {
+        if ($this->taxConfig->displayCartShippingBoth()) {
+            return 'both';
+        }
+        if ($this->taxConfig->displayCartShippingExclTax()) {
+            return 'excluding';
+        }
+        return 'including';
+    }
+
+    /**
+     * Retrieve selected shipping method
+     *
+     * @return array|null
+     */
+    protected function getSelectedShippingMethod()
+    {
+        $shippingMethodData = null;
+        try {
+            $quoteId = $this->checkoutSession->getQuote()->getId();
+            $shippingMethod = $this->shippingMethodManager->get($quoteId);
+            if ($shippingMethod) {
+                $shippingMethodData = $shippingMethod->__toArray();
+            }
+        } catch (\Exception $exception) {
+            $shippingMethodData = null;
+        }
+        return $shippingMethodData;
     }
 
 }
