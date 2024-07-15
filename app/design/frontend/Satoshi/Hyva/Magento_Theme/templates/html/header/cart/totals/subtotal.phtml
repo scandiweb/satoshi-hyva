@@ -1,0 +1,32 @@
+<div class="contents">
+  <!-- display subtotal including and excluding tax -->
+  <template x-if="cartTotals.review_totals_display_mode === 'both'">
+    <div>
+      <div class="flex justify-between">
+        <p x-text="`${segment.title} (${excludingTaxMessage})`"></p>
+        <p x-text="hyva.formatPrice(cartTotals.subtotal)"></p>
+      </div>
+
+      <div class="flex justify-between">
+        <p x-text="`${segment.title} (${includingTaxMessage})`"></p>
+        <p x-text="hyva.formatPrice(cartTotals.subtotal_incl_tax)"></p>
+      </div>
+    </div>
+  </template>
+
+  <!-- display subtotal excluding tax -->
+  <template x-if="cartTotals.review_totals_display_mode === 'excluding'">
+    <div class="flex justify-between">
+      <p x-text="segment.title"></p>
+      <p x-text="hyva.formatPrice(cartTotals.subtotal)"></p>
+    </div>
+  </template>
+
+  <!-- display subtotal including tax -->
+  <template x-if="cartTotals.review_totals_display_mode === 'including'">
+    <div class="flex justify-between">
+      <p x-text="segment.title"></p>
+      <p x-text="hyva.formatPrice(cartTotals.subtotal_incl_tax)"></p>
+    </div>
+  </template>
+</div>

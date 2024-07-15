@@ -29,16 +29,34 @@ export type CartItem = {
   focusedUntil?: number;
 };
 
+export type CartTotals = {
+  total_segments: {
+    code: string;
+    title: string;
+    value: string;
+    extension_attributes: Record<string, any>[];
+  }[];
+  grand_total: string;
+  include_tax_in_grand_total: boolean;
+  is_virtual: boolean;
+  selected_shipping_method: any;
+  review_shipping_display_mode: string;
+  subtotal: string;
+  subtotal_incl_tax: string;
+  review_total_display_mode: string;
+  is_zero_subtotal: boolean;
+  is_full_tax_summary_displayed: boolean;
+};
+
 export type CartStoreType = {
   cartItems: CartItem[];
-  grandTotal: string;
-  totalSegments: any;
+  cartTotals: any;
   isLoading: boolean;
   addingItemIds: number[];
   removingItemId: string | null;
   abortController: AbortController | null;
   errors: Record<string, string[]>;
-  updateTotalSegments(totals: any): void;
+  setCartTotals(cartTotals: CartTotals): void;
   setCartItems(cartItems: CartItem[]): void;
   addCartItems(cartItems: CartItem[]): void;
   updateCartItem(item_id: string): void;
@@ -58,17 +76,15 @@ const ABORT_ERROR_NAME = "AbortError";
 
 export const CartStore = <CartStoreType>{
   cartItems: [],
-  grandTotal: "",
-  totalSegments: [],
+  cartTotals: {},
   isLoading: false,
   addingItemIds: [],
   removingItemId: null,
   abortController: null,
   errors: {},
 
-  updateTotalSegments(totals: any) {
-    this.totalSegments = totals.total_segments;
-    this.grandTotal = totals.grand_total;
+  setCartTotals(cartTotals: CartTotals) {
+    this.cartTotals = cartTotals;
   },
 
   setCartItems(cartItems: CartItem[]) {
