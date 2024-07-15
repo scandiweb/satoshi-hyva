@@ -14,6 +14,8 @@
         <attribute name="class" value="gradient" />
         <attribute name="class" value="bg-fg" />
         <attribute name="x-data" value="{}" />
+        <attribute name="@private-content-loaded.window" value="$store.cart.setCartItems($event.detail.data.cart?.items || []); console.log('prv cntnt')" />
+
 
         <referenceContainer name="main.content"  htmlClass="page-main overflow-x-hidden"/>
         <referenceContainer name="header.container"  htmlClass="page-header contents"/>
