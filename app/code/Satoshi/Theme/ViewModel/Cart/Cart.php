@@ -49,6 +49,15 @@ class Cart implements ArgumentInterface
      */
     protected $shippingMethodManager;
 
+    /**
+     * @param Session $checkoutSession
+     * @param CartTotalRepositoryInterface $cartTotalRepository
+     * @param ScopeConfigInterface $scopeConfig
+     * @param JsonHexTag $jsonHexTagSerializer
+     * @param Config $taxConfig
+     * @param CartRepositoryInterface $quoteRepository
+     * @param ShippingMethodManager $shippingMethodManager
+     */
     public function __construct(
         Session $checkoutSession,
         CartTotalRepositoryInterface $cartTotalRepository,

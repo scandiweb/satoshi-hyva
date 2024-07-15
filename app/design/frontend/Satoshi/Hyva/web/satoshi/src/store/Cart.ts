@@ -57,6 +57,7 @@ export type CartStoreType = {
   abortController: AbortController | null;
   errors: Record<string, string[]>;
   setCartTotals(cartTotals: CartTotals): void;
+  updateCartTotals(cartTotals: CartTotals): void;
   setCartItems(cartItems: CartItem[]): void;
   addCartItems(cartItems: CartItem[]): void;
   updateCartItem(item_id: string): void;
@@ -85,6 +86,12 @@ export const CartStore = <CartStoreType>{
 
   setCartTotals(cartTotals: CartTotals) {
     this.cartTotals = cartTotals;
+  },
+  updateCartTotals(cartTotals: CartTotals) {
+    this.cartTotals = {
+      ...this.cartTotals,
+      ...cartTotals,
+    };
   },
 
   setCartItems(cartItems: CartItem[]) {
