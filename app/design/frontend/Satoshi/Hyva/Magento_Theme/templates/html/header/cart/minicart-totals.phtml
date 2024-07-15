@@ -1,21 +1,17 @@
 <?php
 
-use Hyva\Theme\Model\ViewModelRegistry;
-use Satoshi\Theme\ViewModel\Cart\Cart;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\View\Element\Template;
+use Magento\Framework\Escaper;
 
-/** @var ViewModelRegistry $viewModels */
-/** @var Template $block */
+
+/** @var Escaper $escaper */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-/** @var Cart $cartItems */
-$cart = $viewModels->require(Cart::class);
-$cartItemsCount = $cart->getCartItemsQty();
+/** @var Template $block */
 $isCartPage = $block->getData('isCartPage');
-
 ?>
 <div
   class="absolute left-0 right-0 top-0 origin-bottom -translate-y-[2.5rem] text-text-on-fg transition-transform duration-700 motion-reduce:transition-none md:mb-0 md:w-full <?= $isCartPage ? 'md:relative md:translate-y-0 md:pointer-events-auto' : '' ?>"
@@ -47,29 +43,23 @@ $isCartPage = $block->getData('isCartPage');
         </span>
       </button>
     </div>
-    <div class="flex flex-col gap-3 text-text-100 contrast-more:text-secondary-700">
-      <div class="flex justify-between">
-        <p><?= __('Subtotal') ?></p>
-        <p x-text="$store.cart.subtotalPrice()"></p>
-      </div>
-      <?php // TODO: Implement discounts ?>
+
+    <!-- TODO: Do they include tax and stuff? refactor for each segment. -->
+    <template
+      x-for="segment in $store.cart.totalSegments"
+      :key="segment.code"
+    >
       <div
-        class="contents"
-        x-init='$store.cart.setDiscounts([])'
+        class="flex flex-col gap-3 text-text-100 contrast-more:text-secondary-700"
+        x-show="segment.value > 0"
       >
-        <template x-if="$store.cart.discounts">
-          <template x-for="(discount, i) in $store.cart.discounts">
-            <div
-              class="flex justify-between"
-              :key="`discount-${discount.title}`"
-            >
-              <p x-text="`<?= __('Discount') ?> (${discount.title})`"></p>
-              <p x-text="`-${$store.cart.money(discount.total_allocated_amount)}`"></p>
-            </div>
-          </template>
-        </template>
+        <div class="flex justify-between">
+          <p x-text="segment.title"></p>
+          <p x-text="hyva.formatPrice(segment.value)"></p>
+        </div>
       </div>
-    </div>
+    </template>
+
     <hr class="divider -mx-4 contrast-more:bg-secondary-700 <?php $isCartPage ? 'md:hidden' : '' ?>">
   </div>
 </div>
@@ -85,7 +75,7 @@ $isCartPage = $block->getData('isCartPage');
     "
 >
   <div class="flex items-center justify-between overflow-x-hidden bg-fg pt-4 max-md:px-3">
-    <h2><?= __('Order total') ?></h2>
+    <h2><?= __('Grand total') ?></h2>
     <div
       class="flex translate-x-0 items-center gap-5 transition-transform delay-200 duration-300 motion-reduce:transition-none"
       :class="
@@ -98,7 +88,7 @@ $isCartPage = $block->getData('isCartPage');
       <div>
         <p
           class="font-bold"
-          x-text="$store.cart.totalPrice()"
+          x-text="hyva.formatPrice($store.cart.grandTotal)"
         ></p>
       </div>
 
@@ -117,18 +107,28 @@ $isCartPage = $block->getData('isCartPage');
   </div>
 
   <div class="mt-4 flex flex-col gap-4 rounded-b-xl bg-fg max-md:px-3">
-    <a
-      href="<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>"
-      x-element-transition-trigger
-      class="button button--filled-primary h-11 w-full"
-    >
-      <?= __('Secure checkout') ?>
-      <span class="button__icon ml-3">
-        <?= $hyvaicons->renderHtml('lock') ?>
-      </span>
-    </a>
-  </div>
-  <div class="mt-2 text-md text-text-100 contrast-more:text-secondary-700 max-md:px-3">
-    <?= __('Tax included and shipping calculated at checkout') ?>
+    <div class="flex gap-4">
+      <a
+        href="<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>"
+        x-element-transition-trigger
+        class="button button--filled-primary h-11 w-full"
+      >
+        <?= __('Secure checkout') ?>
+        <span class="button__icon ml-3">
+          <?= $hyvaicons->renderHtml('lock') ?>
+        </span>
+      </a>
+
+      <a
+        href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart')) ?>"
+        x-element-transition-trigger
+        class="button button--outline-primary h-11 <?= $isCartPage ? 'md:hidden' : '' ?>"
+      >
+        <?= __('View cart') ?>
+        <span class="button__icon ml-3">
+          <?= $hyvaicons->renderHtml('cart-empty') ?>
+        </span>
+      </a>
+    </div>
   </div>
 </div>

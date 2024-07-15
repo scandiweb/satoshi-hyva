@@ -12,7 +12,10 @@ declare global {
     hyva: {
       getFormKey: function;
       formatPrice: function;
-    },
+      getUenc: function;
+      replaceDomElement: function;
+      strf: function;
+    };
 
     // TODO: Remove
     Shopify: {

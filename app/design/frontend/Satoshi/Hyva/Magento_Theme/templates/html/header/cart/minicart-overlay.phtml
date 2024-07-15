@@ -55,7 +55,7 @@ $title = $block->getData('title');
           x-show="$store.main.isMobile"
           class="text-text-100 contrast-more:text-secondary-700"
           x-transition.opacity
-          x-text="cartItems.length > 1 ? `${cartItems.length} items` : `${cartItems.length} item`"
+          x-text="$store.cart.cartItems.length > 1 ? window.hyva.strf('<?= $escaper->escapeJs('%0 items') ?>', $store.cart.cartItems.length) : window.hyva.strf('<?= $escaper->escapeJs('%0 items') ?>', $store.cart.cartItems.length)"
         ></p>
       </template>
       <div
