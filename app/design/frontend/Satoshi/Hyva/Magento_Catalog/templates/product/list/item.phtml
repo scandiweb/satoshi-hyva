@@ -81,7 +81,7 @@ if (!$isAlpineTemplate) {
       }
     "
     <?php else : ?>
-    href="<?= $escaper->escapeUrl($product->getUrlKey()) ?>"
+    href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
     x-element-transition-trigger:product.preview.animate
     <?php endif; ?>
     class="group relative flex min-w-0 rounded-md"
