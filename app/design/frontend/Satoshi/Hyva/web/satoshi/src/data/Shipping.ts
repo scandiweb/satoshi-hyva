@@ -1,4 +1,5 @@
 import type { Magics } from "alpinejs";
+import { fetchShippingMethodsUrl, fetchTotalsUrl } from "../utils/magento-api";
 
 export type Data = {
   cart: any;
@@ -205,34 +206,23 @@ export const Shipping = () =>
 
       Alpine.store("cart").isLoading = true;
 
-      const path =
-        this.customer && this.customer.fullname
-          ? "/V1/carts/mine/estimate-shipping-methods"
-          : "/V1/guest-carts/" +
-            this.cart.cartId +
-            "/estimate-shipping-methods";
-
       this.abortController = new AbortController();
+      const path = fetchShippingMethodsUrl(
+        this.customer && this.customer.fullname,
+        this.cart.cartId,
+      );
 
-      fetch(
-        BASE_URL +
-          "rest/" +
-          CURRENT_STORE_CODE +
-          path +
-          "?form_key=" +
-          window.hyva.getFormKey(),
-        {
-          signal: this.abortController.signal,
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-          },
-          body: JSON.stringify({
-            address: this.cartData.address,
-          }),
+      fetch(path + "?form_key=" + window.hyva.getFormKey(), {
+        signal: this.abortController.signal,
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
         },
-      )
+        body: JSON.stringify({
+          address: this.cartData.address,
+        }),
+      })
         .then((response) => response.json())
         .then((result) => {
           if (result.length && !this.availableShippingMethods.length) {
@@ -327,36 +317,28 @@ export const Shipping = () =>
         carrierCode = splitShippingMethod[0];
         methodCode = this.shippingMethod.replace(carrierCode + "_", "") || null;
       }
-      const path =
-        this.customer && this.customer.fullname
-          ? "/V1/carts/mine/totals-information"
-          : "/V1/guest-carts/" + this.cart.cartId + "/totals-information";
 
+      const path = fetchTotalsUrl(
+        this.customer && this.customer.fullname,
+        this.cart.cartId,
+      );
       this.abortController = new AbortController();
 
-      fetch(
-        BASE_URL +
-          "rest/" +
-          CURRENT_STORE_CODE +
-          path +
-          "?form_key=" +
-          window.hyva.getFormKey(),
-        {
-          signal: this.abortController.signal,
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-          },
-          body: JSON.stringify({
-            addressInformation: {
-              shipping_carrier_code: carrierCode,
-              shipping_method_code: methodCode,
-              address: this.cartData.address,
-            },
-          }),
+      fetch(path + "?form_key=" + window.hyva.getFormKey(), {
+        signal: this.abortController.signal,
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
         },
-      )
+        body: JSON.stringify({
+          addressInformation: {
+            shipping_carrier_code: carrierCode,
+            shipping_method_code: methodCode,
+            address: this.cartData.address,
+          },
+        }),
+      })
         .then((response) => response.json())
         .then((result) => {
           Alpine.store("cart").updateCartTotals(result);
