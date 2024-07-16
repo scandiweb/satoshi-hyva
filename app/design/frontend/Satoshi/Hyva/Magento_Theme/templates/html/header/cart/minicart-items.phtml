@@ -96,6 +96,7 @@ $isCartPage = $block->getData('isCartPage');
       </div>
     </template>
 
+    <?php if ($isCartPage): ?>
     <!-- Apply coupon block -->
     <?=
       $block
@@ -104,6 +105,7 @@ $isCartPage = $block->getData('isCartPage');
         ->setTemplate('Magento_Theme::html/header/cart/coupon.phtml')
         ->toHtml();
     ?>
+    <?php endif; ?>
 
   </div>
 </div>
