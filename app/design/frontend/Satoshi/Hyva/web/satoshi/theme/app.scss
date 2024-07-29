@@ -125,6 +125,8 @@ h3 {
 
 .page-wrapper {
   @apply -mt-[88px] flex-1 max-md:overflow-hidden;
+  // TODO: Remove this, only added to make a space till page structure is refactored
+  @apply pt-24;
 }
 
 .disable-fade .faded-img {
