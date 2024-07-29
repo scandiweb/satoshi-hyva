@@ -1,24 +1,24 @@
 <?php
+
+$arrowSvg = file_get_contents($block->getViewFileUrl('images/breadcrumb.svg'));
+
+// TODO: Make dynamic
 $isAlpineTemplate = false;
 $condition = false;
 $isNoMobile = false;
 $template = [];
 $t = 'page';
-
 if (in_array($template, ['index', 'cart', 'list-collections', '404', 'customers/account', 'customers/addresses', 'customers/order', 'gift_card'])) {
     $condition = true;
 }
-
 if (in_array($template, ['collection', 'product', 'search'])) {
     $isNoMobile = true;
 }
-
-$arrowSvg = file_get_contents($block->getViewFileUrl('images/breadcrumb.svg'));
 ?>
 
 <?php if ($crumbs && is_array($crumbs) && !$condition): ?>
     <nav
-        class="breadcrumbs content-wrapper mx-auto my-8 px-4 <?php if ($isNoMobile): ?>hidden md:block<?php endif; ?>"
+        class="breadcrumbs content-wrapper mx-auto my-8 px-4 <?php if ($isNoMobile): ?>hidden<?php endif; ?>"
         role="navigation"
         aria-label="<?= __('general.breadcrumbs.aria_label') ?>"
     >
@@ -28,7 +28,7 @@ $arrowSvg = file_get_contents($block->getViewFileUrl('images/breadcrumb.svg'));
                 <div role="listitem" class="breadcrumb <?= $block->escapeHtmlAttr($crumbName) ?>">
                     <?php if ($crumbInfo['link']) : ?>
                         <div role="listitem" class="inline font-bold text-neutral-500 contrast-more:text-secondary-700">
-                            <a x-element-transition-trigger href="<?= $this->getUrl('') ?>">
+                            <a x-element-transition-trigger href="">
                                 <?= $block->escapeHtml($crumbInfo['label']) ?>
                             </a>
                         </div>
@@ -95,7 +95,9 @@ $arrowSvg = file_get_contents($block->getViewFileUrl('images/breadcrumb.svg'));
                                     if ($collectionUrl): ?>
                                         <div role="listitem" class="breadcrumb">
                                             <a x-element-transition-trigger
-                                               href=""><?= $block->escapeHtml($crumbInfo['title']) ?></a>
+                                               href="">
+                                                <?= $block->escapeHtml($crumbInfo['title']) ?>
+                                            </a>
                                         </div>
                                         <div
                                             role="listitem"
@@ -133,7 +135,7 @@ $arrowSvg = file_get_contents($block->getViewFileUrl('images/breadcrumb.svg'));
                                 case 'blog': ?>
                                     <?php if ($currentTags): ?>
                                         <div role="listitem" class="breadcrumb">
-                                            <a x-element-transition-trigger href="<?= $blogUrl ?>"
+                                            <a x-element-transition-trigger href=""
                                                aria-current="page"><?= $blogTitle ?></a>
                                         </div>
                                         <div
@@ -154,7 +156,7 @@ $arrowSvg = file_get_contents($block->getViewFileUrl('images/breadcrumb.svg'));
                                     break;
                                 case 'article': ?>
                                     <div role="listitem" class="breadcrumb">
-                                        <a x-element-transition-trigger href="<?= $blogUrl ?>"
+                                        <a x-element-transition-trigger href=""
                                            aria-current="page"><?= $blogTitle ?></a>
                                     </div>
                                     <div
