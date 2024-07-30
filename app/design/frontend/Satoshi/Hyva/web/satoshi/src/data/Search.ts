@@ -1,6 +1,6 @@
 import type { Magics } from "alpinejs";
 import { navigateWithTransition } from "../plugins/Transition";
-import { productsQuery } from "../graphql/fetchProducts";
+import { searchQuery } from "../graphql/searchQuery";
 
 export type SearchType = {
   [key: string | symbol]: any;
@@ -8,10 +8,11 @@ export type SearchType = {
   isLoading: boolean;
   searchTerm: string;
   searchTermInput: string;
-  queries: [];
+  suggestions: [];
   products: [];
   categories: [];
   isNoResults: boolean;
+  productsSearchLimit: number;
 
   init(): void;
   getIsSearchActive(): boolean;
@@ -29,10 +30,11 @@ export const Search = () =>
     isLoading: false,
     searchTerm: initialSearch || "",
     searchTermInput: initialSearch || "",
-    queries: [],
+    suggestions: [],
     products: [],
     categories: [],
     isNoResults: false,
+    productsSearchLimit: 4,
 
     getIsSearchActive() {
       return !!this.searchTerm && (this.products.length || this.isNoResults);
@@ -67,22 +69,27 @@ export const Search = () =>
     search() {
       this.isLoading = true;
 
-      // TODO!: Implement queries/suggestions, and categories
       const url =
         "/graphql?" +
         new URLSearchParams({
-          query: productsQuery(this.searchTerm, this.productsSearchLimit),
+          query: searchQuery(this.searchTerm, this.productsSearchLimit),
         });
 
       fetch(url)
         .then((response) => response.json())
         .then(({ data }) => {
           const {
-            products: { items },
+            products: { items, suggestions },
+            categories: { items: categories = [] } = {},
           } = data;
 
           this.products = items;
-          this.isNoResults = !this.products.length;
+          this.suggestions = suggestions;
+          this.categories = categories;
+          this.isNoResults =
+            !this.suggestions.length &&
+            !this.products.length &&
+            !this.categories.length;
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => (this.isLoading = false));
