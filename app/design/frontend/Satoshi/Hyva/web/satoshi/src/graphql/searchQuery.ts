@@ -1,7 +1,9 @@
+import { sanitize } from "../utils/sanitize";
+
 export const searchQuery = (term: string, size: number) => {
   return `{
         products(
-            search: ${term},
+            search: "${sanitize(term)}",
             pageSize: ${size}
         ) {
             suggestions {
@@ -46,7 +48,7 @@ export const searchQuery = (term: string, size: number) => {
             categories(
                 filters: {
                     name: {
-                        match: ${term}
+                        match: "${sanitize(term)}"
                     }
                 },
                 pageSize: ${size}
