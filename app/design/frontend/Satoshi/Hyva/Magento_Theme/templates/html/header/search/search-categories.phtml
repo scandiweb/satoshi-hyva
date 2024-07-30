@@ -1,0 +1,32 @@
+<div
+  x-show="categories.length"
+  class="relative flex grow flex-col gap-4 p-3 pb-2 transition-opacity duration-300 md:p-5"
+  :class="{ 'opacity-0': isLoading }"
+>
+  <div class="pb-2">
+    <h2 class="text-lg"><?= __('Categories') ?></h2>
+  </div>
+  <div class="flex min-h-11 flex-col gap-2 md:min-h-[48px]">
+    <div
+      x-show="categories.length"
+      class="-mx-5 flex gap-3 overflow-x-auto px-5 py-1 md:max-w-[--search-width]"
+    >
+      <template x-for="category in categories">
+        <a
+          :href="category.url_path"
+          class="button button--outline-secondary"
+          x-element-transition-trigger:category.animate="{
+            'title': category.name,
+          }"
+          x-text="category.name"
+        ></a>
+      </template>
+    </div>
+  </div>
+</div>
+
+<hr
+  x-show="categories.length"
+  class="divider -mx-3 transition-opacity duration-300"
+  :class="{ 'opacity-0': isLoading }"
+>
