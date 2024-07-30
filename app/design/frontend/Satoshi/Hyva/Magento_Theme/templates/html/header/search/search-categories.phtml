@@ -13,7 +13,7 @@
     >
       <template x-for="category in categories">
         <a
-          :href="category.url_path"
+          :href="`/${category.url_path}.html`"
           class="button button--outline-secondary"
           x-element-transition-trigger:category.animate="{
             'title': category.name,
