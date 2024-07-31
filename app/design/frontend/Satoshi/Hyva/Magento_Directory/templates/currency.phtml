@@ -109,7 +109,12 @@ $currencyViewModel = $viewModels->require(Currency::class);
                                 $currencyViewModel->getSwitchCurrencyPostData($code) ?>)'
                             >
                                 <?= $escaper->escapeHtml($currency['name']) ?>
-                                <span><?= $escaper->escapeHtml($code) ?> (<?= $escaper->escapeHtml($currency['symbol']) ?>)</span>
+                                <span>
+                                    <?= $escaper->escapeHtml($code) ?>
+                                    <?php if ($currency['symbol'] !== ''): ?>
+                                        &lpar;<?= $escaper->escapeHtml($currency['symbol']) ?>&rpar;
+                                    <?php endif; ?>
+                                </span>
                             </a>
                         </li>
                     <?php endforeach; ?>
