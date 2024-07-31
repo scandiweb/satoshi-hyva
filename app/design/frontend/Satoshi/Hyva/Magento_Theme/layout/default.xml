@@ -22,6 +22,9 @@
             </container>
         </referenceContainer>
 
+        <!-- TODO: Remove global alerts (uncomment this) -->
+        <!-- <referenceContainer name="page.messages" remove="true" /> -->
+
         <referenceContainer name="main.content" htmlClass="contents" htmlTag="div" />
 
         <move element="main.content" destination="main-content" />
