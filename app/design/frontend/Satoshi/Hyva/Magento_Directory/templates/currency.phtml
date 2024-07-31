@@ -70,7 +70,7 @@ $currencyViewModel = $viewModels->require(Currency::class);
                         :aria-expanded="open"
                 >
                     <?php if ($currencies[$currentCurrencyCode]): ?>
-                        <?= $escaper->escapeHtml($currencies[$currentCurrencyCode]) ?> |
+                        <?= $escaper->escapeHtml($currencies[$currentCurrencyCode]['name']) ?> |
                     <?php endif; ?>
                     <?= $escaper->escapeHtml($currentCurrencyCode) ?>
                     <span :class="{ 'rotate-180': open }"
@@ -97,7 +97,7 @@ $currencyViewModel = $viewModels->require(Currency::class);
                 <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700"
                     id="currency-list"
                     aria-labelledby="currency-selector-button">
-                    <?php foreach ($currencies as $code => $name): ?>
+                    <?php foreach ($currencies as $code => $currency): ?>
                         <li>
                             <a
                                 tabindex="0"
@@ -105,10 +105,11 @@ $currencyViewModel = $viewModels->require(Currency::class);
                                 aria-describedby="currency-heading"
                                 class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs bg-primary-50 hover:underline"
                                 :class="{ 'bg-primary-50': '<?= $escaper->escapeHtml($code) ?>' === '<?= $escaper->escapeHtml($currentCurrencyCode) ?>' }"
-                                @click.prevent='hyva.postForm(<?= /* @noEscape */ $currencyViewModel->getSwitchCurrencyPostData($code) ?>)'
+                                @click.prevent='hyva.postForm(<?= /* @noEscape */
+                                $currencyViewModel->getSwitchCurrencyPostData($code) ?>)'
                             >
-                                <?= $escaper->escapeHtml($name) ?>
-                                <span><?= $escaper->escapeHtml($code) ?></span>
+                                <?= $escaper->escapeHtml($currency['name']) ?>
+                                <span><?= $escaper->escapeHtml($code) ?> (<?= $escaper->escapeHtml($currency['symbol']) ?>)</span>
                             </a>
                         </li>
                     <?php endforeach; ?>
