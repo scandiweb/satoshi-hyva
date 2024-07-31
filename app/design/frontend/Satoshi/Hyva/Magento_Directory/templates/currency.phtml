@@ -1,0 +1,88 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Currency;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsSolid $heroiconsSolid */
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+
+/** @var Currency $currencyViewModel */
+$currencyViewModel = $viewModels->require(Currency::class);
+?>
+<?php if ($currencyViewModel->getCurrencyCount() > 1): ?>
+    <?php $currencies = $currencyViewModel->getCurrencies(); ?>
+    <?php $currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode(); ?>
+    <div x-data="{ open: false }"
+         class="w-full sm:w-1/2 md:w-full pr-4"
+    >
+        <h2
+            id="currency-heading"
+            class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3 uppercase"
+        >
+            <?= $escaper->escapeHtml(__('Currency')) ?>
+        </h2>
+        <div class="relative inline-block text-left">
+            <div>
+                <button @click.prevent="open = !open"
+                        @click.outside="open = false"
+                        @keydown.window.escape="open=false"
+                        type="button"
+                        class="inline-flex items-center justify-between gap-6 whitespace-nowrap rounded-sm border bg-white px-6 py-3"
+                        aria-haspopup="true"
+                        :aria-expanded="open"
+                >
+                    <?php if ($currencies[$currentCurrencyCode]): ?>
+                        <?= $escaper->escapeHtml($currencies[$currentCurrencyCode]) ?> |
+                    <?php endif; ?>
+                    <?= $escaper->escapeHtml($currentCurrencyCode) ?>
+                    <span :class="{ 'rotate-180': open }"
+                          class="transition-transform motion-reduce:transition-none">
+                        <?= $heroiconsSolid->chevronDownHtml("", 12, 12) ?>
+                    </span>
+                </button>
+            </div>
+            <nav x-cloak=""
+                 x-show="open"
+                 class="absolute z-10 min-w-full rounded-sm border border-gray-300 bg-white p-2 pt-3 bottom-full"
+                 aria-labelledby="currency-heading"
+            >
+                <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700"
+                    aria-labelledby="currency-selector-button">
+                    <?php foreach ($currencies as $code => $name): ?>
+                        <li>
+                            <a
+                                tabindex="0"
+                                data-value="<?= $escaper->escapeHtml($code) ?>"
+                                aria-describedby="currency-heading"
+                                class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs bg-primary-50 hover:underline"
+                                :class="{ 'bg-primary-50': '<?= $escaper->escapeHtml($code) ?>' === '<?= $escaper->escapeHtml($currentCurrencyCode) ?>' }"
+                                @click.prevent='hyva.postForm(<?= /* @noEscape */
+                                $currencyViewModel->getSwitchCurrencyPostData($code) ?>)'
+                            >
+                                <?= $escaper->escapeHtml($name) ?>
+                                <span><?= $escaper->escapeHtml($code) ?></span>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
+        </div>
+    </div>
+<?php endif; ?>
