@@ -15,5 +15,6 @@
 
         <referenceBlock name="category.description" remove="true" />
         <referenceBlock name="category.image" remove="true" />
+        <referenceBlock name="category.cms" remove="true" />
     </body>
 </page>
