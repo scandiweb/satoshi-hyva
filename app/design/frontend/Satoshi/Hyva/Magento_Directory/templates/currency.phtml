@@ -29,7 +29,29 @@ $currencyViewModel = $viewModels->require(Currency::class);
 <?php if ($currencyViewModel->getCurrencyCount() > 1): ?>
     <?php $currencies = $currencyViewModel->getCurrencies(); ?>
     <?php $currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode(); ?>
-    <div x-data="{ open: false }"
+    <div x-data="{
+            open: false,
+            search: function (value) {
+                const items = document.querySelectorAll('#currency-list li');
+                items.forEach((item) => {
+                    if (item.textContent.toLowerCase().includes(value.trim().toLowerCase())) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            },
+            toggleDropdown() {
+                if(this.open) {
+                    this.open = false;
+                } else {
+                    this.open = true;
+                    this.$nextTick(() => {
+                        this.$refs.currencySearch.focus();
+                    });
+                }
+            },
+        }"
          class="w-full sm:w-1/2 md:w-full pr-4"
     >
         <h2
@@ -40,8 +62,7 @@ $currencyViewModel = $viewModels->require(Currency::class);
         </h2>
         <div class="relative inline-block text-left">
             <div>
-                <button @click.prevent="open = !open"
-                        @click.outside="open = false"
+                <button @click.prevent="toggleDropdown"
                         @keydown.window.escape="open=false"
                         type="button"
                         class="inline-flex items-center justify-between gap-6 whitespace-nowrap rounded-sm border bg-white px-6 py-3"
@@ -58,12 +79,23 @@ $currencyViewModel = $viewModels->require(Currency::class);
                     </span>
                 </button>
             </div>
-            <nav x-cloak=""
+            <div x-cloak=""
                  x-show="open"
                  class="absolute z-10 min-w-full rounded-sm border border-gray-300 bg-white p-2 pt-3 bottom-full"
                  aria-labelledby="currency-heading"
+                 @click.away="open = false"
             >
+                <div class="p-2">
+                    <label for="currency-search" class="sr-only">
+                        Search
+                    </label>
+                    <input type="text" id="currency-search"
+                           class="w-full rounded-xs border p-3 placeholder:text-gray-500 contrast-more:border-secondary-700"
+                           x-ref="currencySearch"
+                           placeholder="Search" @input.debounce.300ms="search($event.target.value)">
+                </div>
                 <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700"
+                    id="currency-list"
                     aria-labelledby="currency-selector-button">
                     <?php foreach ($currencies as $code => $name): ?>
                         <li>
@@ -73,8 +105,7 @@ $currencyViewModel = $viewModels->require(Currency::class);
                                 aria-describedby="currency-heading"
                                 class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs bg-primary-50 hover:underline"
                                 :class="{ 'bg-primary-50': '<?= $escaper->escapeHtml($code) ?>' === '<?= $escaper->escapeHtml($currentCurrencyCode) ?>' }"
-                                @click.prevent='hyva.postForm(<?= /* @noEscape */
-                                $currencyViewModel->getSwitchCurrencyPostData($code) ?>)'
+                                @click.prevent='hyva.postForm(<?= /* @noEscape */ $currencyViewModel->getSwitchCurrencyPostData($code) ?>)'
                             >
                                 <?= $escaper->escapeHtml($name) ?>
                                 <span><?= $escaper->escapeHtml($code) ?></span>
@@ -82,7 +113,7 @@ $currencyViewModel = $viewModels->require(Currency::class);
                         </li>
                     <?php endforeach; ?>
                 </ul>
-            </nav>
+            </div>
         </div>
     </div>
 <?php endif; ?>
