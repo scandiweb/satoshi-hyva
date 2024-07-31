@@ -73,6 +73,8 @@ else{
     <?php endif; ?>
     class="<?= $class ?> <?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product w-full"
 >
+
+    <!-- Changed a grid column height to look more similar to designs. placed card in the center of column -->
     <a
         <?php if ($isAlpineTemplate) : ?>
             :href="product.url"
