@@ -1,10 +1,8 @@
-const {
-  spacing
-} = require('tailwindcss/defaultTheme');
+const { spacing } = require("tailwindcss/defaultTheme");
 
-const colors = require('tailwindcss/colors');
+const colors = require("tailwindcss/colors");
 
-const hyvaModules = require('@hyva-themes/hyva-modules');
+const hyvaModules = require("@hyva-themes/hyva-modules");
 
 const defaultWidthHeight = {
   1: "0.25rem",
@@ -23,22 +21,6 @@ const defaultWidthHeight = {
 module.exports = hyvaModules.mergeTailwindConfig({
   theme: {
     extend: {
-      screens: {
-        'sm': '640px',
-        // => @media (min-width: 640px) { ... }
-        'md': '768px',
-        // => @media (min-width: 768px) { ... }
-        'lg': '1024px',
-        // => @media (min-width: 1024px) { ... }
-        'xl': '1280px',
-        // => @media (min-width: 1280px) { ... }
-        '2xl': '1536px', // => @media (min-width: 1536px) { ... }
-        "max-2xl": { max: "1535px" },
-        "max-xl": { max: "1279px" },
-        "max-lg": { max: "1023px" },
-        "max-md": { max: "767px" },
-        "max-sm": { max: "639px" },
-      },
       truncate: {
         whiteSpace: "nowrap",
         overflow: "hidden",
@@ -52,48 +34,7 @@ module.exports = hyvaModules.mergeTailwindConfig({
         input: "0 0 0 1px #757575",
         error: "0 0 0 1px rgb(229, 62, 62)",
       },
-      fontFamily: {
-        sans: ["Segoe UI", "Helvetica Neue", "Arial", "sans-serif"]
-      },
-      fonts: {
-        heading: "Satoshi, sans-serif",
-        body: "Satoshi, sans-serif",
-      },
       colors: {
-        primary: {
-          50: "#EDEDED",
-          100: "#757575",
-          500: "#181818",
-          600: "#3F3F3F",
-          lighter: colors.blue['300'],
-          "DEFAULT": colors.blue['800'],
-          darker: colors.blue['900']
-        },
-        secondary: {
-          50: "#F5F5F5",
-          100: "#E5E5E5",
-          400: "#a4a4a4",
-          500: "#757575",
-          600: "#757575",
-          700: "#181818",
-          lighter: colors.blue['100'],
-          "DEFAULT": colors.blue['200'],
-          darker: colors.blue['300']
-        },
-        text: {
-          50: "#EDEDED",
-          100: "#757575",
-          500: "#181818",
-          700: "#797979",
-        },
-        background: {
-          lighter: colors.blue['100'],
-          "DEFAULT": colors.blue['200'],
-          darker: colors.blue['300']
-        },
-        green: colors.emerald,
-        yellow: colors.amber,
-        purple: colors.violet,
         placeholder: "#718096",
         "border-color": "#e2e8f0",
         shadow: "#00000033",
@@ -104,7 +45,27 @@ module.exports = hyvaModules.mergeTailwindConfig({
         fg: "#FFFFFF",
         "text-on-fg": "#181818",
         error: "#B40C1C",
+        primary: {
+          50: "#EDEDED",
+          100: "#757575",
+          500: "#181818",
+          600: "#3F3F3F",
+        },
         // secondary colors (must not catch attention)
+        secondary: {
+          50: "#F5F5F5",
+          100: "#E5E5E5",
+          400: "#a4a4a4",
+          500: "#757575",
+          600: "#757575",
+          700: "#181818",
+        },
+        text: {
+          50: "#EDEDED",
+          100: "#757575",
+          500: "#181818",
+          700: "#797979",
+        },
       },
       borderWidth: {
         1: "1px",
@@ -123,21 +84,12 @@ module.exports = hyvaModules.mergeTailwindConfig({
         6: "20px",
         7: "24px",
       },
-      textColor: {
-        orange: colors.orange,
-        red: { ...colors.red,
-          "DEFAULT": colors.red['500']
-        },
-        primary: {
-          lighter: colors.gray['700'],
-          "DEFAULT": colors.gray['800'],
-          darker: colors.gray['900']
-        },
-        secondary: {
-          lighter: colors.gray['400'],
-          "DEFAULT": colors.gray['600'],
-          darker: colors.gray['800']
-        }
+      screens: {
+        "max-2xl": { max: "1535px" },
+        "max-xl": { max: "1279px" },
+        "max-lg": { max: "1023px" },
+        "max-md": { max: "767px" },
+        "max-sm": { max: "639px" },
       },
       width: defaultWidthHeight,
       height: defaultWidthHeight,
@@ -145,6 +97,10 @@ module.exports = hyvaModules.mergeTailwindConfig({
       minHeight: defaultWidthHeight,
       maxWidth: {
         screen: "100vw",
+      },
+      fonts: {
+        heading: "Satoshi, sans-serif",
+        body: "Satoshi, sans-serif",
       },
       fontSize: {
         "2xs": "0.625rem",
@@ -156,90 +112,59 @@ module.exports = hyvaModules.mergeTailwindConfig({
         xxl: "24px",
       },
       transitionDelay: {
-        0: "0ms",
         150: "150ms",
         450: "450ms",
       },
       gridTemplateColumns: {
         header: "40px 40px 1fr 40px 40px",
-        productOptions: "repeat(auto-fit, minmax(110px, 1fr))",
+        addressForms: "repeat(auto-fit, 400px)",
       },
-      backgroundColor: {
-        primary: {
-          lighter: colors.blue['600'],
-          "DEFAULT": colors.blue['700'],
-          darker: colors.blue['800']
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
         },
-        secondary: {
-          lighter: colors.blue['100'],
-          "DEFAULT": colors.blue['200'],
-          darker: colors.blue['300']
+        slideIconIn: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
         },
-        container: {
-          lighter: '#ffffff',
-          "DEFAULT": '#fafafa',
-          darker: '#f5f5f5'
-        }
-      },
-      borderColor: {
-        primary: {
-          lighter: colors.blue['600'],
-          "DEFAULT": colors.blue['700'],
-          darker: colors.blue['800']
+        slideTitleIn: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(var(--translate-width))" },
         },
-        secondary: {
-          lighter: colors.blue['100'],
-          "DEFAULT": colors.blue['200'],
-          darker: colors.blue['300']
+        slideIconOut: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-100%)" },
         },
-        container: {
-          lighter: '#f5f5f5',
-          "DEFAULT": '#e7e7e7',
-          darker: '#b6b6b6'
-        }
+        slideTitleOut: {
+          "0%": { transform: "translateX(var(--translate-width))" },
+          "100%": { transform: "translateX(0)" },
+        },
+        pop: {
+          "50%": { transform: "scale(0.95)" },
+        },
       },
-      minWidth: {
-        7: spacing["7"],
-        8: spacing["8"],
-        9: spacing["9"],
-        10: spacing["10"],
-        11: spacing["11"],
-        12: spacing["12"],
-        20: spacing["20"],
-        40: spacing["40"],
-        48: spacing["48"]
+      animation: {
+        fadeIn: "fadeIn 500ms forwards",
+        slideIconIn: "slideIconIn 300ms forwards",
+        slideIconOut: "slideIconOut 300ms forwards",
+        slideTitleIn: "slideTitleIn 300ms forwards",
+        slideTitleOut: "slideTitleOut 300ms forwards",
+        pop: "pop 300ms ease-in-out forwards",
       },
-      minHeight: {
-        11: '44px',
-        14: spacing["14"],
-        a11y: '44px',
-        'screen-25': '25vh',
-        'screen-50': '50vh',
-        'screen-75': '75vh'
-      },
-      maxHeight: {
-        '0': '0',
-        'screen-25': '25vh',
-        'screen-50': '50vh',
-        'screen-75': '75vh'
-      },
-      container: {
-        center: true,
-        padding: '1.5rem'
-      }
-    }
+    },
   },
   // Examples for excluding patterns from purge
   content: [
     // this theme's phtml and layout XML files
-    '../../**/*.phtml',
-    '../../*/layout/*.xml',
-    '../../*/page_layout/override/base/*.xml',
+    "../../**/*.phtml",
+    "../../*/layout/*.xml",
+    "../../*/page_layout/override/base/*.xml",
     // parent theme in Vendor (if this is a child-theme)
-    '../../../../../../../vendor/hyva-themes/magento2-default-theme/**/*.phtml',
-    '../../../../../../../vendor/hyva-themes/magento2-default-theme/*/layout/*.xml',
-    '../../../../../../../vendor/hyva-themes/magento2-default-theme/*/page_layout/override/base/*.xml',
+    "../../../../../../../vendor/hyva-themes/magento2-default-theme/**/*.phtml",
+    "../../../../../../../vendor/hyva-themes/magento2-default-theme/*/layout/*.xml",
+    "../../../../../../../vendor/hyva-themes/magento2-default-theme/*/page_layout/override/base/*.xml",
     // app/code phtml files (if need tailwind classes from app/code modules)
-    '../../../../../../../app/code/**/*.phtml',
-  ]
+    "../../../../../../../app/code/**/*.phtml",
+  ],
 });

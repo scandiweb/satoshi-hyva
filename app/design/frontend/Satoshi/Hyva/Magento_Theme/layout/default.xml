@@ -15,9 +15,19 @@
         <attribute name="class" value="bg-fg" />
         <attribute name="x-data" value="{}" />
 
-        <referenceContainer name="main.content"  htmlClass="page-main overflow-x-hidden"/>
-        <referenceContainer name="header.container"  htmlClass="page-header contents"/>
-        <move element="header.container" destination="root" before="page.wrapper" />
+        <referenceContainer name="header.container" htmlClass="page-header contents"/>
+        <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-fg">
+            <container name="main.wrapper" as="main.wrapper" htmlTag="div" htmlClass="main-wrapper">
+                <block class="Magento\Framework\View\Element\Template" name="main-content" template="Magento_Theme::html/layout/main-content.phtml" before="-" />
+            </container>
+        </referenceContainer>
+
+        <referenceContainer name="main.content" htmlClass="contents" htmlTag="div" />
+
+        <move element="main.content" destination="main-content" />
+        <move element="top.container" destination="main.content" before="-" />
+
+        <move element="footer-container" destination="root" after="page.wrapper" />
 
         <!-- Render popup wrapper -->
         <referenceContainer name="before.body.end">
