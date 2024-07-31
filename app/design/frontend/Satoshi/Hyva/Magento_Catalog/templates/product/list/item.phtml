@@ -53,50 +53,54 @@ $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $featuredImage = false;
 
 if (!$isAlpineTemplate) {
-  $product = $block->getData('product');
+    $product = $block->getData('product');
 
-  if (!$product) {
-    return '';
-  }
+    if (!$product) {
+        return '';
+    }
+    $id = $product->getId();
+}
 
-  $id = $product->getId();
+else{
+    $product = null;
 }
 ?>
 
 <div
-  <?php if (!$isAlpineTemplate) : ?>
-  x-element-transition-area="p-<?= $id ?>"
-  key="<?= $id ?>"
-  <?php endif; ?>
-  class="<?= $class ?> <?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product"
+    <?php if (!$isAlpineTemplate) : ?>
+        x-element-transition-area="p-<?= $id ?>"
+        key="<?= $id ?>"
+    <?php endif; ?>
+    class="<?= $class ?> <?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product w-full"
 >
-  <?php // TODO: Pass product data ?>
-  <a
-    <?php if ($isAlpineTemplate) : ?>
-    :href="product.url"
-    x-element-transition-trigger:product<?= $isSearchCard ? '' : '.preview' ?>.animate="
+    <a
+        <?php if ($isAlpineTemplate) : ?>
+            :href="product.url"
+            x-element-transition-trigger:product<?= $isSearchCard ? '' : '.preview' ?>.animate="
       {
         'productImg': product.image,
         'title': product.title
       }
     "
-    <?php else : ?>
-    href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
-    x-element-transition-trigger:product.preview.animate
-    <?php endif; ?>
-    class="group relative flex min-w-0 rounded-md"
-  >
-    <div
-      class="h-0 w-0"
-      style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"
-    ></div>
-    <?=
-      $template
-        ->setData([
-          'imageLoading' => 'lazy',
-          'isAlpineTemplate' => false
-          ])
-        ->render('Magento_Catalog::product/list/item-details-article.phtml')
-    ?>
-  </a>
+        <?php else : ?>
+            href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
+            x-element-transition-trigger:product.preview.animate
+        <?php endif; ?>
+        class="group relative flex min-w-0 rounded-md justify-center"
+        style="height: 600px"
+    >
+        <div
+            class="h-0 w-0"
+            style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"
+        ></div>
+        <?=
+        $template
+            ->setData([
+                'imageLoading' => 'lazy',
+                'isAlpineTemplate' => $isAlpineTemplate,
+                'product' => $product
+            ])
+            ->render('Magento_Catalog::product/list/item-details-article.phtml')
+        ?>
+    </a>
 </div>
