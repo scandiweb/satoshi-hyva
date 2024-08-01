@@ -39,7 +39,7 @@ if (in_array($template, ['collection', 'product', 'search'])) {
                             class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
                             aria-hidden="true"
                         >
-                            <?= $hyvaicons->renderHtml('breadcrumb-chevron-right'); ?>
+                            <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
                         </div>
 
                         <!-- TODO: Many non existent variables must be implemented -->
@@ -63,7 +63,7 @@ if (in_array($template, ['collection', 'product', 'search'])) {
                                     <div role="listitem"
                                          class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
                                          aria-hidden="true">
-                                        <?= $hyvaicons->renderHtml('breadcrumb-chevron-right'); ?>
+                                        <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
                                     </div>
                                     <div role="listitem" class="breadcrumb">
                                         <?= htmlspecialchars($pageData['title'] ?? '', ENT_QUOTES, 'UTF-8') ?>
