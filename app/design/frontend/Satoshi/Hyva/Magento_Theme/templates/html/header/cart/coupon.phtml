@@ -11,7 +11,9 @@ use Magento\Checkout\Block\Cart\Coupon;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
 $hasCouponCode = (bool) strlen($block->getCouponCode() ?: "");
-$couponMessage = $block->getCouponMessage();
+$formMessage = $block->getFormMessage();
+$couponFormMessage = array_key_exists('apply_coupon',
+  $formMessage) ? $formMessage['apply_coupon'] : null; // The key we sent with form
 ?>
 
 <div
@@ -23,7 +25,7 @@ $couponMessage = $block->getCouponMessage();
   <!-- Coupon -->
   <div
     class="py-4 rounded-sm border-1"
-    x-data="Accordion(<?= $hasCouponCode || $couponMessage ? 'true' : 'false' ?>, 300)"
+    x-data="Accordion(<?= $hasCouponCode || $couponFormMessage ? 'true' : 'false' ?>, 300)"
   >
     <button
       class="flex items-center justify-between w-full px-5"
@@ -93,9 +95,9 @@ $couponMessage = $block->getCouponMessage();
           <?= $hasCouponCode ? __('Cancel Coupon') : __('Apply Coupon') ?>
         </button>
       </form>
-      <?php if ($couponMessage): ?>
-      <div class="px-5 <?= $couponMessage['status'] === 'error' ? 'text-error' : '' ?>">
-        <?= $couponMessage['message'] ?>
+      <?php if ($couponFormMessage): ?>
+        <div class="px-5 <?= $couponFormMessage['status'] === 'error' ? 'text-error' : '' ?>">
+          <?= $couponFormMessage['message'] ?>
       </div>
       <?php endif; ?>
     </div>

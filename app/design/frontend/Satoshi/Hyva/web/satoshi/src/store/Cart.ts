@@ -239,6 +239,7 @@ export const CartStore = <CartStoreType>{
     const formData = new FormData(form);
     formData.append("uenc", window.hyva.getUenc());
     formData.append("form_key", window.hyva.getFormKey());
+    formData.append("satoshi_form_id", 'apply_coupon');
 
     fetch(form.action, {
       method: "POST",
