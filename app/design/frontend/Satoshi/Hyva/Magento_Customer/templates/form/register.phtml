@@ -13,11 +13,6 @@ use Hyva\Theme\ViewModel\Customer\CreateAccountButton;
 use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Hyva\Theme\ViewModel\ReCaptcha;
 use Magento\Customer\Block\Form\Register;
-use Magento\Customer\Block\Widget\Dob;
-use Magento\Customer\Block\Widget\Gender;
-use Magento\Customer\Block\Widget\Name as NameWidget;
-use Magento\Customer\Block\Widget\Taxvat;
-use Magento\Customer\Helper\Address;
 use Magento\Framework\Escaper;
 
 /** @var Register $block */
@@ -43,11 +38,14 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
 <div class="container mx-auto flex h-full items-center px-5">
     <div class="mx-auto mb-16 w-[412px] max-w-full">
         <header class="flex items-center justify-between sm:text-center">
-            <h2 class="mb-7 w-full text-2xl" tabindex="-1"><?= __('Create an Account') ?></h2>
+            <h2 class="mb-7 w-full text-2xl" tabindex="-1"><?= __('Create account') ?></h2>
         </header>
         <div class="flex items-center">
             <div class="w-full">
-                <form id="<?= $escaper->escapeHtmlAttr($formId) ?>" action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>" method="post" novalidate="novalidate" enctype="multipart/form-data" autocomplete="off" x-data="Object.assign(hyva.formValidation($el), initForm())">
+                <form id="<?= $escaper->escapeHtmlAttr($formId) ?>"
+                      action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>" method="post"
+                      novalidate="novalidate" enctype="multipart/form-data" autocomplete="off"
+                      x-data="Object.assign(hyva.formValidation($el), initForm())">
                     <?= $block->getBlockHtml('formkey'); ?>
                     <?= $block->getChildHtml('form_fields_before') ?>
                     <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>
@@ -114,7 +112,7 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             placeholder="<?= __('Password') ?>"
                             class="h-[44px] rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
                             required
-                            data-validate='{"password-strength": {"minCharacterSets": <?= (int) $passwordMinCharacterSets ?>}}'
+                            data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
                             autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                         />
                         <!-- Error message can be added here if needed -->
@@ -138,12 +136,13 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                     </div>
 
                     <button class="mt-7 w-full rounded-[--buttons-radius] bg-primary-bg px-6 py-4 text-white">
-                        <?= __('Create an Account') ?>
+                        <?= __('Create') ?>
                     </button>
 
                     <div class="mt-6 text-center text-sm tracking-wider">
-                        <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>" class="text-md underline contrast-more:text-secondary-700">
-                            <?= __('Back') ?>
+                        <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+                           class="text-md underline contrast-more:text-secondary-700">
+                            <?= __('Back to login') ?>
                         </a>
                     </div>
                 </form>
@@ -177,7 +176,7 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
             },
             directoryData: {},
             availableRegions: {},
-            selectedRegion: <?= (int) $block->getRegion() ?>,
+            selectedRegion: <?= (int)$block->getRegion() ?>,
             isZipRequired: true,
             isRegionRequired: true,
             showOptionalRegions: <?= $showOptionalRegions ? 'true' : 'false' ?>,
