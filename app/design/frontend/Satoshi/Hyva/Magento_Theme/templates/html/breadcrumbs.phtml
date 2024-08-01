@@ -5,8 +5,6 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-//$arrowSvg = file_get_contents($block->getViewFileUrl('images/breadcrumb-chevron-right.svg'));
-
 // TODO: Make dynamic
 $isAlpineTemplate = false;
 $condition = false;
@@ -89,99 +87,10 @@ if (in_array($template, ['collection', 'product', 'search'])) {
                             <?php endif; ?>
 
                         <?php else: ?>
-                            <?php switch ($t):
-                                case 'page': ?>
-                                    <div role="listitem" class="breadcrumb">
-                                        <?= $block->escapeHtml($crumbInfo['label']) ?>
-                                    </div>
-                                    <?php break;
-                                case 'product':
-                                    if ($collectionUrl): ?>
-                                        <div role="listitem" class="breadcrumb">
-                                            <a x-element-transition-trigger
-                                               href="">
-                                                <?= $block->escapeHtml($crumbInfo['title']) ?>
-                                            </a>
-                                        </div>
-                                        <div
-                                            role="listitem"
-                                            class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
-                                            aria-hidden="true"
-                                        >
-                                            <?= $hyvaicons->renderHtml('breadcrumb-chevron-right'); ?>
-                                        </div>
-                                    <?php endif; ?>
-                                    <div role="listitem" class="breadcrumb">
-                                        <?= $block->escapeHtml($crumbInfo['title']) ?>                                    </div>
-                                    <?php break;
-                                case 'collection':
-                                    if ($collectionHandle): ?>
-                                        <div role="listitem" class="breadcrumb">
-                                            <?= $collectionTitle ?>
-                                        </div>
-                                        <div
-                                            role="listitem"
-                                            class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
-                                            aria-hidden="true"
-                                        >
-                                        </div>
-                                        <?php if ($currentTags): ?>
-                                            <div role="listitem" class="breadcrumb">
-                                                <?= implode(' + ', $currentTags) ?>
-                                            </div>
-                                        <?php endif;
-                                    else: ?>
-                                        <div role="listitem" class="breadcrumb">
-                                            <?= $collectionTitle ?>
-                                        </div>
-                                    <?php endif;
-                                    break;
-                                case 'blog': ?>
-                                    <?php if ($currentTags): ?>
-                                        <div role="listitem" class="breadcrumb">
-                                            <a x-element-transition-trigger href=""
-                                               aria-current="page"><?= $blogTitle ?></a>
-                                        </div>
-                                        <div
-                                            role="listitem"
-                                            class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
-                                            aria-hidden="true"
-                                        >
-                                            <?= $hyvaicons->renderHtml('breadcrumb-chevron-right'); ?>
-                                        </div>
-                                        <div role="listitem" class="breadcrumb">
-                                            <?= implode(' + ', $currentTags) ?>
-                                        </div>
-                                    <?php else: ?>
-                                        <div role="listitem" class="breadcrumb">
-                                            <?= $blogTitle ?>
-                                        </div>
-                                    <?php endif;
-                                    break;
-                                case 'article': ?>
-                                    <div role="listitem" class="breadcrumb">
-                                        <a x-element-transition-trigger href=""
-                                           aria-current="page"><?= $blogTitle ?></a>
-                                    </div>
-                                    <div
-                                        role="listitem"
-                                        class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
-                                        aria-hidden="true"
-                                    >
-                                        <?= $hyvaicons->renderHtml('breadcrumb-chevron-right'); ?>
-                                    </div>
-                                    <div role="listitem" class="breadcrumb">
-                                        <?= $articleTitle ?>
-                                    </div>
-                                    <?php break;
-                                default: ?>
-                                    <div role="listitem" class="breadcrumb" aria-current="page">
-                                        <?= $pageTitle ?>
-                                    </div>
-                                <?php endswitch; ?>
+                            <div role="listitem" class="breadcrumb">
+                                <?= $block->escapeHtml($crumbInfo['label']) ?>
+                            </div>
                         <?php endif; ?>
-                    <?php else : ?>
-                        <?= $block->escapeHtml($crumbInfo['label']) ?>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
