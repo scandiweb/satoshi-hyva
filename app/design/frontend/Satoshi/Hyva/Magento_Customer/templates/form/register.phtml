@@ -1,0 +1,274 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Customer\CreateAccountButton;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\ReCaptcha;
+use Magento\Customer\Block\Form\Register;
+use Magento\Customer\Block\Widget\Dob;
+use Magento\Customer\Block\Widget\Gender;
+use Magento\Customer\Block\Widget\Name as NameWidget;
+use Magento\Customer\Block\Widget\Taxvat;
+use Magento\Customer\Helper\Address;
+use Magento\Framework\Escaper;
+
+/** @var Register $block */
+/** @var Escaper $escaper */
+/** @var ReCaptcha $recaptcha */
+/** @var CreateAccountButton $createAccountButtonViewModel */
+/** @var ViewModelRegistry $viewModels */
+/** @var HeroiconsSolid $heroicons */
+
+$formId = 'account-create-form';
+$recaptcha = $block->getData('viewModelRecaptcha');
+$heroicons = $viewModels->require(HeroiconsSolid::class);
+$createAccountButtonViewModel = $viewModels->require(CreateAccountButton::class);
+$region = $block->getAttributeData()->getFrontendLabel('region');
+$selectRegion = 'Please select a region, state or province.';
+$showOptionalRegions = $block->getConfig('general/region/display_all');
+$regionLabel = $block->getAttributeData()->getFrontendLabel('region');
+$minimumPasswordLength = $block->getMinimumPasswordLength();
+$passwordMinCharacterSets = $block->getRequiredCharacterClassesNumber();
+$isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_storefront');
+?>
+
+<div class="container mx-auto flex h-full items-center px-5">
+    <div class="mx-auto mb-16 w-[412px] max-w-full">
+        <header class="flex items-center justify-between sm:text-center">
+            <h2 class="mb-7 w-full text-2xl" tabindex="-1"><?= __('Create an Account') ?></h2>
+        </header>
+        <div class="flex items-center">
+            <div class="w-full">
+                <form id="<?= $escaper->escapeHtmlAttr($formId) ?>" action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>" method="post" novalidate="novalidate" enctype="multipart/form-data" autocomplete="off" x-data="Object.assign(hyva.formValidation($el), initForm())">
+                    <?= $block->getBlockHtml('formkey'); ?>
+                    <?= $block->getChildHtml('form_fields_before') ?>
+                    <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>
+
+                    <div class="mt-3 flex flex-col">
+                        <label for="first_name" class="sr-only tracking-widest">
+                            <?= __('First Name') ?>
+                        </label>
+                        <input
+                            type="text"
+                            name="firstname"
+                            id="first_name"
+                            placeholder="<?= __('First Name') ?>"
+                            class="h-[44px] rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                            value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getFirstname()) ?>"
+                            autocomplete="given-name"
+                            required
+                        />
+                        <!-- Error message can be added here if needed -->
+                    </div>
+
+                    <div class="mt-3 flex flex-col">
+                        <label for="last_name" class="sr-only tracking-widest">
+                            <?= __('Last Name') ?>
+                        </label>
+                        <input
+                            type="text"
+                            name="lastname"
+                            id="last_name"
+                            placeholder="<?= __('Last Name') ?>"
+                            class="h-[44px] rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                            value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getLastname()) ?>"
+                            autocomplete="family-name"
+                            required
+                        />
+                        <!-- Error message can be added here if needed -->
+                    </div>
+
+                    <div class="mt-3 flex flex-col">
+                        <label for="email_address" class="sr-only tracking-widest">
+                            <?= __('Email') ?>
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            id="email_address"
+                            placeholder="<?= __('Email') ?>"
+                            class="h-[44px] rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                            value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getEmail()) ?>"
+                            autocomplete="email"
+                            required
+                        />
+                        <!-- Error message can be added here if needed -->
+                    </div>
+
+                    <div class="mt-3 flex flex-col">
+                        <label for="password" class="sr-only tracking-widest">
+                            <?= __('Password') ?>
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            placeholder="<?= __('Password') ?>"
+                            class="h-[44px] rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                            required
+                            data-validate='{"password-strength": {"minCharacterSets": <?= (int) $passwordMinCharacterSets ?>}}'
+                            autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
+                        />
+                        <!-- Error message can be added here if needed -->
+                    </div>
+
+                    <div class="mt-3 flex flex-col">
+                        <label for="password_confirmation" class="sr-only tracking-widest">
+                            <?= __('Confirm Password') ?>
+                        </label>
+                        <input
+                            type="password"
+                            name="password_confirmation"
+                            id="password_confirmation"
+                            placeholder="<?= __('Confirm Password') ?>"
+                            class="h-[44px] rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                            required
+                            data-validate='{"equalTo": "password"}'
+                            autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
+                        />
+                        <!-- Error message can be added here if needed -->
+                    </div>
+
+                    <button class="mt-7 w-full rounded-[--buttons-radius] bg-primary-bg px-6 py-4 text-white">
+                        <?= __('Create an Account') ?>
+                    </button>
+
+                    <div class="mt-6 text-center text-sm tracking-wider">
+                        <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>" class="text-md underline contrast-more:text-secondary-700">
+                            <?= __('Back') ?>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function initForm() {
+        return {
+            errors: 0,
+            hasCaptchaToken: 0,
+            showPassword: false,
+            showPasswordConfirm: false,
+            submitForm() {
+                this.validate()
+                    .then(() => {
+                        const $form = document.querySelector('#<?= $escaper->escapeJs($formId) ?>');
+                        <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>
+
+                        if (this.errors === 0) {
+                            $form.submit();
+                        }
+                    })
+                    .catch((invalid) => {
+                        if (invalid.length > 0) {
+                            invalid[0].focus();
+                        }
+                    });
+            },
+            directoryData: {},
+            availableRegions: {},
+            selectedRegion: <?= (int) $block->getRegion() ?>,
+            isZipRequired: true,
+            isRegionRequired: true,
+            showOptionalRegions: <?= $showOptionalRegions ? 'true' : 'false' ?>,
+            onPrivateContentLoaded(data) {
+                this.directoryData = data['directory-data'] || {};
+
+                <?php if ($block->getCountryId()): ?>
+                this.setCountry(this.$refs['country_id'], '<?= $escaper->escapeJs($block->getCountryId()) ?>');
+                <?php endif; ?>
+            },
+            setRegionInputValue(regionName) {
+                this.$nextTick(() => {
+                    const regionInputElement = this.$refs['region'];
+                    if (regionInputElement) {
+                        regionInputElement.value = regionName;
+                    }
+                })
+            },
+            setCountry(countrySelectElement, initialRegion) {
+                const selectedOption = countrySelectElement.options[countrySelectElement.selectedIndex];
+                const countryCode = countrySelectElement.value;
+                const countryData = this.directoryData[countryCode] || false;
+
+                if (!countryData) {
+                    this.setRegionInputValue('');
+                    return;
+                }
+
+                this.isZipRequired = selectedOption.dataset.isZipRequired === '1';
+                this.isRegionRequired = selectedOption.dataset.isRegionRequired === '1';
+
+                this.availableRegions = countryData.regions || {};
+
+                const initialRegionId = Object.keys(this.availableRegions).filter(regionId => this.availableRegions[regionId].name === initialRegion)[0];
+                this.selectedRegion = initialRegionId || '0';
+                this.setRegionInputValue(initialRegionId && this.availableRegions[initialRegionId].name || '');
+            },
+            changeCountry(countrySelectElement, initialRegion) {
+                this.setCountry(countrySelectElement, initialRegion);
+                this.validateCountryDependentFields();
+            },
+            validateCountryDependentFields() {
+                this.$nextTick(() => {
+                    this.fields['postcode'] && this.removeMessages(this.fields['postcode']);
+                    this.fields['region'] && this.removeMessages(this.fields['region']);
+                    delete this.fields['postcode'];
+                    delete this.fields['region'];
+                    this.setupField(this.$refs['country_id']);
+                    this.setupField(this.$refs['postcode']);
+                    this.setupField(this.$refs['region']);
+                    this.fields['postcode'] && this.validateField(this.fields['postcode']);
+                    this.fields['region'] && this.validateField(this.fields['region']);
+                });
+            },
+            hasAvailableRegions() {
+                return Object.keys(this.availableRegions).length > 0;
+            }
+        };
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        hyva.formValidation.addRule('telephone', (value, options) => {
+            const phoneNumber = value.trim().replace(' ', '');
+            if (phoneNumber && phoneNumber.length < (options.minlength || 3)) {
+                return '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>';
+            }
+            return true;
+        });
+
+        const postCodeSpecs = <?= /* @noEscape */ $block->getPostCodeConfig()->getSerializedPostCodes() ?>;
+
+        hyva.formValidation.addRule('postcode', (postCode, options, field, context) => {
+            context.removeMessages(field, 'postcode-warning');
+            const countryId = (context.fields['country_id'] && context.fields['country_id'].element.value),
+                validatedPostCodeExamples = [],
+                countryPostCodeSpecs = countryId && postCodeSpecs ? postCodeSpecs[countryId] : false;
+
+            if (!postCode || !countryPostCodeSpecs) return true;
+
+            for (const postCodeSpec of Object.values(countryPostCodeSpecs)) {
+                if (new RegExp(postCodeSpec.pattern).test(postCode)) return true;
+                validatedPostCodeExamples.push(postCodeSpec.example);
+            }
+            if (validatedPostCodeExamples) {
+                context.addMessages(field, 'postcode-warning', [
+                    '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
+                    '<?= $escaper->escapeJs(__(' Example: ')) ?>' + validatedPostCodeExamples.join('; ') + '. ',
+                    '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
+                ]);
+            }
+            return true;
+        });
+    });
+</script>
