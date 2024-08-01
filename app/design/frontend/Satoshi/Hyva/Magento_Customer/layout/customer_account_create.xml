@@ -9,7 +9,7 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <title>Create New Customer Account</title>
+        <title>Create Account</title>
     </head>
     <update handle="hyva_form_validation"/>
     <body>
