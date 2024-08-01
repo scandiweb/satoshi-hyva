@@ -8,19 +8,18 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 $isAlpineTemplate = false;
 $condition = false;
 $isNoMobile = false;
-$template = [];
-$t = 'page';
-if (in_array($template, ['index', 'cart', 'list-collections', '404', 'customers/account', 'customers/addresses', 'customers/order', 'gift_card'])) {
+$template = $this->getRequest()->getFullActionName();
+if (in_array($template, ['cms_index_index', 'checkout_cart_index', 'catalog_category_view', 'cms_noroute_index', 'customer_account_index', 'customer_address_index', 'sales_order_history', 'giftvoucher_index_index'])) {
     $condition = true;
 }
-if (in_array($template, ['collection', 'product', 'search'])) {
+if (in_array($template, ['catalog_category_view', 'catalog_product_view', 'catalogsearch_result_index'])) {
     $isNoMobile = true;
 }
 ?>
 
 <?php if ($crumbs && is_array($crumbs) && !$condition): ?>
     <nav
-        class="breadcrumbs content-wrapper mx-auto my-8 px-4 <?php if ($isNoMobile): ?>hidden<?php endif; ?>"
+        class="breadcrumbs content-wrapper mx-auto my-8 px-4 <?php if ($isNoMobile): ?>hidden<?php endif; ?> md:block"
         role="navigation"
         aria-label="<?= __('general.breadcrumbs.aria_label') ?>"
     >
