@@ -4,4 +4,6 @@
   <type name="Magento\Framework\View\TemplateEngine\Php">
     <plugin name="utilities_template_engine_plugin" type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"/>
   </type>
+
+    <preference for="Magento\Customer\Controller\Account\CreatePost" type="Satoshi\Theme\Plugin\Customer\Controller\Account\CreatePost" />
 </config>
