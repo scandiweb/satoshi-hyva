@@ -1,0 +1,149 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Customer\LoginButton;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\ReCaptcha;
+use Magento\Customer\Block\Form\Login;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Login $block */
+/** @var LoginButton $loginButtonViewModel */
+/** @var ViewModelRegistry $viewModels */
+/** @var ReCaptcha $recaptcha */
+/** @var HeroiconsOutline $heroiconsoutline */
+/** @var HeroiconsSolid $heroiconssolid */
+
+$heroiconsoutline = $viewModels->require(HeroiconsOutline::class);
+$heroiconssolid = $viewModels->require(HeroiconsSolid::class);
+$loginButtonViewModel = $viewModels->require(LoginButton::class);
+
+// Disabling autocomplete on form fields is not recommended,
+// Enable it in Stores->Configuration->Customers configuration->Password Options
+
+// Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
+// on the Magento_ReCaptchaCustomer module
+$recaptcha = $block->getData('viewModelRecaptcha');
+?>
+<div class="container mx-auto flex h-full items-center px-5">
+    <div class="mx-auto mb-16 w-[412px] max-w-full">
+        <div class="flex items-center w-full justify-center" aria-labelledby="block-customer-login-heading">
+            <form class="w-full"
+                  action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
+                  method="post"
+                  x-data="initCustomerLoginForm()"
+                  @submit.prevent="submitForm"
+                  id="customer-login-form">
+                <?= $block->getBlockHtml('formkey') ?>
+                <fieldset class="fieldset login">
+                    <legend class="flex items-center justify-between sm:text-center">
+                        <h2 class="mb-7 w-full text-2xl">
+                            <?= $escaper->escapeHtml(__('Login')) ?>
+                        </h2>
+                    </legend>
+
+                    <div class="mt-3 flex flex-col">
+                        <label class="label sr-only" for="email">
+                            <span><?= $escaper->escapeHtml(__('Email')) ?></span>
+                        </label>
+                        <div class="control">
+                            <input name="login[username]"
+                                   placeholder="<?= $escaper->escapeHtml(__('Email')) ?>"
+                                   class="h-[44px] rounded-[0.5rem] w-full border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                                   required
+                                   value="<?= $escaper->escapeHtmlAttr($block->getUsername()) ?>"
+                                   autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'username' ?>"
+                                   id="email"
+                                   type="email"
+                                   title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                                   @input="clearError('username')"
+                            />
+                            <p class="text-red-600 mt-2" x-show="errorMessages.username" x-text="errorMessages.username"></p>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex flex-col">
+                        <label for="pass" class="label sr-only">
+                            <span><?= $escaper->escapeHtml(__('Password')) ?></span>
+                        </label>
+                        <input name="login[password]"
+                               placeholder="<?= $escaper->escapeHtml(__('Password')) ?>"
+                               class="h-[44px] rounded-[0.5rem] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                               required
+                               :type="showPassword ? 'text' : 'password'"
+                               autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'current-password' ?>"
+                               id="pass"
+                               title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
+                               @input="clearError('password')"
+                        />
+                        <p class="text-red-600 mt-2" x-show="errorMessages.password" x-text="errorMessages.password"></p>
+                    </div>
+
+                    <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN) : '' ?>
+                    <?= $block->getChildHtml('form_additional_info') ?>
+                    <div class="block text-sm tracking-widest text-text-700 mt-8 underline contrast-more:text-secondary-700">
+                        <a class="underline text-secondary" href="<?= $escaper->escapeUrl($block->getForgotPasswordUrl()) ?>">
+                            <span><?= $escaper->escapeHtml(__('Forgot Your Password?')) ?></span>
+                        </a>
+                    </div>
+                    <button type="submit"
+                            class="mt-8 w-full rounded-[--buttons-radius] bg-primary-bg px-6 py-4 text-white"
+                            name="send"
+                        <?php if ($loginButtonViewModel->disabled()): ?> disabled data-recaptcha-btn<?php endif; ?>
+                    >
+                        <span><?= $escaper->escapeHtml(__('Sign In')) ?></span>
+                    </button>
+                    <div x-show="displayErrorMessage" class="mt-3">
+                        <p class="text-red text-sm" x-text="generalErrorMessage"></p>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function initCustomerLoginForm() {
+        return {
+            errors: 0,
+            hasCaptchaToken: 0,
+            showPassword: false,
+            displayErrorMessage: false,
+            errorMessages: {},
+            generalErrorMessage: '',
+            clearError(field) {
+                this.errorMessages[field] = '';
+            },
+            setErrorMessages(messages) {
+                this.errorMessages = messages;
+                this.displayErrorMessage = true;
+            },
+            submitForm() {
+                const $form = document.querySelector('#customer-login-form');
+                <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN) : '' ?>
+
+                fetch($form.action, {
+                    method: 'POST',
+                    body: new FormData($form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            $form.submit();
+                        } else {
+                            this.setErrorMessages({ [data.field]: data.message });
+                        }
+                    })
+                    .catch(error => {
+                        this.generalErrorMessage = 'An error occurred. Please try again.';
+                        this.displayErrorMessage = true;
+                    });
+            }
+        }
+    }
+</script>

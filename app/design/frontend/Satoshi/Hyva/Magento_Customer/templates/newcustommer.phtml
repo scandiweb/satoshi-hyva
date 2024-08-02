@@ -1,0 +1,35 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Customer\Block\Form\Login\Info;
+use Magento\Framework\Escaper;
+
+/** @var Info $block */
+/** @var Escaper $escaper */
+?>
+<?php if ($block->getRegistration()->isAllowed()): ?>
+    <div class="block-new-customer card">
+        <div class="block-title">
+            <h2 class="text-xl font-medium title-font mb-3 text-primary" role="heading"
+                aria-level="2"><?= $escaper->escapeHtml(__('New Customers')) ?></h2>
+        </div>
+        <div class="block-content" aria-labelledby="block-new-customer-heading">
+            <p>
+                <?= $escaper->escapeHtml( // phpcs:disable Generic.Files.LineLength.TooLong
+                    __('Creating an account has many benefits: check out faster, keep more than one address, track orders and more.')
+                ) // phpcs:enable ?>
+            </p>
+        </div>
+        <div class="actions-toolbar pt-6 pb-2 flex self-end">
+            <a href="<?= $escaper->escapeUrl($block->getCreateAccountUrl()) ?>"
+               class="btn btn-primary"><span><?= $escaper->escapeHtml(__('Create an Account')) ?></span></a>
+        </div>
+    </div>
+<?php endif; ?>
