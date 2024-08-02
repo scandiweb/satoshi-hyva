@@ -13,6 +13,25 @@
     </head>
     <update handle="hyva_form_validation"/>
     <body>
+        <referenceBlock name="breadcrumbs" template="Magento_Theme::html/breadcrumbs.phtml">
+            <action method="addCrumb">
+                <argument name="crumbName" xsi:type="string">home</argument>
+                <argument name="crumbInfo" xsi:type="array">
+                    <item name="title" xsi:type="string" translate="true">Home</item>
+                    <item name="label" xsi:type="string" translate="true">Home</item>
+                    <item name="link" xsi:type="string">{{baseUrl}}</item>
+                </argument>
+            </action>
+            <action method="addCrumb">
+                <argument name="crumbName" xsi:type="string">register</argument>
+                <argument name="crumbInfo" xsi:type="array">
+                    <item name="title" xsi:type="string" translate="true">Create Account</item>
+                    <item name="label" xsi:type="string" translate="true">Create Account</item>
+                    <item name="last" xsi:type="boolean">true</item>
+                </argument>
+            </action>
+        </referenceBlock>
+
         <referenceContainer name="content">
             <!-- Keep class name with typo "registation-container" for backwards compatibility -->
             <container name="customer.login.container" label="Customer Login Container" htmlTag="div" htmlClass="registration-container registation-container container p-0 m-auto">
