@@ -11,6 +11,7 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Currency;
 use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
@@ -20,8 +21,7 @@ use Magento\Framework\View\Element\Template;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
-/** @var HeroiconsSolid $heroiconsSolid */
-$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+$hyvaicons = $viewModels->require(SvgIcons::class);
 
 /** @var Currency $currencyViewModel */
 $currencyViewModel = $viewModels->require(Currency::class);
@@ -73,9 +73,9 @@ $currencyViewModel = $viewModels->require(Currency::class);
                         <?= $escaper->escapeHtml($currencies[$currentCurrencyCode]['name']) ?> |
                     <?php endif; ?>
                     <?= $escaper->escapeHtml($currentCurrencyCode) ?>
-                    <span :class="{ 'rotate-180': open }"
+                    <span :class="open ? 'rotate-90' : '-rotate-90'"
                           class="transition-transform motion-reduce:transition-none">
-                        <?= $heroiconsSolid->chevronDownHtml("", 12, 12) ?>
+                        <?= $hyvaicons->renderHtml('chevron'); ?>
                     </span>
                 </button>
             </div>
