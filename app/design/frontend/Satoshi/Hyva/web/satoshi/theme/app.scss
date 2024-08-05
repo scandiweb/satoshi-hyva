@@ -36,6 +36,10 @@ h3 {
   font-weight: var(--font-heading-weight);
 }
 
+.main-wrapper {
+  @apply -mt-[72px] flex-1 md:-mt-[89px] max-md:overflow-hidden;
+}
+
 .breadcrumb {
   @apply inline font-bold [&:not(:last-of-type)]:text-neutral-500 contrast-more:[&:not(:last-of-type)]:text-secondary-700;
 }
@@ -125,8 +129,6 @@ h3 {
 
 .page-wrapper {
   @apply -mt-[88px] flex-1 max-md:overflow-hidden;
-  // TODO: Remove this, only added to make a space till page structure is refactored
-  @apply pt-24;
 }
 
 .disable-fade .faded-img {
