@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Customer\Block\Form\Login\Info;
+use Magento\Framework\Escaper;
+
+/** @var Info $block */
+/** @var Escaper $escaper */
+
+$isAllowed = $block->getData('isAllowed');
+
+?>
+<?php if ($isAllowed): ?>
+    <div class="block-new-customer card underline">
+        <div class="actions-toolbar pb-2 flex self-end">
+            <a href="<?= $this->getUrl('customer/account/create') ?>"
+               class="btn btn-primary">
+                <h2 class="font-medium title-font mb-3 text-primary" role="heading"
+                    aria-level="2">
+                    <?= $escaper->escapeHtml(__('Create new account')) ?>
+                </h2>
+            </a>
+        </div>
+    </div>
+<?php endif; ?>
