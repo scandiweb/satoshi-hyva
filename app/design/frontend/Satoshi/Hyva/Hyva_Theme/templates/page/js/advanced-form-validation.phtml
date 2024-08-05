@@ -27,7 +27,7 @@ use Magento\Framework\View\Element\Template;
         const formValidationRules = {
             required(value, options, field, context) {
                 const el = field.element.type === 'hidden' ? createTextInputFrom(field.element) : field.element,
-                    msg = '<?= $escaper->escapeJs(__('This is a required field.')) ?>';
+                    msg = `${field.element.name.charAt(0).toUpperCase() + field.element.name.slice(1)} <?= $escaper->escapeJs(__("can't be blank.")) ?>`;
 
                 if (el.type === 'radio' || el.type === 'checkbox') {
                     return (value === undefined || value.length === 0) ? msg : true;
@@ -568,6 +568,12 @@ use Magento\Framework\View\Element\Template;
                         li.innerHTML = htmlMessage;
                         li.setAttribute('data-msg-field', field.element.name);
                         msgWrapper.appendChild(li);
+
+                        li.classList.add('text-error');
+                        const correspondingInputField = document.querySelector(`[name="${field.element.name}"]`);
+                        if (correspondingInputField) {
+                            correspondingInputField.classList.add('!border-error');
+                        }
                     });
 
                     return msgWrapper;
