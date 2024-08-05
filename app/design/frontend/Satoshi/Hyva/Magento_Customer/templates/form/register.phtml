@@ -50,13 +50,9 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             id="first_name"
                             placeholder="<?= __('First name') ?>"
                             class="h-[44px] w-full rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
-                            :class="{ 'border-error': errorMessages.firstname }"
                             value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getFirstname()) ?>"
                             autocomplete="given-name"
-                            required
-                            @input="clearError('firstname')"
                         />
-                        <p class="text-error" x-show="errorMessages.firstname" x-text="errorMessages.firstname"></p>
                     </div>
 
                     <div class="mt-3 flex flex-col">
@@ -69,13 +65,9 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             id="last_name"
                             placeholder="<?= __('Last name') ?>"
                             class="h-[44px] w-full rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
-                            :class="{ 'border-error': errorMessages.lastname }"
                             value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getLastname()) ?>"
                             autocomplete="family-name"
-                            required
-                            @input="clearError('lastname')"
                         />
-                        <p class="text-error" x-show="errorMessages.lastname" x-text="errorMessages.lastname"></p>
                     </div>
 
                     <div class="mt-3 flex flex-col">
@@ -88,13 +80,10 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             id="email_address"
                             placeholder="<?= __('Email') ?>"
                             class="h-[44px] w-full rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
-                            :class="{ 'border-error': errorMessages.email }"
                             value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getEmail()) ?>"
                             autocomplete="email"
                             required
-                            @input="clearError('email')"
                         />
-                        <p class="text-error" x-show="errorMessages.email" x-text="errorMessages.email"></p>
                     </div>
 
                     <div class="mt-3 flex flex-col">
@@ -107,13 +96,9 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             id="password"
                             placeholder="<?= __('Password') ?>"
                             class="h-[44px] w-full rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
-                            :class="{ 'border-error': errorMessages.password }"
                             required
-                            data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
                             autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
-                            @input="clearError('password')"
                         />
-                        <p class="text-error" x-show="errorMessages.password" x-text="errorMessages.password"></p>
                     </div>
 
                     <button class="mt-7 w-full rounded-[--buttons-radius] bg-primary-bg px-6 py-4 text-white">
@@ -136,26 +121,10 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
     function initForm() {
         return {
             errors: 0,
-            errorMessages: {},
-            clearError(field) {
-                this.errorMessages[field] = '';
-            },
-            setErrorMessages(messages) {
-                this.errorMessages = messages;
-            },
             submitForm() {
-                this.errors = 0;
-                this.errorMessages = {};
-
-                // Custom form validation logic here
-                // Example:
-                // if (!this.firstname) {
-                //     this.errors++;
-                //     this.errorMessages.firstname = 'First name is required.';
-                // }
-
                 this.validate()
                     .then(() => {
+                        // Do not rename $form, the variable is expected to be declared in the recaptcha output
                         const $form = document.querySelector('#<?= $escaper->escapeJs($formId) ?>');
                         <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>
 
