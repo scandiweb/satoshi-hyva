@@ -29,7 +29,7 @@ $loginButtonViewModel = $viewModels->require(LoginButton::class);
 // on the Magento_ReCaptchaCustomer module
 $recaptcha = $block->getData('viewModelRecaptcha');
 ?>
-<div class="container mx-auto flex h-full items-center px-5">
+<div class="container mx-auto flex h-full items-center px-5 mt-16">
     <div class="mx-auto mb-16 w-[412px] max-w-full">
         <div class="flex items-center w-full justify-center" aria-labelledby="block-customer-login-heading">
             <form class="w-full"
@@ -62,7 +62,8 @@ $recaptcha = $block->getData('viewModelRecaptcha');
                                    title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
                                    @input="clearError('username')"
                             />
-                            <p class="text-red-600 mt-2" x-show="errorMessages.username" x-text="errorMessages.username"></p>
+                            <p class="text-red-600 mt-2" x-show="errorMessages.username"
+                               x-text="errorMessages.username"></p>
                         </div>
                     </div>
                     <div class="mt-3 flex flex-col">
@@ -79,18 +80,21 @@ $recaptcha = $block->getData('viewModelRecaptcha');
                                title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
                                @input="clearError('password')"
                         />
-                        <p class="text-red-600 mt-2" x-show="errorMessages.password" x-text="errorMessages.password"></p>
+                        <p class="text-red-600 mt-2" x-show="errorMessages.password"
+                           x-text="errorMessages.password"></p>
                     </div>
 
                     <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN) : '' ?>
                     <?= $block->getChildHtml('form_additional_info') ?>
-                    <div class="block text-sm tracking-widest text-text-700 mt-8 underline contrast-more:text-secondary-700">
-                        <a class="underline text-secondary" href="<?= $escaper->escapeUrl($block->getForgotPasswordUrl()) ?>">
+                    <div
+                        class="block text-sm tracking-widest text-text-700 mt-8 underline contrast-more:text-secondary-700">
+                        <a class="underline text-secondary"
+                           href="<?= $escaper->escapeUrl($block->getForgotPasswordUrl()) ?>">
                             <span><?= $escaper->escapeHtml(__('Forgot Your Password?')) ?></span>
                         </a>
                     </div>
                     <button type="submit"
-                            class="mt-8 w-full rounded-[--buttons-radius] bg-primary-bg px-6 py-4 text-white"
+                            class="rounded-[0.5rem] mt-8 w-full rounded-[--buttons-radius] bg-primary-bg px-6 py-4 text-white"
                             name="send"
                         <?php if ($loginButtonViewModel->disabled()): ?> disabled data-recaptcha-btn<?php endif; ?>
                     >
@@ -98,6 +102,11 @@ $recaptcha = $block->getData('viewModelRecaptcha');
                     </button>
                     <div x-show="displayErrorMessage" class="mt-3">
                         <p class="text-red text-sm" x-text="generalErrorMessage"></p>
+                    </div>
+                    <div class="w-full mt-5 flex justify-center">
+                        <?=
+                            $template->setData(['isAllowed' => true])->render('Magento_Customer::newcustomer.phtml');
+                        ?>
                     </div>
                 </fieldset>
             </form>
@@ -136,7 +145,7 @@ $recaptcha = $block->getData('viewModelRecaptcha');
                         if (data.success) {
                             $form.submit();
                         } else {
-                            this.setErrorMessages({ [data.field]: data.message });
+                            this.setErrorMessages({[data.field]: data.message});
                         }
                     })
                     .catch(error => {

@@ -8,17 +8,24 @@
 
 declare(strict_types=1);
 
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Escaper;
 use Magento\Theme\Block\Html\Title;
+use Magento\Framework\App\Request\Http;
 
 /** @var Escaper $escaper */
 /** @var Title $block */
+/** @var Http $request */
+
+$request = ObjectManager::getInstance()->get(Http::class);
 
 $textSizeCssClass = $block->getCssClass() ? ' ' . $block->getCssClass() : ' text-3xl';
 $titleContainerClasses = $block->getData('maybe_purged_tailwind_section_classes')
     ?? 'container flex flex-col md:flex-row flex-wrap my-6 font-bold lg:mt-8';
 $titleHtml = '';
-if (trim((string)$block->getPageHeading())) {
+$isLoginPage = $request->getFullActionName() === 'customer_account_login';
+
+if (!$isLoginPage && trim((string)$block->getPageHeading())) {
     $titleHtml = '<span class="base" data-ui-id="page-title-wrapper" '
         . $block->getAddBaseAttribute()
         . '>'
