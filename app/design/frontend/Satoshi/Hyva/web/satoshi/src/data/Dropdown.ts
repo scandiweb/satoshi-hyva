@@ -35,7 +35,9 @@ export const Dropdown = () =>
         this.show();
           this.$nextTick(() => {
               if (this.$refs.currencySearch) {
-                  this.$refs.currencySearch.focus();
+                  setTimeout(() => {
+                      this.$refs.currencySearch.focus();
+                  }, 250);
               }
           });
       }
