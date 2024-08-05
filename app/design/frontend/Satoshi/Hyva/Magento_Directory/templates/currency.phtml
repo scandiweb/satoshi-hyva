@@ -27,7 +27,7 @@ $currencyViewModel = $viewModels->require(Currency::class);
 <?php if ($currencyViewModel->getCurrencyCount() > 1): ?>
     <?php $currencies = $currencyViewModel->getCurrencies(); ?>
     <?php $currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode(); ?>
-    <div x-data="Dropdown()" x-init="init()" x-ref="DropdownWrapper"
+    <div x-data="Dropdown()" x-ref="DropdownWrapper"
          class="w-full sm:w-1/2 md:w-full pr-4"
     >
         <h2
