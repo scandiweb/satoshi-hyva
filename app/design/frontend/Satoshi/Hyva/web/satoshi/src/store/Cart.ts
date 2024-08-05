@@ -66,6 +66,7 @@ export type CartStoreType = {
   decreaseQty(item_id: string): void;
   setQty(qty: number, item_id: string): void;
   addToCart(): void;
+  applyCoupon(form: HTMLFormElement): void;
   showCart(): void;
   hideCart(): void;
   _updateFocusAnimation(): void;
@@ -223,6 +224,41 @@ export const CartStore = <CartStoreType>{
       cartItem.qty = Math.max(0, Number(qty));
       this.updateCartItem(item_id);
     }
+  },
+
+  applyCoupon(form: HTMLFormElement) {
+    // Abort the previous request if it exists
+    if (this.abortController) {
+      this.removingItemId = null;
+      this.abortController.abort();
+    }
+
+    this.isLoading = true;
+    this.abortController = new AbortController();
+
+    const formData = new FormData(form);
+    formData.append("uenc", window.hyva.getUenc());
+    formData.append("form_key", window.hyva.getFormKey());
+
+    fetch(form.action, {
+      method: "POST",
+      body: formData,
+      signal: this.abortController.signal,
+    })
+      .then((result) => {
+        return result.text();
+      })
+      .then((content) => {
+        window.hyva.replaceDomElement("#cart-button", content);
+        window.hyva.replaceDomElement("#apply-coupon", content);
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        if (error.name !== ABORT_ERROR_NAME) {
+          console.error("Error:", error);
+          this.isLoading = false;
+        }
+      });
   },
 
   _updateFocusAnimation() {

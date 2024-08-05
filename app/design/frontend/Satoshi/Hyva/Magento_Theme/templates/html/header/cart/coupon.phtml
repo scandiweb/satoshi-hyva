@@ -1,0 +1,103 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Checkout\Block\Cart\Coupon;
+
+/** @var ViewModelRegistry $viewModels */
+/** @var Coupon $block */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$hasCouponCode = (bool) strlen($block->getCouponCode() ?: "");
+$couponMessage = $block->getCouponMessage();
+?>
+
+<div
+  class="col-span-full"
+  id="apply-coupon"
+>
+  <hr class="mb-4" />
+
+  <!-- Coupon -->
+  <div
+    class="py-4 rounded-sm border-1"
+    x-data="Accordion(<?= $hasCouponCode || $couponMessage ? 'true' : 'false' ?>, 300)"
+  >
+    <button
+      class="flex items-center justify-between w-full px-5"
+      x-ref="AccordionButton"
+      :aria-expanded="isExpanded"
+      aria-controls="coupon-panel"
+      aria-labelledby="coupon-label"
+    >
+      <div
+        id="coupon-label"
+        class="flex items-center gap-x-3"
+      >
+        <?= $hyvaicons->renderHtml('coupon') ?>
+        <?= __('Have a promo code?') ?>
+      </div>
+      <div class="button button--outline-secondary icon-button icon-button--size-xs">
+        <span x-ref="AccordionIcon">
+          <?= $hyvaicons->renderHtml('chevron-up') ?>
+        </span>
+      </div>
+    </button>
+
+    <div
+      x-cloak
+      x-ref="AccordionPanel"
+      class="overflow-hidden text-text-100 contrast-more:text-secondary-700"
+      :class="
+        {
+          'transition-none': $store.main.isReducedMotion,
+          'transition': $store.main.isReducedMotion,
+        }
+      "
+      id="coupon-panel"
+      role="region"
+      aria-labelledby="coupon-label"
+    >
+      <form
+        method="post"
+        action="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/couponPost')) ?>"
+        class="px-5 pb-2 mt-3 text-text-700 flex gap-x-3 items-center"
+        @submit.prevent="$store.cart.applyCoupon($event.target)"
+      >
+        <input
+          type="hidden"
+          name="remove"
+          id="remove-coupon"
+          value="<?= (int) $hasCouponCode ?>"
+        />
+        <div class="w-full">
+          <label
+            for="coupon_code"
+            class="sr-only tracking-widest"
+          ><?= __('Enter promo code') ?></label>
+          <input
+            type="text"
+            name="coupon_code"
+            placeholder="<?= __('Enter promo code') ?>"
+            id="coupon_code"
+            class="w-full rounded-sm border border-text-50 px-5 py-2.5 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+            value="<?= $escaper->escapeHtmlAttr($block->getCouponCode()) ?>"
+            <?php if ($hasCouponCode): ?>
+            disabled
+            <?php endif; ?>
+          >
+        </div>
+        <button class="button button--outline-primary">
+          <?= $hasCouponCode ? __('Cancel Coupon') : __('Apply Coupon') ?>
+        </button>
+      </form>
+      <?php if ($couponMessage): ?>
+      <div class="px-5 <?= $couponMessage['status'] === 'error' ? 'text-error' : '' ?>">
+        <?= $couponMessage['message'] ?>
+      </div>
+      <?php endif; ?>
+    </div>
+  </div>
+</div>
