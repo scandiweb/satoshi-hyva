@@ -97,6 +97,7 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             placeholder="<?= __('Password') ?>"
                             class="h-[44px] w-full rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
                             required
+                            data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
                             autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                         />
                     </div>
