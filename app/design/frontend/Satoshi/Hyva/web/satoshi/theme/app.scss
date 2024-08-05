@@ -157,5 +157,5 @@ h3 {
 
 .sidebar-main {
   // TODO: Remove from here when applied in side bar template
-  @apply flex-shrink-0 w-[275px];
+  @apply flex-shrink-0 w-[275px] ml-[2rem];
 }
