@@ -1,109 +1,115 @@
 <?php
 
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Hyva\Theme\Model\ViewModelRegistry;
 
+/** @var ViewModelRegistry $viewModels */
+/** @var Escaper $escaper */
+/** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
+// TODO: Find out why breadcrumbs do not appear on customer account pages
+
 // TODO: Make dynamic
-$isAlpinepageType = false;
-$condition = false;
-$isNoMobile = false;
+$isAlpineTemplate = false;
+$renderBreadcrumbs = false;
+$renderOnMobile = false;
+
 $pageType = $this->getRequest()->getFullActionName();
-if (in_array($pageType, ['cms_index_index', 'checkout_cart_index', 'catalog_category_view', 'cms_noroute_index', 'customer_account_index', 'customer_address_index', 'sales_order_history', 'giftvoucher_index_index'])) {
-    $condition = true;
-}
-if (in_array($pageType, ['catalog_category_view', 'catalog_product_view', 'catalogsearch_result_index'])) {
-    $isNoMobile = true;
-}
+$pageTypes = ['cms_index_index', 'checkout_cart_index', 'cms_noroute_index', 'customer_account_index', 'customer_address_index', 'sales_order_history', 'giftvoucher_index_index'];
+$renderBreadcrumbs = !in_array($pageType, $pageTypes);
+
+$pageTYpes = ['catalog_category_view', 'catalog_product_view', 'catalogsearch_result_index'];
+$renderOnMobile = in_array($pageType, $pageTypes);
 ?>
 
-<?php if ($crumbs && is_array($crumbs) && !$condition): ?>
+<?php if ($crumbs && is_array($crumbs) && $renderBreadcrumbs): ?>
     <nav
-        class="breadcrumbs content-wrapper mx-auto my-8 px-4 <?php if ($isNoMobile): ?>hidden<?php endif; ?> md:block"
+        class="breadcrumbs content-wrapper mx-auto my-8 px-4 <?php if ($renderOnMobile): ?>hidden<?php endif; ?> md:block"
         role="navigation"
-        aria-label="<?= __('general.breadcrumbs.aria_label') ?>"
+        aria-label="<?= __('Breadcrumbs') ?>"
     >
         <div role="list" class="truncate">
-            <?php foreach ($crumbs as $crumbName => $crumbInfo) : ?>
-                <div role="listitem" class="breadcrumb <?= $block->escapeHtmlAttr($crumbName) ?>">
-                    <?php if ($isAlpinepageType): ?>
-                        <template x-if="$store['transition'].pageType === 'category'">
-                            <div class="contents">
-                                <div role="listitem" class="breadcrumb"
-                                     x-text="$store['transition'].pageData?.title"></div>
-                            </div>
-                        </template>
+            <?php foreach ($crumbs
 
-                        <template x-if="$store['transition'].pageType === 'article'">
-                            <div class="contents">
-                                <div role="listitem" class="breadcrumb">
-                                    <a x-element-transition-trigger href="{{ blog.url }}" aria-current="page">{{
-                                        blog.title }}</a>
-                                </div>
-                                <div
-                                    role="listitem"
-                                    class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
-                                    aria-hidden="true"
-                                >
-                                    {% render 'breadcrumb-arrow' %}
-                                </div>
-                                <div role="listitem" class="breadcrumb"
-                                     x-text="$store['transition'].pageData?.title"></div>
-                            </div>
-                        </template>
+            as $crumbName => $crumbInfo) : ?>
+            <div role="listitem" class="breadcrumb" <?= $block->escapeHtmlAttr($crumbName) ?>">
+            <?php if ($isAlpineTemplate): ?>
+                <template x-if="$store['transition'].pageType === 'category'">
+                    <div class="contents">
+                        <div role="listitem"
+                             x-text="$store['transition'].pageData?.title"></div>
+                    </div>
+                </template>
 
-                        <template x-if="$store['transition'].pageType === 'product'">
-                            <div class="contents">
-                                <div role="listitem" class="breadcrumb"
-                                     x-text="$store['transition'].pageData?.title"></div>
-                            </div>
-                        </template>
+                <template x-if="$store['transition'].pageType === 'article'">
+                    <div class="contents">
+                        <div role="listitem" class="breadcrumb">
+                            <!-- TODO: Make blog url and title dynamic -->
+                            <a x-element-transition-trigger href="{{ blog.url }}"
+                               aria-current="page">
+                                {{ blog.title }}
+                            </a>
+                        </div>
+                        <div
+                            role="listitem"
+                            class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
+                            aria-hidden="true"
+                        >
+                            <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
+                        </div>
+                        <div role="listitem" class="breadcrumb"
+                             x-text="$store['transition'].pageData?.title"></div>
+                    </div>
+                </template>
 
-                        <template x-if="$store['transition'].pageType === 'search'">
-                            <div class="contents"
-                                 x-data="{
-                                    searchTerm: $store['transition'].pageData?.search,
-                                    resultCount: $store['transition'].pageData?.resultCount,
-                                    getFormattedText() {
-                                        var text = '<?= __('%1 result found for "%2"') ?>';
-                                        return hyva.strf(text, this.resultCount, this.searchTerm);
-                                    }
-                                }"
-                            >
-                                <div
-                                    role="listitem"
-                                    class="breadcrumb"
-                                    x-html="getFormattedText()"
-                                ></div>
-                            </div>
-                        </template>
+                <template x-if="$store['transition'].pageType === 'product'">
+                    <div class="contents">
+                        <div role="listitem" class="breadcrumb"
+                             x-text="$store['transition'].pageData?.title"></div>
+                    </div>
+                </template>
 
-                    <?php else: ?>
-                        <?php if ($crumbInfo['link']) : ?>
-                            <div role="listitem"
-                                 class="inline font-bold text-neutral-500 contrast-more:text-secondary-700">
-                                <a x-element-transition-trigger href="">
-                                    <?= $block->escapeHtml($crumbInfo['label']) ?>
-                                </a>
-                            </div>
-                            <div
-                                role="listitem"
-                                class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
-                                aria-hidden="true"
-                            >
-                                <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
-                            </div>
+                <template x-if="$store['transition'].pageType === 'search'">
+                    <div class="contents">
+                        <div
+                            x-data="{
+                                searchTerm: $store['transition'].pageData?.search,
+                                resultCount: $store['transition'].pageData?.resultCount,
+                                text: '<?= __('%1 result found for "%2"') ?>',
+                            }"
+                            role="listitem"
+                            class="breadcrumb"
+                            x-text="hyva.strf(text, resultCount, searchTerm)"
+                        ></div>
+                    </div>
+                </template>
 
-                            <!-- TODO: Many non existent variables must be implemented -->
-                        <?php elseif ($crumbInfo['last']) : ?>
-                            <div role="listitem" class="breadcrumb">
-                                <?= $block->escapeHtml($crumbInfo['label']) ?>
-                            </div>
-                        <?php endif; ?>
-                    <?php endif; ?>
+            <?php else: ?>
+                <?php if ($crumbInfo['link']) : ?>
+                    <div role="listitem"
+                         class="inline font-bold text-neutral-500 contrast-more:text-secondary-700">
+                        <a x-element-transition-trigger href="<?= $escaper->escapeUrl($crumbInfo['link']) ?>">
+                            <?= $block->escapeHtml($crumbInfo['label']) ?>
+                        </a>
+                    </div>
+                    <div
+                        role="listitem"
+                        class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700"
+                        aria-hidden="true"
+                    >
+                        <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
+                    </div>
+                <?php elseif ($crumbInfo['last']) : ?>
+                    <div role="listitem" class="breadcrumb">
+                        <?= $block->escapeHtml($crumbInfo['label']) ?>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
 
-                </div>
-            <?php endforeach; ?>
+        </div>
+        <?php endforeach; ?>
         </div>
     </nav>
 <?php endif; ?>
