@@ -1,0 +1,74 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$id = $block->getData('id') ?? 'dropdown';
+$label = $block->getData('label') ?? '';
+$options = $block->getData('options') ?? [];
+$withSearch = $block->getData('withSearch') ?? false;
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+echo 'dropdown.phtml zzzzzzzzzzzzzzzzzzzzzzzzzzz dropdown.phtml';
+?>
+
+<div x-data="Dropdown()" x-ref="DropdownWrapper" class="relative">
+    <button
+        @click="toggleDropdown()"
+        id="<?= $escaper->escapeHtml($id) ?>-button"
+        data-dropdown-toggle="<?= $escaper->escapeHtml($id) ?>"
+        class="inline-flex items-center justify-between gap-6 whitespace-nowrap rounded-sm border bg-white px-6 py-3"
+        type="button"
+        :aria-expanded="isDropdownVisible"
+        aria-controls="<?= $escaper->escapeHtml($id) ?>"
+    >
+        <?= $escaper->escapeHtml($label) ?>
+        <span :class="{ 'rotate-180': isDropdownVisible }" class="transition-transform motion-reduce:transition-none">
+            <?= $hyvaicons->renderHtml('chevron'); ?>
+        </span>
+    </button>
+    <div
+        id="<?= $escaper->escapeHtml($id) ?>"
+        x-cloak
+        x-show="isDropdownVisible"
+        class="absolute z-10 hidden min-w-full rounded-sm border border-gray-300 bg-white p-2 pt-3 bottom-full"
+        :class="{ 'block': isDropdownVisible, 'hidden': !isDropdownVisible }"
+    >
+        <?php if ($withSearch): ?>
+            <div class="p-2">
+                <label for="<?= $escaper->escapeHtml($id) ?>-search" class="sr-only">Search</label>
+                <input type="text" id="<?= $escaper->escapeHtml($id) ?>-search"
+                       class="w-full rounded-xs border p-3 placeholder:text-gray-500 contrast-more:border-secondary-700"
+                       placeholder="Search" @input.debounce.300ms="search($event.target.value)">
+            </div>
+        <?php endif; ?>
+        <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700" aria-labelledby="<?= $escaper->escapeHtml($id) ?>-button">
+            <?php foreach ($options as $option): ?>
+                <li>
+                    <a tabindex="0"
+                       data-value="<?= $escaper->escapeHtml($option['value']) ?>"
+                       class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs bg-primary-50 hover:underline"
+                       @click.prevent='<?= $option['on_click'] ?>'>
+                        <?= $escaper->escapeHtml($option['label']) ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>

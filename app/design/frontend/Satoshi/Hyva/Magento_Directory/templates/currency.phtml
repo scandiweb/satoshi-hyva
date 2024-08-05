@@ -1,101 +1,33 @@
 <?php
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
-
-declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Currency;
-use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
+use Satoshi\Theme\Block\Template;
 
-/** @var Template $block */
+/** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
-/** @var SvgIcons $hyvaicons */
-$hyvaicons = $viewModels->require(SvgIcons::class);
-
 /** @var Currency $currencyViewModel */
 $currencyViewModel = $viewModels->require(Currency::class);
+
+$options = [];
+foreach ($currencyViewModel->getCurrencies() as $code => $currency) {
+    $options[] = [
+        'value' => $escaper->escapeHtml($code),
+        'label' => $escaper->escapeHtml($currency['name']) . ' | ' . $escaper->escapeHtml($code) . ' (' . $escaper->escapeHtml($currency['symbol']) . ')',
+        'on_click' => "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})"
+    ];
+}
+
+$template
+    ->setData([
+        'id' => 'currency-selector',
+        'label' => $escaper->escapeHtml($currencyViewModel->getCurrentCurrencyCode()),
+        'withSearch' => true,
+        'options' => $options,
+    ])
+    ->render('Magento_Theme:html/dropdown.phtml');
+
 ?>
-<?php if ($currencyViewModel->getCurrencyCount() > 1): ?>
-    <?php $currencies = $currencyViewModel->getCurrencies(); ?>
-    <?php $currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode(); ?>
-    <div x-data="Dropdown()" x-ref="DropdownWrapper"
-         class="w-full sm:w-1/2 md:w-full pr-4"
-    >
-        <h2
-            id="currency-heading"
-            class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3 uppercase"
-        >
-            <?= $escaper->escapeHtml(__('Currency')) ?>
-        </h2>
-        <div class="relative inline-block text-left">
-            <div>
-                <button @click.prevent="toggleDropdown()"
-                        @keydown.window.escape="hide()"
-                        type="button"
-                        class="inline-flex items-center justify-between gap-6 whitespace-nowrap rounded-sm border bg-white px-6 py-3"
-                        aria-haspopup="true"
-                        :aria-expanded="isDropdownVisible"
-                >
-                    <?php if ($currencies[$currentCurrencyCode] ?? false): ?>
-                        <?= $escaper->escapeHtml($currencies[$currentCurrencyCode]['name']) ?> |
-                    <?php endif; ?>
-                    <?= $escaper->escapeHtml($currentCurrencyCode) ?>
-                    <span :class="isDropdownVisible ? 'rotate-90' : '-rotate-90'"
-                          class="transition-transform motion-reduce:transition-none">
-                        <?= $hyvaicons->renderHtml('chevron'); ?>
-                    </span>
-                </button>
-            </div>
-            <div x-cloak=""
-                 x-show="isDropdownVisible"
-                 class="absolute z-10 min-w-full rounded-sm border border-gray-300 bg-white p-2 pt-3 bottom-full"
-                 aria-labelledby="currency-heading"
-                 @click.away="hide()"
-            >
-                <div class="p-2">
-                    <label for="currency-search" class="sr-only">
-                        Search
-                    </label>
-                    <input type="text" id="currency-search"
-                           class="w-full rounded-xs border p-3 placeholder:text-gray-500 contrast-more:border-secondary-700"
-                           x-ref="currencySearch"
-                           placeholder="Search" @input.debounce.300ms="search($event.target.value)">
-                </div>
-                <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700"
-                    id="currency-list"
-                    aria-labelledby="currency-selector-button">
-                    <?php foreach ($currencies as $code => $currency): ?>
-                        <li>
-                            <a
-                                tabindex="0"
-                                data-value="<?= $escaper->escapeHtml($code) ?>"
-                                aria-describedby="currency-heading"
-                                class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs bg-primary-50 hover:underline"
-                                :class="{ 'bg-primary-50': '<?= $escaper->escapeHtml($code) ?>' === '<?= $escaper->escapeHtml($currentCurrencyCode) ?>' }"
-                                @click.prevent='hyva.postForm(<?= /* @noEscape */
-                                $currencyViewModel->getSwitchCurrencyPostData($code) ?>)'
-                            >
-                                <?= $escaper->escapeHtml($currency['name']) ?>
-                                <span>
-                                    <?= $escaper->escapeHtml($code) ?>
-                                    <?php if ($currency['symbol'] !== ''): ?>
-                                        &lpar;<?= $escaper->escapeHtml($currency['symbol']) ?>&rpar;
-                                    <?php endif; ?>
-                                </span>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
