@@ -24,8 +24,10 @@ $titleContainerClasses = $block->getData('maybe_purged_tailwind_section_classes'
     ?? 'container flex flex-col md:flex-row flex-wrap my-6 font-bold lg:mt-8';
 $titleHtml = '';
 $isLoginPage = $request->getFullActionName() === 'customer_account_login';
+$isForgotPasswordPage = $request->getFullActionName() === 'customer_account_forgotpassword';
 
-if (!$isLoginPage && trim((string)$block->getPageHeading())) {
+
+if (!$isLoginPage && !$isForgotPasswordPage && trim((string)$block->getPageHeading())) {
     $titleHtml = '<span class="base" data-ui-id="page-title-wrapper" '
         . $block->getAddBaseAttribute()
         . '>'
