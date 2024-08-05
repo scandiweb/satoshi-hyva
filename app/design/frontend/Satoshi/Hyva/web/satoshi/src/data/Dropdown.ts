@@ -33,6 +33,11 @@ export const Dropdown = () =>
         this.hide();
       } else {
         this.show();
+          this.$nextTick(() => {
+              if (this.$refs.currencySearch) {
+                  this.$refs.currencySearch.focus();
+              }
+          });
       }
     },
 
