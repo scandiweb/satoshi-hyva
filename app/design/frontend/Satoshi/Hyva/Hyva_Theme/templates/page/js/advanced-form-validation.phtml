@@ -1,0 +1,590 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\DeployMode;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+?>
+
+<script>
+    'use strict';
+    (function(hyva) {
+        <?php /* Built in validation rules start */ ?>
+        const formValidationRules = {
+            required(value, options, field, context) {
+                const el = field.element.type === 'hidden' ? createTextInputFrom(field.element) : field.element,
+                    msg = '<?= $escaper->escapeJs(__('This is a required field.')) ?>';
+
+                if (el.type === 'radio' || el.type === 'checkbox') {
+                    return (value === undefined || value.length === 0) ? msg : true;
+                }
+
+                el.setAttribute('required', '');
+                el.checkValidity();
+
+                return el.validity.valueMissing ? msg : true;
+            },
+            maxlength(value, options, field, context) {
+                const n = Number(options)
+                if (value.length > n) {
+                    return n === 1
+                        ? hyva.strf('<?= $escaper->escapeJs(__('Please enter no more than 1 character.')) ?>')
+                        : hyva.strf('<?= $escaper->escapeJs(__('Please enter no more than %0 characters.')) ?>', options)
+                }
+                return true;
+            },
+            minlength(value, options, field, context) {
+                const n = Number(options)
+                if (value.length > 0 && value.length < n) {
+                    return n === 1
+                        ? hyva.strf('<?= $escaper->escapeJs(__('Please enter at least 1 character.')) ?>')
+                        : hyva.strf('<?= $escaper->escapeJs(__('Please enter at least %0 characters.')) ?>', options)
+                }
+                return true;
+            },
+            max(value, options, field, context) {
+                field.element.setAttribute('max', options);
+                field.element.checkValidity();
+                if (field.element.validity.rangeOverflow) {
+                    return hyva.strf('<?= $escaper->escapeJs(__('Please enter a value less than or equal to "%0".')) ?>', options);
+                }
+                return true;
+            },
+            min(value, options, field, context) {
+                field.element.setAttribute('min', options);
+                field.element.checkValidity();
+                if (field.element.validity.rangeUnderflow) {
+                    return hyva.strf('<?= $escaper->escapeJs(__('Please enter a value greater than or equal to "%0".')) ?>', options);
+                }
+                return true;
+            },
+            step(value, options, field, context) {
+                field.element.setAttribute('step', options);
+                field.element.checkValidity();
+                if (field.element.validity.stepMismatch) {
+                    const val = Number(value);
+                    const step = Number(options);
+                    const msg = '<?= $escaper->escapeJs(__('Please enter a valid value. The two nearest valid values are "%0" and "%1".')) ?>';
+                    return hyva.strf(msg, Math.floor(val / step) * step, Math.ceil(val / step) * step);
+                }
+                return true;
+            },
+            pattern(value, options, field, context) {
+                field.element.setAttribute('pattern', options);
+                field.element.checkValidity();
+                if (field.element.validity.patternMismatch) {
+                    return field.element.title
+                        ? hyva.strf('<?= $escaper->escapeJs(__('Please match the requested format: %0.')) ?>', field.element.title)
+                        : '<?= $escaper->escapeJs(__('Please match the requested format.')) ?>'
+                }
+                return true;
+            },
+            email(value, options, field, context) {
+                <?php /* The same email validation regex is also used in the Magento backend */ ?>
+                const rule = /^([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*@([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*\.(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]){2,})$/i;
+                if (value.length > 0 && !rule.test(value)) {
+                    return '<?= $escaper->escapeJs(__('Please enter a valid email address.')) ?>';
+                }
+                return true;
+            },
+            password(value, options, field, context) {
+                const rule = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+                if (value.length > 0 && !rule.test(value)) {
+                    return '<?= $escaper->escapeJs(__('Please provide at least one upper case, one lower case, one digit and one special character (#?!@$%^&*-)')) ?>';
+                }
+                return true;
+            },
+            equalTo(value, options, field, context) {
+                const dependencyField = context.fields[options].element;
+                if (value !== dependencyField.value) {
+                    const dependencyFieldName =
+                        dependencyField.label ||
+                        dependencyField.title ||
+                        (dependencyField.labels && dependencyField.labels[0] && dependencyField.labels[0].innerText) ||
+                        dependencyField.name;
+                    return hyva.strf('<?= $escaper->escapeJs(__('This field value must be the same as "%0".')) ?>', dependencyFieldName);
+                }
+                return true;
+            }
+        };
+
+        <?php
+        // Built in validation rules end
+
+        // Private methods start
+
+        // The private methods expect `this` to be the component instance (via call() or apply())
+
+        /**
+         * Return a promise resolving when the first of the passed promises resolves to a value for which the predicate function is truthy.
+         *
+         * If any of promises is rejected before the return promise is resolved, the return promise is also rejected.
+         *
+         * @param {Promise[]} promises - Array of promises
+         * @param {Function} pred - Predicate callback function
+         * @returns {Promise<unknown>}
+         */
+        ?>
+        function raceSome(promises, pred) {
+            return new Promise((resolve, reject) => {
+
+                if (promises.length === 0) {
+                    return resolve();
+                }
+
+                let settled = false, nDone = 0;
+
+                const resolveIf = v => {
+                    if (!settled && (pred(v) || ++nDone === promises.length)) {
+                        settled = true;
+                        resolve(v);
+                    }
+                    return v;
+                }
+
+                promises.map(promise => {
+                    promise.then(resolveIf).catch(reason => {
+                        settled = true;
+                        reject(reason)
+                    });
+                    return promise;
+                });
+            });
+        }
+
+        const INPUT_ATTRIBUTE_RULES = {min: 'min', max: 'max', required: 'required', minlength: 'minlength', maxlength: 'maxlength', step: 'step', pattern: 'pattern'}
+        const INPUT_TYPE_RULES = {email: 'email'}
+
+        function getRules(element) {
+            let rules = {};
+            Object.keys(INPUT_ATTRIBUTE_RULES).forEach(attrName => {
+                if (element.hasAttribute(attrName)) {
+                    rules[INPUT_ATTRIBUTE_RULES[attrName]] = element.getAttribute(attrName);
+                }
+            })
+            if (INPUT_TYPE_RULES[element.type]) {
+                rules[INPUT_TYPE_RULES[element.type]] = true;
+            }
+
+            if (element.dataset.validate) {
+                try {
+                    Object.assign(rules, JSON.parse(element.dataset.validate));
+                } catch (error) {
+                    console.error('Validator error. Cannot parse data-validate attribute of element:\n', element);
+                }
+            }
+
+            return rules;
+        }
+
+        function isInvalidRuleResult(ruleState) {
+            return typeof ruleState === 'string' || !ruleState || (ruleState.type && ruleState.content);
+        }
+
+        async function runValidateFn(rule, options, value, field) {
+            return formValidationRules[rule](value, options, field, this);
+        }
+
+        function generateId() {
+            let id;
+            do {
+                id = `${this.idPrefix}-${++this.idSeq}`;
+            } while (document.getElementById(id));
+            return id;
+        }
+
+        function isVisible(element) {
+            const el = element.type !== 'hidden' ? element : (element.parentElement || {});
+            return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length)
+        }
+
+        function elementWillValidate(element) {
+            return (element.willValidate || element.type === 'hidden')
+                && element.tagName !== 'BUTTON'
+                && element.disabled === false
+                && !(element.tagName === 'INPUT' && element.type === 'submit')
+                && (element.hasAttribute('data-validate-hidden') || isVisible(element))
+        }
+
+        function createMessageContainer(el, fieldWrapperClassName) {
+            if (! el.parentElement) {
+                return;
+            }
+            const refocus = document.activeElement === el;
+            const wrapper = document.createElement('div');
+            wrapper.classList.add.apply(wrapper.classList, fieldWrapperClassName.split(' '));
+            el.parentElement.insertBefore(wrapper, el);
+            wrapper.appendChild(el);
+            refocus && document.activeElement !== el && el.focus();
+            return wrapper;
+        }
+
+        function containerNotFound(selector, el) {
+            const msg = `Cannot find message container element ${selector} of ${el.name}`;
+            console.error(msg, el);
+            throw msg;
+        }
+
+        function createTextInputFrom(el) {
+            const text = document.createElement('INPUT');
+            text.type = 'text';
+            text.value = el.value;
+            return text;
+        }
+
+        function classNamesToSelector(classNames) {
+            return classNames.split(' ')
+                .filter(className => className.length > 0)
+                .map(className => `.${className}`)
+                .join('')
+        }
+
+        function hasMessagesWrapper(field, messagesWrapperClassName) {
+            return this.getMessageContainer(field).querySelector(classNamesToSelector(messagesWrapperClassName));
+        }
+
+        function getMessagesWrapper(field, messagesWrapperClassName) {
+            if (hasMessagesWrapper.call(this, field, messagesWrapperClassName)) {
+                return this.getMessageContainer(field).querySelector(classNamesToSelector(messagesWrapperClassName));
+            }
+
+            const msgWrapper = document.createElement('ul');
+            const msgId = generateId.call(this);
+            msgWrapper.id = msgId;
+            field.element.setAttribute('aria-errormessage', msgId);
+            field.element.setAttribute('aria-describedby', msgId);
+            msgWrapper.classList.add.apply(msgWrapper.classList, messagesWrapperClassName.split(' '));
+            if (field.validateOnChange) {
+                msgWrapper.setAttribute('aria-live', 'polite');
+            }
+            this.getMessageContainer(field).appendChild(msgWrapper);
+
+            return msgWrapper;
+        }
+
+        function getCheckedValues(field) {
+            const name = field.element.name.replace(/([\\"])/g, '\\$1');
+            const elements = field.element.form.querySelectorAll('input[name="' + name + '"]:checked');
+            return Array.from(elements).map(el => el.value);
+        }
+
+        function escapeHtml(s) {
+            const div = document.createElement('div')
+            div.innerText = s;
+            return div.innerHTML;
+        }
+
+        <?php
+        // Private methods end
+
+        // Alpine component start
+        ?>
+
+        function formValidation(formElement, options) {
+            // Disable browser default validation
+            if (formElement.tagName === 'FORM') {
+                formElement.setAttribute('novalidate', '');
+            } else {
+                console.error('formValidation can be initialized only on FORM element', formElement);
+                return;
+            }
+
+            options = Object.assign({
+                fieldWrapperClassName: 'field field-reserved',
+                messagesWrapperClassName: 'messages',
+                validClassName: 'field-success',
+                invalidClassName: 'field-error',
+                pageMessagesWrapperSelector: null,
+                scrollToFirstError: true,
+            }, options || {});
+
+            return {
+                state: {
+                    valid: false,
+                },
+                fields: {},
+                idSeq: 0,
+                idPrefix: formElement.id || 'vld-msg',
+                setupFields(elements) {
+                    this.fields = {};
+                    Array.from(elements).forEach(element => {
+                        if (elementWillValidate(element)) {
+                            this.setupField(element);
+                        }
+                    });
+                },
+                setupField(element) {
+                    if (! element) return;
+                    const onChange = !!element.dataset.onChange;
+                    if (elementWillValidate(element)) {
+                        const rules = getRules(element);
+                        if (Object.keys(rules).length > 0) {
+                            if (this.fields[element.name]) {
+                                Object.assign(this.fields[element.name].rules, rules);
+                            } else {
+                                this.fields[element.name] = {
+                                    element,
+                                    rules: rules,
+                                    validateOnChange: onChange,
+                                    state: {
+                                        valid: null,
+                                        rules: {}
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        console.error('Element will not validate', element);
+                    }
+                },
+                onSubmit(event) {
+                    if (event.target.tagName === 'FORM') {
+                        event.preventDefault();
+
+                        this.validate()
+                            .then(() => event.target.submit())
+                            .catch(invalidElements => {<?php /* No default behavior */ ?>});
+                    }
+                },
+                onChange(event) {
+                    event.target.dataset.onChange = 'true';
+                    if (!Object.keys(this.fields).length) {
+                        this.setupFields(formElement.elements);
+                    }
+                    if (!Object.keys(this.fields).includes(event.target.name)) {
+                        this.setupField(event.target);
+                    }
+                    const field = this.fields[event.target.name];
+
+                    this.validateField(field);
+                    field && field.element.removeAttribute('data-on-change')
+                },
+                validateSafe() {
+                    return new Promise(resolve => this.validate().then(() => resolve(true)).catch(() => {}))
+                },
+                validate() {
+                    if (!Object.keys(this.fields).length || !Object.keys(this.fields).length !== formElement.elements.length) {
+                        this.setupFields(formElement.elements);
+                    }
+                    return new Promise(async (resolve, reject) => {
+                        if (formElement.elements) {
+                            <?php /* Wait until the first invalid field or until all rules have completed */ ?>
+                            await raceSome(this.validateFields(), result => result !== true)
+                            const invalidFields = Object.values(this.fields).filter(field => !field.state.valid);
+                            this.state.valid = invalidFields.length === 0;
+                            if (this.state.valid) {
+                                resolve();
+                            } else {
+                                if (options.scrollToFirstError && invalidFields.length > 0) {
+                                    invalidFields[0].element.focus()
+                                    invalidFields[0].element.select && invalidFields[0].element.select();
+                                }
+                                reject(invalidFields.map(field => field.element));
+                            }
+                        }
+                    });
+                },
+                <?php /* Return array of promises */ ?>
+                validateFields() {
+                    const fields = Object.values(this.fields);
+
+                    <?php /* First clear all container state classes */ ?>
+                    fields.forEach(field => {
+                        this.getMessageContainer(field).classList.remove(options.validClassName, options.invalidClassName)
+                    });
+                    <?php /* Then start validation and return promises */ ?>
+                    return fields.map(field => this.validateField(field))
+                },
+                <?php /* Return Promise that is resolved to field.state.valid when all validators of the field are resolved */ ?>
+                validateField(field) {
+                    <?php /* Early return if field is undefined (if an element as no rules), or for fields that won't validate */ ?>
+                    if (! field || ! elementWillValidate(field.element)) {
+                        return new Promise(resolve => resolve(true))
+                    }
+
+                    let value;
+                    if (field.element.type === 'checkbox') {
+                        value = getCheckedValues(field);
+                    } else if (field.element.type === 'radio') {
+                        value = getCheckedValues(field)[0] || undefined;
+                    } else if (field.element.tagName === 'SELECT' && field.element.multiple) {
+                        value = Array.from(field.element.selectedOptions).map(opt => opt.value);
+                    } else {
+                        value = field.element.value;
+                    }
+
+                    const rules = field.rules || {};
+
+                    <?php /* Reset messages before validation in case async operations take a while */ ?>
+                    field.state.valid = true;
+                    this.showFieldState(field);
+
+                    <?php if ($viewModels->require(DeployMode::class)->isDeveloperMode()): ?>
+                    Object.keys(rules).filter(rule => !formValidationRules[rule]).forEach(unknown => {
+                        console.error(hyva.strf('Unknown validation rule "%0" found on field', unknown), field.element);
+                    });
+                    <?php endif; ?>
+
+                    <?php /* Validate all rules for the field and collect returned promises */ ?>
+                    const fieldValidations = Object.keys(rules).filter(rule => formValidationRules[rule]).map(async rule => {
+                        return runValidateFn.call(this, rule, rules[rule], value, field).then(result => {
+                            field.state.rules[rule] = result;
+                            return result;
+                        })
+                    });
+
+                    return new Promise(resolve => {
+                        <?php /* Require all validations to finish processing before setting the final field state */ ?>
+                        Promise.all(fieldValidations).then(results => {
+                            <?php /* Set the state for the field after all rules complete before resolving the Promise */ ?>
+                            <?php /* Check elementWillValidate again in case the field visibility was changed by a validator */ ?>
+                            field.state.valid = !elementWillValidate(field.element) || rules.length === 0 || !results.some(isInvalidRuleResult)
+                            this.showFieldState(field);
+                            resolve(field.state.valid);
+                        })
+                    });
+                },
+                <?php /* Each message is either a String or an Object {type: 'html'|'text', content: String} */ ?>
+                getMessagesByField(field) {
+                    const messages = [];
+                    const invalidRules = Object.keys(field.state.rules).filter(rule => isInvalidRuleResult(field.state.rules[rule]));
+
+                    field.rules && Object.keys(field.rules).forEach((rule) => {
+                        if (invalidRules.includes(rule)) {
+                            const customMessage = field.element.getAttribute('data-msg-' + rule);
+                            const message = customMessage ? customMessage : field.state.rules[rule];
+                            const ruleOptions = JSON.parse(JSON.stringify(field.rules[rule]));
+
+                            if (typeof message === 'undefined' || message === null || (typeof message !== 'string' && ! message.type)) {
+                                messages.push(hyva.strf('Validation rule "%0" failed.', rule));
+                            } else if (Array.isArray(ruleOptions)) {
+                                ruleOptions.unshift(message.type ? message.content : message);
+                                const content = hyva.strf.apply(null, ruleOptions);
+                                messages.push(message.type ? {type: message.type, content} : content);
+                            } else {
+                                const content = hyva.strf(message.type ? message.content : message, ruleOptions)
+                                messages.push(message.type ? {type: message.type, content} : content);
+                            }
+                        }
+                    });
+                    return messages;
+                },
+                /** @deprecated */
+                getFieldWrapper(field) {
+                    <?php /* Use getMessageContainer() instead */ ?>
+                    return this.getMessageContainer(field)
+                },
+                getMessageContainer(field) {
+                    let container;
+                    const pageSelector = field.element.getAttribute('data-validation-container') || options.pageMessagesContainerSelector;
+                    if (pageSelector) {
+                        container = document.querySelector(pageSelector)
+                            || containerNotFound(pageSelector, field.element)
+                    } else {
+                        const containerSelector = classNamesToSelector(options.fieldWrapperClassName);
+                        container = field.element.closest(containerSelector)
+                            || createMessageContainer(field.element, options.fieldWrapperClassName)
+                            || containerNotFound(containerSelector, field.element);
+                    }
+
+                    return container;
+                },
+                showFieldState(field) {
+                    const container = this.getMessageContainer(field),
+                        hasErrorMessages = hasMessagesWrapper.call(this, field, options.messagesWrapperClassName),
+                        messages = this.getMessagesByField(field).map(m => {
+                            return m.type !== 'html' ? escapeHtml(m.type ? m.content : m) : m.content;
+                        });
+                    container.classList.toggle(options.validClassName, field.state.valid && ! hasErrorMessages);
+                    container.classList.toggle(options.invalidClassName, !field.state.valid || hasErrorMessages);
+                    this.createHtmlErrorMessage(field, messages);
+
+                    if (field.state.valid) {
+                        field.element.removeAttribute('aria-invalid');
+                    } else {
+                        field.element.setAttribute('aria-invalid', 'true');
+                        if (! document.activeElement) {
+                            field.element.focus();
+                        }
+                    }
+                },
+                removeMessages(field, messagesClass) {
+                    if (! hasMessagesWrapper.call(this, field, messagesClass || options.messagesWrapperClassName)) {
+                        return;
+                    }
+
+                    const msgWrapper = getMessagesWrapper.call(this, field, messagesClass || options.messagesWrapperClassName);
+                    const messages = msgWrapper.querySelectorAll(`[data-msg-field='${field.element.name}']`);
+                    Array.from(messages).forEach(msg => msg.remove());
+                    if (msgWrapper && msgWrapper.childElementCount === 0) {
+                        field.element.removeAttribute('aria-errormessage');
+                        field.element.removeAttribute('aria-describedby');
+                        msgWrapper.remove();
+                    }
+                },
+                createErrorMessage(field, messages) {
+                    const htmlMessages = (Array.isArray(messages) ? messages : [messages]).map(escapeHtml)
+                    this.createHtmlErrorMessage(field, htmlMessages);
+                },
+                createHtmlErrorMessage(field, messages) {
+                    this.removeMessages(field, options.messagesWrapperClassName);
+                    field.element.removeAttribute('aria-errormessage');
+                    field.element.removeAttribute('aria-describedby');
+
+                    if (!field.state.valid) {
+                        const msgWrapper = this.addHtmlMessages(field, options.messagesWrapperClassName, messages);
+                        field.element.setAttribute('aria-errormessage', msgWrapper.id);
+                        field.element.setAttribute('aria-describedby', msgWrapper.id);
+                    }
+                },
+                /** @deprecated */
+                createMessage(field, message) {
+                    <?php /* Use addMessages() instead */ ?>
+                    return this.addMessages(field, options.messagesWrapperClassName, message);
+                },
+                addMessages(field, messagesClass, messages) {
+                    const htmlMessages = (Array.isArray(messages) ? messages : [messages]).map(escapeHtml)
+                    return this.addHtmlMessages(field, messagesClass, htmlMessages);
+                },
+                addHtmlMessages(field, messagesClass, htmlMessages) {
+                    const msgWrapper = getMessagesWrapper.call(this, field, messagesClass);
+
+                    (Array.isArray(htmlMessages) ? htmlMessages : [htmlMessages]).forEach((htmlMessage) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = htmlMessage;
+                        li.setAttribute('data-msg-field', field.element.name);
+                        msgWrapper.appendChild(li);
+                    });
+
+                    return msgWrapper;
+                },
+                setField(name, value) {
+                    this.fields[name].element.value = value;
+                    this.fields[name].element.dispatchEvent((new Event('input')));
+                    this.validateField(this.fields[name]);
+                }
+            }
+        }
+
+        hyva.formValidation = formValidation;
+        hyva.formValidation.rules = formValidationRules;
+        hyva.formValidation.setInputAttributeRuleName = (attrName, ruleName) => INPUT_ATTRIBUTE_RULES[attrName] = ruleName || attrName;
+        hyva.formValidation.setInputTypeRuleName = (typeName, ruleName) => INPUT_TYPE_RULES[typeName] = ruleName || typeName;
+        hyva.formValidation.addRule = (name, validator) => formValidationRules[name] = validator;
+    }(window.hyva = window.hyva || {}));
+</script>
+
