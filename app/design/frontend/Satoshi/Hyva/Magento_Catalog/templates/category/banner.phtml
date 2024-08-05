@@ -5,6 +5,8 @@ declare(strict_types=1);
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Catalog\Block\Category\View;
+use Magento\Catalog\ViewModel\Category\Image;
+use Magento\Catalog\Helper\Output;
 
 /** @var Escaper $escaper */
 /** @var View $block */
@@ -16,13 +18,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 $title = $block->getLayout()->getBlock('page.main.title')->getPageHeading();
 
 $category = $block->getCurrentCategory();
-$categoryOutput = $this->helper(Magento\Catalog\Helper\Output::class);
+$categoryOutput = $this->helper(Output::class);
 
 if ($description = $category->getDescription()) {
   $descriptionHtml = $categoryOutput->categoryAttribute($category, $description, 'description');
 }
 
-$image = $viewModels->require(Magento\Catalog\ViewModel\Category\Image::class);
+$image = $viewModels->require(Image::class);
 $width = $block->getVar('category_page_category_image/width');
 $height = $block->getVar('category_page_category_image/height');
 ?>
