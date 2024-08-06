@@ -1,19 +1,12 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
--->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <title>Create Account</title>
     </head>
-    <update handle="hyva_form_validation"/>
     <body>
-        <referenceBlock name="breadcrumbs" template="Magento_Theme::html/breadcrumbs.phtml">
+        <referenceBlock name="page.main.title" remove="true" />
+
+        <referenceBlock name="breadcrumbs">
             <action method="addCrumb">
                 <argument name="crumbName" xsi:type="string">home</argument>
                 <argument name="crumbInfo" xsi:type="array">
@@ -31,26 +24,5 @@
                 </argument>
             </action>
         </referenceBlock>
-
-        <referenceContainer name="content">
-            <!-- Keep class name with typo "registation-container" for backwards compatibility -->
-            <container name="customer.login.container" label="Customer Login Container" htmlTag="div" htmlClass="registration-container registation-container container p-0 m-auto">
-                <block class="Magento\Customer\Block\Form\Register" name="customer_form_register" template="Magento_Customer::form/register.phtml" cacheable="false">
-                    <arguments>
-                        <argument name="attribute_data" xsi:type="object">Magento\Customer\Block\DataProviders\AddressAttributeData</argument>
-                        <argument name="post_code_config" xsi:type="object">Magento\Customer\Block\DataProviders\PostCodesPatternsAttributeData</argument>
-                    </arguments>
-                    <container name="form.additional.info" as="form_additional_info"/>
-                    <container name="fieldset.create.info.additional" as="fieldset_create_info_additional"/>
-                    <container name="customer.form.register.fields.before" as="form_fields_before" label="Form Fields Before" htmlTag="div" htmlClass="customer-form-before"/>
-                </block>
-            </container>
-        </referenceContainer>
-        <referenceContainer name="form.additional.info">
-            <block name="form_additional_info_customer" template="Magento_Customer::additionalinfocustomer.phtml"/>
-        </referenceContainer>
-        <referenceContainer name="before.body.end">
-            <block name="password.validate.js" template="Magento_Customer::js/password-validation.phtml"/>
-        </referenceContainer>
     </body>
 </page>
