@@ -11,7 +11,7 @@ export type AuthenticationType = {
     init(): void;
     clearError(field: string): void;
     setErrorMessages(messages: Record<string, string>): void;
-    submitForm(event: Event): void;
+    SubmitLoginForm(event: Event): void;
 } & MainStoreType;
 
 export const Authentication = (): AuthenticationType => {
@@ -32,7 +32,7 @@ export const Authentication = (): AuthenticationType => {
             this.displayErrorMessage = true;
         },
 
-        submitForm(event) {
+        SubmitLoginForm(event) {
             event.preventDefault();
 
             const form = document.querySelector('#customer-login-form') as HTMLFormElement;
