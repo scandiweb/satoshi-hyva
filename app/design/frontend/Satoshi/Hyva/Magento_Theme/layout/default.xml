@@ -14,6 +14,8 @@
         <attribute name="class" value="gradient" />
         <attribute name="class" value="bg-fg" />
         <attribute name="x-data" value="{}" />
+        <attribute name="@private-content-loaded.window" value="$store.cart.setCartItems($event.detail.data.cart?.items || []);" />
+
 
         <referenceContainer name="header.container" htmlClass="page-header contents"/>
         <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-fg">
@@ -21,6 +23,9 @@
                 <block class="Magento\Framework\View\Element\Template" name="main-content" template="Magento_Theme::html/layout/main-content.phtml" before="-" />
             </container>
         </referenceContainer>
+
+        <!-- TODO: Remove global alerts (uncomment this) -->
+        <!-- <referenceContainer name="page.messages" remove="true" /> -->
 
         <referenceContainer name="main.content" htmlClass="contents" htmlTag="div" />
 
