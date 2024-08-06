@@ -15,7 +15,7 @@ export type DropdownType = {
   search(value: string): void;
 } & Magics<{}>;
 
-export const Dropdown = () =>
+export const Dropdown = (searchRef: string|null) =>
   <DropdownType>{
     isDropdownVisible: false,
     _dropdownWrapper: null,
@@ -34,9 +34,9 @@ export const Dropdown = () =>
       } else {
         this.show();
           this.$nextTick(() => {
-              if (this.$refs.currencySearch) {
+              if (searchRef && this.$refs[searchRef]) {
                   setTimeout(() => {
-                      this.$refs.currencySearch.focus();
+                      this.$refs[searchRef].focus();
                   }, 250);
               }
           });
