@@ -23,11 +23,13 @@ $options = $block->getData('options') ?? [];
 $currentValue = $block->getData('currentValue') ?? '';
 $withSearch = $block->getData('withSearch') ?? false;
 
+$searchRef = 'search-' . $escaper->escapeHtml($id);
+
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div x-data="Dropdown()" x-ref="DropdownWrapper" class="relative inline-block text-left">
+<div x-data="Dropdown('<?= $searchRef ?>')" x-ref="DropdownWrapper" class="relative inline-block text-left">
     <button
         @click="toggleDropdown()"
         id="<?= $escaper->escapeHtml($id) ?>-button"
@@ -56,7 +58,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 <label for="<?= $escaper->escapeHtml($id) ?>-search" class="sr-only">Search</label>
                 <input type="text" id="<?= $escaper->escapeHtml($id) ?>-search"
                        class="w-full rounded-xs border p-3 placeholder:text-gray-500 contrast-more:border-secondary-700"
-                       x-ref="currencySearch"
+                       x-ref="<?= $searchRef ?>"
                        placeholder="Search" @input.debounce.300ms="search($event.target.value)">
             </div>
         <?php endif; ?>
