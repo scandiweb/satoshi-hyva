@@ -7,6 +7,8 @@
     </type>
     <preference for="Magento\Customer\Controller\Account\LoginPost"
                 type="Satoshi\Theme\Plugin\Customer\Controller\Account\LoginPost"/>
+    <preference for="Magento\Customer\Controller\Account\ForgotPasswordPost"
+                type="Satoshi\Theme\Plugin\Customer\Controller\Account\ForgotPassPost"/>
     <preference
         for="Magento\Checkout\Controller\Cart\CouponPost"
         type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"

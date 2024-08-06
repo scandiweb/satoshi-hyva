@@ -11,10 +11,10 @@ export type AuthenticationType = {
     init(): void;
     clearError(field: string): void;
     setErrorMessages(messages: Record<string, string>): void;
-    SubmitLoginForm(event: Event): void;
+    submitForm(event: Event): void;
 } & MainStoreType;
 
-export const Authentication = (): AuthenticationType => {
+export const Authentication = (formId: string) => {
     return <AuthenticationType>{
         errors: 0,
         hasCaptchaToken: false,
@@ -27,17 +27,17 @@ export const Authentication = (): AuthenticationType => {
             this.errorMessages[field] = '';
         },
 
+
         setErrorMessages(messages) {
             this.errorMessages = messages;
             this.displayErrorMessage = true;
         },
 
-        SubmitLoginForm(event) {
+        submitForm(event) {
             event.preventDefault();
 
-            const form = document.querySelector('#customer-login-form') as HTMLFormElement;
+            const form = document.querySelector(`#${formId}`) as HTMLFormElement;
             if (!form) {
-                console.error('Form not found');
                 return;
             }
 
