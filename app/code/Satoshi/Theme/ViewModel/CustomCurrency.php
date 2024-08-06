@@ -34,7 +34,6 @@ class CustomCurrency extends BaseCurrency
                             'name' => $allCurrencies[$code][1] ?: $code,
                             'symbol' => $allCurrencies[$code][0] ?? '',
                         ];
-                        $this->logger->debug('Currency rates' . json_encode($allCurrencies[$code][0]));
                     }
                 }
             }
