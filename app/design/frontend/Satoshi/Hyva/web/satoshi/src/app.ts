@@ -30,6 +30,8 @@ import { RangeSlider } from "./data/RangeSlider";
 import { Slider } from "./data/Slider";
 import { CountdownTimer } from "./data/CountdownTimer";
 import { TransitionImage } from "./data/TransitionImage";
+import { Authentication } from "./data/Authentication";
+
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -60,4 +62,5 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("Slider", Slider);
   Alpine.data("CountdownTimer", CountdownTimer);
   Alpine.data("TransitionImage", TransitionImage);
+  Alpine.data("Authentication", Authentication);
 });

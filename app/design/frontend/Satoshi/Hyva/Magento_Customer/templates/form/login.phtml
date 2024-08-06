@@ -35,7 +35,7 @@ $recaptcha = $block->getData('viewModelRecaptcha');
             <form class="w-full"
                   action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
                   method="post"
-                  x-data="initCustomerLoginForm()"
+                  x-data="Authentication()"
                   @submit.prevent="submitForm"
                   id="customer-login-form">
                 <?= $block->getBlockHtml('formkey') ?>
@@ -113,46 +113,3 @@ $recaptcha = $block->getData('viewModelRecaptcha');
         </div>
     </div>
 </div>
-<script>
-    function initCustomerLoginForm() {
-        return {
-            errors: 0,
-            hasCaptchaToken: 0,
-            showPassword: false,
-            displayErrorMessage: false,
-            errorMessages: {},
-            generalErrorMessage: '',
-            clearError(field) {
-                this.errorMessages[field] = '';
-            },
-            setErrorMessages(messages) {
-                this.errorMessages = messages;
-                this.displayErrorMessage = true;
-            },
-            submitForm() {
-                const $form = document.querySelector('#customer-login-form');
-                <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN) : '' ?>
-
-                fetch($form.action, {
-                    method: 'POST',
-                    body: new FormData($form),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            $form.submit();
-                        } else {
-                            this.setErrorMessages({[data.field]: data.message});
-                        }
-                    })
-                    .catch(error => {
-                        this.generalErrorMessage = 'An error occurred. Please try again.';
-                        this.displayErrorMessage = true;
-                    });
-            }
-        }
-    }
-</script>
