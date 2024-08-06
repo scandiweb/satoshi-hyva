@@ -16,8 +16,7 @@ export type AuthenticationType = {
     submitForm(event: Event): void;
 } & MainStoreType;
 
-export const Authentication = (...args: unknown[]): AuthenticationType => {
-    const [recaptchaInstance] = args;
+export const Authentication = (): AuthenticationType => {
 
     console.log('holaaa');
 
@@ -49,15 +48,6 @@ export const Authentication = (...args: unknown[]): AuthenticationType => {
             if (!form) {
                 console.error('Form not found');
                 return;
-            }
-
-            if (recaptchaInstance && typeof recaptchaInstance.getResponse === 'function') {
-                const token = recaptchaInstance.getResponse();
-                if (!token) {
-                    this.generalErrorMessage = 'Please complete the reCAPTCHA.';
-                    this.displayErrorMessage = true;
-                    return;
-                }
             }
 
             fetch(form.action, {
