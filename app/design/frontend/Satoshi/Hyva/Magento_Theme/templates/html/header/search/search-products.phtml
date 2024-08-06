@@ -59,8 +59,7 @@ use Satoshi\Theme\Block\Template;
       <div class="absolute -top-10 end-0 start-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
       <a
         class="button button--filled-primary w-full"
-        <?php // TODO: Replace with magento search url ?>
-        :href="getSearchUrl('/')"
+        :href="getSearchUrl('/catalogsearch/result')"
         x-element-transition-trigger:search.animate="{
           search: searchTermInput
         }"

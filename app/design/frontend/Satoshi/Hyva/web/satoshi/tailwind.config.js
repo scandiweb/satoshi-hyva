@@ -106,7 +106,7 @@ module.exports = hyvaModules.mergeTailwindConfig({
         "2xs": "0.625rem",
         xs: "0.75rem",
         sm: "12px",
-        md: "14px",
+        md: "16px",
         lg: "18px",
         xl: "20px",
         xxl: "24px",

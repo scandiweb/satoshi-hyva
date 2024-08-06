@@ -2,7 +2,17 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Framework\View\TemplateEngine\Php">
-        <plugin name="utilities_template_engine_plugin" type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"/>
+        <plugin name="utilities_template_engine_plugin"
+                type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"/>
     </type>
-    <preference for="Magento\Customer\Controller\Account\LoginPost" type="Satoshi\Theme\Plugin\Customer\Controller\Account\LoginPost" />
+    <preference for="Magento\Customer\Controller\Account\LoginPost"
+                type="Satoshi\Theme\Plugin\Customer\Controller\Account\LoginPost"/>
+    <preference
+        for="Magento\Checkout\Controller\Cart\CouponPost"
+        type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
+    />
+    <preference
+        for="Magento\Checkout\Block\Cart\Coupon"
+        type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
+    />
 </config>

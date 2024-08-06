@@ -24,12 +24,15 @@ import { Filters } from "./data/Filters";
 import { ProductPage } from "./data/ProductPage";
 import { Dropdown } from "./data/Dropdown";
 import { Search } from "./data/Search";
+import { Shipping } from "./data/Shipping.js";
 import { Accordion } from "./data/Accordion";
 import { Address } from "./data/Address";
 import { RangeSlider } from "./data/RangeSlider";
 import { Slider } from "./data/Slider";
 import { CountdownTimer } from "./data/CountdownTimer";
 import { TransitionImage } from "./data/TransitionImage";
+import { Authentication } from "./data/Authentication";
+
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -54,10 +57,12 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("ProductPage", ProductPage);
   Alpine.data("Dropdown", Dropdown);
   Alpine.data("Search", Search);
+  Alpine.data("Shipping", Shipping);
   Alpine.data("Accordion", Accordion);
   Alpine.data("Address", Address);
   Alpine.data("RangeSlider", RangeSlider);
   Alpine.data("Slider", Slider);
   Alpine.data("CountdownTimer", CountdownTimer);
   Alpine.data("TransitionImage", TransitionImage);
+  Alpine.data("Authentication", Authentication);
 });
