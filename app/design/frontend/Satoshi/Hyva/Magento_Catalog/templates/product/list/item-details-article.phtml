@@ -45,9 +45,8 @@ if (!$isAlpineTemplate) {
     $featuredImage = null;
 }
 ?>
-<!--I made a product card 1/2 of grid column width to make it look more similar to original design-->
 <article
-    class="z-10 relative flex h-full w-1/2 flex-col items-stretch justify-start text-start"
+    class="z-10 relative flex h-full w-full flex-col items-stretch justify-start text-start"
     x-data="ProductPage()"
     <?php if (!$isAlpineTemplate) : ?>
         <?php // TODO: Create x-init to set correct product data ?>

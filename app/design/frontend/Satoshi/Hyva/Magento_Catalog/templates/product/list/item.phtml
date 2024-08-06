@@ -74,22 +74,20 @@ else{
     class="<?= $class ?> <?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product w-full"
 >
 
-    <!-- Changed a grid column height to look more similar to designs. placed card in the center of column -->
     <a
+        class="group relative flex min-w-0 rounded-md justify-center h-[521px]"
         <?php if ($isAlpineTemplate) : ?>
             :href="product.url"
             x-element-transition-trigger:product<?= $isSearchCard ? '' : '.preview' ?>.animate="
-      {
-        'productImg': product.image,
-        'title': product.title
-      }
-    "
+              {
+                'productImg': product.image,
+                'title': product.title
+              }
+            "
         <?php else : ?>
             href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
             x-element-transition-trigger:product.preview.animate
         <?php endif; ?>
-        class="group relative flex min-w-0 rounded-md justify-center"
-        style="height: 600px"
     >
         <div
             class="h-0 w-0"
