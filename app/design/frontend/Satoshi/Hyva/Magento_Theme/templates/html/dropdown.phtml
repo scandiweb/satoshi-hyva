@@ -20,15 +20,14 @@ use Magento\Framework\View\Element\Template;
 $id = $block->getData('id') ?? 'dropdown';
 $label = $block->getData('label') ?? '';
 $options = $block->getData('options') ?? [];
+$currentValue = $block->getData('currentValue') ?? '';
 $withSearch = $block->getData('withSearch') ?? false;
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
-
-echo 'dropdown.phtml zzzzzzzzzzzzzzzzzzzzzzzzzzz dropdown.phtml';
 ?>
 
-<div x-data="Dropdown()" x-ref="DropdownWrapper" class="relative">
+<div x-data="Dropdown()" x-ref="DropdownWrapper" class="relative inline-block text-left">
     <button
         @click="toggleDropdown()"
         id="<?= $escaper->escapeHtml($id) ?>-button"
@@ -38,8 +37,10 @@ echo 'dropdown.phtml zzzzzzzzzzzzzzzzzzzzzzzzzzz dropdown.phtml';
         :aria-expanded="isDropdownVisible"
         aria-controls="<?= $escaper->escapeHtml($id) ?>"
     >
-        <?= $escaper->escapeHtml($label) ?>
-        <span :class="{ 'rotate-180': isDropdownVisible }" class="transition-transform motion-reduce:transition-none">
+        <?= $escaper->escapeHtml($label ?? $currentValue) ?>
+        <span
+            :class="isDropdownVisible ? '-rotate-90' : 'rotate-90'"
+            class="transition-transform motion-reduce:transition-none">
             <?= $hyvaicons->renderHtml('chevron'); ?>
         </span>
     </button>
@@ -55,17 +56,26 @@ echo 'dropdown.phtml zzzzzzzzzzzzzzzzzzzzzzzzzzz dropdown.phtml';
                 <label for="<?= $escaper->escapeHtml($id) ?>-search" class="sr-only">Search</label>
                 <input type="text" id="<?= $escaper->escapeHtml($id) ?>-search"
                        class="w-full rounded-xs border p-3 placeholder:text-gray-500 contrast-more:border-secondary-700"
+                       x-ref="currencySearch"
                        placeholder="Search" @input.debounce.300ms="search($event.target.value)">
             </div>
         <?php endif; ?>
-        <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700" aria-labelledby="<?= $escaper->escapeHtml($id) ?>-button">
+        <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700"
+            aria-labelledby="<?= $escaper->escapeHtml($id) ?>-button">
             <?php foreach ($options as $option): ?>
                 <li>
                     <a tabindex="0"
                        data-value="<?= $escaper->escapeHtml($option['value']) ?>"
-                       class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs bg-primary-50 hover:underline"
+                       class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs hover:underline"
+                       :class="{ 'bg-primary-50': '<?= $escaper->escapeHtml($option['value']) ?>' === '<?= $escaper->escapeHtml($currentValue) ?>' }"
                        @click.prevent='<?= $option['on_click'] ?>'>
-                        <?= $escaper->escapeHtml($option['label']) ?>
+                        <?php if (is_array($option['label'])): ?>
+                            <?php foreach ($option['label'] as $labelPart): ?>
+                                <span><?= $escaper->escapeHtml($labelPart) ?></span>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <?= $escaper->escapeHtml($option['label']) ?>
+                        <?php endif; ?>
                     </a>
                 </li>
             <?php endforeach; ?>
