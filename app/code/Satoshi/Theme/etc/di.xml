@@ -6,5 +6,16 @@
                 type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"/>
     </type>
 
-    <preference for="Hyva\Theme\ViewModel\Currency" type="Satoshi\Theme\ViewModel\CustomCurrency"/>
+    <preference
+        for="Magento\Checkout\Controller\Cart\CouponPost"
+        type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
+    />
+    <preference
+        for="Magento\Checkout\Block\Cart\Coupon"
+        type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
+    />
+    <preference
+        for="Hyva\Theme\ViewModel\Currency"
+        type="Satoshi\Theme\ViewModel\CustomCurrency"
+    />
 </config>

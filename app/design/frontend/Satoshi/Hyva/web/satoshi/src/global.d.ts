@@ -12,7 +12,11 @@ declare global {
     hyva: {
       getFormKey: function;
       formatPrice: function;
-    },
+      getUenc: function;
+      replaceDomElement: function;
+      strf: function;
+      getBrowserStorage: function;
+    };
 
     // TODO: Remove
     Shopify: {
@@ -34,6 +38,8 @@ declare global {
       setupXRElements: function;
     };
   }
+  const BASE_URL: string;
+  const CURRENT_STORE_CODE: string;
 }
 
 declare module "alpinejs" {
