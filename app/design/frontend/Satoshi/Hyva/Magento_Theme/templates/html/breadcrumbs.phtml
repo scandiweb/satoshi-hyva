@@ -37,21 +37,6 @@ $renderOnMobile = in_array($pageType, $mobilePageTypes);
                             </div>
                         </template>
 
-                        <template x-if="$store['transition'].pageType === 'article'">
-                            <div class="contents">
-                                <div role="listitem" class="breadcrumb">
-                                    <!-- TODO: Make blog url and title dynamic -->
-                                    <a x-element-transition-trigger href="{{ blog.url }}" aria-current="page">
-                                        {{ blog.title }}
-                                    </a>
-                                </div>
-                                <div role="listitem" class="mx-4 inline-block text-neutral-500 contrast-more:text-secondary-700" aria-hidden="true">
-                                    <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
-                                </div>
-                                <div role="listitem" class="breadcrumb" x-text="$store['transition'].pageData?.title"></div>
-                            </div>
-                        </template>
-
                         <template x-if="$store['transition'].pageType === 'product'">
                             <div class="contents">
                                 <div role="listitem" class="breadcrumb" x-text="$store['transition'].pageData?.title"></div>
