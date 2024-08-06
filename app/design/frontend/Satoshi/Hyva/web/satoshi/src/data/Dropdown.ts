@@ -15,7 +15,7 @@ export type DropdownType = {
   search(value: string): void;
 } & Magics<{}>;
 
-export const Dropdown = (searchRef: string|null) =>
+export const Dropdown = (id: string) =>
   <DropdownType>{
     isDropdownVisible: false,
     _dropdownWrapper: null,
@@ -34,6 +34,7 @@ export const Dropdown = (searchRef: string|null) =>
       } else {
         this.show();
           this.$nextTick(() => {
+              const searchRef = `${id}-search`;
               if (searchRef && this.$refs[searchRef]) {
                   setTimeout(() => {
                       this.$refs[searchRef].focus();
@@ -75,7 +76,7 @@ export const Dropdown = (searchRef: string|null) =>
     },
 
     search(value) {
-      const options = this._dropdownWrapper?.querySelectorAll("li a");
+      const options = this._dropdownWrapper?.querySelectorAll(`#${id} li a`);
       options?.forEach((option) => {
         const optionValue = (option as HTMLElement).outerText.toLowerCase();
         const match = optionValue.includes(value.toLowerCase());
