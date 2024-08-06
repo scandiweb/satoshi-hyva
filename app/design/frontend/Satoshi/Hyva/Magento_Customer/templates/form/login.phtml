@@ -36,7 +36,7 @@ $recaptcha = $block->getData('viewModelRecaptcha');
                   action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
                   method="post"
                   x-data="Authentication()"
-                  @submit.prevent="submitForm"
+                  @submit.prevent="SubmitLoginForm"
                   id="customer-login-form">
                 <?= $block->getBlockHtml('formkey') ?>
                 <fieldset class="fieldset login">
