@@ -1,0 +1,43 @@
+<div class="contents">
+  <template x-if="(segment.value > 0 || cartTotals.is_zero_tax_displayed)">
+    <div>
+      <template x-if="!(segment.value > 0 && cartTotals.is_full_tax_summary_displayed)">
+        <div class="flex justify-between">
+          <p x-text="segment.title"></p>
+          <p x-text="hyva.formatPrice(segment.value)"></p>
+        </div>
+      </template>
+
+      <template x-if="segment.value > 0 && cartTotals.is_full_tax_summary_displayed">
+        <div>
+
+          <div class="flex justify-between">
+            <p x-text="segment.title"></p>
+            <p x-text="hyva.formatPrice(segment.value)"></p>
+          </div>
+
+          <div class="flex justify-between">
+            <p x-text="segment.title"></p>
+            <p x-text="hyva.formatPrice(segment.value)"></p>
+          </div>
+
+
+          <template
+            x-for="(taxItem, index) in segment.extension_attributes.tax_grandtotal_details"
+            :key="index"
+          >
+
+            <div class="flex justify-between">
+              <div>
+                <template x-for="(taxRate, index) in taxItem.rates">
+                  <p x-text="`${taxRate.title} (${taxRate.percent}%)`"></p>
+                </template>
+              </div>
+              <p x-text="hyva.formatPrice(taxItem.amount)"></p>
+            </div>
+          </template>
+        </div>
+      </template>
+    </div>
+  </template>
+</div>

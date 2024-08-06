@@ -75,7 +75,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     x-transition:leave-start="md:opacity-100"
     x-transition:leave-end="md:opacity-0"
   >
-    <?php // TODO: Implement search suggestions and categories ?>
+    <?= $template->render('Magento_Theme::html/header/search/search-suggestions.phtml') ?>
+    <?= $template->render('Magento_Theme::html/header/search/search-categories.phtml') ?>
     <?= $template->render('Magento_Theme::html/header/search/search-products.phtml') ?>
     <div
       class="transition-opacity duration-300 md:sticky md:bottom-0 md:z-10 md:w-full md:rounded-b-md md:bg-fg md:px-5 md:pb-5"

@@ -1,0 +1,38 @@
+<div class="contents">
+  <!-- display shipping including and excluding tax -->
+  <template
+    x-if="cartTotals.is_virtual === 0 && !!cartTotals.selected_shipping_method && cartTotals.review_shipping_display_mode === 'both'"
+  >
+    <div>
+      <div class="flex justify-between">
+        <p x-text="`${segment.title} (${excludingTaxMessage})`"></p>
+        <p x-text="hyva.formatPrice(cartTotals.shipping_amount)"></p>
+      </div>
+
+      <div class="flex justify-between">
+        <p x-text="`${segment.title} (${includingTaxMessage})`"></p>
+        <p x-text="hyva.formatPrice(cartTotals.shipping_incl_tax)"></p>
+      </div>
+    </div>
+  </template>
+
+  <!-- display shipping excluding tax -->
+  <template
+    x-if="cartTotals.is_virtual === 0 && !!cartTotals.selected_shipping_method && cartTotals.review_shipping_display_mode === 'excluding'"
+  >
+    <div class="flex justify-between">
+      <p x-text="segment.title"></p>
+      <p x-text="hyva.formatPrice(segment.value)"></p>
+    </div>
+  </template>
+
+  <!-- display shipping including tax -->
+  <template
+    x-if="cartTotals.is_virtual === 0 && !!cartTotals.selected_shipping_method && cartTotals.review_shipping_display_mode === 'including'"
+  >
+    <div class="flex justify-between">
+      <p x-text="segment.title"></p>
+      <p x-text="hyva.formatPrice(cartTotals.shipping_incl_tax)"></p>
+    </div>
+  </template>
+</div>

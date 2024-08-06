@@ -1,0 +1,89 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Magento\Catalog\Block\Category\View;
+use Magento\Catalog\ViewModel\Category\Image;
+use Magento\Catalog\Helper\Output;
+
+/** @var Escaper $escaper */
+/** @var View $block */
+
+/** @var ViewModelRegistry $viewModels */
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$title = $block->getLayout()->getBlock('page.main.title')->getPageHeading();
+
+$category = $block->getCurrentCategory();
+$categoryOutput = $this->helper(Output::class);
+
+if ($description = $category->getDescription()) {
+  $descriptionHtml = $categoryOutput->categoryAttribute($category, $description, 'description');
+}
+
+$image = $viewModels->require(Image::class);
+$width = $block->getVar('category_page_category_image/width');
+$height = $block->getVar('category_page_category_image/height');
+?>
+
+<article
+  aria-label="<?= __('Category details') ?>"
+  class="content-wrapper mx-auto flex flex-col items-start gap-3 py-5 pb-6 pt-3"
+>
+  <?php if ($imgUrl = $image->getUrl($category)): ?>
+  <div class="disable-fade contents">
+    <img
+      src="<?= $escaper->escapeUrl($imgUrl) ?>"
+      alt="<?= $escaper->escapeHtmlAttr($category->getName()) ?>"
+      class="w-full h-[40vh] object-cover rounded-md mb-2"
+      <?php if ($width): ?>
+      width="<?= $escaper->escapeHtmlAttr($width) ?>"
+      <?php endif; ?>
+      <?php if ($height): ?>
+      height="<?= $escaper->escapeHtmlAttr($height) ?>"
+      <?php endif; ?>
+    />
+  </div>
+  <?php endif; ?>
+  <div class="flex w-full items-end justify-between">
+    <div class="flex flex-col gap-3">
+      <!-- Title -->
+      <h1 class="text-lg">
+        <?= $escaper->escapeHtml((string)$title) ?>
+      </h1>
+
+      <!-- Description -->
+      <?php if ($description = $category->getDescription()): ?>
+      <div class="rte text-text-100 contrast-more:text-secondary-700">
+        <?= $descriptionHtml ?>
+      </div>
+      <?php endif; ?>
+
+      <?php if ($block->isContentMode() || $block->isMixedMode()) :?>
+      <!-- CMS Block -->
+      <div class="rte text-text-100 contrast-more:text-secondary-700">
+        <?= $block->getCmsBlockHtml() ?>
+      </div>
+      <?php endif; ?>
+    </div>
+    <div class="ml-8 md:pl-2">
+      <button
+        type="button"
+        class="button button--filled-primary hidden w-[275px] min-w-[275px] md:inline-flex"
+        @click="$store.productList.toggleFiltersSidebar()"
+      >
+        <span
+          x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
+        >
+          <?= __('Hide filter') ?>
+        </span>
+        <span class="button__icon ml-3 text-xl">
+          <?= $hyvaicons->renderHtml('filter'); ?>
+        </span>
+      </button>
+    </div>
+  </div>
+</article>
