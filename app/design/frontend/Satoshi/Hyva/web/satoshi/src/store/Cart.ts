@@ -29,26 +29,44 @@ export type CartItem = {
   focusedUntil?: number;
 };
 
+export type CartTotals = {
+  total_segments: {
+    code: string;
+    title: string;
+    value: string;
+    extension_attributes: Record<string, any>[];
+  }[];
+  grand_total: string;
+  include_tax_in_grand_total: boolean;
+  is_virtual: boolean;
+  selected_shipping_method: any;
+  review_shipping_display_mode: string;
+  subtotal: string;
+  subtotal_incl_tax: string;
+  review_total_display_mode: string;
+  is_zero_subtotal: boolean;
+  is_full_tax_summary_displayed: boolean;
+};
+
 export type CartStoreType = {
   cartItems: CartItem[];
-  isCartInitialized: boolean;
+  cartTotals: any;
   isLoading: boolean;
   addingItemIds: number[];
   removingItemId: string | null;
   abortController: AbortController | null;
   errors: Record<string, string[]>;
+  setCartTotals(cartTotals: CartTotals): void;
+  updateCartTotals(cartTotals: CartTotals): void;
   setCartItems(cartItems: CartItem[]): void;
   addCartItems(cartItems: CartItem[]): void;
-  processCartItems(items: CartItem[]): CartItem[];
-  updateCartItem(item_id: string, qty: number): void;
+  updateCartItem(item_id: string): void;
   focusInCart(key: string): void;
   increaseQty(item_id: string): void;
   decreaseQty(item_id: string): void;
   setQty(qty: number, item_id: string): void;
-  setDiscounts(discounts: any): void;
-  subtotalPrice(): string;
-  totalPrice(): string;
   addToCart(): void;
+  applyCoupon(form: HTMLFormElement): void;
   showCart(): void;
   hideCart(): void;
   _updateFocusAnimation(): void;
@@ -60,12 +78,22 @@ const ABORT_ERROR_NAME = "AbortError";
 
 export const CartStore = <CartStoreType>{
   cartItems: [],
-  isCartInitialized: false,
+  cartTotals: {},
   isLoading: false,
   addingItemIds: [],
   removingItemId: null,
   abortController: null,
   errors: {},
+
+  setCartTotals(cartTotals: CartTotals) {
+    this.cartTotals = cartTotals;
+  },
+  updateCartTotals(cartTotals: CartTotals) {
+    this.cartTotals = {
+      ...this.cartTotals,
+      ...cartTotals,
+    };
+  },
 
   setCartItems(cartItems: CartItem[]) {
     this.cartItems = cartItems;
@@ -74,11 +102,6 @@ export const CartStore = <CartStoreType>{
 
   addCartItems(cartItems: CartItem[]) {
     this.setCartItems([...cartItems, ...this.cartItems]);
-  },
-
-  // TODO: Might be redundant
-  processCartItems(items) {
-    return items;
   },
 
   addToCart() {
@@ -115,7 +138,7 @@ export const CartStore = <CartStoreType>{
     //     });
   },
 
-  updateCartItem(item_id, qty) {
+  updateCartItem(item_id) {
     // Abort the previous request if it exists
     if (this.abortController) {
       this.removingItemId = null;
@@ -131,28 +154,28 @@ export const CartStore = <CartStoreType>{
       return;
     }
 
-    const params: Record<string, string> = {
-      item_id,
-      item_qty: qty.toString(),
-      form_key: window.hyva.getFormKey(),
-    };
-    let url = "/checkout/sidebar/updateItemQty";
-
     if (cartItem.qty === 0) {
       cartItem.isDeleted = true;
       this.removingItemId = item_id;
-
-      delete params.item_qty;
-      url = "/checkout/sidebar/removeItem";
     }
 
-    const queryParams = new URLSearchParams(params);
-    fetch(`${url}?${queryParams}`, {
+    const formData = new FormData();
+    formData.append("form_key", window.hyva.getFormKey());
+    formData.append("uenc", window.hyva.getUenc());
+    this.cartItems.forEach((item) => {
+      formData.append(`cart[${item.item_id}][qty]`, item.qty.toString());
+    });
+
+    fetch(`/checkout/cart/updatePost`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      body: formData,
       signal: this.abortController.signal,
     })
-      .then(() => {
+      .then((result) => {
+        return result.text();
+      })
+      .then((content) => {
+        window.hyva.replaceDomElement("#cart-button", content);
         this.isLoading = false;
         this.removingItemId = null;
         this.cartItems = this.cartItems.filter((item) => item.qty);
@@ -172,7 +195,7 @@ export const CartStore = <CartStoreType>{
 
     if (cartItem) {
       cartItem.qty = Number(cartItem.qty) + 1;
-      this.updateCartItem(item_id, cartItem.qty);
+      this.updateCartItem(item_id);
     }
   },
 
@@ -190,42 +213,52 @@ export const CartStore = <CartStoreType>{
     if (cartItem) {
       cartItem.qty = Number(cartItem.qty) - 1;
 
-      this.updateCartItem(item_id, cartItem.qty);
+      this.updateCartItem(item_id);
     }
   },
 
   setQty(qty, item_id) {
-    console.log("xxx setting qty");
     const cartItem = this.cartItems.find((item) => item.item_id === item_id);
 
     if (cartItem) {
       cartItem.qty = Math.max(0, Number(qty));
-      this.updateCartItem(item_id, cartItem.qty);
+      this.updateCartItem(item_id);
     }
   },
 
-  setDiscounts(_discounts: any) {
-    // this.discounts = discounts;
-  },
+  applyCoupon(form: HTMLFormElement) {
+    // Abort the previous request if it exists
+    if (this.abortController) {
+      this.removingItemId = null;
+      this.abortController.abort();
+    }
 
-  subtotalPrice() {
-    const subtotalPrice = this.cartItems.reduce(
-      (total, item) => total + item.product_price_value * item.qty,
-      0,
-    );
-    return window.hyva.formatPrice(subtotalPrice);
-  },
+    this.isLoading = true;
+    this.abortController = new AbortController();
 
-  totalPrice() {
-    const subtotalPrice = this.cartItems.reduce(
-      (total, item) => total + item.product_price_value * item.qty,
-      0,
-    );
+    const formData = new FormData(form);
+    formData.append("uenc", window.hyva.getUenc());
+    formData.append("form_key", window.hyva.getFormKey());
 
-    // TODO: Calculate with discounts
-    const discounts = 0;
-
-    return window.hyva.formatPrice(subtotalPrice - discounts);
+    fetch(form.action, {
+      method: "POST",
+      body: formData,
+      signal: this.abortController.signal,
+    })
+      .then((result) => {
+        return result.text();
+      })
+      .then((content) => {
+        window.hyva.replaceDomElement("#cart-button", content);
+        window.hyva.replaceDomElement("#apply-coupon", content);
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        if (error.name !== ABORT_ERROR_NAME) {
+          console.error("Error:", error);
+          this.isLoading = false;
+        }
+      });
   },
 
   _updateFocusAnimation() {
