@@ -1,21 +1,18 @@
 <?xml version="1.0"?>
 
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <head>
-        <title>Customer Login</title>
-    </head>
     <body>
         <referenceBlock name="breadcrumbs" template="Magento_Theme::html/breadcrumbs.phtml">
             <action method="addCrumb">
                 <argument name="crumbName" xsi:type="string">home</argument>
                 <argument name="crumbInfo" xsi:type="array">
-                    <item name="title" xsi:type="string" translate="true">Satoshi</item>
-                    <item name="label" xsi:type="string" translate="true">Satoshi</item>
+                    <item name="title" xsi:type="string" translate="true">Home</item>
+                    <item name="label" xsi:type="string" translate="true">Home</item>
                     <item name="link" xsi:type="string">{{baseUrl}}</item>
                 </argument>
             </action>
             <action method="addCrumb">
-                <argument name="crumbName" xsi:type="string">register</argument>
+                <argument name="crumbName" xsi:type="string">login</argument>
                 <argument name="crumbInfo" xsi:type="array">
                     <item name="title" xsi:type="string" translate="true">Login</item>
                     <item name="label" xsi:type="string" translate="true">Login</item>
@@ -23,23 +20,5 @@
                 </argument>
             </action>
         </referenceBlock>
-        <referenceContainer name="content">
-            <container
-                name="customer.login.container"
-                htmlTag="div"
-                htmlId="customer-login-container"
-                htmlClass="login-container"
-            >
-                <block
-                    class="Magento\Customer\Block\Form\Login"
-                    name="customer_form_login"
-                    template="Magento_Customer::form/login.phtml"
-                    cacheable="false"
-                >
-                    <container name="form.additional.info" as="form_additional_info"/>
-                </block>
-                <block class="Magento\Customer\Block\Form\Login\Info" name="customer.new" template="Magento_Customer::newcustomer.phtml"/>
-            </container>
-        </referenceContainer>
     </body>
 </page>
