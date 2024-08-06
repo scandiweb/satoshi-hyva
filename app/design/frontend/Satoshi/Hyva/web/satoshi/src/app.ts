@@ -24,6 +24,7 @@ import { Filters } from "./data/Filters";
 import { ProductPage } from "./data/ProductPage";
 import { Dropdown } from "./data/Dropdown";
 import { Search } from "./data/Search";
+import { Shipping } from "./data/Shipping.js";
 import { Accordion } from "./data/Accordion";
 import { Address } from "./data/Address";
 import { RangeSlider } from "./data/RangeSlider";
@@ -54,6 +55,7 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("ProductPage", ProductPage);
   Alpine.data("Dropdown", Dropdown);
   Alpine.data("Search", Search);
+  Alpine.data("Shipping", Shipping);
   Alpine.data("Accordion", Accordion);
   Alpine.data("Address", Address);
   Alpine.data("RangeSlider", RangeSlider);

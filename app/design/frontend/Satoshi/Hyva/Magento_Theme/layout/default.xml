@@ -14,6 +14,8 @@
         <attribute name="class" value="gradient" />
         <attribute name="class" value="bg-fg" />
         <attribute name="x-data" value="{}" />
+        <attribute name="@private-content-loaded.window" value="$store.cart.setCartItems($event.detail.data.cart?.items || []);" />
+
 
         <referenceContainer name="header.container" htmlClass="page-header contents"/>
         <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-fg">

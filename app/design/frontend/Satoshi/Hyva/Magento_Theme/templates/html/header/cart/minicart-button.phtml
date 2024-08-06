@@ -10,15 +10,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 /** @var Cart $cartItems */
 $cart = $viewModels->require(Cart::class);
 $cartItemsCount = $cart->getCartItemsQty();
+$cartTotals = $cart->getSerializedCartTotals();
 ?>
 
 <button
-  @private-content-loaded.window="(event) => {
-    if (!$store.cart.isCartInitialized) {
-      $store.cart.setCartItems(event.detail.data.cart.items || []);
-      $store.cart.isCartInitialized = true;
-    }
-  }"
+  x-init='$store.cart.setCartTotals(<?= $cartTotals ?>)'
+  id="cart-button"
   class="md:button--filled-white button ghost-primary icon-button icon-button--size-lg col-start-5 md:m-2 contrast-more:md:border contrast-more:md:border-secondary-700"
   x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
   @click="!isCartVisible ? $store.cart.showCart() : $store.cart.hideCart()"
