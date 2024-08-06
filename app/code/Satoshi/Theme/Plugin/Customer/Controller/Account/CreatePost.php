@@ -2,12 +2,17 @@
 
 namespace Satoshi\Theme\Plugin\Customer\Controller\Account;
 
+/**
+ * Custom Changes:
+ * 1. Override the checkPasswordConfirmation method
+ */
+
 use Magento\Customer\Controller\Account\CreatePost as OriginalCreatePost;
 
 class CreatePost extends OriginalCreatePost
 {
     /**
-     * Override the checkPasswordConfirmation method.
+     * Do nothing; password confirmation is deleted.
      *
      * @param string $password
      * @param string $confirmation
@@ -18,6 +23,6 @@ class CreatePost extends OriginalCreatePost
         $confirmation
     ): void
     {
-        // Do nothing; password confirmation is deleted.
+        //
     }
 }
