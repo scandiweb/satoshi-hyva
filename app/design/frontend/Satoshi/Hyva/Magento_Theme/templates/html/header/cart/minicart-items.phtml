@@ -2,6 +2,7 @@
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Checkout\Block\Cart\Coupon;
 use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
 
@@ -94,5 +95,17 @@ $isCartPage = $block->getData('isCartPage');
         </a>
       </div>
     </template>
+
+    <?php if ($isCartPage): ?>
+    <!-- Apply coupon block -->
+    <?=
+      $block
+        ->getLayout()
+        ->createBlock(Coupon::class)
+        ->setTemplate('Magento_Theme::html/header/cart/coupon.phtml')
+        ->toHtml();
+    ?>
+    <?php endif; ?>
+
   </div>
 </div>

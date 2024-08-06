@@ -1,0 +1,24 @@
+<div class="contents">
+  <!-- display subtotal excluding tax -->
+  <template x-if="cartTotals.include_tax_in_grand_total">
+    <div>
+      <div class="flex justify-between">
+        <p x-text="`${segment.title} (${includingTaxMessage})`"></p>
+        <p x-text="hyva.formatPrice(segment.value)"></p>
+      </div>
+
+      <div class="flex justify-between">
+        <p x-text="`${segment.title} (${excludingTaxMessage})`"></p>
+        <p x-text="hyva.formatPrice(cartTotals.grand_total)"></p>
+      </div>
+    </div>
+  </template>
+
+  <!-- display subtotal including tax -->
+  <template x-if="!cartTotals.include_tax_in_grand_total && segment.value !== cartTotals.grand_total">
+    <div class="flex justify-between">
+      <p x-text="`${segment.title} (${includingTaxMessage})`"></p>
+      <p x-text="hyva.formatPrice(segment.value)"></p>
+    </div>
+  </template>
+</div>
