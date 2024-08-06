@@ -1,8 +1,6 @@
 import { MainStoreType } from "../store/Main";
 
 export type AuthenticationType = {
-    [key: string | symbol]: any;
-
     errors: number;
     hasCaptchaToken: boolean;
     showPassword: boolean;
@@ -17,9 +15,6 @@ export type AuthenticationType = {
 } & MainStoreType;
 
 export const Authentication = (): AuthenticationType => {
-
-    console.log('holaaa');
-
     return <AuthenticationType>{
         errors: 0,
         hasCaptchaToken: false,
@@ -27,10 +22,6 @@ export const Authentication = (): AuthenticationType => {
         displayErrorMessage: false,
         errorMessages: {},
         generalErrorMessage: '',
-
-        init() {
-            console.log('init');
-        },
 
         clearError(field) {
             this.errorMessages[field] = '';
