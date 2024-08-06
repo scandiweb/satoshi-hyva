@@ -14,9 +14,11 @@ $currencyViewModel = $viewModels->require(Currency::class);
 
 $options = [];
 foreach ($currencyViewModel->getCurrencies() as $code => $currency) {
+    $name = $currency['name'];
+    $symbol = $currency['symbol'];
     $options[] = [
         'value' => $escaper->escapeHtml($code),
-        'label' => $escaper->escapeHtml($currency['name']) . ' | ' . $escaper->escapeHtml($code) . ' (' . $escaper->escapeHtml($currency['symbol']) . ')',
+        'label' => $escaper->escapeHtml("$name | $code ($symbol)"),
         'on_click' => "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})"
     ];
 }
@@ -28,6 +30,6 @@ $template
         'withSearch' => true,
         'options' => $options,
     ])
-    ->render('Magento_Theme:html/dropdown.phtml');
+    ->render('Magento_Theme::html/dropdown.phtml');
 
 ?>
