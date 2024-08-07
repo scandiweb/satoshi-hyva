@@ -3,10 +3,11 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="content">
-            <block class="Magento\Cms\Block\Page" name="cms_page" template="Magento_Cms::page.phtml">
+
+            <block class="Satoshi\Theme\Block\CustomCmsPage" name="cms_page" template="Magento_Cms::page.phtml">
                 <arguments>
-                    <argument name="padding_top" xsi:type="number">20</argument>
-                    <argument name="padding_bottom" xsi:type="number">40</argument>
+                    <argument name="padding_top" xsi:type="number">0</argument>
+                    <argument name="padding_bottom" xsi:type="number">64</argument>
                 </arguments>
             </block>
         </referenceContainer>
