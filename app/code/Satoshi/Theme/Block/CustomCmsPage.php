@@ -2,6 +2,7 @@
 
 namespace Satoshi\Theme\Block;
 
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Cms\Model\Template\FilterProvider;
@@ -42,6 +43,18 @@ class CustomCmsPage extends Template
         return $this->getRequest()->getParam('page_id', 'home');
     }
 
+    /**
+     * Retrieve the CMS Page instance.
+     *
+     * This method loads the CMS page based on the current store and page identifier.
+     * It ensures that the page data is set only once by checking if it already exists.
+     *
+     * The original method from the core class didn't work because it relied on the
+     * default identifier 'home', which didn't match the expected behavior for our custom setup.
+     *
+     * @return CmsPageModel
+     * @throws NoSuchEntityException
+     */
     public function getPage()
     {
         if (!$this->hasData('page')) {
@@ -61,18 +74,7 @@ class CustomCmsPage extends Template
 
     public function getPageContent()
     {
-        $page = $this->getPage();
-        $content = $page->getContent();
-
-        // Debugging information
-        echo '<pre>';
-        echo 'Page ID: ' . $page->getId() . PHP_EOL;
-        echo 'Page Title: ' . $page->getTitle() . PHP_EOL;
-        echo 'Page Content: ' . $content . PHP_EOL;
-        echo '</pre>';
-        die();
-
-        return $this->_filterProvider->getPageFilter()->filter($content);
+        return $this->_filterProvider->getPageFilter()->filter($this->getPage()->getContent());
     }
 
     protected function _prepareLayout()
