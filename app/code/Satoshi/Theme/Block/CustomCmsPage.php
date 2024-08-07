@@ -40,7 +40,7 @@ class CustomCmsPage extends Template
 
     public function getPageId()
     {
-        return $this->getRequest()->getParam('page_id', 'home');
+        return $this->getRequest()->getParam('page_id', $this->_scopeConfig->getValue('web/default/cms_home_page', \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
     }
 
     /**
