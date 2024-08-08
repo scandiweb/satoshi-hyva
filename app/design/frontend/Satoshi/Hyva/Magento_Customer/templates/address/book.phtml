@@ -1,0 +1,148 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Magento\Customer\Block\Address\Book;
+use Magento\Framework\Escaper;
+
+/** @var Book $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+$addresses = $block->getCustomerAddresses() ?: [];
+
+?>
+
+<div
+    class="relative mt-4 h-full md:my-8"
+    x-cloak
+    x-data="Address()"
+>
+    <div x-data="{ title: null}">
+        <div class="mb-7 flex flex-col justify-between md:flex-row md:items-center">
+            <a
+                x-element-transition-trigger
+                href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+                class="relative text-lg font-bold text-text-500 md:hover:text-primary-600 max-md:pb-4"
+            >
+                <span
+                    class="absolute top-1 my-auto inline-block w-7 -translate-x-full animate-slideIconIn motion-reduce:translate-x-0 motion-reduce:animate-none"
+                >
+                    <?= $heroicons->arrowLeftHtml(); ?>
+                </span>
+                <h1
+                    class="inline-block animate-slideTitleIn motion-reduce:translate-x-[var(--translate-width)] motion-reduce:animate-none"
+                    style="--translate-width: 30px;"
+                >
+                    <?= __('Addresses') ?>
+                </h1>
+            </a>
+
+            <button
+                @click="showForm('create', 'add-new-address'); address = {}"
+                class="button button--filled button--filled-primary max-md:my-5 max-md:w-full"
+            >
+                <?= __('Add New Address') ?>
+            </button>
+        </div>
+
+        <div class="grid-cols-addressForms gap-8 md:grid">
+            <div class="w-full">
+                <span class="mb-3 block px-5 ">
+                    <?= __('Manage your addresses below') ?>
+                </span>
+                <div data-content-wrapper>
+                    <?php if (count($addresses) > 0): ?>
+                        <?php foreach ($addresses as $address): ?>
+                            <div
+                                class="contrast-border mb-5 rounded-md bg-bg-500 p-5"
+                                :class="{
+                                    'border !border-primary-500': renderedPage === 'edit' && editId === <?= $address->getId() ?> || renderedPage === 'delete' && deleteId === <?= $address->getId() ?>
+                                }"
+                            >
+                                <div class="capitalize">
+                                    <div class="mb-3 flex items-center justify-between">
+                                        <p class="font-bold">
+                                            <?= $escaper->escapeHtml($address->getName()) ?>
+                                            <?php if ($address->getId() == $block->getDefaultShipping()): ?>
+                                                (<?= __('Default Shipping Address') ?>)
+                                            <?php elseif ($address->getId() == $block->getDefaultBilling()): ?>
+                                                (<?= __('Default Billing Address') ?>)
+                                            <?php endif; ?>
+                                        </p>
+                                        <div class="flex gap-3">
+                                            <button
+                                                @click="showForm('edit', 'edit-address'); editId = <?= $address->getId() ?>; address = <?= json_encode($address->getData()) ?>"
+                                                class="py-3 text-text-500"
+                                            >
+                                                <?= $heroicons->pencilHtml(); ?>
+                                            </button>
+
+                                            <button
+                                                @click="showForm('delete', 'delete-address'); renderedPage = 'delete'; deleteId = <?= $address->getId() ?>"
+                                                class="p-3 text-text-500"
+                                                x-show="!(renderedPage === 'edit' && editId === <?= $address->getId() ?> || renderedPage === 'delete' && deleteId === <?= $address->getId() ?>)"
+                                            >
+                                                <?= $heroicons->trashHtml(); ?>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p class=""><?= $escaper->escapeHtml($address->getStreetFull()) ?></p>
+                                    <p class=""><?= $escaper->escapeHtml($address->getCity()) ?>, <?= $escaper->escapeHtml($address->getPostcode()) ?></p>
+                                    <p class=""><?= $escaper->escapeHtml($address->getCountryModel()->getName()) ?></p>
+                                </div>
+
+                                <div
+                                    class="mt-5"
+                                    x-show="renderedPage === 'edit' && editId === <?= $address->getId() ?> || renderedPage === 'delete' && deleteId === <?= $address->getId() ?>"
+                                    x-transition
+                                >
+                                    <div class="flex gap-4">
+                                        <button
+                                            type="button"
+                                            @click="editId = null; deleteId = null; renderedPage = '';"
+                                            class="button button--outline button--outline-primary max-md:hidden"
+                                        >
+                                            <?= __('Cancel') ?>
+                                        </button>
+
+                                        <button
+                                            x-show="renderedPage === 'edit'"
+                                            @click="showForm('delete', 'delete-address'); renderedPage = 'delete'; deleteId = <?= $address->getId() ?>"
+                                            class="button button--filled button--filled-primary flex-1"
+                                        >
+                                            <?= __('Delete') ?>
+                                        </button>
+                                        <button
+                                            x-show="renderedPage === 'delete'"
+                                            @click="showForm('edit', 'edit-address'); renderedPage = 'delete'; deleteId = <?= $address->getId() ?>"
+                                            class="button button--filled button--filled-primary flex-1"
+                                        >
+                                            <?= __('Edit Address') ?>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class=""><?= __('You have no addresses saved.') ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div
+                class="w-full"
+                x-show="renderedPage !== ''"
+                x-transition
+                id="addresses-form"
+            >
+                <div x-show="renderedPage === 'create'" id="add-new-address-desktop"></div>
+                <div x-show="renderedPage === 'edit'" id="edit-address-desktop"></div>
+                <div x-show="renderedPage === 'delete'" id="delete-address-desktop"></div>
+            </div>
+        </div>
+    </div>
+</div>
