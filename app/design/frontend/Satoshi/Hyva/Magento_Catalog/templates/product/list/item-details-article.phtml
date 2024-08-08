@@ -26,10 +26,6 @@ if (!$isAlpineTemplate) {
     $featuredImage = $product?->getImage();
     $title = $product?->getName();
 
-    echo '<pre>';
-    var_dump($product->getData());
-    echo '</pre>';
-
     //TODO: Remove object manager and move to price template
     $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
 
