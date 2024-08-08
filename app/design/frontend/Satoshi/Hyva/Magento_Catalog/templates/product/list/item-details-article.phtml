@@ -15,7 +15,6 @@ $wishlistViewModel = $viewModels->require(Wishlist::class);
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-
 $imageLoading = $block->getData('imageLoading');
 $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $showAddToWishlist = $wishlistViewModel->isEnabled();
@@ -26,20 +25,18 @@ if (!$isAlpineTemplate) {
     $featuredImage = $product?->getImage();
     $title = $product?->getName();
 
-    //TODO: Remove object manager and move to price template
-    $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-
-    //format a price
-    $pricingHelper = $objectManager->get(Data::class);
+    $storeManager = $objectManager->get(\Magento\Store\Model\StoreManagerInterface::class);
     $price = $product->getPrice();
-    if (floor($price) == $price) {
-        $formattedPrice = $pricingHelper->currency($price, true, false);
-        $formattedPrice = strtok($formattedPrice, '.');
-    } else {
-        $formattedPrice = $pricingHelper->currency($price, true, false);
-    }
+    $finalPrice = $product->getData('final_price');
+    $difference = $price - $finalPrice;
+    $discountPercentage = round(($difference * 100.0) / $price);
 
-    // get image full url
+    //TODO: Remove object manager and move to price template
+    $pricingHelper = $objectManager->get(Data::class);
+    $formattedPrice = floor($price) == $price
+        ? strtok($pricingHelper->currency($price, true, false), '.')
+        : $pricingHelper->currency($price, true, false);
+
     $mediaUrl = $storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
     $imageUrl = $mediaUrl . 'catalog/product' . $product->getImage();
 } else {
@@ -79,11 +76,21 @@ if (!$isAlpineTemplate) {
                     height=""
                 >
             </template>
+            <div
+                class="card-product__badge-container z-10 rounded-[20px] bg-white px-3 text-sm"
+                x-show="$store['transition'].pageData?.discount_percentage"
+            >
+                <span
+                    class="font-bold"
+                    x-text="`-${$store['transition'].pageData?.discount_percentage}% OFF`"
+                >
+                </span>
+            </div>
         <?php else : ?>
             <?php if ($product?->getImage()) : ?>
                 <?php // TODO: Create and move into an image snippet/template ?>
                 <div
-                    class="overflow-hidden rounded-md w-full"
+                    class="overflow-hidden rounded-md w-full relative"
                     x-element-transition-src="img"
                 >
                     <img
@@ -93,6 +100,13 @@ if (!$isAlpineTemplate) {
                         class="aspect-product h-full w-full object-contain object-center transition-transform md:group-hover:scale-105"
                         loading="<?= $imageLoading ?>"
                     >
+                    <?php if ($discountPercentage) : ?>
+                        <div class="absolute bottom-2 left-0 mb-[8px] rounded-full">
+                            <span class="card-product__badge bg-white px-3 py-2 text-sm font-bold rounded-r-full">
+                                -<?php echo $discountPercentage; ?>% OFF
+                            </span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             <?php else : ?>
                 <div class="flex aspect-product w-full items-center justify-center bg-secondary-100">
@@ -101,11 +115,6 @@ if (!$isAlpineTemplate) {
             <?php endif; ?>
         <?php endif; ?>
 
-        <?php // TODO: Make dynamic discount badge ?>
-        <div class="card-product__badge-container bottom left">
-      <span class="card-product__badge bg-white px-3 py-2 text-sm font-bold">
-      </span>
-        </div>
     </div>
 
     <div class="relative mt-4 flex flex-col gap-1">
