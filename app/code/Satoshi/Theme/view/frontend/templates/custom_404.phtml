@@ -3,9 +3,10 @@
 declare(strict_types=1);
 
 use Satoshi\Theme\Block\CustomNotFound;
+use Magento\Framework\Escaper;
 
 /** @var CustomNotFound $block */
-
+/** @var Escaper $escaper */
 ?>
 
 <div class="flex h-full flex-col items-center justify-center gap-5">
@@ -15,7 +16,7 @@ use Satoshi\Theme\Block\CustomNotFound;
     <h1 class="text-2xl">
         <?= $block->escapeHtml($block->getNotFoundTitle()) ?>
     </h1>
-    <a href="<?= $block->escapeUrl($block->getContinueShoppingUrl()) ?>" class="button button--filled-primary">
+    <a href="<?= $escaper->escapeUrl($block->getContinueShoppingUrl()) ?>" class="button button--filled-primary">
         <?= $block->escapeHtml($block->getContinueShoppingText()) ?>
     </a>
 </div>
