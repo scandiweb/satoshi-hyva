@@ -3,11 +3,13 @@
 use Hyva\Theme\ViewModel\Wishlist;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Pricing\Helper\Data;
 use Magento\Framework\UrlInterface;
 use Satoshi\Theme\Block\Template;
+use Hyva\Theme\Model\ViewModelRegistry;
 
 /** @var Template $template */
+/* @var Template $block */
+/** @var ViewModelRegistry $viewModels */
 
 /** @var Wishlist $wishlistViewModel */
 $wishlistViewModel = $viewModels->require(Wishlist::class);
@@ -20,6 +22,7 @@ $imageLoading = $block->getData('imageLoading');
 $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $showAddToWishlist = $wishlistViewModel->isEnabled();
 $objectManager = ObjectManager::getInstance();
+$product = [];
 
 if (!$isAlpineTemplate) {
     $product = $block->getData('product');
@@ -28,16 +31,6 @@ if (!$isAlpineTemplate) {
 
     //TODO: Remove object manager and move to price template
     $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-
-    //format a price
-    $pricingHelper = $objectManager->get(Data::class);
-    $price = $product->getPrice();
-    if (floor($price) == $price) {
-        $formattedPrice = $pricingHelper->currency($price, true, false);
-        $formattedPrice = strtok($formattedPrice, '.');
-    } else {
-        $formattedPrice = $pricingHelper->currency($price, true, false);
-    }
 
     // get image full url
     $mediaUrl = $storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
@@ -127,16 +120,16 @@ if (!$isAlpineTemplate) {
                     Vendor
                 </p>
 
-                <h2
-                    class="w-[calc(100%-40px)] text-md truncate mt-2"
-                    <?php if ($isAlpineTemplate) : ?>
-                        x-text="product.price"
-                    <?php endif; ?>
-                >
-                    <?php if (!$isAlpineTemplate) : ?>
-                        <?= $formattedPrice ?>
-                    <?php endif; ?>
-                </h2>
+                <?php if ($product ?? false) : ?>
+                    <?=
+                    $template
+                        ->setData([
+                            'product' => $product,
+                            'isAlpineTemplate' => $isAlpineTemplate,
+                        ])
+                        ->render('Magento_Catalog::product/element/_price-element.phtml');
+                    ?>
+                <?php endif; ?>
             </article>
         </div>
 
