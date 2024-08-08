@@ -6,6 +6,6 @@
             <!-- <block class="Magento\Catalog\Block\Category\View"  name="product.card.details" template="Magento_Catalog::product/list/item-details-article.phtml" /> -->
             <!-- Idk what difference does it make but Magento\Catalog\Block\Category\View throws  `Call to a member function getIdentities() on null` -->
             <block class="Magento\Framework\View\Element\Template"  name="product.card.details" template="Magento_Catalog::product/list/item-details-article.phtml" />
-referenceBlock>
+        </referenceBlock>
     </body>
 </page>
