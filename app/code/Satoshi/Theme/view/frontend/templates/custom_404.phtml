@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+use Satoshi\Theme\Block\CustomNotFound;
+
+/** @var CustomNotFound $block */
+
+?>
+
+<div class="flex h-full flex-col items-center justify-center gap-5">
+    <p class="text-[80px] leading-none">
+        <?= $block->escapeHtml($block->getNotFoundText()) ?>
+    </p>
+    <h1 class="text-2xl">
+        <?= $block->escapeHtml($block->getNotFoundTitle()) ?>
+    </h1>
+    <a href="<?= $block->escapeUrl($block->getContinueShoppingUrl()) ?>" class="button button--filled-primary">
+        <?= $block->escapeHtml($block->getContinueShoppingText()) ?>
+    </a>
+</div>
