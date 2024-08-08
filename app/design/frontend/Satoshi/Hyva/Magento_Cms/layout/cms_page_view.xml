@@ -2,8 +2,9 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceContainer name="content">
+        <referenceBlock name="page.main.title" remove="true" />
 
+        <referenceContainer name="content">
             <block class="Satoshi\Theme\Block\CustomCmsPage" name="cms_page" template="Magento_Cms::page.phtml">
                 <arguments>
                     <argument name="padding_top" xsi:type="number">0</argument>
