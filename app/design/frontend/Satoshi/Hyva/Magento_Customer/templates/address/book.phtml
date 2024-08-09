@@ -1,17 +1,18 @@
 <?php
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Customer\Block\Address\Book;
 use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Popup;
 
 /** @var Book $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
+/** @var SvgIcons $hyvaicons */
+/** @var Popup $popup */
 
-/** @var HeroiconsOutline $heroicons */
-$heroicons = $viewModels->require(HeroiconsOutline::class);
-
+$hyvaicons = $viewModels->require(SvgIcons::class);
 $addresses = $block->getCustomerAddresses() ?: [];
 
 ?>
@@ -31,7 +32,7 @@ $addresses = $block->getCustomerAddresses() ?: [];
                 <span
                     class="absolute top-1 my-auto inline-block w-7 -translate-x-full animate-slideIconIn motion-reduce:translate-x-0 motion-reduce:animate-none"
                 >
-                    <?= $heroicons->arrowLeftHtml(); ?>
+                    <?= $hyvaicons->renderHtml('chevron', 'rotate-180'); ?>
                 </span>
                 <h1
                     class="inline-block animate-slideTitleIn motion-reduce:translate-x-[var(--translate-width)] motion-reduce:animate-none"
@@ -78,7 +79,7 @@ $addresses = $block->getCustomerAddresses() ?: [];
                                                 @click="showForm('edit', 'edit-address'); editId = <?= $address->getId() ?>; address = <?= json_encode($address->getData()) ?>"
                                                 class="py-3 text-text-500"
                                             >
-                                                <?= $heroicons->pencilHtml(); ?>
+                                                <?= $hyvaicons->pencilHtml(); ?>
                                             </button>
 
                                             <button
@@ -86,12 +87,13 @@ $addresses = $block->getCustomerAddresses() ?: [];
                                                 class="p-3 text-text-500"
                                                 x-show="!(renderedPage === 'edit' && editId === <?= $address->getId() ?> || renderedPage === 'delete' && deleteId === <?= $address->getId() ?>)"
                                             >
-                                                <?= $heroicons->trashHtml(); ?>
+                                                <?= $hyvaicons->trashHtml(); ?>
                                             </button>
                                         </div>
                                     </div>
                                     <p class=""><?= $escaper->escapeHtml($address->getStreetFull()) ?></p>
-                                    <p class=""><?= $escaper->escapeHtml($address->getCity()) ?>, <?= $escaper->escapeHtml($address->getPostcode()) ?></p>
+                                    <p class=""><?= $escaper->escapeHtml($address->getCity()) ?>
+                                        , <?= $escaper->escapeHtml($address->getPostcode()) ?></p>
                                     <p class=""><?= $escaper->escapeHtml($address->getCountryModel()->getName()) ?></p>
                                 </div>
 
@@ -146,3 +148,33 @@ $addresses = $block->getCustomerAddresses() ?: [];
         </div>
     </div>
 </div>
+
+<?php
+echo $popup
+    ->setData([
+        'id' => 'add-new-address',
+        'isFocused' => true,
+        'desktopTarget' => 'add-new-address-desktop',
+    ])
+    ->setChildTemplate('Magento_Customer::address/_new-customer-address.phtml')
+    ->render();
+
+echo $popup
+    ->setData([
+        'id' => 'edit-address',
+        'isFocused' => true,
+        'desktopTarget' => 'edit-address-desktop',
+    ])
+    ->setChildTemplate('Magento_Customer::address/_edit-customer-address.phtml')
+    ->render();
+
+echo $popup
+    ->setData([
+        'id' => 'delete-address',
+        'isFocused' => true,
+        'desktopTarget' => 'delete-address-desktop',
+    ])
+    ->setChildTemplate('Magento_Customer::address/_delete-customer-address.phtml')
+    ->render();
+?>
+
