@@ -36,6 +36,7 @@
 
         <!-- Render popup wrapper -->
         <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template" name="language.selector" template="Magento_Theme::language-selector.phtml"/>
             <block name="popup-wrapper" template="Magento_Theme::html/popup/popup-wrapper.phtml" />
         </referenceContainer>
     </body>

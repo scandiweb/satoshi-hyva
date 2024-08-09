@@ -1,0 +1,58 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+use Satoshi\Theme\ViewModel\LanguageSelector;
+
+/** @var Template $template */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var LanguageSelector $languageViewModel */
+
+$languageViewModel = $viewModels->require(LanguageSelector::class);
+$languages = $languageViewModel->getAvailableLanguages();
+$currentLanguageCode = $languageViewModel->getCurrentLanguageCode();
+
+$options = [];
+foreach ($languages as $code => $language) {
+    $name = $language['name'];
+    $locale = $language['locale'];
+    $options[] = [
+        'value' => $escaper->escapeHtml($code),
+        'label' => $escaper->escapeHtml("$name ($locale)"),
+        'on_click' => "location.href='{$language['url']}'"
+    ];
+}
+
+$currentLabel = $escaper->escapeHtml("{$languages[$currentLanguageCode]['name']} | {$languages[$currentLanguageCode]['locale']}");
+
+?>
+
+<div class="text-red-500">zzzzzzzzzzzzzz</div>
+<?php
+    echo '<pre>';
+    var_dump($languages);
+    echo '</pre>';
+    die();
+?>
+
+<?php if (count($languages) > 1): ?>
+    <div class="w-full sm:w-1/2 md:w-full pr-4">
+        <h2 id="language-heading" class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3 uppercase">
+            <?= $escaper->escapeHtml(__('Language')) ?>
+        </h2>
+
+        <?=
+        $template
+            ->setData([
+                'id' => 'language-selector',
+                'label' => $currentLabel,
+                'options' => $options,
+                'currentValue' => $currentLanguageCode,
+                'withSearch' => true,
+            ])
+            ->render('Magento_Theme::html/dropdown.phtml');
+        ?>
+    </div>
+<?php endif; ?>
