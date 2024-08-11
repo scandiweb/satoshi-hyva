@@ -2,22 +2,16 @@
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-      <!--
-      What do we need:
-      Create block inside product.detail.page call it product.details
-      move product.media, product.title, product.info, product.info.detail, product.option.wrapper inside this newly created product detail page
-      then, maybe create a wrapper for them called product.details.info to separate product.media from product.info right pane
-      -->
-          <referenceBlock name="product.detail.page">
+        <referenceBlock name="product.detail.page">
             <block class="Magento\Catalog\Block\Product\View" name="product.details" template="Magento_Catalog::product/view/product-details.phtml">
-              <block class="Magento\Catalog\Block\Product\View" name="product.details.info" template="Magento_Catalog::product/view/product-details-info.phtml" />
+                <block class="Magento\Catalog\Block\Product\View" name="product.details.info" template="Magento_Catalog::product/view/product-details-info.phtml" />
             </block>
-          </referenceBlock>
+        </referenceBlock>
 
-          <move element="product.media" destination="product.details" />
-          <move element="page.main.title" destination="product.details.info" as="product.title" />
-          <move element="product.info" destination="product.details.info" />
-          <move element="product_options_wrapper_bottom" destination="product.details.info" />
-          <move element="product.info.details" destination="product.details.info" />
+        <move element="product.media" destination="product.details" />
+        <move element="page.main.title" destination="product.details.info" as="product.title" />
+        <move element="product.info" destination="product.details.info" />
+        <move element="product_options_wrapper_bottom" destination="product.details.info" />
+        <move element="product.info.details" destination="product.details.info" />
     </body>
 </page>
