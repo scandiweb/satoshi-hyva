@@ -5,23 +5,17 @@ declare(strict_types=1);
 use Magento\Catalog\Block\Product\View;
 
 /** @var View $block */
+
+$product = $block->getProduct();
 ?>
+
 <section
   x-init="
     () => {
-    /*
       $data.setProductPageProps({
-        manuallySelectedVariantId: {{ product.selected_variant.id | default: 0 }},
-        selectedVariantId: {{ product.selected_or_first_available_variant.id }},
-        selectedOptions: JSON.parse('{{ product.selected_or_first_available_variant.options | json | escape }}'),
-        productId: {{ product.id }},
-        productUrl: '{{ product.url }}',
-        isSyncedWithUrl: true,
+        productId: <?= $product['entity_id'] ?>,
         isScrollingToTop: true,
-        XRMediaModels: {{ product.media | where: 'media_type', 'model' | json | escape }},
-        variants: {{ product.variants | map: 'options' | json | escape }}
       })
-    */
     }
   "
   class="contents"
