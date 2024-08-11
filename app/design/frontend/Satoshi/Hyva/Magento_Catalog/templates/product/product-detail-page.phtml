@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\View;
+
+/** @var View $block */
+?>
+<section
+  x-init="
+    () => {
+    /*
+      $data.setProductPageProps({
+        manuallySelectedVariantId: {{ product.selected_variant.id | default: 0 }},
+        selectedVariantId: {{ product.selected_or_first_available_variant.id }},
+        selectedOptions: JSON.parse('{{ product.selected_or_first_available_variant.options | json | escape }}'),
+        productId: {{ product.id }},
+        productUrl: '{{ product.url }}',
+        isSyncedWithUrl: true,
+        isScrollingToTop: true,
+        XRMediaModels: {{ product.media | where: 'media_type', 'model' | json | escape }},
+        variants: {{ product.variants | map: 'options' | json | escape }}
+      })
+    */
+    }
+  "
+  class="contents"
+>
+  <div id="product-page">
+    <!-- product-page-content -->
+    <?= $block->getChildHtml('product.details') ?>
+    <!-- end-product-page-content -->
+  </div>
+</section>
+
+<section>
+  <?= $block->getChildHtml('related') ?>
+  <?= $block->getChildHtml('upsell') ?>
+  <?= $block->getChildHtml('review_list') ?>
+  <?= $block->getChildHtml('review_form') ?>
+</section>
