@@ -52,7 +52,7 @@ export type CartStoreType = {
   cartItems: CartItem[];
   cartTotals: any;
   isLoading: boolean;
-  addingItemIds: string[];
+  addingItemIds: number[];
   removingItemId: string | null;
   abortController: AbortController | null;
   errors: Record<string, string[]>;
