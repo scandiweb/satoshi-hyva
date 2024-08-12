@@ -1,10 +1,4 @@
 <?php
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
 
 declare(strict_types=1);
 
@@ -17,27 +11,26 @@ use Magento\Framework\View\Element\Template;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
-$id = $block->getData('id') ?? 'dropdown';
+$id = $escaper->escapeHtml($block->getData('id') ?? 'dropdown');
 $label = $block->getData('label') ?? '';
 $options = $block->getData('options') ?? [];
-$currentValue = $block->getData('currentValue') ?? '';
 $withSearch = $block->getData('withSearch') ?? false;
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div x-data="Dropdown('<?= $escaper->escapeHtml($id) ?>')" x-ref="DropdownWrapper" class="relative inline-block text-left">
+<div x-data="Dropdown('<?= $id ?>')" x-ref="DropdownWrapper" class="relative inline-block text-left">
     <button
-        @click="toggleDropdown()"
-        id="<?= $escaper->escapeHtml($id) ?>-button"
-        data-dropdown-toggle="<?= $escaper->escapeHtml($id) ?>"
+        @click="toggleDropdown(); $nextTick(() => { const searchRef = $refs['<?= $id ?>-search']; if (searchRef) { setTimeout(() => { searchRef.focus(); }, 250); } });"
+        id="<?= $id ?>-button"
+        data-dropdown-toggle="<?= $id ?>"
         class="inline-flex items-center justify-between gap-6 whitespace-nowrap rounded-sm border bg-white px-6 py-3"
         type="button"
         :aria-expanded="isDropdownVisible"
-        aria-controls="<?= $escaper->escapeHtml($id) ?>"
+        aria-controls="<?= $id ?>"
     >
-        <?= $escaper->escapeHtml(__($label ?? $currentValue)) ?>
+        <?= $escaper->escapeHtml(__($label)) ?>
         <span
             :class="isDropdownVisible ? '-rotate-90' : 'rotate-90'"
             class="transition-transform motion-reduce:transition-none">
@@ -45,39 +38,33 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </span>
     </button>
     <div
-        id="<?= $escaper->escapeHtml($id) ?>"
+        id="<?= $id ?>"
         x-cloak
+        x-a11y-trap="isDropdownVisible"
         x-show="isDropdownVisible"
         class="absolute z-10 hidden min-w-full rounded-sm border border-gray-300 bg-white p-2 pt-3 bottom-full"
         :class="{ 'block': isDropdownVisible, 'hidden': !isDropdownVisible }"
     >
         <?php if ($withSearch): ?>
             <div class="p-2">
-                <label for="<?= $escaper->escapeHtml($id) ?>-search" class="sr-only">
+                <label for="<?= $id ?>-search" class="sr-only">
                     <?= __('Search') ?>
                 </label>
-                <input type="text" id="<?= $escaper->escapeHtml($id) ?>-search"
+                <input type="text" id="<?= $id ?>-search"
                        class="w-full rounded-xs border p-3 placeholder:text-gray-500 contrast-more:border-secondary-700"
-                       x-ref="<?= $escaper->escapeHtml($id) ?>-search"
+                       x-ref="<?= $id ?>-search"
                        placeholder="<?= __('Search') ?>" @input.debounce.300ms="search($event.target.value)">
             </div>
         <?php endif; ?>
         <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700"
-            aria-labelledby="<?= $escaper->escapeHtml($id) ?>-button">
+            aria-labelledby="<?= $id ?>-button">
             <?php foreach ($options as $option): ?>
                 <li>
                     <a tabindex="0"
                        data-value="<?= $escaper->escapeHtml($option['value']) ?>"
-                       class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs hover:underline"
-                       :class="{ 'bg-primary-50': '<?= $escaper->escapeHtml($option['value']) ?>' === '<?= $escaper->escapeHtml($currentValue) ?>' }"
+                       class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs hover:underline<?= $option['is_active'] ? ' bg-primary-50' : '' ?>"
                        @click.prevent='<?= $option['on_click'] ?>'>
-                        <?php if (is_array($option['label'])): ?>
-                            <?php foreach ($option['label'] as $labelPart): ?>
-                                <span><?= $escaper->escapeHtml(__($labelPart)) ?></span>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <?= $escaper->escapeHtml(__($option['label'])) ?>
-                        <?php endif; ?>
+                            <?= __($option['label']) ?>
                     </a>
                 </li>
             <?php endforeach; ?>
