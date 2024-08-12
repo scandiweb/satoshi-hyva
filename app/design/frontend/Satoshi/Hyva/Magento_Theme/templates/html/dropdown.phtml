@@ -37,7 +37,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         :aria-expanded="isDropdownVisible"
         aria-controls="<?= $escaper->escapeHtml($id) ?>"
     >
-        <?= $escaper->escapeHtml($label ?? $currentValue) ?>
+        <?= $escaper->escapeHtml(__($label ?? $currentValue)) ?>
         <span
             :class="isDropdownVisible ? '-rotate-90' : 'rotate-90'"
             class="transition-transform motion-reduce:transition-none">
@@ -53,11 +53,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     >
         <?php if ($withSearch): ?>
             <div class="p-2">
-                <label for="<?= $escaper->escapeHtml($id) ?>-search" class="sr-only">Search</label>
+                <label for="<?= $escaper->escapeHtml($id) ?>-search" class="sr-only">
+                    <?= __('Search') ?>
+                </label>
                 <input type="text" id="<?= $escaper->escapeHtml($id) ?>-search"
                        class="w-full rounded-xs border p-3 placeholder:text-gray-500 contrast-more:border-secondary-700"
                        x-ref="<?= $escaper->escapeHtml($id) ?>-search"
-                       placeholder="Search" @input.debounce.300ms="search($event.target.value)">
+                       placeholder="<?= __('Search') ?>" @input.debounce.300ms="search($event.target.value)">
             </div>
         <?php endif; ?>
         <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700"
@@ -71,10 +73,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                        @click.prevent='<?= $option['on_click'] ?>'>
                         <?php if (is_array($option['label'])): ?>
                             <?php foreach ($option['label'] as $labelPart): ?>
-                                <span><?= $escaper->escapeHtml($labelPart) ?></span>
+                                <span><?= $escaper->escapeHtml(__($labelPart)) ?></span>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <?= $escaper->escapeHtml($option['label']) ?>
+                            <?= $escaper->escapeHtml(__($option['label'])) ?>
                         <?php endif; ?>
                     </a>
                 </li>
