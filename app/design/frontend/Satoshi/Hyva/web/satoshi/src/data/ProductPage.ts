@@ -1,47 +1,24 @@
 import { withXAttributes } from "alpinejs";
-import { fetchPage, replaceContent } from "../plugins/Transition";
-import nProgress from "nprogress";
 import { POPUP_OVERLAY_CLICK_EVENT } from "../store/Popup";
 import { CartItem } from "../store/Cart";
-
-const initialGiftProperties = {
-  __shopify_send_gift_card_to_recipient: false,
-  "Recipient email": null,
-  "Recipient name": null,
-  Message: null,
-  "Send on": null,
-};
 
 export type ProductPageType = {
   [key: string | symbol]: any;
 
   variantQty: number;
   isVariantInCart: boolean;
-  productUrl: string;
-  sectionId: string | null;
-  _formRef: HTMLFormElement | null;
-  _mutationObserver: MutationObserver | null;
   productActionsPopup: string;
-
-  isVariantManuallySelected?: boolean;
-  selectedOptions?: string[];
-  selectedVariantId?: number;
-  productId?: number;
-  XRMediaModels: Record<string, any>[];
-  properties: any;
+  selectedOptions: string[];
+  productId: string;
+  contentId: string;
+  isScrollingToTop: boolean;
   cartItemKey: string | undefined;
   readonly isProductBeingRemoved: boolean;
   readonly isProductBeingAdded: boolean;
 
-  selectOptionAndSetVariantId(
-    optionIndex: number,
-    optionValue: string,
-    id: number,
-  ): void;
+  selectOption(optionIndex: number, optionValue: string): void;
 
   checkIsItemInCart(item: CartItem): boolean;
-  setupShopifyXR(): void;
-  setupXRElements(errors?: any): void;
   toggleStickyProductActions(show: boolean): void;
   showProductActions(): void;
   quickBuy(): void;
@@ -55,22 +32,11 @@ export type ProductPageType = {
   scrollToTop(): void;
 
   setProductPageProps(props: ProductPageProps): void;
-
-  fetchProductRecommendations(id: string, url: string): void;
 };
 
 export interface ProductPageProps {
-  manuallySelectedVariantId: number;
-  selectedVariantId: number;
-  selectedOptions: string[];
-  productUrl: string;
-  sectionId?: string;
-  isSyncedWithUrl?: Boolean;
+  productId: string;
   isScrollingToTop?: Boolean;
-  productId: number;
-  contentId: string;
-  XRMediaModels: Record<string, any>[];
-  variantsCount: number | null;
 }
 
 const POPUP_BOTTOM_ACTIONS = "product_bottom_actions";
@@ -79,55 +45,19 @@ export const ProductPage = () =>
   <ProductPageType>{
     isVariantInCart: false,
     variantQty: 1,
-    selectedVariantId: undefined,
     selectedOptions: [],
-    manuallySelectedVariantId: undefined,
-    productId: undefined,
+    productId: "",
     contentId: "product-page",
-    isSyncedWithUrl: true,
     isScrollingToTop: true,
-    productUrl: "",
-    sectionId: null,
-    XRMediaModels: [],
-    properties: initialGiftProperties,
     cartItemKey: undefined,
-    variantsCount: null,
-    _formRef: null,
-    _mutationObserver: null,
     productActionsPopup: "product_actions",
 
-    setProductPageProps({
-      manuallySelectedVariantId,
-      selectedVariantId,
-      selectedOptions,
-      productId,
-      productUrl,
-      isSyncedWithUrl = false,
-      isScrollingToTop = false,
-      sectionId = null,
-      XRMediaModels = [],
-      variantsCount = null,
-    }) {
-      this.isVariantManuallySelected = !!manuallySelectedVariantId;
-      this.selectedVariantId = selectedVariantId;
-      this.selectedOptions = selectedOptions;
+    setProductPageProps({ productId, isScrollingToTop = false }) {
       this.productId = productId;
       this.productActionsPopup += `-${productId}`;
-      this.productUrl = productUrl;
-      this.isSyncedWithUrl = isSyncedWithUrl;
-      this.isScrollingToTop = isScrollingToTop;
-      this.sectionId = sectionId;
-      this.XRMediaModels = XRMediaModels;
-      this.variantsCount = variantsCount;
-
-      if (sectionId) {
-        this.productActionsPopup += `-${sectionId}`;
-      }
+      this.isScrollingToTop = !!isScrollingToTop;
 
       this._updateSelectedVariantCartState();
-      if (this.XRMediaModels.length) {
-        this.setupShopifyXR();
-      }
     },
 
     get isProductBeingRemoved() {
@@ -135,58 +65,13 @@ export const ProductPage = () =>
     },
 
     get isProductBeingAdded() {
-      if (this.selectedVariantId) {
-        return Alpine.store("cart").addingItemIds.includes(
-          this.selectedVariantId,
-        );
-      } else {
-        return false;
-      }
+      // TODO: Also check selected options
+      return Alpine.store("cart").addingItemIds.includes(this.productId);
     },
 
     init() {
-      // Initialize Dynamic checkout button
-      this._formRef = this.$refs.ProductForm;
-
       this.$watch("$store.cart.cartItems", () => {
         this._updateSelectedVariantCartState();
-      });
-
-      this.$watch("properties", () => {
-        // Reset when checkbox is unchecked
-        if (!this.properties.__shopify_send_gift_card_to_recipient) {
-          this.properties = initialGiftProperties;
-        }
-
-        this._updateSelectedVariantCartState();
-      });
-
-      Alpine.nextTick(() => {
-        if (!this._formRef) {
-          return;
-        }
-
-        this._mutationObserver = new MutationObserver((mutationList) => {
-          for (const mutation of mutationList) {
-            if (mutation.type === "childList") {
-              this._updateSelectedVariantCartState();
-              return;
-            }
-
-            if (
-              mutation.target.nodeName === "INPUT" &&
-              (mutation.target as HTMLInputElement).name === "selling_plan"
-            ) {
-              this._updateSelectedVariantCartState();
-            }
-          }
-        });
-
-        this._mutationObserver!.observe(this._formRef, {
-          attributeFilter: ["value"],
-          subtree: true,
-          childList: true,
-        });
       });
 
       document.addEventListener(POPUP_OVERLAY_CLICK_EVENT, () => {
@@ -196,35 +81,7 @@ export const ProductPage = () =>
       });
     },
 
-    setupShopifyXR() {
-      window.Shopify.loadFeatures([
-        {
-          name: "shopify-xr",
-          version: "1.0",
-          onLoad: this.setupXRElements.bind(this),
-        },
-      ]);
-    },
-
-    setupXRElements(errors?: any) {
-      if (errors) return;
-
-      if (!window.ShopifyXR) {
-        document.addEventListener("shopify_xr_initialized", () => {
-          this.setupXRElements();
-        });
-        return;
-      }
-
-      window.ShopifyXR.addModels(this.XRMediaModels);
-      window.ShopifyXR.setupXRElements();
-    },
-
     _updateSelectedVariantCartState() {
-      if (!this.selectedVariantId) {
-        return;
-      }
-
       const cartItem = Alpine.store("cart").cartItems.find(
         this.checkIsItemInCart.bind(this),
       );
@@ -240,85 +97,27 @@ export const ProductPage = () =>
         return false;
       }
 
-      // Match variant id
-      if (false) {
+      // Match product id
+      if (item.item_id !== this.productId) {
         return false;
       }
 
-      // Check selling plan, TODO: Check equivalent or remove
-
-      const isDifferentRecipient = Object.keys(this.properties).some((key) => {
-        const value = this.properties[key as keyof any];
-        const valueToCheck = value === "" ? null : value;
-        const itemProps = Object.keys(item).length
-          ? item
-          : initialGiftProperties;
-
-        // @ts-ignore
-        return itemProps[key] !== valueToCheck;
-      });
-
-      // Match gift recipient
-      if (isDifferentRecipient) {
-        return false;
-      }
+      // TODO: Match options
 
       // Item found
       return true;
     },
 
-    async selectOptionAndSetVariantId(
-      optionIndex: number,
-      optionValue: string,
-      variantId: number,
-    ) {
-      if (!this.selectedOptions) {
-        return;
-      }
-
+    async selectOption(optionIndex: number, optionValue: string) {
       this.selectedOptions[optionIndex] = optionValue;
 
-      this.isVariantManuallySelected = true;
-      this.selectedVariantId = variantId;
+      // TODO: display selected option images
 
       this._updateSelectedVariantCartState();
-
-      if (this.variantsCount == 1) {
-        return;
-      }
-
-      // TODO: only request product section
-      const nextUrl = new URL(this.productUrl, document.baseURI);
-      nextUrl.searchParams.set("variant", variantId.toString());
-      if (this.sectionId) {
-        nextUrl.searchParams.set("section_id", this.sectionId);
-      }
-
-      nProgress.start();
-
-      const nextPage = fetchPage(nextUrl.href);
-      const html = await nextPage;
-      const wrapper = document.getElementById(
-        this.sectionId || this.contentId,
-      )!;
-      wrapper.classList.add("disable-fade");
-
-      replaceContent(
-        html,
-        this.sectionId || `${this.contentId}-content`,
-        wrapper,
-      );
-
-      if (this.isSyncedWithUrl) {
-        history.replaceState(history.state, "", nextUrl.href);
-      }
 
       if (this.isScrollingToTop) {
         this.scrollToTop();
       }
-
-      // Initialize Dynamic checkout button
-      nProgress.done();
     },
 
     toggleStickyProductActions(show) {
@@ -337,50 +136,26 @@ export const ProductPage = () =>
     },
 
     decreaseQty() {
-      if (!this.selectedVariantId) {
-        return;
-      }
-
       this.variantQty -= 1;
-
       Alpine.store("cart").decreaseQty(this.cartItemKey!);
     },
 
     increaseQty() {
-      if (!this.selectedVariantId) {
-        return;
-      }
-
       this.variantQty += 1;
-
       Alpine.store("cart").increaseQty(this.cartItemKey!);
     },
 
     setQuantity(quantity) {
-      if (!this.selectedVariantId) {
-        return;
-      }
-
       this.variantQty = Math.max(0, Number(quantity));
-
       Alpine.store("cart").setQty(quantity, this.cartItemKey!);
     },
 
     addToCart() {
-      if (!this.selectedVariantId) {
-        return;
-      }
-
-      // Include any extra form data. ie: selling_plan
-      const formData = new FormData(this._formRef!);
-      const formProps = Object.fromEntries(formData);
-
       this.hideProductActions();
+      // TODO: Refactor add to cart
       this.$store.cart.addToCart({
-        ...formProps,
-        id: this.selectedVariantId,
+        id: this.productId,
         quantity: this.variantQty,
-        properties: this.properties,
       });
     },
 
@@ -418,24 +193,5 @@ export const ProductPage = () =>
       } else {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
-    },
-
-    async fetchProductRecommendations(id, url) {
-      const nextPage = fetchPage(url);
-      const text = await nextPage;
-      const html = document.createElement("div");
-      html.innerHTML = text;
-
-      const fallback = html.querySelector(`#${id}`);
-      const wrapper = document.querySelector(`#${id}-wrapper`);
-
-      // Remove section if responds with placeholder
-      if (fallback) {
-        wrapper!.remove();
-        return;
-      }
-
-      const content = html.querySelector(`#${id}-wrapper`);
-      wrapper!.innerHTML = content?.innerHTML!;
     },
   };
