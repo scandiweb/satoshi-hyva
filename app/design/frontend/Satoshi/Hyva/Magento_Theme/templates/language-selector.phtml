@@ -1,35 +1,29 @@
 <?php
 
+use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
-use Hyva\Theme\Model\ViewModelRegistry;
-use Magento\Framework\App\ObjectManager;
-use Magento\Store\Model\StoreManagerInterface;
+use Satoshi\Theme\ViewModel\LanguageSelector;
 
-/** @var Escaper $escaper */
 /** @var Template $template */
+/** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
+/** @var LanguageSelector $languageViewModel */
 
-$storeManager = ObjectManager::getInstance()->get(StoreManagerInterface::class);
-$currentStoreId = $storeManager->getStore()->getId();
-$currentStoreCode = $storeManager->getStore()->getCode();
-$currentStoreName = $storeManager->getStore()->getName();
+$languageViewModel = $viewModels->require(LanguageSelector::class);
+$languages = $languageViewModel->getAvailableLanguages();
+$currentLanguageCode = $languageViewModel->getCurrentLanguageCode();
 
 $options = [];
-foreach ($storeManager->getStores() as $store) {
-    $storeCode = $store->getCode();
-    $storeName = $store->getName();
-    $storeUrl = $store->getCurrentUrl(false);
-//    $storeUrl .= (strpos($storeUrl, '?') === false ? '?' : '&') . '___store=' . $storeCode;
-
+foreach ($languages as $key => $language) {
     $options[] = [
-        'value' => $escaper->escapeHtml($storeCode),
-        'label' => $escaper->escapeHtml($storeName),
-        'on_click' => 'window.location.href = "' . $storeUrl . '"',
+        'value' => $escaper->escapeHtml($key),
+        'label' => $escaper->escapeHtml($language['name']),
+        'on_click' => 'window.location.href=`' . $language['url'] . '?___store=' . $escaper->escapeJs($key) . '`',
     ];
 }
 
-$currentLabel = $escaper->escapeHtml($currentStoreName);
+$currentLabel = $escaper->escapeHtml($languages[$currentLanguageCode]['name']);
 ?>
 
 <?php if (count($options) > 1): ?>
@@ -44,7 +38,7 @@ $currentLabel = $escaper->escapeHtml($currentStoreName);
                 'id' => 'language-selector',
                 'label' => $currentLabel,
                 'options' => $options,
-                'currentValue' => $currentStoreCode,
+                'currentValue' => $currentLanguageCode,
             ])
             ->render('Magento_Theme::html/dropdown.phtml');
         ?>
