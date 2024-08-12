@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Currency;
 use Magento\Framework\Escaper;
@@ -17,29 +19,27 @@ $currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode();
 $options = [];
 foreach ($currencies as $code => $currency) {
     $name = $currency['name'];
-    $symbol = $currency['symbol'];
+    $symbol = $currency['symbol'] ? "({$currency['symbol']})" : '';
+    $label = "
+        <span>{$escaper->escapeHtml($name)}</span>
+        <span>{$escaper->escapeHtml("$code $symbol")}</span>
+    ";
+
     $options[] = [
         'value' => $escaper->escapeHtml($code),
-        'label' => [$escaper->escapeHtml($name), $symbol ? "$code ($symbol)" : $code],
-        'on_click' => "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})"
+        'label' => $label,
+        'on_click' => "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})",
+        'is_active' => $code === $currentCurrencyCode,
     ];
 }
 
-$currentLabel = ($currencies[$currentCurrencyCode] ?? false) ?
+$currentLabel = $currencies[$currentCurrencyCode] ?
     $escaper->escapeHtml("{$currencies[$currentCurrencyCode]['name']} | {$currentCurrencyCode}") :
     $escaper->escapeHtml($currentCurrencyCode);
 
 ?>
 
-<?php if($currencyViewModel->getCurrencyCount() > 1): ?>
-<div class="w-full sm:w-1/2 md:w-full pr-4">
-    <h2
-        id="currency-heading"
-        class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3 uppercase"
-    >
-        <?= $escaper->escapeHtml(__('Currency')) ?>
-    </h2>
-
+<?php if ($currencyViewModel->getCurrencyCount() > 1): ?>
     <?=
     $template
         ->setData([
@@ -51,5 +51,4 @@ $currentLabel = ($currencies[$currentCurrencyCode] ?? false) ?
         ])
         ->render('Magento_Theme::html/dropdown.phtml');
     ?>
-</div>
 <?php endif; ?>

@@ -20,6 +20,7 @@ foreach ($languages as $key => $language) {
         'value' => $escaper->escapeHtml($key),
         'label' => $escaper->escapeHtml($language['name']),
         'on_click' => 'window.location.href=`' . $language['url'] . '?___store=' . $escaper->escapeJs($key) . '`',
+        'is_active' => $key === $currentLanguageCode,
     ];
 }
 
@@ -27,20 +28,13 @@ $currentLabel = $escaper->escapeHtml($languages[$currentLanguageCode]['name']);
 ?>
 
 <?php if (count($options) > 1): ?>
-    <div class="w-full sm:w-1/2 md:w-full pr-4">
-        <h2 id="language-heading" class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3 uppercase">
-            <?= $escaper->escapeHtml(__('Language')) ?>
-        </h2>
-
-        <?=
-        $template
-            ->setData([
-                'id' => 'language-selector',
-                'label' => $currentLabel,
-                'options' => $options,
-                'currentValue' => $currentLanguageCode,
-            ])
-            ->render('Magento_Theme::html/dropdown.phtml');
-        ?>
-    </div>
+    <?=
+    $template
+        ->setData([
+            'id' => 'language-selector',
+            'label' => $currentLabel,
+            'options' => $options,
+        ])
+        ->render('Magento_Theme::html/dropdown.phtml');
+    ?>
 <?php endif; ?>
