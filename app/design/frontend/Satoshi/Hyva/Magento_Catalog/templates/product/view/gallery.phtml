@@ -8,17 +8,9 @@
 
 declare(strict_types=1);
 
-use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\StoreConfig;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
-use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Magento\Catalog\Block\Product\View\Gallery;
-use Magento\Catalog\Helper\Image;
-use Magento\Framework\Escaper;
 
-/** @var Escaper $escaper */
 /** @var Gallery $block */
-/** @var ViewModelRegistry $viewModels */
 
 $images = $block->getGalleryImages()->getItems();
 
