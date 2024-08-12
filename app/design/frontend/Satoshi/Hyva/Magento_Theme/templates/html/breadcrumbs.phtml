@@ -13,15 +13,11 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 $isAlpineTemplate = false;
 
 $pageType = $this->getRequest()->getFullActionName();
-$excludeBreadcrumbs = ['cms_index_index', 'checkout_cart_index', 'cms_noroute_index', 'customer_account_index', 'customer_address_index', 'sales_order_history', 'giftvoucher_index_index'];
-$renderBreadcrumbs = !in_array($pageType, $excludeBreadcrumbs);
-
 $mobilePageTypes = ['catalog_category_view', 'catalog_product_view', 'catalogsearch_result_index'];
-$renderOnMobile = in_array($pageType, $mobilePageTypes);
-
+$hideOnMobile = in_array($pageType, $mobilePageTypes);
 ?>
 
-<?php if (!empty($crumbs) && is_array($crumbs) && $renderBreadcrumbs): ?>
+<?php if (!empty($crumbs) && is_array($crumbs)): ?>
     <nav
         class="breadcrumbs content-wrapper mx-auto my-8 px-4 <?= $renderOnMobile ? 'hidden' : '' ?> md:block"
         role="navigation"
