@@ -1,43 +1,38 @@
 <?php
 
-use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
-use Satoshi\Theme\ViewModel\LanguageSelector;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\App\ObjectManager;
+use Magento\Store\Model\StoreManagerInterface;
 
-/** @var Template $template */
 /** @var Escaper $escaper */
+/** @var Template $template */
 /** @var ViewModelRegistry $viewModels */
-/** @var LanguageSelector $languageViewModel */
 
-$languageViewModel = $viewModels->require(LanguageSelector::class);
-$languages = $languageViewModel->getAvailableLanguages();
-$currentLanguageCode = $languageViewModel->getCurrentLanguageCode();
+$storeManager = ObjectManager::getInstance()->get(StoreManagerInterface::class);
+$currentStoreId = $storeManager->getStore()->getId();
+$currentStoreCode = $storeManager->getStore()->getCode();
+$currentStoreName = $storeManager->getStore()->getName();
 
 $options = [];
-foreach ($languages as $code => $language) {
-    $name = $language['name'];
-    $locale = $language['locale'];
+foreach ($storeManager->getStores() as $store) {
+    $storeCode = $store->getCode();
+    $storeName = $store->getName();
+    $storeUrl = $store->getCurrentUrl(false);
+//    $storeUrl .= (strpos($storeUrl, '?') === false ? '?' : '&') . '___store=' . $storeCode;
+
     $options[] = [
-        'value' => $escaper->escapeHtml($code),
-        'label' => $escaper->escapeHtml("$name ($locale)"),
-        'on_click' => "location.href='{$language['url']}'"
+        'value' => $escaper->escapeHtml($storeCode),
+        'label' => $escaper->escapeHtml($storeName),
+        'on_click' => 'window.location.href = "' . $storeUrl . '"',
     ];
 }
 
-$currentLabel = $escaper->escapeHtml("{$languages[$currentLanguageCode]['name']} | {$languages[$currentLanguageCode]['locale']}");
-
+$currentLabel = $escaper->escapeHtml($currentStoreName);
 ?>
 
-<div class="text-red-500">zzzzzzzzzzzzzz</div>
-<?php
-    echo '<pre>';
-    var_dump($languages);
-    echo '</pre>';
-    die();
-?>
-
-<?php if (count($languages) > 1): ?>
+<?php if (count($options) > 1): ?>
     <div class="w-full sm:w-1/2 md:w-full pr-4">
         <h2 id="language-heading" class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3 uppercase">
             <?= $escaper->escapeHtml(__('Language')) ?>
@@ -49,8 +44,7 @@ $currentLabel = $escaper->escapeHtml("{$languages[$currentLanguageCode]['name']}
                 'id' => 'language-selector',
                 'label' => $currentLabel,
                 'options' => $options,
-                'currentValue' => $currentLanguageCode,
-                'withSearch' => true,
+                'currentValue' => $currentStoreCode,
             ])
             ->render('Magento_Theme::html/dropdown.phtml');
         ?>
