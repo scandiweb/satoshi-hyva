@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Currency;
 use Magento\Framework\Escaper;
@@ -17,10 +19,10 @@ $currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode();
 $options = [];
 foreach ($currencies as $code => $currency) {
     $name = $currency['name'];
-    $symbol = $currency['symbol'];
+    $symbol = $currency['symbol'] ? "({$currency['symbol']})" : '';
     $options[] = [
         'value' => $escaper->escapeHtml($code),
-        'label' => [$escaper->escapeHtml($name), $symbol ? "$code ($symbol)" : $code],
+        'label' => [$escaper->escapeHtml($name), "$code $symbol"],
         'on_click' => "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})"
     ];
 }
