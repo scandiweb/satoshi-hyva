@@ -20,59 +20,37 @@ use Magento\Framework\Escaper;
 /** @var Gallery $block */
 /** @var ViewModelRegistry $viewModels */
 
-/** @var StoreConfig $storeConfig */
-$storeConfig = $viewModels->require(StoreConfig::class);
-
-/** @var HeroiconsOutline $heroicons */
-$heroicons = $viewModels->require(HeroiconsOutline::class);
-
-/** @var HeroiconsSolid $heroiconsSolid */
-$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
-
 $images = $block->getGalleryImages()->getItems();
-$mainImage = current(array_filter($images, [$block, 'isMainImage']));
 
-if (!empty($images) && empty($mainImage)) {
-    $mainImage = reset($images);
-}
-
-/** @var Image $helper */
-$helper = $block->getData('imageHelper');
-$mainImageData = $mainImage ?
-    $mainImage->getData('medium_image_url') :
-    $helper->getDefaultPlaceholderUrl('image');
 
 $smallWidth = $block->getImageAttribute('product_page_image_small', 'width', 90);
 $smallHeight = $block->getImageAttribute('product_page_image_small', 'height', 90);
 $mediumWidth = $block->getImageAttribute('product_page_image_medium', 'width', 700);
 $mediumHeight = $block->getImageAttribute('product_page_image_medium', 'height', 700);
 
-$galleryOptionShowRelated = $storeConfig->getStoreConfig('catalog/product_video/show_related') ?? false;
-$galleryOptionVideoLoop = $storeConfig->getStoreConfig('catalog/product_video/video_auto_restart') ?? false;
-
 $productName = $block->getProduct()->getName();
 ?>
 
 <div
-    x-data="initGallery()"
-    x-bind="eventListeners"
     class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8 "
 >
 
 
     <?php foreach ($block->getGalleryImages() as $index => $image): ?>
         <div
-            class="bg-blue-600 animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl border-opacity-[var(--media-border-opacity)]"
+            class="animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl border-opacity-[var(--media-border-opacity)]"
         >
             <div class="aspect-product w-full object-cover object-center">
                 <img
                     src="<?= $image['url'] ?>"
                     alt="<?= $this->escapeHtmlAttr($image['caption']) ?: $this->escapeHtmlAttr(__('%1 thumbnail', $productName)) ?>"
                     title="<?= $this->escapeHtmlAttr($image['caption']) ?: $this->escapeHtmlAttr(__('%1 thumbnail', $productName)) ?>"
-                    class="w-full h-auto object-contain"
+                    class="w-full object-contain"
                     loading="lazy"
+
                 />
             </div>
         </div>
     <?php endforeach; ?>
+    <?php // TODO: Implement videos in gallery ?>
 </div>
