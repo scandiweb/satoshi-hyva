@@ -10,7 +10,11 @@ $product = $block->getProduct();
 ?>
 
 <section
-  x-init="
+  class="product-page"
+  x-data="ProductPage()"
+>
+  <div
+    x-init="
     () => {
       $data.setProductPageProps({
         productId: <?= $product['entity_id'] ?>,
@@ -18,12 +22,13 @@ $product = $block->getProduct();
       })
     }
   "
-  class="contents"
->
-  <div id="product-page">
-    <!-- product-page-content -->
-    <?= $block->getChildHtml('product.details') ?>
-    <!-- end-product-page-content -->
+    class="contents"
+  >
+    <div id="product-page">
+      <!-- product-page-content -->
+      <?= $block->getChildHtml('product.details') ?>
+      <!-- end-product-page-content -->
+    </div>
   </div>
 </section>
 

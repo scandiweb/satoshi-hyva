@@ -16,6 +16,6 @@
     />
     <preference
         for="Hyva\Theme\ViewModel\Currency"
-        type="Satoshi\Theme\ViewModel\CustomCurrency"
+        type="Satoshi\Theme\ViewModel\Currency"
     />
 </config>

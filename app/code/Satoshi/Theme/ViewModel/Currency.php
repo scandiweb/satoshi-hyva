@@ -1,15 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\Theme\ViewModel;
 
 use Hyva\Theme\ViewModel\Currency as BaseCurrency;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Locale\Bundle\CurrencyBundle;
 
-class CustomCurrency extends BaseCurrency
+class Currency extends BaseCurrency
 {
     /**
-     * Retrieve currencies array with custom logic
+     * Retrieve currencies array
+     * Return array: code => [name, symbol]
+     * Return empty array if only one currency
+     *
+     * Extended to return symbol with name & code
      *
      * @return array
      * @throws NoSuchEntityException

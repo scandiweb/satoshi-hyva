@@ -58,10 +58,14 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 <label for="<?= $id ?>-search" class="sr-only">
                     <?= __('Search') ?>
                 </label>
-                <input type="text" id="<?= $id ?>-search"
-                       class="input__field"
-                       x-ref="<?= $id ?>-search"
-                       placeholder="<?= __('Search') ?>" @input.debounce.300ms="search($event.target.value)">
+                <input
+                    type="text"
+                    id="<?= $id ?>-search"
+                    class="input__field"
+                    x-ref="<?= $id ?>-search"
+                    placeholder="<?= __('Search') ?>"
+                    @input.debounce.300ms="search($event.target.value)"
+                >
             </div>
         <?php endif; ?>
         <ul class="max-h-48 overflow-y-auto p-2 text-sm"
@@ -75,7 +79,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         'on_click' => $option['on_click'] ?? null,
                         'url' => $option['url'] ?? null,
                     ])
-                    ->render('Magento_Theme::html/dropdown-option.phtml');
+                    ->render('Magento_Theme::html/components/dropdown-option.phtml');
                 ?>
             <?php endforeach; ?>
         </ul>
