@@ -51,20 +51,20 @@ $height = $block->getVar('category_page_category_image/height');
   <div class="flex w-full items-end justify-between">
     <div class="flex flex-col gap-3">
       <!-- Title -->
-      <h1 class="text-lg">
+      <h1 class="text-lg text-text-500">
         <?= $escaper->escapeHtml((string)$title) ?>
       </h1>
 
       <!-- Description -->
       <?php if ($description = $category->getDescription()): ?>
-      <div class="rte text-text-100 contrast-more:text-secondary-700">
+      <div class="rte">
         <?= $descriptionHtml ?>
       </div>
       <?php endif; ?>
 
       <?php if ($block->isContentMode() || $block->isMixedMode()) :?>
       <!-- CMS Block -->
-      <div class="rte text-text-100 contrast-more:text-secondary-700">
+      <div class="rte">
         <?= $block->getCmsBlockHtml() ?>
       </div>
       <?php endif; ?>

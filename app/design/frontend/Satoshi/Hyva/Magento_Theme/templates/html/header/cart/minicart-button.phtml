@@ -16,7 +16,7 @@ $cartTotals = $cart->getSerializedCartTotals();
 <button
   x-init='$store.cart.setCartTotals(<?= $cartTotals ?>)'
   id="cart-button"
-  class="md:button--filled-white button ghost-primary icon-button icon-button--size-lg col-start-5 md:m-2 contrast-more:md:border contrast-more:md:border-secondary-700"
+  class="contrast-border md:button--filled-secondary button ghost-primary icon-button icon-button--size-lg col-start-5"
   x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
   @click="!isCartVisible ? $store.cart.showCart() : $store.cart.hideCart()"
   type="button"

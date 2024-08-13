@@ -26,7 +26,7 @@ $couponMessage = $block->getCouponMessage();
     x-data="Accordion(<?= $hasCouponCode || $couponMessage ? 'true' : 'false' ?>, 300)"
   >
     <button
-      class="flex items-center justify-between w-full px-5"
+      class="group flex items-center justify-between w-full px-5"
       x-ref="AccordionButton"
       :aria-expanded="isExpanded"
       aria-controls="coupon-panel"
@@ -39,7 +39,7 @@ $couponMessage = $block->getCouponMessage();
         <?= $hyvaicons->renderHtml('coupon') ?>
         <?= __('Have a promo code?') ?>
       </div>
-      <div class="button button--outline-secondary icon-button icon-button--size-xs">
+      <div class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
         <span x-ref="AccordionIcon">
           <?= $hyvaicons->renderHtml('chevron-up') ?>
         </span>
@@ -49,7 +49,7 @@ $couponMessage = $block->getCouponMessage();
     <div
       x-cloak
       x-ref="AccordionPanel"
-      class="overflow-hidden text-text-100 contrast-more:text-secondary-700"
+      class="overflow-hidden"
       :class="
         {
           'transition-none': $store.main.isReducedMotion,
@@ -63,7 +63,7 @@ $couponMessage = $block->getCouponMessage();
       <form
         method="post"
         action="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/couponPost')) ?>"
-        class="px-5 pb-2 mt-3 text-text-700 flex gap-x-3 items-center"
+        class="px-5 pb-2 mt-3 flex gap-x-3 items-center"
         @submit.prevent="$store.cart.applyCoupon($event.target)"
       >
         <input
@@ -82,7 +82,7 @@ $couponMessage = $block->getCouponMessage();
             name="coupon_code"
             placeholder="<?= __('Enter promo code') ?>"
             id="coupon_code"
-            class="w-full rounded-sm border border-text-50 px-5 py-2.5 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+            class="input__field"
             value="<?= $escaper->escapeHtmlAttr($block->getCouponCode()) ?>"
             <?php if ($hasCouponCode): ?>
             disabled
