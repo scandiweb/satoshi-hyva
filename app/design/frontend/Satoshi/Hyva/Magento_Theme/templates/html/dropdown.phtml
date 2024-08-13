@@ -5,9 +5,11 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template as Block;
+use Satoshi\Theme\Block\Template;
 
-/** @var Template $block */
+/** @var Template $template */
+/** @var Block $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
@@ -23,16 +25,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 <div x-data="Dropdown()" x-ref="DropdownWrapper" class="relative">
     <button
-        @click="toggleDropdown(); $nextTick(() => { const searchRef = $refs['<?= $id ?>-search']; if (searchRef) { setTimeout(() => { searchRef.focus(); }, 250); } });"
+        @click="toggleDropdown()"
         id="<?= $id ?>-button"
         data-dropdown-toggle="<?= $id ?>"
         data-dropdown-placement="<?= $placement ?>"
-        class="inline-flex items-center justify-between gap-6 whitespace-nowrap rounded-sm border bg-white px-6 py-3"
+        class="bg-bg-500 inline-flex items-center justify-between gap-6 whitespace-nowrap rounded-sm border border-text-500 px-6 py-3"
         type="button"
         :aria-expanded="isDropdownVisible"
         aria-controls="<?= $id ?>"
     >
-        <?= $escaper->escapeHtml(__($label)) ?>
+        <?= $label ?>
         <span
             :class="isDropdownVisible ? '-rotate-90' : 'rotate-90'"
             class="transition-transform motion-reduce:transition-none">
@@ -44,7 +46,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         x-cloak
         x-a11y-trap="isDropdownVisible"
         x-show="isDropdownVisible"
-        class="absolute z-10 hidden min-w-full rounded-sm border border-gray-300 bg-white p-2 pt-3
+        class="bg-bg-500 absolute left-1/2 z-10 hidden min-w-full -translate-x-1/2 transform rounded-sm border border-text-500 p-2
             <?= $placement === 'top' ? 'bottom-full' : '' ?>
             <?= $placement === 'bottom' ? 'top-full' : '' ?>
             <?= $placement === 'right' ? 'left-full' : '' ?>
@@ -57,22 +59,24 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     <?= __('Search') ?>
                 </label>
                 <input type="text" id="<?= $id ?>-search"
-                       class="w-full rounded-xs border p-3 placeholder:text-gray-500 contrast-more:border-secondary-700"
+                       class="input__field"
                        x-ref="<?= $id ?>-search"
                        placeholder="<?= __('Search') ?>" @input.debounce.300ms="search($event.target.value)">
             </div>
         <?php endif; ?>
-        <ul class="max-h-48 overflow-y-auto p-2 text-sm text-gray-700"
+        <ul class="max-h-48 overflow-y-auto p-2 text-sm"
             aria-labelledby="<?= $id ?>-button">
             <?php foreach ($options as $option): ?>
-                <li>
-                    <a tabindex="0"
-                       data-value="<?= $escaper->escapeHtml($option['value']) ?>"
-                       class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs hover:underline<?= $option['is_active'] ? ' bg-primary-50' : '' ?>"
-                       @click.prevent='<?= $option['on_click'] ?>'>
-                        <?= $option['label'] ?>
-                    </a>
-                </li>
+                <?= $template
+                    ->setData([
+                        'is_active' => $option['is_active'],
+                        'value' => $option['value'],
+                        'label' => $option['label'],
+                        'on_click' => $option['on_click'] ?? null,
+                        'url' => $option['url'] ?? null,
+                    ])
+                    ->render('Magento_Theme::html/dropdown-option.phtml');
+                ?>
             <?php endforeach; ?>
         </ul>
     </div>
