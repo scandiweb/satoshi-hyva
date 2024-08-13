@@ -12,13 +12,17 @@
     <body>
         <!-- Attributes in body element which required to show correct color of logo text -->
         <attribute name="class" value="gradient" />
-        <attribute name="class" value="bg-fg" />
+        <attribute name="class" value="bg-bg-500" />
         <attribute name="x-data" value="{}" />
         <attribute name="@private-content-loaded.window" value="$store.cart.setCartItems($event.detail.data.cart?.items || []);" />
 
+        <referenceContainer name="root">
+            <block class="Magento\Framework\View\Element\Template" name="svg.filters" template="Magento_Theme::html/components/svg-filters.phtml" before="-" />
+        </referenceContainer>
+
 
         <referenceContainer name="header.container" htmlClass="page-header contents"/>
-        <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-fg">
+        <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-bg-500">
             <container name="main.wrapper" as="main.wrapper" htmlTag="div" htmlClass="main-wrapper">
                 <block class="Magento\Framework\View\Element\Template" name="main-content" template="Magento_Theme::html/layout/main-content.phtml" before="-" />
             </container>
