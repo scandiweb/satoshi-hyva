@@ -4,10 +4,8 @@
 use Hyva\Theme\ViewModel\ProductListItem;
 use Hyva\Theme\ViewModel\Wishlist;
 use Hyva\Theme\ViewModel\SvgIcons;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Pricing\Helper\Data;
-use Magento\Framework\UrlInterface;
 use Satoshi\Theme\Block\Template;
+use Magento\Catalog\Helper\Image;
 
 /** @var Template $template */
 
@@ -23,31 +21,11 @@ $imageLoading = $block->getData('imageLoading');
 $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $showAddToWishlist = $wishlistViewModel->isEnabled();
 $product = $block->getData('product');
-$objectManager = ObjectManager::getInstance();
 
-if (!$isAlpineTemplate) {
-    $featuredImage = $product?->getImage();
-    $title = $product?->getName();
+$imageUrl = $this->helper(Image::class)
+    ->init($product, 'product_base_image')
+    ->getUrl();
 
-    //TODO: Remove object manager and move to price template
-    $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-
-    //format a price
-    $pricingHelper = $objectManager->get(Data::class);
-    $price = $product->getPrice();
-    if (floor($price) == $price) {
-        $formattedPrice = $pricingHelper->currency($price, true, false);
-        $formattedPrice = strtok($formattedPrice, '.');
-    } else {
-        $formattedPrice = $pricingHelper->currency($price, true, false);
-    }
-
-    // get image full url
-    $mediaUrl = $storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
-    $imageUrl = $mediaUrl . 'catalog/product' . $product->getImage();
-} else {
-    $featuredImage = null;
-}
 ?>
 <article
     class="z-10 relative flex h-full w-full flex-col items-stretch justify-start text-start"
@@ -62,7 +40,7 @@ if (!$isAlpineTemplate) {
             width="0"
             height="0"
             class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
-            src="{{ card_product.selected_or_first_available_variant.image | image_url }}"
+            src="{{ card_product.selected_or_first_available_variant.image | <?= $imageUrl ?> }}"
             alt=""
         >
     <?php endif; ?>
@@ -91,8 +69,8 @@ if (!$isAlpineTemplate) {
                 >
                     <img
                         <?php // TODO: Update with real dynamic data ?>
-                        src="<?php echo $imageUrl; ?>"
-                        :alt="product.small_image?.label"
+                        src="<?= $imageUrl ?>"
+                        alt="<?= $escaper->escapeHtmlAttr($product->getName())?>"
                         class="aspect-product h-full w-full object-contain object-center transition-transform md:group-hover:scale-105"
                         loading="<?= $imageLoading ?>"
                     >
@@ -103,12 +81,6 @@ if (!$isAlpineTemplate) {
                 </div>
             <?php endif; ?>
         <?php endif; ?>
-
-        <?php // TODO: Make dynamic discount badge ?>
-        <div class="card-product__badge-container bottom left">
-      <span class="card-product__badge bg-white px-3 py-2 text-sm font-bold">
-      </span>
-        </div>
     </div>
 
     <div class="relative mt-4 flex flex-col gap-1">
@@ -121,7 +93,7 @@ if (!$isAlpineTemplate) {
                     <?php endif; ?>
                 >
                     <?php if (!$isAlpineTemplate) : ?>
-                        <?= $title ?>
+                        <?= $product?->getName(); ?>
                     <?php endif; ?>
                 </h2>
 
@@ -137,23 +109,25 @@ if (!$isAlpineTemplate) {
                     <?php endif; ?>
                 >
                     <?php if (!$isAlpineTemplate) : ?>
-                        <?= $formattedPrice ?>
+                        <?= /* @noEscape */
+                        $productListItemViewModel->getProductPriceHtml($product) ?>
                     <?php endif; ?>
                 </h2>
             </article>
         </div>
 
         <?php // TODO: Make Quick buy button work ?>
-        <div class="absolute right-0 top-1/2 transform -translate-y-1/2">
+        <div class="absolute right-0 top-1/2 transform -translate-y-1/2 md:hidden">
             <button
-                class="text-xl md:hidden"
+                class="text-xl"
                 @click.prevent.stop="quickBuy()"
                 aria-label="<?= __('Add to cart') ?>"
             >
                 <?= $hyvaicons->renderHtml('cart'); ?>button
             </button>
             <?php if ($product) : ?>
-                <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+                <?= /* @noEscape */
+                $productListItemViewModel->getProductPriceHtml($product) ?>
             <?php endif; ?>
         </div>
     </div>

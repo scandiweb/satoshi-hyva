@@ -15,6 +15,7 @@ use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
 use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
 
+
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
 // phpcs:disable Generic.Files.LineLength.TooLong
@@ -52,18 +53,15 @@ $isSearchCard = $block->getData('isSearchCard');
 $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $featuredImage = false;
 
+$product = $block->getData('product');
+$id = $product?->getId();
+
+
 if (!$isAlpineTemplate) {
     $product = $block->getData('product');
-
-    if (!$product) {
-        return '';
-    }
-    $id = $product->getId();
+    $id = $product?->getId();
 }
 
-else{
-    $product = null;
-}
 ?>
 
 <div
