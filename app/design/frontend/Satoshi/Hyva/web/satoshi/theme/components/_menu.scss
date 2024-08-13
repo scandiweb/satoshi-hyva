@@ -41,7 +41,7 @@
         transition: opacity 300ms 400ms;
 
         &:not(:first-child) {
-          @apply border-l-1 border-primary-50;
+          @apply border-bg-600 border-l-1;
         }
       }
     }
@@ -54,18 +54,20 @@
   }
 
   &__header {
-    @apply sticky top-[42px] z-10 flex flex-col gap-3 bg-fg px-3 pt-6;
+    @apply bg-bg-500 sticky top-[42px] z-10 flex flex-col gap-3 px-3 pt-6;
 
     @screen md {
-      @apply top-0 rounded-t-md bg-transparent bg-gradient-to-b from-white from-70% p-5;
+      @apply from-bg-500 top-0 rounded-t-md bg-transparent bg-gradient-to-b from-70% p-5 pb-4 pl-4;
     }
   }
 
   &__header-container {
-    @apply relative -mt-3 overflow-hidden py-3;
+    @apply relative -mt-3 overflow-hidden;
+    /* py-3; */
 
     @screen md {
       @apply flex;
+      /* pl-2; */
     }
   }
 
@@ -82,7 +84,7 @@
   }
 
   &__heading {
-    @apply translate-x-[52px] text-lg transition-transform duration-300;
+    @apply translate-x-[52px] text-lg text-text-500 transition-transform duration-300;
 
     @screen md {
       @apply flex-1 translate-x-0 text-md;
@@ -101,12 +103,12 @@
     @apply flex flex-col gap-3 px-3 py-3 pt-12;
 
     @screen md {
-      @apply max-h-[--menu-links-container-max-height] flex-grow overflow-auto p-5 pt-0;
+      @apply max-h-[--menu-links-container-max-height] flex-grow overflow-auto p-5 pt-2;
     }
   }
 
   &__link {
-    @apply focus-visible:focus-ring flex min-h-11	w-full items-center justify-between py-1 text-secondary-600 contrast-more:text-secondary-700;
+    @apply focus-visible:focus-ring flex min-h-11	w-full items-center justify-between py-1;
 
     &--active {
       @apply font-bold text-primary-500;

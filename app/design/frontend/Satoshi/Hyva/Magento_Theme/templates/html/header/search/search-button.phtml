@@ -8,7 +8,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 <button
   tabindex="0"
-  class="md:button--filled-white button ghost-primary icon-button icon-button--size-lg md:m-2 contrast-more:md:border contrast-more:md:border-secondary-700"
+  class="contrast-border md:button--filled-secondary button ghost-primary icon-button icon-button--size-lg"
   aria-label="<?= __('Open search') ?>"
   @keydown.space.prevent="$store.resizable.show('search-desktop')"
   @keydown.enter.prevent="$store.resizable.show('search-desktop')"
