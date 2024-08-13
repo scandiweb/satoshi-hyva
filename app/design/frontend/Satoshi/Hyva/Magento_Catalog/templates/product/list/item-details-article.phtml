@@ -1,5 +1,7 @@
 <?php
 
+
+use Hyva\Theme\ViewModel\ProductListItem;
 use Hyva\Theme\ViewModel\Wishlist;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\App\ObjectManager;
@@ -15,14 +17,15 @@ $wishlistViewModel = $viewModels->require(Wishlist::class);
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
 
 $imageLoading = $block->getData('imageLoading');
 $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $showAddToWishlist = $wishlistViewModel->isEnabled();
+$product = $block->getData('product');
 $objectManager = ObjectManager::getInstance();
 
 if (!$isAlpineTemplate) {
-    $product = $block->getData('product');
     $featuredImage = $product?->getImage();
     $title = $product?->getName();
 
@@ -141,18 +144,17 @@ if (!$isAlpineTemplate) {
         </div>
 
         <?php // TODO: Make Quick buy button work ?>
-        <button
-            class="absolute right-0 top-1/2 -translate-y-1/2 text-xl md:hidden"
-            @click.prevent.stop="quickBuy()"
-            aria-label="<?= __('Add to cart') ?>"
-        >
-            <?= $hyvaicons->renderHtml('cart'); ?>
-        </button>
-        <?php // TODO: Create and implement price component ?>
-        <?= ''
-        // $template
-        //   ->setData(['isAlpineTemplate' => true])
-        //   ->render('Magento_Catalog::product/view/price.phtml')
-        ?>
+        <div class="absolute right-0 top-1/2 transform -translate-y-1/2">
+            <button
+                class="text-xl md:hidden"
+                @click.prevent.stop="quickBuy()"
+                aria-label="<?= __('Add to cart') ?>"
+            >
+                <?= $hyvaicons->renderHtml('cart'); ?>button
+            </button>
+            <?php if ($product) : ?>
+                <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+            <?php endif; ?>
+        </div>
     </div>
 </article>
