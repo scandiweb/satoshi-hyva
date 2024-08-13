@@ -18,13 +18,13 @@ $options = [];
 foreach ($languages as $key => $language) {
     $options[] = [
         'value' => $escaper->escapeHtml($key),
-        'label' => $escaper->escapeHtml($language['name']),
+        'label' => $escaper->escapeHtml($language['name'] ?? ''),
         'on_click' => 'window.location.href=`' . $language['url'] . '?___store=' . $escaper->escapeJs($key) . '`',
         'is_active' => $key === $currentLanguageCode,
     ];
 }
 
-$currentLabel = $escaper->escapeHtml($languages[$currentLanguageCode]['name']);
+$currentLabel = $escaper->escapeHtml(__($languages[$currentLanguageCode]['name'] ?? ''));
 ?>
 
 <?php if (count($options) > 1): ?>
@@ -34,6 +34,7 @@ $currentLabel = $escaper->escapeHtml($languages[$currentLanguageCode]['name']);
             'id' => 'language-selector',
             'label' => $currentLabel,
             'options' => $options,
+            'placement' => 'top',
         ])
         ->render('Magento_Theme::html/dropdown.phtml');
     ?>
