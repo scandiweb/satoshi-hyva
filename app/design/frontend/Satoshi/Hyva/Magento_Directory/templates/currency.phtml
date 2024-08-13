@@ -18,7 +18,7 @@ $currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode();
 
 $options = [];
 foreach ($currencies as $code => $currency) {
-    $name = $currency['name'];
+    $name = __($currency['name']);
     $symbol = $currency['symbol'] ? "({$currency['symbol']})" : '';
     $label = "
         <span>{$escaper->escapeHtml($name)}</span>
@@ -49,6 +49,7 @@ $currentLabel = $currencies[$currentCurrencyCode] ?
             'options' => $options,
             'currentValue' => $currentCurrencyCode,
             'withSearch' => true,
+            'placement' => 'top',
         ])
         ->render('Magento_Theme::html/dropdown.phtml');
     ?>

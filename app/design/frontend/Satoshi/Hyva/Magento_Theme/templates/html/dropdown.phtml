@@ -15,16 +15,18 @@ $id = $escaper->escapeHtml($block->getData('id') ?? 'dropdown');
 $label = $block->getData('label') ?? '';
 $options = $block->getData('options') ?? [];
 $withSearch = $block->getData('withSearch') ?? false;
+$placement = $block->getData('placement') ?? 'bottom';
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div x-data="Dropdown('<?= $id ?>')" x-ref="DropdownWrapper" class="relative inline-block text-left">
+<div x-data="Dropdown()" x-ref="DropdownWrapper" class="relative">
     <button
         @click="toggleDropdown(); $nextTick(() => { const searchRef = $refs['<?= $id ?>-search']; if (searchRef) { setTimeout(() => { searchRef.focus(); }, 250); } });"
         id="<?= $id ?>-button"
         data-dropdown-toggle="<?= $id ?>"
+        data-dropdown-placement="<?= $placement ?>"
         class="inline-flex items-center justify-between gap-6 whitespace-nowrap rounded-sm border bg-white px-6 py-3"
         type="button"
         :aria-expanded="isDropdownVisible"
@@ -42,7 +44,11 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         x-cloak
         x-a11y-trap="isDropdownVisible"
         x-show="isDropdownVisible"
-        class="absolute z-10 hidden min-w-full rounded-sm border border-gray-300 bg-white p-2 pt-3 bottom-full"
+        class="absolute z-10 hidden min-w-full rounded-sm border border-gray-300 bg-white p-2 pt-3
+            <?= $placement === 'top' ? 'bottom-full' : '' ?>
+            <?= $placement === 'bottom' ? 'top-full' : '' ?>
+            <?= $placement === 'right' ? 'left-full' : '' ?>
+            <?= $placement === 'left' ? 'right-full' : '' ?>"
         :class="{ 'block': isDropdownVisible, 'hidden': !isDropdownVisible }"
     >
         <?php if ($withSearch): ?>
@@ -64,7 +70,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                        data-value="<?= $escaper->escapeHtml($option['value']) ?>"
                        class="flex cursor-pointer justify-between p-3 gap-x-6 text-nowrap rounded-xs hover:underline<?= $option['is_active'] ? ' bg-primary-50' : '' ?>"
                        @click.prevent='<?= $option['on_click'] ?>'>
-                            <?= __($option['label']) ?>
+                        <?= $option['label'] ?>
                     </a>
                 </li>
             <?php endforeach; ?>
