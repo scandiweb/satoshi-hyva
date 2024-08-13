@@ -19,7 +19,7 @@ $hideOnMobile = in_array($pageType, $mobilePageTypes);
 
 <?php if (!empty($crumbs) && is_array($crumbs)): ?>
     <nav
-        class="breadcrumbs content-wrapper mx-auto my-8 px-4 <?= $renderOnMobile ? 'hidden' : '' ?> md:block"
+        class="breadcrumbs content-wrapper mx-auto my-8 px-4 <?= $hideOnMobile ? 'hidden' : '' ?> md:block"
         role="navigation"
         aria-label="<?= __('Breadcrumbs') ?>"
     >
