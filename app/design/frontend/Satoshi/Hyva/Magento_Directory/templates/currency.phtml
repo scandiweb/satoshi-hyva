@@ -32,10 +32,14 @@ foreach ($currencies as $code => $currency) {
     ];
 }
 
-$currentSymbol = $currencies[$currentCurrencyCode]['symbol'] ? "({$currencies[$currentCurrencyCode]['symbol']})" : '';
-$currentLabel = $currencies[$currentCurrencyCode] ?
-    __($currencies[$currentCurrencyCode]['name']) . " | $currentCurrencyCode $currentSymbol" :
-    $currentCurrencyCode;
+
+$currency = $currencies[$currentCurrencyCode];
+if ($currency) {
+    $currentSymbol = !empty($currency['symbol']) ? " ({$currency['symbol']})" : '';
+    $currentLabel = __($currency['name']) . " | {$currentCurrencyCode}{$currentSymbol}";
+} else {
+    $currentLabel = $currentCurrencyCode;
+}
 ?>
 
 <?php if ($currencyViewModel->getCurrencyCount() > 1): ?>
@@ -48,6 +52,6 @@ $currentLabel = $currencies[$currentCurrencyCode] ?
             'withSearch' => true,
             'placement' => 'top',
         ])
-        ->render('Magento_Theme::html/dropdown.phtml');
+        ->render('Magento_Theme::html/components/dropdown.phtml');
     ?>
 <?php endif; ?>
