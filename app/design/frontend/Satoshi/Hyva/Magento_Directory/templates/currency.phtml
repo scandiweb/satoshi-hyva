@@ -33,9 +33,10 @@ foreach ($currencies as $code => $currency) {
     ];
 }
 
+$currentSymbol = $currencies[$currentCurrencyCode]['symbol'] ? "({$currencies[$currentCurrencyCode]['symbol']})" : '';
 $currentLabel = $currencies[$currentCurrencyCode] ?
-    $escaper->escapeHtml("{$currencies[$currentCurrencyCode]['name']} | {$currentCurrencyCode}") :
-    $escaper->escapeHtml($currentCurrencyCode);
+    "{$currencies[$currentCurrencyCode]['name']} | $currentCurrencyCode $currentSymbol" :
+    $currentCurrencyCode;
 
 ?>
 
@@ -44,7 +45,7 @@ $currentLabel = $currencies[$currentCurrencyCode] ?
     $template
         ->setData([
             'id' => 'currency-selector',
-            'label' => $currentLabel,
+            'label' => $escaper->escapeHtml($currentLabel),
             'options' => $options,
             'currentValue' => $currentCurrencyCode,
             'withSearch' => true,
