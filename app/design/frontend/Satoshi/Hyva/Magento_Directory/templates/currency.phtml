@@ -10,7 +10,6 @@ use Satoshi\Theme\Block\Template;
 /** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-
 /** @var Currency $currencyViewModel */
 $currencyViewModel = $viewModels->require(Currency::class);
 $currencies = $currencyViewModel->getCurrencies();
@@ -35,9 +34,8 @@ foreach ($currencies as $code => $currency) {
 
 $currentSymbol = $currencies[$currentCurrencyCode]['symbol'] ? "({$currencies[$currentCurrencyCode]['symbol']})" : '';
 $currentLabel = $currencies[$currentCurrencyCode] ?
-    "{$currencies[$currentCurrencyCode]['name']} | $currentCurrencyCode $currentSymbol" :
+    __($currencies[$currentCurrencyCode]['name']) . " | $currentCurrencyCode $currentSymbol" :
     $currentCurrencyCode;
-
 ?>
 
 <?php if ($currencyViewModel->getCurrencyCount() > 1): ?>
