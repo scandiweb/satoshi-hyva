@@ -1,7 +1,7 @@
-import type { Alpine as AlpineType } from "alpinejs";
-import { freezeScroll, unfreezeScroll } from "../utils/scroll2";
-import { doElementTransitionFromSrcToDest } from "../utils/element-transition";
-import { replaceElement } from "../utils/morph";
+import type {Alpine as AlpineType} from "alpinejs";
+import {freezeScroll, unfreezeScroll} from "../utils/scroll2";
+import {doElementTransitionFromSrcToDest} from "../utils/element-transition";
+import {replaceElement} from "../utils/morph";
 import nProgress from "nprogress";
 
 nProgress.configure({ showSpinner: false });
@@ -449,8 +449,7 @@ function TransitionPlugin(Alpine: AlpineType) {
       const onClick = (e: MouseEvent) => {
         const link = el.getAttribute("href");
 
-        // Disable till refactored for magento
-        if (!link || isExternalURL(link) || true) {
+        if (!link || isExternalURL(link)) {
           return;
         }
 
