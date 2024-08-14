@@ -30,20 +30,17 @@ $imageUrl = $this->helper(Image::class)
     class="z-10 flex h-full w-full flex-col items-stretch justify-start overflow-hidden rounded-xl border-black border-opacity-50 text-start"
     x-data="ProductPage()"
 
-<?php //if (!$isAlpineTemplate) : ?>
-<!--    <div class="hidden"-->
-<!--        x-init="-->
-<!--    () => {-->
-<!--      $data.setProductPageProps({-->
-<!--        productId: --><?php //= $product->getId() ?><!--,-->
-<!--        isScrollingToTop: false,-->
-<!--      })-->
-<!--    }-->
-<!--  "-->
-<!--    >-->
-<!--    </div>-->
-<!---->
-<?php //endif; ?>
+<?php if (!$isAlpineTemplate) : ?>
+        x-init="
+            () => {
+            $data.setProductPageProps({
+                productId: <?= $product->getId() ?>,
+                isScrollingToTop: false,
+                })
+            }
+        "
+<?php endif; ?>
+>
 
 <?php if (!$isAlpineTemplate) : // this image is needed to avoid blink in preview on desktop as there, the select variant is shown, not featured image ?>
     <img
