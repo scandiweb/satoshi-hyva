@@ -21,6 +21,10 @@ $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $showAddToWishlist = $wishlistViewModel->isEnabled();
 $product = $block->getData('product');
 
+$manufacturer = $product?->getAttributeText('manufacturer');
+if ($manufacturer === false) {
+    $manufacturer = 'N/A';
+}
 
 $imageUrl = $this->helper(Image::class)
     ->init($product, 'product_base_image')
@@ -106,7 +110,7 @@ $imageUrl = $this->helper(Image::class)
 
             <?php // TODO: Make dynamic ?>
             <p class="w-[calc(100%-40px)] truncate text-text-100 contrast-more:text-secondary-700 mt-2">
-                <?= $product?->getAttributeText('manufacturer') ?>
+                <?= $manufacturer ?>
             </p>
 
             <h2
