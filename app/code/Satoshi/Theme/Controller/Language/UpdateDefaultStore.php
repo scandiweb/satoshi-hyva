@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Satoshi\Theme\Controller\Language;
@@ -8,33 +7,37 @@ use Magento\Framework\App\ActionInterface;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\Framework\App\Cache\Frontend\Pool;
+use Magento\Framework\App\Response\RedirectInterface;
+use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\Stdlib\CookieManagerInterface;
+use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 
 class UpdateDefaultStore implements ActionInterface
 {
     protected StoreManagerInterface $storeManager;
-    protected ResourceConnection $resource;
     protected RequestInterface $request;
     protected ResultFactory $resultFactory;
-    protected TypeListInterface $cacheTypeList;
-    protected Pool $cacheFrontendPool;
+    protected RedirectInterface $redirect;
+    protected SessionManagerInterface $sessionManager;
+    protected CookieManagerInterface $cookieManager;
+    protected CookieMetadataFactory $cookieMetadataFactory;
 
     public function __construct(
         StoreManagerInterface $storeManager,
-        ResourceConnection $resource,
         RequestInterface $request,
         ResultFactory $resultFactory,
-        TypeListInterface $cacheTypeList,
-        Pool $cacheFrontendPool
+        RedirectInterface $redirect,
+        SessionManagerInterface $sessionManager,
+        CookieManagerInterface $cookieManager,
+        CookieMetadataFactory $cookieMetadataFactory
     ) {
         $this->storeManager = $storeManager;
-        $this->resource = $resource;
         $this->request = $request;
         $this->resultFactory = $resultFactory;
-        $this->cacheTypeList = $cacheTypeList;
-        $this->cacheFrontendPool = $cacheFrontendPool;
+        $this->redirect = $redirect;
+        $this->sessionManager = $sessionManager;
+        $this->cookieManager = $cookieManager;
+        $this->cookieMetadataFactory = $cookieMetadataFactory;
     }
 
     public function execute()
@@ -43,26 +46,24 @@ class UpdateDefaultStore implements ActionInterface
         $store = $this->storeManager->getStore($languageCode);
 
         if ($store) {
-            // Update default store in the store_group table
-            $connection = $this->resource->getConnection();
-            $tableName = $connection->getTableName('store_group');
+            // Set the store view for the current session
+            $this->storeManager->setCurrentStore($store);
 
-            $connection->update(
-                $tableName,
-                ['default_store_id' => $store->getId()],
-                ['group_id = ?' => $store->getGroupId()]
-            );
+            // Optionally store in session
+            $this->sessionManager->setLanguageCode($languageCode);
 
-            // Invalidate and clean relevant cache types
-            $this->cacheTypeList->invalidate(['config', 'full_page']);
-            foreach ($this->cacheFrontendPool as $cacheFrontend) {
-                $cacheFrontend->getBackend()->clean();
-            }
+            // Optionally store in cookie
+            $cookieMetadata = $this->cookieMetadataFactory->createPublicCookieMetadata()
+                ->setPath('/')
+                ->setDuration(86400 * 30); // 86400 == 1 day
 
-            // Redirect back to the current page or another page
+            $this->cookieManager->setPublicCookie('language_code', $languageCode, $cookieMetadata);
+
+            // Redirect back to the appropriate store
             return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setUrl($store->getBaseUrl());
         }
 
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('/');
     }
 }
+
