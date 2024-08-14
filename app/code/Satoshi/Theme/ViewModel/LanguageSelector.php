@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\Theme\ViewModel;
 
 use Magento\Framework\Exception\NoSuchEntityException;
