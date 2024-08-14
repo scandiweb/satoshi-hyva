@@ -35,8 +35,6 @@
                 <block class="Magento\Framework\View\Element\Template" name="main-content" template="Magento_Theme::html/layout/main-content.phtml" before="-" />
             </container>
 
-            <referenceContainer name="header.container" htmlClass="page-header contents"/>
-
             <!-- Transition components -->
             <block class="Magento\Framework\View\Element\Template" name="transition.preview"
                    template="Magento_Theme::html/layout/transition-preview.phtml" after="header.container"/>
