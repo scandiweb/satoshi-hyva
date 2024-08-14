@@ -45,4 +45,16 @@ class LanguageSelector implements ArgumentInterface
     {
         return $this->storeManager->getStore()->getCode();
     }
+
+    /**
+     * Get the default language code.
+     *
+     * @return string
+     * @throws NoSuchEntityException
+     */
+    public function getDefaultLanguageCode(): string
+    {
+        $defaultStore = $this->storeManager->getDefaultStoreView();
+        return $defaultStore->getCode();
+    }
 }
