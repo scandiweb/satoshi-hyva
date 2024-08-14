@@ -15,13 +15,19 @@ use Satoshi\Theme\ViewModel\LanguageSelector;
 $languageViewModel = $viewModels->require(LanguageSelector::class);
 $languages = $languageViewModel->getAvailableLanguages();
 $currentLanguageCode = $languageViewModel->getCurrentLanguageCode();
+$defaultLanguageCode = $languageViewModel->getDefaultLanguageCode();
 
 $options = [];
 foreach ($languages as $key => $language) {
+    $url = $language['url'];
+    if ($key !== $defaultLanguageCode) {
+        $url .= '?___store=' . $escaper->escapeJs($key);
+    }
+
     $options[] = [
         'value' => $escaper->escapeHtml($key),
         'label' => $escaper->escapeHtml($language['name'] ?? ''),
-        'on_click' => "document.querySelector('[name=language_code]').value = '$key'; document.querySelector('#localization_form').submit();",
+        'on_click' => 'window.location.href=`' . $url . '`',
         'is_active' => $key === $currentLanguageCode,
     ];
 }
@@ -30,21 +36,14 @@ $currentLabel = __($languages[$currentLanguageCode]['name'] ?? '');
 ?>
 
 <?php if (count($options) > 1): ?>
-    <form method="post"
-          action="<?= $template->getUrl('satoshi_theme/language/updateDefaultStore') ?>"
-          id="localization_form" accept-charset="UTF-8" class="shopify-localization-form">
-        <?= $template->getBlockHtml('formkey') ?>
-        <input type="hidden" name="language_code" value="<?= $currentLanguageCode ?>">
-
-        <?=
-        $template
-            ->setData([
-                'id' => 'language-selector',
-                'label' => $escaper->escapeHtml($currentLabel),
-                'options' => $options,
-                'placement' => 'top',
-            ])
-            ->render('Magento_Theme::html/components/dropdown.phtml');
-        ?>
-    </form>
+    <?=
+    $template
+        ->setData([
+            'id' => 'language-selector',
+            'label' => $escaper->escapeHtml($currentLabel),
+            'options' => $options,
+            'placement' => 'top',
+        ])
+        ->render('Magento_Theme::html/components/dropdown.phtml');
+    ?>
 <?php endif; ?>
