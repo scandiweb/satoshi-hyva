@@ -11,7 +11,10 @@ declare(strict_types=1);
 /**
  * Custom Changes:
  * 1. Updated validation message for required fields
- * 2. Enhanced error message display (added 'text-error' and '!border-error' classes)
+ * 2. Enhanced error message display (added 'text-error' and 'border-error' classes)
+ *          li.classList.add('text-error');
+ *          field.element.classList.toggle('border-error', !field.state.valid);
+ *
  */
 
 use Hyva\Theme\Model\ViewModelRegistry;
@@ -519,6 +522,7 @@ use Magento\Framework\View\Element\Template;
                     container.classList.toggle(options.invalidClassName, !field.state.valid || hasErrorMessages);
                     this.createHtmlErrorMessage(field, messages);
 
+                    field.element.classList.toggle('border-error', !field.state.valid);
                     if (field.state.valid) {
                         field.element.removeAttribute('aria-invalid');
                     } else {
@@ -574,12 +578,7 @@ use Magento\Framework\View\Element\Template;
                         li.innerHTML = htmlMessage;
                         li.setAttribute('data-msg-field', field.element.name);
                         msgWrapper.appendChild(li);
-
                         li.classList.add('text-error');
-                        const correspondingInputField = document.querySelector(`[name="${field.element.name}"]`);
-                        if (correspondingInputField) {
-                            correspondingInputField.classList.add('!border-error');
-                        }
                     });
 
                     return msgWrapper;
