@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\ProductPage;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+
+if (!$product->getDescription()) {
+    return;
+}
+
+$cssClasses = $block->getData('css_classes') ?? 'prose';
+
+?>
+<div x-data="Accordion($store.accordion.isExpanded, 300)" x-effect="isExpanded = $store.accordion.isExpanded">
+    <div x-ref="AccordionPanel" :inert="!isExpanded">
+        <div class="rte mt-3 overflow-hidden text-text-100 contrast-more:text-secondary-700">
+            <?= $productViewModel->productAttributeHtml($product, $product->getDescription(), 'description') ?>
+        </div>
+    </div>
+</div>
