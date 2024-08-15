@@ -12,7 +12,7 @@ $pageContent = $block->getPage()->getContent();
 ?>
 
 <article class="content-wrapper mx-auto" style="padding-top: <?= $paddingTop ?>px; padding-bottom: <?= $paddingBottom ?>px;">
-    <h1 class="mb-7 text-center text-4xl" itemprop="headline"><?= $this->escapeHtml($pageTitle) ?></h1>
+    <h1 class="mb-7 text-center text-4xl text-text-500" itemprop="headline"><?= $this->escapeHtml($pageTitle) ?></h1>
 
     <div class="rte animate-on-transition" itemprop="articleBody">
         <?= $pageContent ?>
