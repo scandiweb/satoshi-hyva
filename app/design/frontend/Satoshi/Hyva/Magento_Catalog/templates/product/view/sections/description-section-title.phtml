@@ -1,0 +1,49 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Framework\Escaper;
+
+$productViewModel = $viewModels->require(ProductPage::class);
+$product = $productViewModel->getProduct();
+
+?>
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('accordion', {
+            isExpanded: true // default value
+        });
+    });
+</script>
+<div x-data="Accordion(true, 300)" x-effect="$store.accordion.isExpanded = isExpanded"
+     class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0"
+>
+    <button class="flex items-center justify-between"
+            id="controlsAccordionItemOne" type="button"
+            aria-controls="accordionItemOne"
+            x-ref="AccordionButton"
+            :aria-expanded="isExpanded"
+            <span class="text-base font-bold leading-tight">
+                <?= $escaper->escapeHtml(__('Description')) ?> /
+                <?= $escaper->escapeHtml($product->getName()) ?>
+            </span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2"
+             stroke="currentColor" class="size-5 shrink-0 transition" aria-hidden="true"
+             :class="isExpanded  ?  'rotate-180'  :  ''">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+        </svg>
+    </button>
+</div>
