@@ -1,15 +1,12 @@
 <?php
 
+use Hyva\Theme\ViewModel\ProductListItem;
 use Hyva\Theme\ViewModel\Wishlist;
 use Hyva\Theme\ViewModel\SvgIcons;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\UrlInterface;
 use Satoshi\Theme\Block\Template;
-use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Catalog\Helper\Image;
 
 /** @var Template $template */
-/* @var Template $block */
-/** @var ViewModelRegistry $viewModels */
 
 /** @var Wishlist $wishlistViewModel */
 $wishlistViewModel = $viewModels->require(Wishlist::class);
@@ -17,42 +14,45 @@ $wishlistViewModel = $viewModels->require(Wishlist::class);
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
 
 $imageLoading = $block->getData('imageLoading');
 $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $showAddToWishlist = $wishlistViewModel->isEnabled();
-$objectManager = ObjectManager::getInstance();
-$product = [];
+$product = $block->getData('product');
 
-if (!$isAlpineTemplate) {
-    $product = $block->getData('product');
-    $featuredImage = $product?->getImage();
-    $title = $product?->getName();
-
-    //TODO: Remove object manager and move to price template
-    $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-
-    // get image full url
-    $mediaUrl = $storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
-    $imageUrl = $mediaUrl . 'catalog/product' . $product->getImage();
-} else {
-    $featuredImage = null;
+$manufacturer = $product?->getAttributeText('manufacturer');
+if ($manufacturer === false) {
+    $manufacturer = 'N/A';
 }
+
+$imageUrl = $this->helper(Image::class)
+    ->init($product, 'product_base_image')
+    ->getUrl();
+
 ?>
 <article
-    class="z-10 relative flex h-full w-full flex-col items-stretch justify-start text-start"
+    class="z-10 flex h-full w-full flex-col items-stretch justify-start overflow-hidden rounded-xl border-black border-opacity-50 text-start"
     x-data="ProductPage()"
+
     <?php if (!$isAlpineTemplate) : ?>
-        <?php // TODO: Create x-init to set correct product data ?>
+        x-init="
+            () => {
+            $data.setProductPageProps({
+                productId: <?= $product->getId() ?>,
+                isScrollingToTop: false,
+                })
+            }
+        "
     <?php endif; ?>
 >
+
     <?php if (!$isAlpineTemplate) : // this image is needed to avoid blink in preview on desktop as there, the select variant is shown, not featured image ?>
-        <?php // TODO: Replace with correct image url ?>
         <img
             width="0"
             height="0"
             class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
-            src="{{ card_product.selected_or_first_available_variant.image | image_url }}"
+            src="{{ card_product.selected_or_first_available_variant.image | <?= $imageUrl ?> }}"
             alt=""
         >
     <?php endif; ?>
@@ -80,9 +80,8 @@ if (!$isAlpineTemplate) {
                     x-element-transition-src="img"
                 >
                     <img
-                        <?php // TODO: Update with real dynamic data ?>
-                        src="<?php echo $imageUrl; ?>"
-                        :alt="product.small_image?.label"
+                        src="<?= $imageUrl ?>"
+                        alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
                         class="aspect-product h-full w-full object-contain object-center transition-transform md:group-hover:scale-105"
                         loading="<?= $imageLoading ?>"
                     >
@@ -93,17 +92,11 @@ if (!$isAlpineTemplate) {
                 </div>
             <?php endif; ?>
         <?php endif; ?>
-
-        <?php // TODO: Make dynamic discount badge ?>
-        <div class="card-product__badge-container bottom left">
-      <span class="card-product__badge bg-white px-3 py-2 text-sm font-bold">
-      </span>
-        </div>
     </div>
 
     <div class="relative mt-4 flex flex-col gap-1">
         <div class="{{ class }} {% if isLarge %}col-span-2 md:col-auto{% endif %} card-product">
-            <article class="z-10 flex h-full w-full flex-col items-stretch justify-start text-start">
+            <article class="z-10 flex h-full w-full flex-col items-stretch justify-start overflow-hidden rounded-xl border-black border-opacity-50 text-start">
                 <h2
                     class="w-[calc(100%-40px)] text-md truncate mt-2"
                     <?php if ($isAlpineTemplate) : ?>
@@ -111,13 +104,13 @@ if (!$isAlpineTemplate) {
                     <?php endif; ?>
                 >
                     <?php if (!$isAlpineTemplate) : ?>
-                        <?= $title ?>
+                        <?= $product?->getName(); ?>
                     <?php endif; ?>
                 </h2>
 
                 <?php // TODO: Make dynamic ?>
                 <p class="w-[calc(100%-40px)] truncate text-text-100 contrast-more:text-secondary-700 mt-2">
-                    Vendor
+                    <?= $manufacturer ?>
                 </p>
 
                 <?php if ($product ?? false) : ?>
@@ -134,18 +127,18 @@ if (!$isAlpineTemplate) {
         </div>
 
         <?php // TODO: Make Quick buy button work ?>
-        <button
-            class="absolute right-0 top-1/2 -translate-y-1/2 text-xl md:hidden"
-            @click.prevent.stop="quickBuy()"
-            aria-label="<?= __('Add to cart') ?>"
-        >
-            <?= $hyvaicons->renderHtml('cart'); ?>
-        </button>
-        <?php // TODO: Create and implement price component ?>
-        <?= ''
-        // $template
-        //   ->setData(['isAlpineTemplate' => true])
-        //   ->render('Magento_Catalog::product/view/price.phtml')
-        ?>
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 text-2xl md:hidden">
+            <button
+                class="text-xl"
+                @click.prevent.stop="quickBuy()"
+                aria-label="<?= __('Add to cart') ?>"
+            >
+                <?= $hyvaicons->renderHtml('cart'); ?>button
+            </button>
+            <?php if ($product) : ?>
+                <?= /* @noEscape */
+                $productListItemViewModel->getProductPriceHtml($product) ?>
+            <?php endif; ?>
+        </div>
     </div>
 </article>
