@@ -16,7 +16,7 @@ use Magento\Framework\Escaper;
     <h1 class="text-2xl text-text-500">
         <?= $block->escapeHtml($block->getNotFoundTitle()) ?>
     </h1>
-    <a href="<?= $escaper->escapeUrl($block->getContinueShoppingUrl()) ?>" class="button button--filled-primary">
+    <a x-element-transition-trigger href="<?= $escaper->escapeUrl($block->getContinueShoppingUrl()) ?>" class="button button--filled-primary">
         <?= $block->escapeHtml($block->getContinueShoppingText()) ?>
     </a>
 </div>
