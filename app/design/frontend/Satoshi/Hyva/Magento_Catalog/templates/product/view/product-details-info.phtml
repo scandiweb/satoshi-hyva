@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\View;
+
+/** @var View $block */
+?>
+
+<div>
+  <?= $block->getChildHtml('product.title') ?>
+  <?= $block->getChildHtml('product.info') ?>
+  <?= $block->getChildHtml('product_options_wrapper_bottom') ?>
+  <?= $block->getChildHtml('product.info.details') ?>
+</div>
