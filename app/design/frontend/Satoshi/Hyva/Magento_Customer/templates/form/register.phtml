@@ -49,7 +49,7 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             name="firstname"
                             id="first_name"
                             placeholder="<?= __('First name') ?>"
-                            class="h-[44px] w-full rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
                             value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getFirstname()) ?>"
                             autocomplete="given-name"
                         />
@@ -64,7 +64,7 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             name="lastname"
                             id="last_name"
                             placeholder="<?= __('Last name') ?>"
-                            class="h-[44px] w-full rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
                             value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getLastname()) ?>"
                             autocomplete="family-name"
                         />
@@ -79,7 +79,7 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             name="email"
                             id="email_address"
                             placeholder="<?= __('Email') ?>"
-                            class="h-[44px] w-full rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
                             value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getEmail()) ?>"
                             autocomplete="email"
                             required
@@ -95,20 +95,20 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             name="password"
                             id="password"
                             placeholder="<?= __('Password') ?>"
-                            class="h-[44px] w-full rounded-[--inputs-radius] border px-5 py-4 border-text-50 contrast-more:border-secondary-700 contrast-more:placeholder-secondary-700"
+                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
                             required
                             data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
                             autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                         />
                     </div>
 
-                    <button class="mt-7 w-full rounded-[--buttons-radius] bg-primary-bg px-6 py-4 text-white">
+                    <button class="button button--filled-primary mt-7 w-full py-4">
                         <?= __('Create') ?>
                     </button>
 
                     <div class="mt-6 text-center text-sm tracking-wider">
                         <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-                           class="text-md underline contrast-more:text-secondary-700">
+                           class="link link--primary text-md">
                             <?= __('Back to login') ?>
                         </a>
                     </div>
