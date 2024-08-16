@@ -1,0 +1,53 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Catalog\Helper\Output as CatalogOutputHelper;
+use Magento\Catalog\Block\Product\View\Attributes;
+use Magento\Catalog\Model\Product;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var Escaper $escaper */
+/** @var CatalogOutputHelper $output */
+/** @var Attributes $block */
+
+
+/** @var CatalogOutputHelper $catalogOutputHelper */
+$catalogOutputHelper = $this->helper(CatalogOutputHelper::class);
+
+/** @var Product $product */
+$product = $block->getProduct();
+?>
+
+
+<?php if ($attributes = $block->getAdditionalData()): ?>
+    <div x-data="Accordion($store.information.isExpanded, 300)" x-effect="isExpanded = $store.information.isExpanded">
+        <div x-ref="AccordionPanel" :inert="!isExpanded">
+            <div class="mt-3 overflow-hidden text-text-100 contrast-more:text-secondary-700">
+                <div class="table-wrapper max-w-prose overflow-x-auto" id="product-attributes">
+                    <table class="additional-attributes w-full">
+                        <?php foreach ($attributes as $attribute): ?>
+                            <tr class="border-b border-gray-300 last:border-b-0">
+                                <th class="col label w-1/2 py-2 text-left text-gray-700 font-normal product-attribute-label"
+                                    scope="row"><?= $escaper->escapeHtml($attribute['label']) ?></th>
+                                <td class="col data w-1/2 py-2 pl-2 text-left text-gray-900 product-attribute-value"
+                                    data-th="<?= $escaper->escapeHtmlAttr($attribute['label']) ?>"
+                                ><?= /* @noEscape */
+                                    $catalogOutputHelper->productAttribute($product, $attribute['value'], $attribute['code']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

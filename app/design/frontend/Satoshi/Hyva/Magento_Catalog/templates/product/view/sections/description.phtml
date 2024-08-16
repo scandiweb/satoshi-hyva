@@ -24,7 +24,7 @@ if (!$product->getDescription()) {
 $cssClasses = $block->getData('css_classes') ?? 'prose';
 
 ?>
-<div x-data="Accordion($store.accordion.isExpanded, 300)" x-effect="isExpanded = $store.accordion.isExpanded">
+<div x-data="Accordion($store.description.isExpanded, 300)" x-effect="isExpanded = $store.description.isExpanded">
     <div x-ref="AccordionPanel" :inert="!isExpanded">
         <div class="rte mt-3 overflow-hidden text-text-100 contrast-more:text-secondary-700">
             <?= $productViewModel->productAttributeHtml($product, $product->getDescription(), 'description') ?>
