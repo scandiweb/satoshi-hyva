@@ -6,14 +6,19 @@
  * See https://hyva.io/license
  *
  *  Custom Modifications:
- *  - Render default pagination conditionally.
+ *      - Removed default pagination.
+ *      - Added custom pagination btn component.
+ *      - Added 'pagination-content' comments, and 'data-content-wrapper' attribute.
  */
+
+declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\CurrentCategory;
 use Hyva\Theme\ViewModel\ProductListItem;
 use Hyva\Theme\ViewModel\ProductPage;
 use Magento\Catalog\Block\Product\ListProduct;
+use Satoshi\Theme\Block\Template;
 use Magento\Framework\Escaper;
 
 /** @var ListProduct $block */
@@ -21,6 +26,7 @@ use Magento\Framework\Escaper;
 /** @var ViewModelRegistry $viewModels */
 /** @var ProductPage $productViewModel */
 /** @var CurrentCategory $currentCategoryViewModel */
+/** @var Template $template */
 
 $productViewModel = $viewModels->require(ProductPage::class);
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
@@ -28,6 +34,8 @@ $currentCategoryViewModel = $viewModels->require(CurrentCategory::class);
 
 $eagerLoadImagesCount = (int)($block->getData('eager_load_images_count') ?? 3);
 $productCollection = $block->getLoadedProductCollection();
+$lastPage = $productCollection->getLastPageNumber();
+$currentPage = $productCollection->getCurPage();
 
 ?>
 <?php if (!$productCollection->count()): ?>
@@ -62,12 +70,14 @@ $productCollection = $block->getLoadedProductCollection();
         $viewMode ?> products-<?= /* @noEscape */
         $viewMode ?>">
             <ul
+                data-content-wrapper
                 role="list"
                 class="mx-auto pt-4 pb-12 grid gap-4 grid-cols-1 <?= /* @noEscape */
                 $viewMode === 'grid'
                     ? 'sm:grid-cols-2 xl:grid-cols-3'
                     : '' ?>"
             >
+                <!-- pagination-content -->
                 <?php
                 /** @var \Magento\Catalog\Model\Product $product */
                 foreach (array_values($productCollection->getItems()) as $i => $product):
@@ -86,11 +96,18 @@ $productCollection = $block->getLoadedProductCollection();
                         ); ?>
                     </li>
                 <?php endforeach; ?>
+                <!-- end-pagination-content -->
             </ul>
         </div>
-        <!-- UPDATED: added this condition -->
-        <?php if ($toolbarBlock = $block->getChildBlock('toolbar')): ?>
-            <?= $toolbarBlock->setIsBottom(true)->toHtml() ?>
-        <?php endif; ?>
+
+        <?php
+        if ($lastPage > 1 && $currentPage < $lastPage) {
+            echo $template
+                ->setData([
+                    'lastPage' => $lastPage,
+                ])
+                ->render('Magento_Catalog::product/list/custom-pagination.phtml');
+        }
+        ?>
     </section>
 <?php endif; ?>
