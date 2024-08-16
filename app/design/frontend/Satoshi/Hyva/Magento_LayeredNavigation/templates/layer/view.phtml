@@ -1,0 +1,144 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Magento\Framework\Escaper;
+use Magento\LayeredNavigation\Block\Navigation;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Navigation $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+?>
+<?php if ($block->canShowBlock()): ?>
+    <div
+        x-data="initLayeredNavigation()"
+        x-init="checkIsMobileResolution()"
+        @resize.window.debounce="checkIsMobileResolution()"
+        @visibilitychange.window.debounce="checkIsMobileResolution()"
+        class="block border border-container bg-container-darker p-4 md:border-0 md:bg-transparent md:py-0 md:px-0 my-6"
+        role="region"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('Product filters')) ?>"
+    >
+        <h2
+            id="filters-heading"
+            class="block-title"
+        >
+            <button
+                type="button"
+                @click="blockOpen = !blockOpen"
+                class="block-title flex items-center justify-between w-full text-start"
+                aria-controls="filters-content"
+                :aria-expanded="blockOpen"
+                :aria-disabled="!isMobile"
+                :disabled="!isMobile ? '' : null"
+            >
+                <span class="text-primary text-md md:text-3xl font-medium uppercase">
+                    <?= $escaper->escapeHtml(__('Shop By')) ?>
+                </span>
+                <span
+                    class="py-1 px-1 bg-container-lighter rounded border border-container-darker md:hidden"
+                    x-ref="LayeredNavigationMobileToggleIcon"
+                >
+                    <?= $heroicons->chevronDownHtml(
+                        'transition-transform transform duration-300 ease-in-out',
+                        24,
+                        24,
+                        [
+                            ":class" => "{ 'rotate-180': blockOpen }",
+                            "aria-hidden" => "true",
+                            "focusable" => "false"
+                        ]
+                    ); ?>
+                </span>
+            </button>
+        </h2>
+        <div
+            id="filters-content"
+            class="block-content filter-content hidden md:block pt-4"
+            :class="{ 'hidden': !blockOpen }"
+        >
+            <?= $block->getChildHtml('state') ?>
+            <a
+                href="#product-list"
+                class="sr-only focus:not-sr-only bg-blue-600 text-white px-12 py-4 text-center block rounded-sm"
+            >
+                <?= $escaper->escapeHtml(__('Skip to product list')) ?>
+            </a>
+            <?php foreach ($block->getFilters() as $filter): ?>
+                <?php if ($filter->getItemsCount()): ?>
+                    <div
+                        x-data="{
+                            open: false,
+                            id: $id('filter-option')
+                        }"
+                        x-defer="intersect"
+                        class="filter-option card my-4"
+                    >
+                        <h3 :id="`${id}-title`">
+                            <button
+                                type="button"
+                                @click="open = !open"
+                                class="filter-options-title flex justify-between items-center cursor-pointer text-start hover:text-secondary-darker border-container w-full"
+                                :class="{ 'border-b pb-4': open }"
+                                :aria-controls="`${id}-content`"
+                                :aria-expanded="open"
+                            >
+                                <span class="title text-md md:text-lg font-semibold">
+                                    <?= $escaper->escapeHtml(__($filter->getName())) ?>
+                                    <span class="sr-only"> <?= $escaper->escapeHtml(__('filter')) ?></span>
+                                </span>
+                                <span class="py-1 px-1 rounded border border-container">
+                                    <?= $heroicons->chevronDownHtml(
+                                        'transition-transform transform duration-300 ease-in-out',
+                                        24,
+                                        24,
+                                        [
+                                            ":class" => "{ 'rotate-180': open }",
+                                            "aria-hidden" => "true",
+                                            "focusable" => "false"
+                                        ]
+                                    ); ?>
+                                </span>
+                            </button>
+                        </h3>
+                        <template x-if="open">
+                            <div
+                                :id="`${id}-content`"
+                                class="filter-options-content pt-3"
+                            >
+                                <?= /* @noEscape */ $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
+                            </div>
+                        </template>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <script>
+        function initLayeredNavigation() {
+            return {
+                isMobile: false,
+                blockOpen: false,
+                checkIsMobileResolution() {
+                    const mobileElement = this.$refs.LayeredNavigationMobileToggleIcon;
+                    this.isMobile = mobileElement
+                        ? getComputedStyle(mobileElement).display !== "none"
+                        : window.matchMedia('(max-width: 767px)').matches; // Fallback to `md` breakpoint
+                }
+            }
+        }
+    </script>
+<?php endif; ?>
