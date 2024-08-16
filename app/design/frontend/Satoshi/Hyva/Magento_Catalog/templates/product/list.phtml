@@ -6,9 +6,9 @@
  * See https://hyva.io/license
  *
  *  Custom Modifications:
- *      - Removed default pagination.
- *      - Added custom pagination btn component.
- *      - Added 'pagination-content' comments, and 'data-content-wrapper' attribute.
+ *      - Added 'data-content-wrapper' attribute.
+ *      - Added 'pagination-content' and 'end-pagination-content' comments.
+ *      - Added a conditional check to render pagination only when needed (as I got an error when I tried to remove its block from .xml file).
  */
 
 declare(strict_types=1);
@@ -34,8 +34,6 @@ $currentCategoryViewModel = $viewModels->require(CurrentCategory::class);
 
 $eagerLoadImagesCount = (int)($block->getData('eager_load_images_count') ?? 3);
 $productCollection = $block->getLoadedProductCollection();
-$lastPage = $productCollection->getLastPageNumber();
-$currentPage = $productCollection->getCurPage();
 
 ?>
 <?php if (!$productCollection->count()): ?>
@@ -99,15 +97,8 @@ $currentPage = $productCollection->getCurPage();
                 <!-- end-pagination-content -->
             </ul>
         </div>
-
-        <?php
-        if ($lastPage > 1 && $currentPage < $lastPage) {
-            echo $template
-                ->setData([
-                    'lastPage' => $lastPage,
-                ])
-                ->render('Magento_Catalog::product/list/custom-pagination.phtml');
-        }
-        ?>
+        <?php if ($toolbarBlock = $block->getChildBlock('toolbar')): ?>
+            <?= $toolbarBlock->setIsBottom(true)->toHtml() ?>
+        <?php endif; ?>
     </section>
 <?php endif; ?>
