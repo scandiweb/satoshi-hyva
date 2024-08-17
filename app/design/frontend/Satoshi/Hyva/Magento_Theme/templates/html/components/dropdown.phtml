@@ -1,0 +1,87 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template as Block;
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $template */
+/** @var Block $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$id = $escaper->escapeHtml($block->getData('id') ?? 'dropdown');
+$label = $block->getData('label') ?? '';
+$options = $block->getData('options') ?? [];
+$withSearch = $block->getData('withSearch') ?? false;
+$placement = $block->getData('placement') ?? 'bottom';
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<div x-data="Dropdown()" x-ref="DropdownWrapper" class="relative">
+    <button
+        @click="toggleDropdown()"
+        id="<?= $id ?>-button"
+        data-dropdown-toggle="<?= $id ?>"
+        data-dropdown-placement="<?= $placement ?>"
+        class="bg-bg-500 inline-flex items-center justify-between gap-6 whitespace-nowrap rounded-sm border border-text-500 px-6 py-3"
+        type="button"
+        :aria-expanded="isDropdownVisible"
+        aria-controls="<?= $id ?>"
+    >
+        <?= $label ?>
+        <span
+            :class="isDropdownVisible ? '-rotate-90' : 'rotate-90'"
+            class="transition-transform motion-reduce:transition-none">
+            <?= $hyvaicons->renderHtml('chevron'); ?>
+        </span>
+    </button>
+    <div
+        id="<?= $id ?>"
+        x-cloak
+        x-a11y-trap="isDropdownVisible"
+        x-show="isDropdownVisible"
+        class="bg-bg-500 absolute left-1/2 z-10 hidden min-w-full -translate-x-1/2 transform rounded-sm border border-text-500 p-2
+            <?= $placement === 'top' ? 'bottom-full' : '' ?>
+            <?= $placement === 'bottom' ? 'top-full' : '' ?>
+            <?= $placement === 'right' ? 'left-full' : '' ?>
+            <?= $placement === 'left' ? 'right-full' : '' ?>"
+        :class="{ 'block': isDropdownVisible, 'hidden': !isDropdownVisible }"
+    >
+        <?php if ($withSearch): ?>
+            <div class="p-2">
+                <label for="<?= $id ?>-search" class="sr-only">
+                    <?= __('Search') ?>
+                </label>
+                <input
+                    type="text"
+                    id="<?= $id ?>-search"
+                    class="input__field"
+                    x-ref="<?= $id ?>-search"
+                    placeholder="<?= __('Search') ?>"
+                    @input.debounce.300ms="search($event.target.value)"
+                >
+            </div>
+        <?php endif; ?>
+        <ul class="max-h-48 overflow-y-auto p-2 text-sm"
+            aria-labelledby="<?= $id ?>-button">
+            <?php foreach ($options as $option): ?>
+                <?= $template
+                    ->setData([
+                        'is_active' => $option['is_active'],
+                        'value' => $option['value'],
+                        'label' => $option['label'],
+                        'on_click' => $option['on_click'] ?? null,
+                        'url' => $option['url'] ?? null,
+                    ])
+                    ->render('Magento_Theme::html/components/dropdown-option.phtml');
+                ?>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>
