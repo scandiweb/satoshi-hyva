@@ -1,0 +1,105 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Template $template */
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$title = (string)$block->getTitle();
+
+$items = $block->getItems();
+
+if (!$items) {
+    return;
+}
+
+if (is_object($items) && $items instanceof Iterator) {
+    $items = iterator_to_array($items);
+}
+?>
+
+<div
+    class="slider slider--full-width"
+    x-init="
+    configureAndStart({
+      slidesAmountInView: '{xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6}',
+      gap: 16,
+      isAutoplay: false,
+      autoplaySpeed: 0
+    })
+  "
+    x-data="Slider()"
+    id="{{ id }}-slider"
+    class=""
+    style="
+    --slide-gap: 16px;
+    --slide-count-xs: 2.2;
+    --slide-count-sm: 2.5;
+    --slide-count-md: 3;
+    --slide-count-lg: 4;
+    --slide-count-xl: 5;
+    --slide-count-xxl: 5
+  "
+>
+    <div class="slider__header">
+
+        <?php if ($title): ?>
+            <h1 class="slider__title">
+                <?= $escaper->escapeHtml($title); ?>
+            </h1>
+        <?php endif; ?>
+
+        <div class="slider__actions">
+            <button
+                class="button button--outline-primary icon-button icon-button--size-sm {{ class }}"
+                @click.prevent="showPrevSlide()"
+                :class="isPrevBtnDisabled && 'button--disabled'"
+                :disabled="isPrevBtnDisabled"
+                aria-label="{{ 'general.slider.previous_slide' | t }}"
+                role="button"
+            >
+                <?= $hyvaicons->renderHtml('chevron-left'); ?>
+            </button>
+
+            <button
+                class="button button--outline-primary icon-button icon-button--size-sm {{ class }}"
+                @click.prevent="showNextSlide()"
+                :class="isNextBtnDisabled && 'button--disabled'"
+                :disabled="isNextBtnDisabled"
+                aria-label="{{ 'general.slider.next_slide' | t }}"
+                role="button"
+            >
+                <?= $hyvaicons->renderHtml('chevron-right'); ?>
+            </button>
+        </div>
+    </div>
+    <div class="slider__slides snap"
+         x-ref="slider"
+         @scroll="handleManualScroll"
+    >
+        <?php foreach ($items as $product): ?>
+            <div class="slider__slide"
+            >
+                <?=
+                $template
+                    ->setData([
+                        'imageLoading' => 'lazy',
+                        'product' => $product
+                    ])
+                    ->render('Magento_Catalog::product/list/item-details-article.phtml')
+                ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
