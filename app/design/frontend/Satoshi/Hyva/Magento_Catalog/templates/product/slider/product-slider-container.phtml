@@ -40,8 +40,7 @@ if (is_object($items) && $items instanceof Iterator) {
     })
   "
     x-data="Slider()"
-    id="{{ id }}-slider"
-    class=""
+    id="related-products-slider"
     style="
     --slide-gap: 16px;
     --slide-count-xs: 2.2;
@@ -62,29 +61,29 @@ if (is_object($items) && $items instanceof Iterator) {
 
         <div class="slider__actions">
             <button
-                class="button button--outline-primary icon-button icon-button--size-sm {{ class }}"
+                class="button button--outline-primary icon-button icon-button--size-sm"
                 @click.prevent="showPrevSlide()"
                 :class="isPrevBtnDisabled && 'button--disabled'"
                 :disabled="isPrevBtnDisabled"
-                aria-label="{{ 'general.slider.previous_slide' | t }}"
+                aria-label="<?=__('Slide right')?>"
                 role="button"
             >
                 <?= $hyvaicons->renderHtml('chevron-left'); ?>
             </button>
 
             <button
-                class="button button--outline-primary icon-button icon-button--size-sm {{ class }}"
+                class="button button--outline-primary icon-button icon-button--size-sm"
                 @click.prevent="showNextSlide()"
                 :class="isNextBtnDisabled && 'button--disabled'"
                 :disabled="isNextBtnDisabled"
-                aria-label="{{ 'general.slider.next_slide' | t }}"
+                aria-label="<?=__('Slide right')?>"
                 role="button"
             >
                 <?= $hyvaicons->renderHtml('chevron-right'); ?>
             </button>
         </div>
     </div>
-    <div class="slider__slides snap"
+    <div class="slider__slides"
          x-ref="slider"
          @scroll="handleManualScroll"
     >
