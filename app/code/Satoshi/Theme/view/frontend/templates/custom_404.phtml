@@ -7,18 +7,27 @@ use Magento\Framework\Escaper;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
+
+$title = $block->getLayout()->getBlock('page.main.title') ?
+    $block->getLayout()->getBlock('page.main.title')->getPageHeading() :
+    __('404');
+
+$content = $block->getChildHtml('cms_page') ?? $block->getChildHtml('cms_noroute');
 ?>
 
 <div class="flex h-full flex-col items-center justify-center gap-5">
     <p class="text-[80px] leading-none">
-        <?= __('404') ?>
+        <?= $title; ?>
     </p>
-    <h1 class="text-2xl text-text-500">
-        <?= __('Page not be found.') ?>
-    </h1>
-    <a x-element-transition-trigger
-       href="<?= $escaper->escapeUrl($block->getUrl('/')) ?>"
-       class="button button--filled-primary">
-        <?= __('Continue Shopping') ?>
-    </a>
+
+    <?= $content ?>
 </div>
+
+<script>
+    document.querySelectorAll('.custom-404-container a').forEach(elm => {
+        elm.classList.add('button', 'button--filled-primary');
+        elm.setAttribute('x-element-transition-trigger', '');
+    });
+
+    document.querySelector('.custom-404-container h1').classList.add('text-2xl', 'text-text-500');
+</script>
