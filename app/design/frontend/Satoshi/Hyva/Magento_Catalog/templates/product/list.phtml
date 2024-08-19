@@ -1,89 +1,68 @@
 <?php
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\CurrentCategory;
 use Hyva\Theme\ViewModel\ProductListItem;
-use Hyva\Theme\ViewModel\ProductPage;
 use Magento\Catalog\Block\Product\ListProduct;
+use Magento\Catalog\Block\Product\ReviewRendererInterface;
+use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
 
 /** @var ListProduct $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-/** @var ProductPage $productViewModel */
-/** @var CurrentCategory $currentCategoryViewModel */
 
-$productViewModel = $viewModels->require(ProductPage::class);
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
-$currentCategoryViewModel = $viewModels->require(CurrentCategory::class);
 
 $eagerLoadImagesCount = (int)($block->getData('eager_load_images_count') ?? 3);
 $productCollection = $block->getLoadedProductCollection();
 
 ?>
 <?php if (!$productCollection->count()): ?>
-    <div class="message info empty">
-        <div>
-            <?= $escaper->escapeHtml(__('We can\'t find products matching the selection.')) ?>
-        </div>
+    <div class="flex w-full flex-col gap-5 py-5 md:items-start">
+        <p class="">
+            <b class="text-secondary-700"><?= __('Oops!') ?></b>
+            <?= __('We could not find any products matching your selection.') ?>
+        </p>
+        <button type="button" class="button button--outline-secondary" @click="resetAll">
+            <?= __('Reset selection') ?>
+        </button>
     </div>
 <?php else: ?>
-    <section class="py-8" id="product-list" aria-label="<?= $escaper->escapeHtmlAttr(__('Product list')) ?>"
-             tabindex="-1">
-        <?= $block->getToolbarHtml() ?>
-        <?= $block->getAdditionalHtml() ?>
-        <?php
-        if ($block->getMode() == 'grid') {
-            $viewMode = 'grid';
-            $imageDisplayArea = 'category_page_grid';
-            $showDescription = false;
-            $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
-        } else {
-            $viewMode = 'list';
-            $imageDisplayArea = 'category_page_list';
-            $showDescription = true;
-            $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::FULL_VIEW;
-        }
-        /**
-         * Position for actions regarding image size changing in vde if needed
-         */
-        $pos = $block->getPositioned();
-        ?>
-        <div class="products wrapper mode-<?= /* @noEscape */
-        $viewMode ?> products-<?= /* @noEscape */
-        $viewMode ?>">
-            <ul
-                role="list"
-                class="mx-auto pt-4 pb-12 grid gap-4 transition-opacity duration-100 ease-linear grid-cols-2 <?= /* @noEscape */
-                $viewMode === 'grid'
-                    ? 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
-                    : '' ?>"
-                <?php
-                /** @var \Magento\Catalog\Model\Product $product */
-                foreach (array_values($productCollection->getItems()) as $i => $product):
-                    if ($i < $eagerLoadImagesCount) {
-                        $product->setData('image_custom_attributes', ['loading' => 'eager', 'fetchpriority' => 'high']);
-                    }
-                    ?>
-                    <li>
+    <section tabindex="-1"
+             id="ProductGridContainer"
+             class="content-wrapper animate-on-transition mx-auto"
+             x-ref="ProductGridContainer"
+             x-data="ProductList('')"
+             key="ProductList-all"
+    >
+        <div class="flex md:items-start">
+            <div class="flex-grow">
+                <div class="
+                        mb-5 grid gap-x-4 gap-y-4 transition-opacity duration-100 ease-linear grid-cols-2
+                        md:grid-cols-2 lg:grid-cols-3
+                        xl:grid-cols-4 2xl:grid-cols-5
+                     "
+                     data-content-wrapper
+                     id="product-grid"
+                >
+                    <?php
+                    /** @var Product $product */
+                    foreach (array_values($productCollection->getItems()) as $i => $product):
+                        if ($i < $eagerLoadImagesCount) {
+                            $product->setData('image_custom_attributes', ['loading' => 'eager', 'fetchpriority' => 'high']);
+                        }
+                        ?>
                         <?= $productListItemViewModel->getItemHtml(
-                            $product,
-                            $block,
-                            $viewMode,
-                            $templateType,
-                            $imageDisplayArea,
-                            $showDescription
-                        ); ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+                        $product,
+                        $block,
+                        'grid',
+                        ReviewRendererInterface::SHORT_VIEW,
+                        'category_page_grid',
+                        false
+                    ); ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
-        <?= $block->getChildBlock('toolbar')->setIsBottom(true)->toHtml() ?>
     </section>
 <?php endif; ?>
