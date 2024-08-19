@@ -59,3 +59,7 @@ $popup
   ->setChildTemplate('Magento_Theme::html/header/menu/menu.phtml')
   ->render()
 ```
+
+## TODO
+
+- Implement logic in the product listing page to automatically switch between list and grid view modes based on predefined conditions.
