@@ -1,48 +1,228 @@
 <?php
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
 
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Magento\Catalog\Block\Product\View\Gallery;
+use Magento\Catalog\Helper\Image;
+use Magento\Framework\Escaper;
 
+/** @var Escaper $escaper */
 /** @var Gallery $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var StoreConfig $storeConfig */
+$storeConfig = $viewModels->require(StoreConfig::class);
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var HeroiconsSolid $heroiconsSolid */
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
 
 $images = $block->getGalleryImages()->getItems();
+$mainImage = current(array_filter($images, [$block, 'isMainImage']));
 
+if (!empty($images) && empty($mainImage)) {
+    $mainImage = reset($images);
+}
 
-$smallWidth = $block->getImageAttribute('product_page_image_small', 'width', 90);
-$smallHeight = $block->getImageAttribute('product_page_image_small', 'height', 90);
+/** @var Image $helper */
+$helper = $block->getData('imageHelper');
+$mainImageData = $mainImage ?
+    $mainImage->getData('medium_image_url') :
+    $helper->getDefaultPlaceholderUrl('image');
+
 $mediumWidth = $block->getImageAttribute('product_page_image_medium', 'width', 700);
 $mediumHeight = $block->getImageAttribute('product_page_image_medium', 'height', 700);
+
+$galleryOptionShowRelated = $storeConfig->getStoreConfig('catalog/product_video/show_related') ?? false;
+$galleryOptionVideoLoop = $storeConfig->getStoreConfig('catalog/product_video/video_auto_restart') ?? false;
 
 $productName = $block->getProduct()->getName();
 ?>
 
 <div
-    class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8 "
+    id="gallery"
+    x-data="initGallery()"
+    :role="fullscreen ? 'dialog' : false"
+    :aria-modal="fullscreen"
+    :aria-label="fullscreen ? '<?= $escaper->escapeJs(__('Gallery modal fullscreen')) ?>' : false"
+    class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8"
 >
-
-
-    <?php foreach ($block->getGalleryImages() as $index => $image): ?>
-        <div
-            class="animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl border-opacity-[var(--media-border-opacity)]"
-        >
+    <template x-for="(image, index) in images" :key="index">
+        <div class="bg-red-50 animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl border-opacity-[var(--media-border-opacity)]">
             <div class="aspect-product w-full object-cover object-center">
                 <img
-                    src="<?= $image['url'] ?>"
-                    alt="<?= $this->escapeHtmlAttr($image['caption']) ?: $this->escapeHtmlAttr(__('%1 thumbnail', $productName)) ?>"
-                    title="<?= $this->escapeHtmlAttr($image['caption']) ?: $this->escapeHtmlAttr(__('%1 thumbnail', $productName)) ?>"
-                    class="w-full object-contain"
-                    loading="lazy"
-
+                    :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
+                    :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
+                    class="absolute inset-0 object-contain object-center w-full m-auto max-h-screen-75"
+                    width="<?= $mediumWidth ?>"
+                    height="<?= $mediumHeight ?>"
+                    :loading="lazy"
+                    :src="image.img"
+                    x-transition.opacity.duration.500ms
                 />
+                <button
+                    type="button"
+                    class="group absolute inset-0 outline-offset-2 grid place-items-center"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
+                    x-show="image.type === 'video' && !playingVideoIndexes.includes(index)"
+                    x-cloak
+                    @click="activateVideo(index)"
+                >
+                    <?= $heroiconsSolid->playHtml(
+                        'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
+                        44,
+                        44,
+                        ['aria-hidden' => 'true']
+                    ); ?>
+                </button>
+                <div class="absolute inset-0 hidden w-full h-full bg-black nonmobile"
+                     :class="{ 'hidden': activeVideoType !== 'youtube' }"
+                     x-transition.opacity.duration.500ms
+                     x-show="image.type === 'video' && activeVideoType === 'youtube' && playingVideoIndexes.includes(index)"
+                >
+                    <div :id="'youtube-player-' + index" class="w-full h-full"></div>
+                </div>
+                <div class="absolute inset-0 hidden w-full h-full bg-white"
+                     :class="{ 'hidden': activeVideoType !== 'vimeo' }"
+                     x-transition.opacity.duration.500ms
+                     x-show="image.type === 'video' && activeVideoType === 'vimeo'"
+                >
+                    <div :id="'vimeo-player-' + index" class="w-full h-full"></div>
+                </div>
             </div>
         </div>
-    <?php endforeach; ?>
-    <?php // TODO: Implement videos in gallery ?>
+    </template>
 </div>
+
+<script>
+    function initGallery() {
+        return {
+            activeVideoType: false,
+            playingVideoIndexes: [],
+            images: <?= $block->getGalleryImagesJson() ?>,
+
+            activateVideo(index) {
+                const videoData = this.getVideoData(index);
+
+                if (!videoData) { return }
+
+                this.activeVideoType = videoData.type;
+
+                this.playingVideoIndexes.push(index);
+
+                if (videoData.type === "youtube") {
+                    if (!window.youtubePlayer) {
+                        this.initYoutubeAPI(videoData, index);
+                    } else {
+                        window.youtubePlayer.loadVideoById(videoData.id);
+                    }
+
+                } else if (videoData.type === "vimeo") {
+                    this.initVimeoVideo(videoData);
+                }
+            },
+            getVideoData(index) {
+                const videoUrl = this.images[index] && this.images[index].videoUrl;
+
+                if (!videoUrl) { return }
+
+                let id,
+                    type,
+                    youtubeRegex,
+                    vimeoRegex,
+                    useYoutubeNoCookie = false;
+
+                if (videoUrl.match(/youtube\.com|youtu\.be|youtube-nocookie.com/)) {
+                    id = videoUrl.replace(/^\/(embed\/|v\/)?/, '').replace(/\/.*/, '');
+                    type = 'youtube';
+
+                    youtubeRegex = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/;
+                    id = videoUrl.match(youtubeRegex)[1];
+
+                    if (videoUrl.match(/youtube-nocookie.com/)) {
+                        useYoutubeNoCookie = true;
+                    }
+                } else if (videoUrl.match(/vimeo\.com/)) {
+                    type = 'vimeo';
+                    vimeoRegex = new RegExp(['https?:\\/\\/(?:www\\.|player\\.)?vimeo.com\\/(?:channels\\/(?:\\w+\\/)',
+                        '?|groups\\/([^\\/]*)\\/videos\\/|album\\/(\\d+)\\/video\\/|video\\/|)(\\d+)(?:$|\\/|\\?)'
+                    ].join(''));
+                    id = videoUrl.match(vimeoRegex)[3];
+                }
+
+                return id ? {
+                    id: id, type: type, useYoutubeNoCookie: useYoutubeNoCookie
+                } : false;
+            },
+            initYoutubeAPI(videoData, index) {
+                if (document.getElementById('loadYoutubeAPI')) {
+                    return;
+                }
+                const params = {
+                    "autoplay": true
+                };
+                const loadYoutubeAPI = document.createElement('script');
+                loadYoutubeAPI.src = 'https://www.youtube.com/iframe_api';
+                loadYoutubeAPI.id = 'loadYoutubeAPI';
+                const firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(loadYoutubeAPI, firstScriptTag);
+
+                const host = (videoData.useYoutubeNoCookie) ?
+                    'https://www.youtube-nocookie.com' :
+                    'https://www.youtube.com';
+
+                if (!this.relatedVideos) {
+                    params.rel = 0;
+                }
+                const fireYoutubeAPI = document.createElement('script');
+                fireYoutubeAPI.innerHTML = `function onYouTubeIframeAPIReady() {
+                    window.youtubePlayer = new YT.Player('youtube-player-${index}', {
+                        host: '${host}',
+                        videoId: '${videoData.id}',
+                        playerVars: ${JSON.stringify(params)},
+                    });
+                }`;
+                firstScriptTag.parentNode.insertBefore(fireYoutubeAPI, firstScriptTag);
+            },
+            initVimeoVideo(videoData, index) {
+                let additionalParams = '&autoplay=1';
+                let src = '';
+
+                const timestamp = new Date().getTime();
+                const vimeoContainer = document.getElementById(`vimeo-player-${index}`);
+                const videoId = videoData.id;
+
+                if (!vimeoContainer || !videoId) return;
+
+                if (this.loopVideo) {
+                    additionalParams += '&loop=1';
+                }
+                src = 'https://player.vimeo.com/video/' +
+                    videoId + '?api=1&player_id=vimeo' +
+                    videoId +
+                    timestamp +
+                    additionalParams;
+                vimeoContainer.innerHTML =
+                    `<iframe id="${'vimeo' + videoId + timestamp}"
+                        src="${src}"
+                        width="640" height="360"
+                        webkitallowfullscreen
+                        mozallowfullscreen
+                        allowfullscreen
+                        referrerPolicy="origin"
+                        allow="autoplay"
+                        class="object-center w-full h-full object-fit"
+                     ></iframe>`;
+
+                this.vimeoPlayer = vimeoContainer.childNodes[0];
+            },
+        }
+    }
+</script>
+
