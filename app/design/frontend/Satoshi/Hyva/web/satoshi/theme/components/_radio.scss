@@ -2,7 +2,19 @@
   @apply mb-4 flex cursor-pointer items-center;
 
   &__control {
-    @apply inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-solid border-secondary-100 text-2xs text-white transition-colors duration-200;
+    @apply inline-flex h-6 w-6 items-center justify-center rounded-full border border-solid border-text-400 text-md text-bg-500 transition-colors duration-200;
+
+    .radio:hover & {
+      @apply md:border-primary-500 md:bg-bg-400;
+    }
+  }
+
+  &__label {
+    @apply ml-5;
+
+    .radio:hover & {
+      @apply md:text-primary-500;
+    }
   }
 
   &__input {
@@ -22,9 +34,9 @@
         @apply h-1/2 w-1/2 rounded-full bg-current content-[''];
       }
     }
-  }
 
-  &__label {
-    @apply ml-5;
+    &:checked ~ .radio__label {
+      @apply font-semibold text-primary-500;
+    }
   }
 }
