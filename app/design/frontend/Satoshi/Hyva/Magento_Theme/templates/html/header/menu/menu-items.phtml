@@ -39,12 +39,12 @@ if (!$menuItems) {
         <button
           @click="$store.resizable.hideAll();"
           type="button"
-          class="button icon-button icon-button--size-lg h-auto w-auto gap-3"
+          class="button icon-button icon-button--size-lg h-auto w-auto gap-3 px-2 py-3 text-primary-500 hover:bg-bg-600"
         >
           <div class="contents">
             <?= $hyvaicons->renderHtml('close'); ?>
           </div>
-          <span class="text-md font-bold">Close</span>
+          <span class="text-md font-bold"><?= __('Close') ?></span>
         </button>
       </template>
       <?php endif; ?>
@@ -52,8 +52,13 @@ if (!$menuItems) {
       <button
         @click="history.pop()"
         aria-label="<?= __('Go to back to previous menu page') ?>"
-        class="menu__back-button"
-        :class="{'menu__back-button--visible': history.length !== 1}"
+        class="menu__back-button py-3 motion-reduce:max-md:animate-none"
+        :class="
+            {
+              'menu__back-button--visible max-md:animate-slideIconIn motion-reduce:translate-x-0': history.length !== 1,
+              'max-md:animate-slideIconOut motion-reduce:-translate-x-full': history.length == 1
+            }
+          "
         :tab-index="history.length === 1 ? -1 : 0"
         :aria-hidden="history.length === 1"
       >
@@ -61,8 +66,15 @@ if (!$menuItems) {
       </button>
 
       <h2
-        class="menu__heading"
-        :class="{'menu__heading--root': '<?= $id ?>' === 'all'}"
+        class="menu__heading py-3 motion-reduce:max-md:animate-none"
+        style="--translate-width: 52px;"
+        :class="
+            {
+              'menu__heading--root': '{{ id }}' === 'all',
+              'max-md:animate-slideTitleIn motion-reduce:translate-x-[--translate-width]': history.length !== 1,
+              'max-md:animate-slideTitleOut motion-reduce:translate-x-0': history.length == 1
+            }
+          "
         x-show="$store.main.isMobile || '<?= $id ?>' !== 'all'"
       >
         <?= $title ?>
@@ -80,18 +92,26 @@ if (!$menuItems) {
     role="list"
     class="menu__links"
   >
-    <?php foreach($menuItems as $menuItem): ?>
+    <?php foreach($menuItems as $k => $menuItem): ?>
     <li>
       <?php if(count($menuItem['childData'])): ?>
       <button
-        class="menu__link"
-        @click="setHistory([...'<?= $path ?>'.split(','), '<?= $menuItem['id'] ?>'])"
+        <?php if ($k === 0): ?>
+        x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $menuItem['id'] ?>'"
+        <?php endif; ?>
+        class="menu__link group"
         :class="{ 'menu__link--active': history.includes('<?= $menuItem['id'] ?>') }"
+        @click="setHistory([...'<?= $path ?>'.split(','), '<?= $menuItem['id'] ?>'])"
+        role="button"
+        :aria-expanded="history.includes('{{ link.handle }}')"
       >
-        <span>
+        <span
+          class="link max-w-full truncate border-transparent transition-colors md:group-hover:border-b-1 md:group-hover:border-current md:group-hover:text-primary-600"
+        >
           <?= $menuItem['name'] ?>
         </span>
-        <span class="text-xl">
+        <span
+          class="text-xl transition-[color,transform] md:group-hover:-translate-x-3 md:group-hover:text-primary-600">
           <?= $hyvaicons->renderHtml('chevron-right'); ?>
         </span>
       </button>
@@ -111,21 +131,27 @@ if (!$menuItems) {
       </template>
       <?php else: ?>
       <a
+        <?php if ($k === 0): ?>
+        x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $menuItem['id'] ?>'"
+        <?php endif; ?>
         href="<?= $menuItem['url'] ?>"
+        role="link"
         x-element-transition-trigger:category="
           {
             'title': '<?= $menuItem['name'] ?>',
             'url': '<?= $menuItem['url'] ?>'
           }
         "
-        class="flex items-center justify-between min-h-11 py-1 text-secondary-600"
+        class="focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1"
         :class="
           {
             'text-primary-500 font-bold': history.includes('<?= $menuItem['id'] ?>')
           }
         "
       >
-        <span class="text-secondary-600">
+        <span
+          class="link max-w-full truncate border-transparent transition-colors md:group-hover:border-b-1 md:group-hover:border-current md:group-hover:text-primary-600"
+        >
           <?= $menuItem['name'] ?>
         </span>
       </a>
@@ -138,14 +164,16 @@ if (!$menuItems) {
     x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('menu-actions-<?= $id ?>')"
   >
     <div
-      class="bg-fg px-4 pb-2 md:bg-transparent"
+      class="bg-bg-500 px-4 pb-2 md:bg-transparent md:hover:text-primary-600"
       x-transition.opacity
       x-show="$store.main.isMobile ? history[history.length - 1] === '<?= $id ?>' && !getIsSearchActive() : history.includes('<?= $id ?>')"
+      role="link"
     >
       <a
         x-element-transition-trigger
         :class="$store.main.isMobile ? 'button button--filled-primary w-full': 'flex items-center'"
         href="<?= $url ?>"
+        x-a11y-trap-target.end="$store.popup.currentPopup === 'menu' && history.length !== 1 && history[history.length - 1] === '<?= $id ?>'"
       >
         <template x-if="$store.main.isMobile">
           <span>
@@ -154,7 +182,7 @@ if (!$menuItems) {
         </template>
         <template x-if="!$store.main.isMobile">
           <span class="flex items-center">
-            <span class='border-b-2 border-primary-100'>
+            <span class='border-b-1 border-current'>
               <?= __('View all') ?>
             </span>
             <span class='ps-2'>
