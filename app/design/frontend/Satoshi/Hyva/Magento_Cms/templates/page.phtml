@@ -3,15 +3,14 @@
 declare(strict_types=1);
 
 /** @var Template $block */
+
 use Magento\Framework\View\Element\Template;
 
-$paddingTop = $block->getData('padding_top') ?: 0;
-$paddingBottom = $block->getData('padding_bottom') ?: 64;
-$pageTitle = $block->getPage()->getTitle();
-$pageContent = $block->getPage()->getContent();
+$pageTitle = $block->getPage()?->getTitle();
+$pageContent = $block->getPage()?->getContent();
 ?>
 
-<article class="content-wrapper mx-auto" style="padding-top: <?= $paddingTop ?>px; padding-bottom: <?= $paddingBottom ?>px;">
+<article class="content-wrapper mx-auto">
     <h1 class="mb-7 text-center text-4xl text-text-500" itemprop="headline"><?= $this->escapeHtml($pageTitle) ?></h1>
 
     <div class="rte animate-on-transition" itemprop="articleBody">
