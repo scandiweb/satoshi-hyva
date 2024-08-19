@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\StoreConfig;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Magento\Catalog\Block\Product\View\Gallery;
-use Magento\Catalog\Helper\Image;
 use Magento\Framework\Escaper;
 
 /** @var Escaper $escaper */
@@ -17,30 +15,11 @@ use Magento\Framework\Escaper;
 /** @var StoreConfig $storeConfig */
 $storeConfig = $viewModels->require(StoreConfig::class);
 
-/** @var HeroiconsOutline $heroicons */
-$heroicons = $viewModels->require(HeroiconsOutline::class);
-
 /** @var HeroiconsSolid $heroiconsSolid */
 $heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
 
-$images = $block->getGalleryImages()->getItems();
-$mainImage = current(array_filter($images, [$block, 'isMainImage']));
-
-if (!empty($images) && empty($mainImage)) {
-    $mainImage = reset($images);
-}
-
-/** @var Image $helper */
-$helper = $block->getData('imageHelper');
-$mainImageData = $mainImage ?
-    $mainImage->getData('medium_image_url') :
-    $helper->getDefaultPlaceholderUrl('image');
-
 $mediumWidth = $block->getImageAttribute('product_page_image_medium', 'width', 700);
 $mediumHeight = $block->getImageAttribute('product_page_image_medium', 'height', 700);
-
-$galleryOptionShowRelated = $storeConfig->getStoreConfig('catalog/product_video/show_related') ?? false;
-$galleryOptionVideoLoop = $storeConfig->getStoreConfig('catalog/product_video/video_auto_restart') ?? false;
 
 $productName = $block->getProduct()->getName();
 ?>
@@ -48,9 +27,6 @@ $productName = $block->getProduct()->getName();
 <div
     id="gallery"
     x-data="initGallery()"
-    :role="fullscreen ? 'dialog' : false"
-    :aria-modal="fullscreen"
-    :aria-label="fullscreen ? '<?= $escaper->escapeJs(__('Gallery modal fullscreen')) ?>' : false"
     class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8"
 >
     <template x-for="(image, index) in images" :key="index">
