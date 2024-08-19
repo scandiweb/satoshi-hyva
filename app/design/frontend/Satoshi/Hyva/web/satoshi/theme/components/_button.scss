@@ -1,5 +1,9 @@
 .button {
-  @apply focus-visible:focus-ring inline-flex h-11 cursor-pointer touch-manipulation items-center justify-center whitespace-nowrap rounded-sm px-6 text-md font-medium leading-tight transition-all duration-200;
+  @apply focus-visible:focus-ring relative inline-flex h-11 cursor-pointer touch-manipulation items-center justify-center whitespace-nowrap rounded-[--buttons-radius] px-6 text-md font-medium leading-tight transition-all duration-200;
+  box-shadow: var(--buttons-shadow-horizontal-offset)
+    var(--buttons-shadow-vertical-offset) var(--buttons-shadow-vertical-offset)
+    var(--buttons-shadow-blur-radius)
+    rgba(0, 0, 0, var(--buttons-shadow-opacity));
 
   @screen md {
     @apply h-12;
@@ -11,46 +15,82 @@
     }
 
     &-md {
-      @apply rounded-sm px-6 py-3;
+      @apply rounded-[--buttons-radius] px-6 py-3;
     }
   }
 
   &--filled {
     &-primary {
-      @apply bg-primary-500 text-white hover:bg-primary-600;
+      @apply bg-primary-500 text-bg-500;
+
+      &:not(.button--disabled) {
+        @apply md:hover:bg-primary-700;
+      }
     }
 
-    &-white {
-      @apply bg-white text-text-on-fg hover:bg-gray-100 contrast-more:border contrast-more:border-secondary-700;
+    &-secondary {
+      @apply bg-bg-500 text-primary-500;
+
+      &:not(.button--disabled) {
+        @apply md:hover:bg-bg-600;
+      }
     }
   }
 
   &--outline {
     &-primary {
-      @apply border-1 border-solid border-primary-600 bg-transparent text-primary-500 hover:bg-primary-50;
+      @apply border-solid border-primary-500 border-opacity-[--buttons-border-opacity] bg-transparent text-primary-500;
+
+      border-width: var(--buttons-border-width);
+
+      &:not(.button--disabled) {
+        @apply md:hover:border-primary-700 md:hover:bg-primary-700 md:hover:text-bg-500;
+      }
     }
 
     &-secondary {
-      @apply border-1 border-solid border-secondary-100 bg-transparent text-secondary-600 hover:bg-secondary-50 active:bg-secondary-100 contrast-more:border-secondary-700 contrast-more:text-secondary-700;
+      @apply border-solid border-text-700 border-opacity-[--buttons-border-opacity] bg-transparent;
+
+      border-width: var(--buttons-border-width);
+
+      &:not(.button--disabled) {
+        @apply md:hover:border-primary-500 md:hover:bg-bg-400 md:hover:text-primary-500 md:active:bg-bg-100;
+
+        &.group-hoverable {
+          @apply md:group-hover:border-primary-500 md:group-hover:bg-bg-400 md:group-hover:text-primary-500 md:group-active:bg-bg-100;
+        }
+      }
 
       &.selected {
-        @apply border-current text-primary-600 hover:bg-primary-50 active:bg-primary-100;
+        @apply border-current text-primary-600;
+
+        &:not(.button--disabled) {
+          @apply md:hover:bg-primary-50 md:active:bg-primary-100;
+        }
       }
     }
   }
 
   &--ghost {
     &-primary {
-      @apply bg-transparent text-primary-500 hover:bg-primary-50;
+      @apply bg-transparent text-primary-500;
+
+      &:not(.button--disabled) {
+        @apply md:hover:bg-bg-600;
+      }
     }
 
     &-secondary {
-      @apply bg-transparent text-secondary-600 hover:bg-secondary-50;
+      @apply bg-transparent text-secondary-600;
+
+      &:not(.button--disabled) {
+        @apply md:hover:bg-secondary-500;
+      }
     }
   }
 
   &--disabled {
-    @apply cursor-not-allowed opacity-50;
+    @apply cursor-not-allowed opacity-50 #{!important};
   }
 
   &__icon {
