@@ -11,7 +11,7 @@ use Hyva\Theme\ViewModel\Logo\LogoSizeResolver;
 /** @var ViewModelRegistry $viewModels */
 /** @var LogoSizeResolver $logoSizeResolver */
 
-$storeName = $block->getThemeName();
+$storeName = $block->getThemeName() ?? 'Satoshi theme';
 
 $logoSizeResolver = $viewModels->require(LogoSizeResolver::class);
 $logoWidth = $logoSizeResolver && $logoSizeResolver->getWidth()
@@ -26,21 +26,39 @@ $logoPathResolver = $block->getData('logoPathResolver');
 $logoSrc = $logoPathResolver && method_exists($logoPathResolver, 'getLogoSrc')
     ? $logoPathResolver->getLogoSrc($block->getData('logo_file'))
     : $block->getLogoSrc();
+
+$text_length = strlen($storeName);
+$estimated_width = $text_length * 12;
+
+$logoWidth = $logoWidth ?? 100;
+$logoHeight = $logoHeight ?? 150;
+
 ?>
+
 <?php if ($logoSrc): ?>
-    <img
-        src="<?= $escaper->escapeUrl($logoSrc) ?>"
-        alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : __('Store logo')) ?>"
-        <?= $logoWidth
-            ? 'width="' . $escaper->escapeHtmlAttr($logoWidth) . '"'
-            : 'width="100"'
-        ?>
-        <?= $logoHeight
-            ? 'height="' . $escaper->escapeHtmlAttr($logoHeight) . '"'
-            : 'height="150"'
-        ?>
-    />
+<img
+  src="<?= $escaper->escapeUrl($logoSrc) ?>"
+  alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : __('Store logo')) ?>"
+  width="<?= $escaper->escapeHtmlAttr($logoWidth) ?>"
+  height="<?= $escaper->escapeHtmlAttr($logoHeight) ?>"
+  class="max-md:height-[56px] transition-all"
+  style="filter:url(#border); max-width: <?= $logoWidth ?>px"
+  <?php if($logoHeight > 56): ?>
+  :style="{
+    'height': $store.main.isHeaderShadowVisible ? '56px' : '<?= $escaper->escapeHtmlAttr($logoHeight) ?>px'
+  }"
+  <?php endif; ?>
+/>
 <?php else: ?>
-    <!-- <?= $escaper->escapeHtml($storeName) ?> -->
-    Satoshi theme
+<svg
+  viewBox="0 0 <?= $estimated_width ?> 25"
+  class="m-auto h-[40px] w-2/3"
+>
+  <text
+    text-anchor="middle"
+    x="50%"
+    y="20"
+    filter="url(#border)"
+  ><?= $escaper->escapeHtml($storeName)?></text>
+</svg>
 <?php endif; ?>
