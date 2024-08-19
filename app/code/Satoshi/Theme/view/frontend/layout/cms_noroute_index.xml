@@ -5,8 +5,7 @@
         <referenceBlock name="page.main.title" remove="true" />
 
         <referenceContainer name="content">
-<!--            <block class="Magento\Framework\View\Element\Template" name="custom_404" template="Satoshi_Theme::custom_404.phtml"/>-->
-            <block class="Satoshi\Theme\Block\CustomNotFound" name="custom_404" template="Satoshi_Theme::custom_404.phtml"/>
+            <block name="custom_404" template="Satoshi_Theme::custom_404.phtml"/>
         </referenceContainer>
     </body>
 </page>

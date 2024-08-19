@@ -2,21 +2,23 @@
 
 declare(strict_types=1);
 
-use Satoshi\Theme\Block\CustomNotFound;
+use Magento\Framework\View\Element\Template;
 use Magento\Framework\Escaper;
 
-/** @var CustomNotFound $block */
+/** @var Template $block */
 /** @var Escaper $escaper */
 ?>
 
 <div class="flex h-full flex-col items-center justify-center gap-5">
     <p class="text-[80px] leading-none">
-        <?= $block->escapeHtml($block->getNotFoundText()) ?>
+        <?= __('404') ?>
     </p>
     <h1 class="text-2xl text-text-500">
-        <?= $block->escapeHtml($block->getNotFoundTitle()) ?>
+        <?= __('Page not be found.') ?>
     </h1>
-    <a x-element-transition-trigger href="<?= $escaper->escapeUrl($block->getContinueShoppingUrl()) ?>" class="button button--filled-primary">
-        <?= $block->escapeHtml($block->getContinueShoppingText()) ?>
+    <a x-element-transition-trigger
+       href="<?= $escaper->escapeUrl($block->getUrl('/')) ?>"
+       class="button button--filled-primary">
+        <?= __('Continue Shopping') ?>
     </a>
 </div>
