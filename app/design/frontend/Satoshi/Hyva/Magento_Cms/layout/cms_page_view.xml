@@ -4,8 +4,6 @@
     <body>
         <referenceBlock name="page.main.title" remove="true"/>
 
-        <referenceContainer name="content">
-            <referenceBlock name="cms_page" template="Magento_Cms::page.phtml"/>
-        </referenceContainer>
+        <referenceBlock name="cms_page" template="Magento_Cms::page.phtml"/>
     </body>
 </page>
