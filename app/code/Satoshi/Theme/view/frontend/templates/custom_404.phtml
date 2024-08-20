@@ -20,7 +20,9 @@ $content = $block->getChildHtml('cms_page') ?? $block->getChildHtml('cms_noroute
         <?= $title; ?>
     </p>
 
-    <?= $content ?>
+    <div>
+        <?= $content ?>
+    </div>
 </div>
 
 <script>
