@@ -5,17 +5,17 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
-use Satoshi\Theme\ViewModel\LanguageSelector;
+use Satoshi\Theme\ViewModel\StoreSelector;
 
 /** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-/** @var LanguageSelector $languageViewModel */
+/** @var StoreSelector $storeViewModel */
 
-$languageViewModel = $viewModels->require(LanguageSelector::class);
-$languages = $languageViewModel->getAvailableLanguages();
-$currentLanguageCode = $languageViewModel->getCurrentLanguageCode();
-$defaultLanguageCode = $languageViewModel->getDefaultLanguageCode();
+$storeViewModel = $viewModels->require(StoreSelector::class);
+$languages = $storeViewModel->getAvailableStores();
+$currentLanguageCode = $storeViewModel->getCurrentLanguageCode();
+$defaultLanguageCode = $storeViewModel->getDefaultLanguageCode();
 
 $options = [];
 foreach ($languages as $key => $language) {

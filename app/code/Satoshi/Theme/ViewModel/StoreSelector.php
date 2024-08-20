@@ -9,11 +9,30 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Locale\ResolverInterface;
 
-class LanguageSelector implements ArgumentInterface
+/**
+ * ViewModel for Language Selector.
+ *
+ * This ViewModel provides functionality to fetch available languages
+ * and their respective store information for the language selector component.
+ */
+class StoreSelector implements ArgumentInterface
 {
+    /**
+     * @var StoreManagerInterface
+     */
     protected StoreManagerInterface $storeManager;
+
+    /**
+     * @var ResolverInterface
+     */
     protected ResolverInterface $localeResolver;
 
+    /**
+     * StoreSelector constructor.
+     *
+     * @param StoreManagerInterface $storeManager
+     * @param ResolverInterface $localeResolver
+     */
     public function __construct(
         StoreManagerInterface $storeManager,
         ResolverInterface $localeResolver
@@ -22,24 +41,37 @@ class LanguageSelector implements ArgumentInterface
         $this->localeResolver = $localeResolver;
     }
 
-    public function getAvailableLanguages(): array
+    /**
+     * Retrieve available stores and their details.
+     *
+     * This method returns an array where each entry corresponds to a store
+     * with its code, name, locale, and base URL.
+     *
+     * @return array<string, array{name: string, locale: string, url: string}>
+     */
+    public function getAvailableStores(): array
     {
         $stores = $this->storeManager->getStores();
-        $languages = [];
+        $storesInfo = [];
         foreach ($stores as $store) {
             $scopeLocale = $this->localeResolver->getLocale($store->getId());
 
-            $languages[$store->getCode()] = [
+            $storesInfo[$store->getCode()] = [
                 'name' => $store->getName(),
                 'locale' => $scopeLocale,
                 'url' => $store->getBaseUrl()
             ];
         }
-        return $languages;
+        return $storesInfo;
     }
 
     /**
-     * @throws NoSuchEntityException
+     * Retrieve the current language code.
+     *
+     * This method returns the store code of the current store.
+     *
+     * @return string
+     * @throws NoSuchEntityException If the store is not found.
      */
     public function getCurrentLanguageCode(): string
     {
@@ -49,8 +81,9 @@ class LanguageSelector implements ArgumentInterface
     /**
      * Get the default language code.
      *
+     * This method returns the store code of the default store view.
+     *
      * @return string
-     * @throws NoSuchEntityException
      */
     public function getDefaultLanguageCode(): string
     {
