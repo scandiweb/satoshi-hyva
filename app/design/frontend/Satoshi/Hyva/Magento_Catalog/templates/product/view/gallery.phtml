@@ -19,6 +19,7 @@ $storeConfig = $viewModels->require(StoreConfig::class);
 $heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
 
 $productName = $block->getProduct()->getName();
+$images = json_decode($block->getGalleryImagesJson(), true);
 ?>
 
 <div
@@ -26,49 +27,51 @@ $productName = $block->getProduct()->getName();
     x-data="initGallery()"
     class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8"
 >
-    <template x-for="(image, index) in images" :key="index">
+    <?php foreach ($images as $index => $image): ?>
         <div
             class="bg-white animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl">
             <div class="aspect-product w-full object-cover object-center">
                 <img
-                    :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
-                    :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
+                    alt="<?= $escaper->escapeHtmlAttr($image['caption'] ?? $productName) ?>"
+                    title="<?= $escaper->escapeHtmlAttr($image['caption'] ?? $productName) ?>"
                     class="absolute inset-0 object-contain object-center w-full m-auto max-h-screen-75"
                     loading="lazy"
-                    :src="image.img"
+                    src="<?= $image['img'] ?>"
                 />
-                <button
-                    type="button"
-                    class="group absolute inset-0 outline-offset-2 grid place-items-center"
-                    aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                    x-show="image.type === 'video' && !playingVideoIndexes.includes(index)"
-                    x-cloak
-                    @click="activateVideo(index)"
-                >
-                    <?= $heroiconsSolid->playHtml(
-                        'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
-                        44,
-                        44,
-                        ['aria-hidden' => 'true']
-                    ); ?>
-                </button>
-                <div class="absolute inset-0 hidden w-full h-full bg-black nonmobile"
-                     :class="{ 'hidden': activeVideoType !== 'youtube' }"
-                     x-transition.opacity.duration.500ms
-                     x-show="image.type === 'video' && activeVideoType === 'youtube' && playingVideoIndexes.includes(index)"
-                >
-                    <div :id="'youtube-player-' + index" class="w-full h-full"></div>
-                </div>
-                <div class="absolute inset-0 hidden w-full h-full bg-white"
-                     :class="{ 'hidden': activeVideoType !== 'vimeo' }"
-                     x-transition.opacity.duration.500ms
-                     x-show="image.type === 'video' && activeVideoType === 'vimeo'"
-                >
-                    <div :id="'vimeo-player-' + index" class="w-full h-full"></div>
-                </div>
+                <?php if ($image['type'] === 'video' && !in_array($index, $playingVideoIndexes ?? [])): ?>
+                    <button
+                        type="button"
+                        class="group absolute inset-0 outline-offset-2 grid place-items-center"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
+                        @click="activateVideo(<?= $index ?>)"
+                    >
+                        <?= $heroiconsSolid->playHtml(
+                            'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
+                            44,
+                            44,
+                            ['aria-hidden' => 'true']
+                        ); ?>
+                    </button>
+                <?php endif; ?>
+                <?php if ($image['type'] === 'video'): ?>
+                    <div class="absolute inset-0 hidden w-full h-full bg-black nonmobile"
+                         :class="{ 'hidden': activeVideoType !== 'youtube' }"
+                         x-transition.opacity.duration.500ms
+                         x-show="activeVideoType === 'youtube' && playingVideoIndexes.includes(<?= $index ?>)"
+                    >
+                        <div id="youtube-player-<?= $index ?>" class="w-full h-full"></div>
+                    </div>
+                    <div class="absolute inset-0 hidden w-full h-full bg-white"
+                         :class="{ 'hidden': activeVideoType !== 'vimeo' }"
+                         x-transition.opacity.duration.500ms
+                         x-show="activeVideoType === 'vimeo'"
+                    >
+                        <div id="vimeo-player-<?= $index ?>" class="w-full h-full"></div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
-    </template>
+    <?php endforeach; ?>
 </div>
 
 <script>
@@ -82,33 +85,26 @@ $productName = $block->getProduct()->getName();
                 const videoData = this.getVideoData(index);
 
                 if (!videoData) {
-                    return
+                    return;
                 }
 
                 this.activeVideoType = videoData.type;
-
                 this.playingVideoIndexes.push(index);
 
                 if (videoData.type === "youtube") {
                     this.initYoutubeAPI(videoData, index);
-
-
                 } else if (videoData.type === "vimeo") {
-                    this.initVimeoVideo(videoData);
+                    this.initVimeoVideo(videoData, index);
                 }
             },
             getVideoData(index) {
                 const videoUrl = this.images[index] && this.images[index].videoUrl;
 
                 if (!videoUrl) {
-                    return
+                    return;
                 }
 
-                let id,
-                    type,
-                    youtubeRegex,
-                    vimeoRegex,
-                    useYoutubeNoCookie = false;
+                let id, type, youtubeRegex, vimeoRegex, useYoutubeNoCookie = false;
 
                 if (videoUrl.match(/youtube\.com|youtu\.be|youtube-nocookie.com/)) {
                     id = videoUrl.replace(/^\/(embed\/|v\/)?/, '').replace(/\/.*/, '');
@@ -133,7 +129,6 @@ $productName = $block->getProduct()->getName();
                 } : false;
             },
             initYoutubeAPI(videoData, index) {
-                // Check if the YouTube API is already loaded
                 if (!window.YT) {
                     const loadYoutubeAPI = document.createElement('script');
                     loadYoutubeAPI.src = 'https://www.youtube.com/iframe_api';
@@ -142,7 +137,6 @@ $productName = $block->getProduct()->getName();
                     firstScriptTag.parentNode.insertBefore(loadYoutubeAPI, firstScriptTag);
                 }
 
-                // Ensure that `onYouTubeIframeAPIReady` isn't overridden multiple times
                 const initializePlayer = () => {
                     const params = {
                         "autoplay": true
@@ -163,11 +157,9 @@ $productName = $block->getProduct()->getName();
                     });
                 };
 
-                // If the YouTube API is ready, initialize the player immediately
                 if (window.YT && window.YT.Player) {
                     initializePlayer();
                 } else {
-                    // Otherwise, set a global function to initialize the player when the API is ready
                     const previousOnYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady;
                     window.onYouTubeIframeAPIReady = function () {
                         if (previousOnYouTubeIframeAPIReady) {
@@ -213,4 +205,3 @@ $productName = $block->getProduct()->getName();
         }
     }
 </script>
-
