@@ -24,12 +24,3 @@ $content = $block->getChildHtml('cms_page') ?? $block->getChildHtml('cms_noroute
         <?= $content ?>
     </div>
 </div>
-
-<script>
-    document.querySelectorAll('.custom-404-container a').forEach(elm => {
-        elm.classList.add('button', 'button--filled-primary');
-        elm.setAttribute('x-element-transition-trigger', '');
-    });
-
-    document.querySelector('.custom-404-container h1').classList.add('text-2xl', 'text-text-500');
-</script>
