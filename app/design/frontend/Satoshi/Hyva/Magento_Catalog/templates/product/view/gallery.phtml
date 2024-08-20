@@ -30,7 +30,8 @@ $productName = $block->getProduct()->getName();
     class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8"
 >
     <template x-for="(image, index) in images" :key="index">
-        <div class="bg-red-50 animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl border-opacity-[var(--media-border-opacity)]">
+        <div
+            class="bg-red-50 animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl border-opacity-[var(--media-border-opacity)]">
             <div class="aspect-product w-full object-cover object-center">
                 <img
                     :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
@@ -86,18 +87,17 @@ $productName = $block->getProduct()->getName();
             activateVideo(index) {
                 const videoData = this.getVideoData(index);
 
-                if (!videoData) { return }
+                if (!videoData) {
+                    return
+                }
 
                 this.activeVideoType = videoData.type;
 
                 this.playingVideoIndexes.push(index);
 
                 if (videoData.type === "youtube") {
-                    if (!window.youtubePlayer) {
-                        this.initYoutubeAPI(videoData, index);
-                    } else {
-                        window.youtubePlayer.loadVideoById(videoData.id);
-                    }
+                    this.initYoutubeAPI(videoData, index);
+
 
                 } else if (videoData.type === "vimeo") {
                     this.initVimeoVideo(videoData);
@@ -106,7 +106,9 @@ $productName = $block->getProduct()->getName();
             getVideoData(index) {
                 const videoUrl = this.images[index] && this.images[index].videoUrl;
 
-                if (!videoUrl) { return }
+                if (!videoUrl) {
+                    return
+                }
 
                 let id,
                     type,
@@ -137,35 +139,51 @@ $productName = $block->getProduct()->getName();
                 } : false;
             },
             initYoutubeAPI(videoData, index) {
-                if (document.getElementById('loadYoutubeAPI')) {
-                    return;
+                // Check if the YouTube API is already loaded
+                if (!window.YT) {
+                    const loadYoutubeAPI = document.createElement('script');
+                    loadYoutubeAPI.src = 'https://www.youtube.com/iframe_api';
+                    loadYoutubeAPI.id = 'loadYoutubeAPI';
+                    const firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(loadYoutubeAPI, firstScriptTag);
                 }
-                const params = {
-                    "autoplay": true
-                };
-                const loadYoutubeAPI = document.createElement('script');
-                loadYoutubeAPI.src = 'https://www.youtube.com/iframe_api';
-                loadYoutubeAPI.id = 'loadYoutubeAPI';
-                const firstScriptTag = document.getElementsByTagName('script')[0];
-                firstScriptTag.parentNode.insertBefore(loadYoutubeAPI, firstScriptTag);
 
-                const host = (videoData.useYoutubeNoCookie) ?
-                    'https://www.youtube-nocookie.com' :
-                    'https://www.youtube.com';
+                // Ensure that `onYouTubeIframeAPIReady` isn't overridden multiple times
+                const initializePlayer = () => {
+                    const params = {
+                        "autoplay": true
+                    };
 
-                if (!this.relatedVideos) {
-                    params.rel = 0;
-                }
-                const fireYoutubeAPI = document.createElement('script');
-                fireYoutubeAPI.innerHTML = `function onYouTubeIframeAPIReady() {
-                    window.youtubePlayer = new YT.Player('youtube-player-${index}', {
-                        host: '${host}',
-                        videoId: '${videoData.id}',
-                        playerVars: ${JSON.stringify(params)},
+                    const host = videoData.useYoutubeNoCookie ?
+                        'https://www.youtube-nocookie.com' :
+                        'https://www.youtube.com';
+
+                    if (!this.relatedVideos) {
+                        params.rel = 0;
+                    }
+
+                    window[`youtubePlayer${index}`] = new YT.Player(`youtube-player-${index}`, {
+                        host: host,
+                        videoId: videoData.id,
+                        playerVars: params
                     });
-                }`;
-                firstScriptTag.parentNode.insertBefore(fireYoutubeAPI, firstScriptTag);
+                };
+
+                // If the YouTube API is ready, initialize the player immediately
+                if (window.YT && window.YT.Player) {
+                    initializePlayer();
+                } else {
+                    // Otherwise, set a global function to initialize the player when the API is ready
+                    const previousOnYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady;
+                    window.onYouTubeIframeAPIReady = function () {
+                        if (previousOnYouTubeIframeAPIReady) {
+                            previousOnYouTubeIframeAPIReady();
+                        }
+                        initializePlayer();
+                    };
+                }
             },
+
             initVimeoVideo(videoData, index) {
                 let additionalParams = '&autoplay=1';
                 let src = '';
