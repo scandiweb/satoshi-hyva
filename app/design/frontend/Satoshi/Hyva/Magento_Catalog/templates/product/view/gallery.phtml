@@ -18,9 +18,6 @@ $storeConfig = $viewModels->require(StoreConfig::class);
 /** @var HeroiconsSolid $heroiconsSolid */
 $heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
 
-$mediumWidth = $block->getImageAttribute('product_page_image_medium', 'width', 700);
-$mediumHeight = $block->getImageAttribute('product_page_image_medium', 'height', 700);
-
 $productName = $block->getProduct()->getName();
 ?>
 
@@ -31,17 +28,14 @@ $productName = $block->getProduct()->getName();
 >
     <template x-for="(image, index) in images" :key="index">
         <div
-            class="bg-red-50 animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl border-opacity-[var(--media-border-opacity)]">
+            class="bg-white animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl">
             <div class="aspect-product w-full object-cover object-center">
                 <img
                     :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
                     :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
                     class="absolute inset-0 object-contain object-center w-full m-auto max-h-screen-75"
-                    width="<?= $mediumWidth ?>"
-                    height="<?= $mediumHeight ?>"
-                    :loading="lazy"
+                    loading="lazy"
                     :src="image.img"
-                    x-transition.opacity.duration.500ms
                 />
                 <button
                     type="button"
