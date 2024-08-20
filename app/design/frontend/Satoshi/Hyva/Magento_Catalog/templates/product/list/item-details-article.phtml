@@ -52,7 +52,7 @@ $imageUrl = $this->helper(Image::class)
             width="0"
             height="0"
             class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
-            src="{{ card_product.selected_or_first_available_variant.image | <?= $imageUrl ?> }}"
+            src="<?= $imageUrl ?>"
             alt=""
         >
     <?php endif; ?>
@@ -95,8 +95,9 @@ $imageUrl = $this->helper(Image::class)
     </div>
 
     <div class="relative mt-4 flex flex-col gap-1">
-        <div class="{{ class }} {% if isLarge %}col-span-2 md:col-auto{% endif %} card-product">
-            <article class="z-10 flex h-full w-full flex-col items-stretch justify-start overflow-hidden rounded-xl border-black border-opacity-50 text-start">
+        <div class="col-span-2 md:col-auto card-product">
+            <article
+                class="z-10 flex h-full w-full flex-col items-stretch justify-start overflow-hidden rounded-xl border-black border-opacity-50 text-start">
                 <h2
                     class="w-[calc(100%-40px)] text-md truncate mt-2"
                     <?php if ($isAlpineTemplate) : ?>
@@ -113,16 +114,16 @@ $imageUrl = $this->helper(Image::class)
                     <?= $manufacturer ?>
                 </p>
 
-                <?php if ($product ?? false) : ?>
-                    <?=
-                    $template
+                <?php
+                if ($product ?? false) {
+                    echo $template
                         ->setData([
                             'product' => $product,
                             'isAlpineTemplate' => $isAlpineTemplate,
                         ])
                         ->render('Magento_Catalog::product/element/_price-element.phtml');
-                    ?>
-                <?php endif; ?>
+                }
+                ?>
             </article>
         </div>
 
