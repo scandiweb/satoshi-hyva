@@ -21,11 +21,23 @@
         </referenceContainer>
 
 
+        <!-- Start: Wrap content within preview-content comment -->
+        <referenceContainer name="main.content">
+            <block class="Magento\Framework\View\Element\Template" name="preview.content"
+                   template="Magento_Theme::html/layout/preview-content.phtml" before="columns"/>
+        </referenceContainer>
+        <move element="columns" destination="preview.content" before="-"/>
+        <!-- END: Wrap content within preview-content comment -->
+
         <referenceContainer name="header.container" htmlClass="page-header contents"/>
         <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-bg-500">
             <container name="main.wrapper" as="main.wrapper" htmlTag="div" htmlClass="main-wrapper">
                 <block class="Magento\Framework\View\Element\Template" name="main-content" template="Magento_Theme::html/layout/main-content.phtml" before="-" />
             </container>
+
+            <!-- Transition components -->
+            <block class="Magento\Framework\View\Element\Template" name="transition.preview"
+                   template="Magento_Theme::html/layout/transition-preview.phtml" after="header.container"/>
         </referenceContainer>
 
         <!-- TODO: Remove global alerts (uncomment this) -->
