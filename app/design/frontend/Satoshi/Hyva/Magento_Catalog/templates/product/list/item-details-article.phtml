@@ -113,17 +113,16 @@ $imageUrl = $this->helper(Image::class)
                 <?= $manufacturer ?>
             </p>
 
-            <h2
-                class="w-[calc(100%-40px)] text-md truncate mt-2"
-                <?php if ($isAlpineTemplate) : ?>
-                    x-text="product.price"
-                <?php endif; ?>
-            >
-                <?php if (!$isAlpineTemplate) : ?>
-                    <?= /* @noEscape */
-                    $productListItemViewModel->getProductPriceHtml($product) ?>
-                <?php endif; ?>
-            </h2>
+            <?php
+            if ($product ?? false) {
+                echo $template
+                    ->setData([
+                        'product' => $product,
+                        'isAlpineTemplate' => $isAlpineTemplate,
+                    ])
+                    ->render('Magento_Catalog::product/element/_price-element.phtml');
+            }
+            ?>
         </article>
     </div>
 
