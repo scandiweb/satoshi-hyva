@@ -8,8 +8,8 @@ use Magento\Framework\Pricing\Helper\Data as PricingHelper;
 
 $product = $block->getData('product');
 $customClass = $block->getData('class') ? " {$block->getData('class')}" : '';
-$isAlpineTemplate = (bool) $block->getData('isAlpineTemplate');
-$isInline = (bool) $block->getData('isInline');
+$isAlpineTemplate = (bool)$block->getData('isAlpineTemplate');
+$isInline = (bool)$block->getData('isInline');
 
 $objectManager = ObjectManager::getInstance();
 $pricingHelper = $objectManager->get(PricingHelper::class);
@@ -64,7 +64,7 @@ $formatPrice = function ($price) use ($pricingHelper) {
                 <span class="text-primary-500">
                     <span><?= $formatPrice($product->getUnitPrice()) ?></span>
                     <span aria-hidden="true">/</span>
-                    <span class="sr-only">&nbsp;<?= __('accessibility.unit_price_separator') ?>&nbsp;</span>
+                    <span class="sr-only">&nbsp;<?= __('per') ?>&nbsp;</span>
                     <span>
                         <?= $product->getUnitPriceMeasurement()->getReferenceValue() != 1 ? $product->getUnitPriceMeasurement()->getReferenceValue() : '' ?>
                         <?= $product->getUnitPriceMeasurement()->getReferenceUnit() ?>
