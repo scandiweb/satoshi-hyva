@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+use Satoshi\Theme\ViewModel\StoreSelector;
+
+/** @var Template $template */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var StoreSelector $storeViewModel */
+
+$storeViewModel = $viewModels->require(StoreSelector::class);
+$languages = $storeViewModel->getAvailableStores();
+$currentLanguageCode = $storeViewModel->getCurrentLanguageCode();
+$defaultLanguageCode = $storeViewModel->getDefaultLanguageCode();
+
+$options = [];
+foreach ($languages as $key => $language) {
+    $url = $language['url'];
+    if ($key !== $defaultLanguageCode) {
+        $url .= '?___store=' . $escaper->escapeJs($key);
+    }
+
+    $options[] = [
+        'value' => $escaper->escapeHtml($key),
+        'label' => $escaper->escapeHtml($language['name'] ?? ''),
+        'on_click' => 'window.location.href=`' . $url . '`',
+        'is_active' => $key === $currentLanguageCode,
+    ];
+}
+
+$currentLabel = __($languages[$currentLanguageCode]['name'] ?? '');
+?>
+
+<?php if (count($options) > 1): ?>
+    <?=
+    $template
+        ->setData([
+            'id' => 'language-selector',
+            'label' => $escaper->escapeHtml($currentLabel),
+            'options' => $options,
+            'placement' => 'top',
+        ])
+        ->render('Magento_Theme::html/components/dropdown.phtml');
+    ?>
+<?php endif; ?>
