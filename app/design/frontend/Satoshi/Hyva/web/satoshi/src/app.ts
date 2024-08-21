@@ -31,7 +31,7 @@ import { RangeSlider } from "./data/RangeSlider";
 import { Slider } from "./data/Slider";
 import { CountdownTimer } from "./data/CountdownTimer";
 import { TransitionImage } from "./data/TransitionImage";
-import { InitGallery } from "./data/InitGallery";
+import { Gallery } from "./data/Gallery.ts";
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -63,5 +63,5 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("Slider", Slider);
   Alpine.data("CountdownTimer", CountdownTimer);
   Alpine.data("TransitionImage", TransitionImage);
-  Alpine.data("InitGallery", InitGallery);
+  Alpine.data("Gallery", Gallery);
 });
