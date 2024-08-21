@@ -13,4 +13,12 @@
     for="Magento\Checkout\Block\Cart\Coupon"
     type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
   />
+  <preference
+    for="Hyva\Theme\ViewModel\ReCaptcha"
+    type="Satoshi\Theme\ViewModel\ReCaptcha"
+  />
+  <preference
+    for="Magento\Newsletter\Controller\Subscriber\NewAction"
+    type="Satoshi\Theme\Newsletter\Controller\Subscriber\NewAction"
+  />
 </config>
