@@ -1,28 +1,16 @@
-import type {Magics} from "alpinejs";
+export type VideoData = {
+    id: string;
+    type: 'youtube' | 'vimeo';
+    useYoutubeNoCookie?: boolean;
+}
 
-export type AccordionType = {
-    [key: string | symbol]: any;
-
-    _buttonRef: HTMLElement | null;
-    _panelRef: HTMLElement | null;
-    _iconRef: HTMLElement | null;
-
-    isExpanded: boolean;
-    duration: number;
-
-    init(): void;
-    _initElements(): void;
-    _toggle(): void;
-    _update(): void;
-} & Magics<{}>;
-
-export const InitGallery = (images: any) => <any>{
+export const Gallery = (images: any) => <any>{
     activeVideoType: false,
     playingVideoIndexes: [],
     images: JSON.parse(images),
 
-    activateVideo(index) {
-        const videoData = this.getVideoData(index);
+    activateVideo(index: number) {
+        const videoData: VideoData | false = this.getVideoData(index);
 
         if (!videoData) {
             return;
@@ -31,20 +19,24 @@ export const InitGallery = (images: any) => <any>{
         this.activeVideoType = videoData.type;
         this.playingVideoIndexes.push(index);
 
-        if (videoData.type === "youtube") {
+        if (videoData.type === 'youtube') {
             this.initYoutubeAPI(videoData, index);
-        } else if (videoData.type === "vimeo") {
+        } else if (videoData.type === 'vimeo') {
             this.initVimeoVideo(videoData, index);
         }
     },
-    getVideoData(index) {
+    getVideoData(index: number): VideoData | false {
         const videoUrl = this.images[index] && this.images[index].videoUrl;
 
         if (!videoUrl) {
-            return;
+            return false;
         }
 
-        let id, type, youtubeRegex, vimeoRegex, useYoutubeNoCookie = false;
+        let id: string | undefined;
+        let type: 'youtube' | 'vimeo' | undefined;
+        let youtubeRegex: RegExp | undefined;
+        let vimeoRegex: RegExp | undefined;
+        let useYoutubeNoCookie = false;
 
         if (videoUrl.match(/youtube\.com|youtu\.be|youtube-nocookie.com/)) {
             id = videoUrl.replace(/^\/(embed\/|v\/)?/, '').replace(/\/.*/, '');
@@ -64,17 +56,19 @@ export const InitGallery = (images: any) => <any>{
             id = videoUrl.match(vimeoRegex)[3];
         }
 
-        return id ? {
-            id: id, type: type, useYoutubeNoCookie: useYoutubeNoCookie
+        return id && type ? {
+            id: id,
+            type: type,
+            useYoutubeNoCookie: useYoutubeNoCookie
         } : false;
     },
-    initYoutubeAPI(videoData, index) {
-        if (!window.YT) {
+    initYoutubeAPI(videoData: VideoData, index: number) {
+        if (!window?.YT) {
             const loadYoutubeAPI = document.createElement('script');
             loadYoutubeAPI.src = 'https://www.youtube.com/iframe_api';
             loadYoutubeAPI.id = 'loadYoutubeAPI';
             const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(loadYoutubeAPI, firstScriptTag);
+            firstScriptTag.parentNode?.insertBefore(loadYoutubeAPI, firstScriptTag);
         }
 
         const initializePlayer = () => {
@@ -86,11 +80,8 @@ export const InitGallery = (images: any) => <any>{
                 'https://www.youtube-nocookie.com' :
                 'https://www.youtube.com';
 
-            if (!this.relatedVideos) {
-                params.rel = 0;
-            }
-
-            window[`youtubePlayer${index}`] = new YT.Player(`youtube-player-${index}`, {
+            const ytPlayer = window.YT as { Player: new (elementId: string, options: any) => any };
+            window[`youtubePlayer${index}`] = new ytPlayer.Player(`youtube-player-${index}`, {
                 host: host,
                 videoId: videoData.id,
                 playerVars: params
@@ -110,7 +101,7 @@ export const InitGallery = (images: any) => <any>{
         }
     },
 
-    initVimeoVideo(videoData, index) {
+    initVimeoVideo(videoData: VideoData, index: number) {
         let additionalParams = '&autoplay=1';
         let src = '';
 

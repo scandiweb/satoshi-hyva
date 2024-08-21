@@ -24,7 +24,7 @@ $images = json_decode($block->getGalleryImagesJson(), true);
 
 <div
     id="gallery"
-    x-data='InitGallery(<?= json_encode($block->getGalleryImagesJson(), JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'
+    x-data='Gallery(<?= json_encode($block->getGalleryImagesJson()) ?>)'
     class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8"
 >
     <?php foreach ($images as $index => $image): ?>
