@@ -30,7 +30,8 @@ $productType = $product->getTypeId();
     </div>
 
     <?php if ($shortDescription = $productViewModel->getShortDescription()) { ?>
-        <div class="mb-4 leading-relaxed product-description prose"><?= /* @noEscape */ $shortDescription ?></div>
+        <div class="mb-4 leading-relaxed product-description prose"><?= /* @noEscape */
+            $shortDescription ?></div>
     <?php } ?>
 
     <div class="flex flex-col sm:flex-row justify-between my-4">
@@ -40,26 +41,24 @@ $productType = $product->getTypeId();
 
     <?= $block->getChildHtml('product.info.form') ?>
 
-    <div class="flex flex-col sm:flex-row items-end my-4">
 
-        <?php if ($productType === 'bundle'): ?>
-            <span class="sr-only">
+    <?php if ($productType === 'bundle'): ?>
+        <span class="sr-only">
                 <?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?>
             </span>
-        <?php endif; ?>
+    <?php endif; ?>
 
-        <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
-            <?= $block->getChildHtml("product.info.price") ?>
-        </div>
-
-        <div class="flex mt-4 ml-auto sm:mt-0">
-            <?php if ($product->isSaleable()): ?>
-                <?= $block->getChildHtml("product.info.quantity") ?>
-                <?= $block->getChildHtml("product.info.addtocart") ?>
-            <?php endif; ?>
-        </div>
-
+    <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
+        <?= $block->getChildHtml("product.info.price") ?>
     </div>
+
+    <div class="flex gap-3 mt-4 ml-auto sm:mt-0 h-12">
+        <?php if ($product->isSaleable()): ?>
+            <?= $block->getChildHtml("product.info.quantity") ?>
+            <?= $block->getChildHtml("product.info.addtocart") ?>
+        <?php endif; ?>
+    </div>
+
 
     <?php if ($product->isSaleable()): ?>
         <div class="flex mt-4 justify-end">
@@ -76,7 +75,8 @@ $productType = $product->getTypeId();
 
     <?php if ($tierPriceBlock = $block->getChildHtml("product.price.tier")): ?>
         <div class="py-4 my-2 tier-price-container">
-            <?= /** @noEscape */ $tierPriceBlock ?>
+            <?= /** @noEscape */
+            $tierPriceBlock ?>
         </div>
     <?php endif; ?>
 
