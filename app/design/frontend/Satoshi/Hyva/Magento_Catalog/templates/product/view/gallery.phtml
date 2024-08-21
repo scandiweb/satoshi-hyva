@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\StoreConfig;
 use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Magento\Catalog\Block\Product\View\Gallery;
 use Magento\Framework\Escaper;
@@ -11,9 +10,6 @@ use Magento\Framework\Escaper;
 /** @var Escaper $escaper */
 /** @var Gallery $block */
 /** @var ViewModelRegistry $viewModels */
-
-/** @var StoreConfig $storeConfig */
-$storeConfig = $viewModels->require(StoreConfig::class);
 
 /** @var HeroiconsSolid $heroiconsSolid */
 $heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
