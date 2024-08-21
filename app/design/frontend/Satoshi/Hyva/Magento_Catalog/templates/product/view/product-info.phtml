@@ -28,12 +28,9 @@ $productType = $product->getTypeId();
     <div class="my-2 flex">
         <?= $block->getChildHtml('product.info.review') ?>
     </div>
-
-    <?php if ($shortDescription = $productViewModel->getShortDescription()) { ?>
-        <div class="mb-4 leading-relaxed product-description prose"><?= /* @noEscape */
-            $shortDescription ?></div>
-    <?php } ?>
-
+    <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
+        <?= $block->getChildHtml("product.info.price") ?>
+    </div>
     <div class="flex flex-col sm:flex-row justify-between my-4">
         <?= $block->getChildHtml("product.info.stockstatus") ?>
         <?= $block->getChildHtml("alert.urls") ?>
@@ -47,10 +44,6 @@ $productType = $product->getTypeId();
                 <?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?>
             </span>
     <?php endif; ?>
-
-    <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
-        <?= $block->getChildHtml("product.info.price") ?>
-    </div>
 
     <div class="flex gap-3 mt-4 ml-auto sm:mt-0 h-12">
         <?php if ($product->isSaleable()): ?>
