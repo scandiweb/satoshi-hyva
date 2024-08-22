@@ -59,3 +59,13 @@ $popup
   ->setChildTemplate('Magento_Theme::html/header/menu/menu.phtml')
   ->render()
 ```
+
+## Features to implement
+
+### Product card
+
+1. Add to wishlist
+2. Add to compare
+3. Quick buy on desktop?
+4. Ratings results
+5. Add a setting to allow merchant to choose object-fit between cover and contain?
