@@ -2,14 +2,15 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <move element="page.main.title" destination="custom_404"/>
-        <move element="cms_noroute" destination="custom_404"/>
-        <move element="cms_page" destination="custom_404"/>
+        <move element="page.main.title" destination="page_404"/>
+        <move element="cms_noroute" destination="page_404"/>
+        <move element="cms_page" destination="page_404"/>
+
+        <referenceContainer name="columns" htmlClass="columns h-full"/>
+        <referenceContainer name="main" htmlClass="column main h-full"/>
 
         <referenceContainer name="content">
-            <container name="custom_404_container" htmlTag="div" htmlClass="custom-404-container contents">
-                <block name="custom_404" template="Satoshi_Theme::custom_404.phtml"/>
-            </container>
+            <block name="page_404" template="Satoshi_Theme::404.phtml"/>
         </referenceContainer>
     </body>
 </page>
