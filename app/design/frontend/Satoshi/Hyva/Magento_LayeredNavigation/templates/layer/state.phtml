@@ -1,0 +1,83 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Magento\Framework\Escaper;
+use Magento\LayeredNavigation\Block\Navigation\State;
+
+/** @var State $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+?>
+<?php $filters = $block->getActiveFilters() ?>
+<?php if (!empty($filters)): ?>
+    <div
+        x-data="{ open: true }"
+        class="filter-current bg-container-lighter border border-container p-4 md:px-8 md:mt-4"
+    >
+        <h3 id="active-filtering-heading">
+            <button
+                type="button"
+                @click="open = !open"
+                class="w-full filter-options-title flex justify-between items-center text-start cursor-pointer"
+                aria-controls="active-filtering-content"
+                :aria-expanded="open"
+                x-init="$nextTick(() => $el.focus())"
+            >
+                <strong><?= $escaper->escapeHtml(__('Active filtering')) ?></strong>
+                <span class="py-1 px-1 rounded border border-container">
+                <?= $heroicons->chevronDownHtml(
+                    'transition-transform transform duration-300 ease-in-out',
+                    24,
+                    24,
+                    [
+                        ":class" => "{ 'rotate-180': open }",
+                        "aria-hidden" => "true",
+                        "focusable" => "false"
+                    ]
+                ); ?>
+            </span>
+            </button>
+        </h3>
+        <div
+            id="active-filtering-content"
+            class="items pt-1 pb-3"
+            x-show="open"
+            aria-labelledby="active-filtering-heading"
+            role="region"
+        >
+            <?php foreach ($filters as $filter): ?>
+                <?php
+                $filterName = $filter->getName();
+                $filterLabel = $block->stripTags($filter->getLabel());
+                ?>
+                <div class="item flex justify-between items-center">
+                <span>
+                    <span class="filter-label block"><?= $escaper->escapeHtml(__($filterName)) ?></span>
+                    <span class="filter-value text-sm block">
+                        <?= $escaper->escapeHtml($filterLabel) ?>
+                    </span>
+                </span>
+                    <span>
+                    <a class="py-2 px-2 text-center block action remove text-primary hover:text-primary-darker"
+                       href="<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>"
+                       title="<?= /* @noEscape */ $escaper->escapeHtmlAttr(__('Remove active %1 filter: %2', $filterName, $filterLabel)) ?>">
+                        <?= $heroicons->trashHtml('', 20, 20, ["aria-hidden" => "true"]); ?>
+                    </a>
+                </span>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php if ($block->getLayer()->getState()->getFilters()): ?>
+            <div class="block-actions filter-actions">
+                <a href="<?= $escaper->escapeUrl($block->getClearUrl()) ?>"
+                   class="text-xs text-primary hover:text-primary-darker"><?= $escaper->escapeHtml(__('Clear All')) ?></a>
+            </div>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,50 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\LocaleFormatter;
+use Magento\Catalog\Helper\Data;
+use Magento\Framework\Escaper;
+use Magento\LayeredNavigation\Block\Navigation\FilterRenderer;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var FilterRenderer $block */
+/** @var Escaper $escaper */
+/** @var LocaleFormatter $localeFormatter */
+
+$catalogHelper = $this->helper(Data::class);
+
+/** @var array $filterItems */
+?>
+
+<ol class="items" aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter options', $block->getFilterTitle())) ?>">
+    <?php foreach ($filterItems as $filterItem): ?>
+        <li>
+            <?php if ($filterItem->getCount() > 0): ?>
+                <a
+                    href="<?= $escaper->escapeUrl($filterItem->getUrl()) ?>"
+                    class="flex justify-between py-1 hover:text-black"
+                    <?php if ((int) $filterItem->getCount() === 1): ?>
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, 1 available product', strip_tags((string)$filterItem->getLabel()))) ?>"
+                    <?php else: ?>
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, %2 available products', strip_tags((string)$filterItem->getLabel()), $filterItem->getCount())) ?>"
+                    <?php endif; ?>
+                >
+                    <span><?= /* @noEscape */ $filterItem->getLabel() ?></span>
+                    <?php if ($catalogHelper->shouldDisplayProductCountOnLayer()): ?>
+                        <span class="count text-primary">(<?= /* @noEscape */ $localeFormatter->formatNumber((int)$filterItem->getCount()) ?>)</span>
+                    <?php endif; ?>
+                </a>
+            <?php else: ?>
+                <span class="flex justify-between py-1 hover:text-black">
+                    <span><?= /* @noEscape */ $filterItem->getLabel() ?></span>
+                <?php if ($catalogHelper->shouldDisplayProductCountOnLayer()): ?>
+                    <span class="count text-primary">(<?= /* @noEscape */ $localeFormatter->formatNumber((int)$filterItem->getCount()) ?>)</span>
+                <?php endif; ?>
+            </span>
+            <?php endif; ?>
+        </li>
+    <?php endforeach ?>
+</ol>
