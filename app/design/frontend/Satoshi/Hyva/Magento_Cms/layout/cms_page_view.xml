@@ -7,6 +7,6 @@
         </referenceContainer>
 
         <move element="page.main.title" destination="cms_page_container" />
-        <move element="cms_page" destination="cms.page" />
+        <move element="cms_page" destination="cms_page_container" />
     </body>
 </page>
