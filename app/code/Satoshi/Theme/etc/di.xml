@@ -18,9 +18,4 @@
         for="Hyva\Theme\ViewModel\Currency"
         type="Satoshi\Theme\ViewModel\Currency"
     />
-
-    <preference
-        for="Magento\Cms\Block\Page"
-        type="Satoshi\Theme\Block\CustomCmsPage"
-    />
 </config>
