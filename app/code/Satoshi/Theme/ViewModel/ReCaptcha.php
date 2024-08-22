@@ -15,6 +15,7 @@ class ReCaptcha extends SourceReCaptcha
     public const XML_CONFIG_PATH_TYPE_RECAPTCHA_PUBLIC_KEY = 'recaptcha_frontend/type_recaptcha/public_key';
     public const XML_CONFIG_PATH_TYPE_INVISIBLE_PUBLIC_KEY = 'recaptcha_frontend/type_invisible/public_key';
     public const XML_CONFIG_PATH_TYPE_RECAPTCHA_V3_PUBLIC_KEY = 'recaptcha_frontend/type_recaptcha_v3/public_key';
+    public const XML_CONFIG_PATH_RECAPTCHA_V2_INVISIBLE_BADGE_POSITION = 'recaptcha_frontend/type_invisible/position';
 
     /**
      * @var ScopeConfigInterface
@@ -89,5 +90,17 @@ class ReCaptcha extends SourceReCaptcha
             default:
                 return null;
         }
+    }
+
+    /**
+     * Get badge position of reCAPTCHA v2 invisible
+     * @return string
+     */
+    public function getRecaptchaV2InvisibleBadgePosition()
+    {
+        return $this->scopeConfig->getValue(
+            self::XML_CONFIG_PATH_RECAPTCHA_V2_INVISIBLE_BADGE_POSITION,
+            ScopeInterface::SCOPE_STORE
+        );
     }
 }
