@@ -449,8 +449,7 @@ function TransitionPlugin(Alpine: AlpineType) {
       const onClick = (e: MouseEvent) => {
         const link = el.getAttribute("href");
 
-        // Disable till refactored for magento
-        if (!link || isExternalURL(link) || true) {
+        if (!link || isExternalURL(link)) {
           return;
         }
 
