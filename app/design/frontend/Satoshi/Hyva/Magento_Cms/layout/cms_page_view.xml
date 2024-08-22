@@ -2,8 +2,11 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceContainer name="content">
+            <block name="cms_page_container" template="Magento_Cms::page.phtml" />
+        </referenceContainer>
 
-        <referenceBlock name="cms_page" template="Magento_Cms::page.phtml"/>
+        <move element="page.main.title" destination="cms_page_container" />
+        <move element="cms_page" destination="cms.page" />
     </body>
 </page>
