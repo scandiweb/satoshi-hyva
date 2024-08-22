@@ -28,7 +28,7 @@ $isLarge = $nthLarge && !(($index + 1) % $nthLarge);
 $fitType = 'cover';
 $isContain = $fitType === 'contain';
 
-$isSearch = false; // Make dynamic
+$isSearch = $block->getData('is_search_card');
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
