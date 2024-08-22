@@ -70,7 +70,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 <span x-html="formSubmissionErrorMessages.email"></span>
             </span>
             <span
-                class="text-error"
+                class="block text-error"
                 x-show="displayErrorMessage"
                 x-cloak
             >
@@ -82,7 +82,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </div>
 
         <?= $block->getBlockHtml('formkey') ?>
-        <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
+        <div id="newsletter-recaptcha-container">
+            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
+        </div>
         <button
             type="submit"
             class="button button--filled-primary w-full"
@@ -132,9 +134,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
 
                     if (this.errors === 0) {
-                        this.isLoading = true;
-                        this.clearFormSubmissionMessages();
-
                         const isCaptchaEnabled = Boolean(<?= $recaptcha ? $recaptcha->isCaptchaEnabledFor(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>);
                         const recaptchaSiteKey = '<?= $recaptcha ? $recaptcha->getSiteKey(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>';
                         const recaptchaFormIdNewsletter = '<?= ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER ?>';
@@ -152,25 +151,49 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                             }
                                             formData.append('g-recaptcha-response', token);
                                             this.subscribe(formData);
-                                        })
-                                        .catch(() => {
-                                            this.isLoading = false;
                                         });
                                 });
                             }
                             // Recaptcha v2 checkbox
                             else if (recaptchaType === 'recaptcha') {
-                                const recaptchaResponse = document.querySelector('#grecaptcha-container-Newsletter .g-recaptcha-response').value;
+                                const token = grecaptcha.getResponse(window.grecaptchaInstanceNewsletter);
                                 if (formData.has('g-recaptcha-response')) {
                                     formData.delete('g-recaptcha-response');
                                 }
-                                formData.append('g-recaptcha-response', recaptchaResponse);
+                                formData.append('g-recaptcha-response', token);
                                 this.subscribe(formData);
-                                grecaptcha.reset();
+                                grecaptcha.reset(window.grecaptchaInstanceNewsletter);
                             }
                             // Recaptcha v2 invisible
                             else if (recaptchaType === 'invisible') {
-                                // TODO: Recaptcha v2 invisible has a challenge when re-generating token
+                                const badgePosition = '<?= $recaptcha ? $recaptcha->getRecaptchaV2InvisibleBadgePosition() : '' ?>';
+
+                                grecaptcha.execute(window.grecaptchaInstanceNewsletter).then(() => {
+                                    const token = grecaptcha.getResponse(window.grecaptchaInstanceNewsletter);
+
+                                    if (!token) {
+                                        return;
+                                    }
+
+                                    formData.set('g-recaptcha-response', token);
+                                    this.subscribe(formData);
+
+                                    const recaptchaElement = document.createElement('div');
+                                    const recaptchaElementId = 'grecaptcha-container-Newsletter';
+                                    recaptchaElement.id = recaptchaElementId;
+
+                                    const recaptchaContainer = document.getElementById('newsletter-recaptcha-container');
+                                    recaptchaContainer.innerHTML = '';
+                                    recaptchaContainer.appendChild(recaptchaElement);
+
+                                    // Re-render reCAPTCHA to have a new token for the next ajax call
+                                    window.grecaptchaInstanceNewsletter = grecaptcha.render(recaptchaElementId, {
+                                        sitekey: recaptchaSiteKey,
+                                        callback: 'googleRecaptchaCallbackNewsletter',
+                                        size: 'invisible',
+                                        badge: badgePosition,
+                                    });
+                                });
                             }
                         } else {
                             this.subscribe(formData);
@@ -179,6 +202,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 },
                 subscribe(formData) {
                     const $form = document.querySelector('#newsletter-validate-detail');
+                    this.isLoading = true;
+                    this.clearFormSubmissionMessages();
+
                     fetch($form.action, {
                         method: 'POST',
                         body: formData,
