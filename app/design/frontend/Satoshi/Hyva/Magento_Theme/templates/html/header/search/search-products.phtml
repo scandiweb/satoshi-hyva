@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $block */
+/** @var Template $template */
 
 ?>
 
@@ -33,14 +34,11 @@ use Satoshi\Theme\Block\Template;
         x-for="product in products"
         :key="product.id"
       >
-        <?=
-          $template
+        <?= $template
             ->setData([
-              'isAlpineTemplate' => true,
-              'isLarge' => false,
+              'is_search_card' => true,
             ])
-            ->render('Magento_Catalog::product/list/item.phtml')
-        ?>
+            ->render('Magento_Catalog::product/list/item.phtml') ?>
       </template>
     </div>
     <div
