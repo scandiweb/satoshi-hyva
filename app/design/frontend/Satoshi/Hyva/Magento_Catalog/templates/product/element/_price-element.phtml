@@ -1,22 +1,18 @@
 <?php
 
 use Magento\Framework\View\Element\Template;
-use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Pricing\Helper\Data as PricingHelper;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
 
 /* @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var ProductPage $productViewModel */
 
+$productViewModel = $viewModels->require(ProductPage::class);
 $product = $block->getData('product');
 $customClass = $block->getData('class') ? " {$block->getData('class')}" : '';
 $isInline = (bool)$block->getData('isInline');
 $isAlpineTemplate = (bool)$block->getData('isAlpineTemplate');
-
-$objectManager = ObjectManager::getInstance();
-$pricingHelper = $objectManager->get(PricingHelper::class);
-
-$formatPrice = function ($price) use ($pricingHelper) {
-    return $pricingHelper->currency($price, true, false);
-};
 
 $specialPrice = $product->getSpecialPrice();
 $regularPrice = $product->getPrice();
@@ -29,23 +25,23 @@ $isSpecialPriceValid = $specialPrice && $currentDate >= $specialFromDate && $cur
 ?>
 
 <?php if ($isAlpineTemplate): ?>
-    <template x-if="<?= $isSpecialPriceValid ?> && product.price > product.special_price">
+    <template x-if="<?= json_encode($isSpecialPriceValid) ?> && product.price > product.special_price">
         <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
             <span class="sr-only"><?= __('Sale Price') ?></span>
-            <span class="text-primary-500" x-text="getPrice(product.special_price)"></span>
-            <s x-text="getPrice(product.price)"></s>
+            <span class="text-primary-500" x-text="getPrice(<?= $specialPrice ?>)"></span>
+            <s x-text="getPrice(<?= $regularPrice ?>)"></s>
         </div>
     </template>
-    <template x-if="!<?= $isSpecialPriceValid ?> && product.price_min != product.price_max">
+    <template x-if="!<?= json_encode($isSpecialPriceValid) ?> && product.price_min != product.price_max">
         <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
             <span><?= __('From') ?></span>
-            <span class="text-primary-500" x-text="getPrice(product.price_min)"></span>
+            <span class="text-primary-500" x-text="getPrice(<?= $product->getPriceMin() ?>)"></span>
         </div>
     </template>
-    <template x-if="!<?= $isSpecialPriceValid ?> && product.price_min == product.price_max">
+    <template x-if="!<?= json_encode($isSpecialPriceValid) ?> && product.price_min == product.price_max">
         <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
             <span class="sr-only"><?= __('Regular Price') ?></span>
-            <span class="text-primary-500" x-text="getPrice(product.price)"></span>
+            <span class="text-primary-500" x-text="getPrice(<?= $regularPrice ?>)"></span>
         </div>
     </template>
 <?php else: ?>
@@ -53,14 +49,22 @@ $isSpecialPriceValid = $specialPrice && $currentDate >= $specialFromDate && $cur
         <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
             <?php if ($isSpecialPriceValid): ?>
                 <span class="sr-only"><?= __('Sale Price') ?></span>
-                <span class="text-primary-500"><?= $formatPrice($specialPrice) ?></span>
-                <s><?= $formatPrice($regularPrice) ?></s>
+                <span class="text-primary-500">
+                    <?= /** @noEscape */ $productViewModel->currency($specialPrice) ?>
+                </span>
+                <s>
+                    <?= /** @noEscape */ $productViewModel->currency($regularPrice) ?>
+                </s>
             <?php elseif ($product->getPriceMin() != $product->getPriceMax()): ?>
                 <span><?= __('From') ?></span>
-                <span><?= $formatPrice($product->getPriceMin()) ?></span>
+                <span>
+                    <?= /** @noEscape */ $productViewModel->currency($product->getPriceMin()) ?>
+                </span>
             <?php else: ?>
                 <span class="sr-only"><?= __('Regular Price') ?></span>
-                <span class="text-primary-500"><?= $formatPrice($regularPrice) ?></span>
+                <span class="text-primary-500">
+                    <?= /** @noEscape */ $productViewModel->currency($regularPrice) ?>
+                </span>
             <?php endif; ?>
             <?php if ($block->getData('showBadge')): ?>
                 <?= $block->getChildHtml('_discount-badge', true) ?>
@@ -70,7 +74,9 @@ $isSpecialPriceValid = $specialPrice && $currentDate >= $specialFromDate && $cur
             <div class="mt-2 text-md">
                 <span class="sr-only"><?= __('Unit Price') ?></span>
                 <span class="text-primary-500">
-                    <span><?= $formatPrice($product->getUnitPrice()) ?></span>
+                    <span>
+                        <?= /** @noEscape */ $productViewModel->currency($product->getUnitPrice()) ?>
+                    </span>
                     <span aria-hidden="true">/</span>
                     <span class="sr-only">&nbsp;<?= __('per') ?>&nbsp;</span>
                     <span>
