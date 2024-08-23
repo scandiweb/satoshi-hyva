@@ -15,9 +15,9 @@ use Magento\Framework\Escaper;
 /** @var AbstractProduct $block */
 $product = $block->getData('product');
 $imageUrl = $this->helper(Image::class)
-                 ->init($product, 'product_base_image')
-                 ->resize(600)
-                 ->getUrl();
+    ->init($product, 'product_base_image')
+    ->resize(600)
+    ->getUrl();
 
 // Calculating is large
 $nthLarge = $block->getData('n_of_large_card') ?? 0;
@@ -33,6 +33,15 @@ $isSearch = $block->getData('is_search_card');
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
+
+if ($product) {
+    $price = $product->getPrice();
+    if ($price) {
+        $finalPrice = $product->getData('final_price');
+        $difference = $price - $finalPrice;
+        $discountPercentage = round(($difference * 100.0) / $price);
+    }
+}
 ?>
 
 <div
@@ -95,11 +104,18 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
                     <?php if ($product->getImage()): ?>
 
                         <div
-                            class="aspect-product w-full h-full flex items-center justify-center transition-transform md:group-hover:scale-105 bg-[--fade-in-bg]">
+                            class="aspect-product w-full h-full flex items-center justify-center transition-transform bg-[--fade-in-bg]">
                             <img
-                                class="mix-blend-darken object-center max-h-full <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
+                                class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
                                 src="<?= $escaper->escapeUrl($imageUrl) ?>"
                                 alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>" loading="lazy">
+                            <?php if ($discountPercentage) : ?>
+                                <div class="absolute bottom-4 left-0 rounded-full">
+                            <span class="card-product__badge bg-white px-3 py-2 text-sm font-bold rounded-r-full">
+                                -<?php echo $discountPercentage; ?>% OFF
+                            </span>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     <?php else: ?>
                         <div
