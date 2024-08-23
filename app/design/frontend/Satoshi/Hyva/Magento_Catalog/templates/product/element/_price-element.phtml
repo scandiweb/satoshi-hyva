@@ -8,8 +8,8 @@ use Magento\Framework\Pricing\Helper\Data as PricingHelper;
 
 $product = $block->getData('product');
 $customClass = $block->getData('class') ? " {$block->getData('class')}" : '';
-$isAlpineTemplate = (bool)$block->getData('isAlpineTemplate');
 $isInline = (bool)$block->getData('isInline');
+$isAlpineTemplate = (bool)$block->getData('isAlpineTemplate');
 
 $objectManager = ObjectManager::getInstance();
 $pricingHelper = $objectManager->get(PricingHelper::class);
@@ -18,23 +18,31 @@ $formatPrice = function ($price) use ($pricingHelper) {
     return $pricingHelper->currency($price, true, false);
 };
 
+$specialPrice = $product->getSpecialPrice();
+$regularPrice = $product->getPrice();
+$specialFromDate = $product->getSpecialFromDate();
+$specialToDate = $product->getSpecialToDate();
+$currentDate = date('Y-m-d H:i:s');
+
+$isSpecialPriceValid = $specialPrice && $currentDate >= $specialFromDate && $currentDate <= $specialToDate;
+
 ?>
 
 <?php if ($isAlpineTemplate): ?>
-    <template x-if="product.compare_at_price_min > product.price">
+    <template x-if="<?= $isSpecialPriceValid ?> && product.price > product.special_price">
         <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
             <span class="sr-only"><?= __('Sale Price') ?></span>
-            <span class="text-primary-500" x-text="getPrice(product.price)"></span>
-            <s x-text="getPrice(product.compare_at_price_min)"></s>
+            <span class="text-primary-500" x-text="getPrice(product.special_price)"></span>
+            <s x-text="getPrice(product.price)"></s>
         </div>
     </template>
-    <template x-if="product.compare_at_price_min <= product.price && product.price_min != product.price_max">
+    <template x-if="!<?= $isSpecialPriceValid ?> && product.price_min != product.price_max">
         <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
             <span><?= __('From') ?></span>
             <span class="text-primary-500" x-text="getPrice(product.price_min)"></span>
         </div>
     </template>
-    <template x-if="product.compare_at_price_min <= product.price && product.price_min == product.price_max">
+    <template x-if="!<?= $isSpecialPriceValid ?> && product.price_min == product.price_max">
         <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
             <span class="sr-only"><?= __('Regular Price') ?></span>
             <span class="text-primary-500" x-text="getPrice(product.price)"></span>
@@ -43,16 +51,16 @@ $formatPrice = function ($price) use ($pricingHelper) {
 <?php else: ?>
     <div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
         <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
-            <?php if ($product->getCompareAtPrice() > $product->getPrice()): ?>
+            <?php if ($isSpecialPriceValid): ?>
                 <span class="sr-only"><?= __('Sale Price') ?></span>
-                <span class="text-primary-500"><?= $formatPrice($product->getPrice()) ?></span>
-                <s><?= $formatPrice($product->getCompareAtPrice()) ?></s>
-            <?php elseif ($product->getPriceVaries()): ?>
+                <span class="text-primary-500"><?= $formatPrice($specialPrice) ?></span>
+                <s><?= $formatPrice($regularPrice) ?></s>
+            <?php elseif ($product->getPriceMin() != $product->getPriceMax()): ?>
                 <span><?= __('From') ?></span>
                 <span><?= $formatPrice($product->getPriceMin()) ?></span>
             <?php else: ?>
                 <span class="sr-only"><?= __('Regular Price') ?></span>
-                <span class="text-primary-500"><?= $formatPrice($product->getPrice()) ?></span>
+                <span class="text-primary-500"><?= $formatPrice($regularPrice) ?></span>
             <?php endif; ?>
             <?php if ($block->getData('showBadge')): ?>
                 <?= $block->getChildHtml('_discount-badge', true) ?>
