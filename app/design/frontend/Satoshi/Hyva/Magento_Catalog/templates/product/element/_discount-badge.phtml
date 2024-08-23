@@ -1,0 +1,48 @@
+<?php
+
+use Magento\Framework\View\Element\Template as Block;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\ProductPrice;
+use Magento\Catalog\Pricing\Price\FinalPrice;
+use Magento\Catalog\Pricing\Price\RegularPrice;
+
+/** @var Block $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var ProductPage $productViewModel */
+/** @var ProductPrice $productPriceViewModel */
+
+$product = $block->getData('product');
+$customClass = $block->getData('class') ? " {$block->getData('class')}" : '';
+$isAlpineTemplate = (bool)$block->getData('isAlpineTemplate');
+
+$productViewModel = $viewModels->require(ProductPage::class);
+$productPriceViewModel = $viewModels->require(ProductPrice::class);
+
+$regularPrice = $productPriceViewModel->getPriceValue(RegularPrice::PRICE_CODE, $product);
+$finalPrice = $productPriceViewModel->getPriceValue(FinalPrice::PRICE_CODE, $product);
+
+$difference = $regularPrice - $finalPrice;
+$discountPercentage = $difference > 0 ? round(($difference / $regularPrice) * 100) : null;
+
+?>
+
+<?php if ($isAlpineTemplate): ?>
+    <div
+        class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm<?= $customClass ?>"
+        x-show="<?= $discountPercentage !== null ?>"
+    >
+        <span class="font-semibold">
+            <?= "- {$discountPercentage}% " . __('OFF') ?>
+        </span>
+    </div>
+<?php elseif ($discountPercentage && $product->isAvailable()): ?>
+    <div
+        class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm<?= $customClass ?>"
+        x-element-transition-badge
+    >
+        <span class="font-semibold">
+            <?= "- {$discountPercentage}% " . __('OFF') ?>
+        </span>
+    </div>
+<?php endif; ?>
