@@ -1,90 +1,96 @@
 <?php
 
-use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template as Block;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\ProductPrice;
+use Magento\Catalog\Pricing\Price\FinalPrice;
+use Magento\Catalog\Pricing\Price\RegularPrice;
+use Magento\Catalog\Pricing\Price\TierPrice;
+use Magento\Catalog\Pricing\Price\SpecialPrice;
+use Satoshi\Theme\Block\Template;
 
-/* @var Template $block */
+/** @var Template $template */
+/* @var Block $block */
 /** @var ViewModelRegistry $viewModels */
 /** @var ProductPage $productViewModel */
+/** @var ProductPrice $productPriceViewModel */
 
 $productViewModel = $viewModels->require(ProductPage::class);
+$productPriceViewModel = $viewModels->require(ProductPrice::class);
+
 $product = $block->getData('product');
 $customClass = $block->getData('class') ? " {$block->getData('class')}" : '';
 $isInline = (bool)$block->getData('isInline');
 $isAlpineTemplate = (bool)$block->getData('isAlpineTemplate');
+$showBadge = (bool)$block->getData('showBadge');
 
-$specialPrice = $product->getSpecialPrice();
-$regularPrice = $product->getPrice();
-$specialFromDate = $product->getSpecialFromDate();
-$specialToDate = $product->getSpecialToDate();
+$regularPrice = $productPriceViewModel->getPriceValue(RegularPrice::PRICE_CODE, $product);
+$finalPrice = $productPriceViewModel->getPriceValue(FinalPrice::PRICE_CODE, $product);
+$specialPrice = $productPriceViewModel->getPriceValue(SpecialPrice::PRICE_CODE, $product);
+
+$specialPriceFrom = $product->getSpecialFromDate();
+$specialPriceTo = $product->getSpecialToDate();
 $currentDate = date('Y-m-d H:i:s');
 
-$isSpecialPriceValid = $specialPrice && $currentDate >= $specialFromDate && $currentDate <= $specialToDate;
+$isSpecialPriceValid = $specialPrice && $specialPriceFrom <= $currentDate && $specialPriceTo >= $currentDate;
+//$tierPrices = $productPriceViewModel->getTierPrices(TierPrice::PRICE_CODE, $product);
 
 ?>
 
-<?php if ($isAlpineTemplate): ?>
-    <template x-if="<?= json_encode($isSpecialPriceValid) ?> && product.price > product.special_price">
-        <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
+<div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
+    <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
+        <?php if ($isSpecialPriceValid): ?>
             <span class="sr-only"><?= __('Sale Price') ?></span>
-            <span class="text-primary-500" x-text="getPrice(<?= $specialPrice ?>)"></span>
-            <s x-text="getPrice(<?= $regularPrice ?>)"></s>
-        </div>
-    </template>
-    <template x-if="!<?= json_encode($isSpecialPriceValid) ?> && product.price_min != product.price_max">
-        <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
+            <span class="text-primary-500">
+                <?= /** @noEscape */
+                $productViewModel->format($specialPrice) ?>
+            </span>
+            <s>
+                <?= /** @noEscape */
+                $productViewModel->format($regularPrice) ?>
+            </s>
+        <?php elseif ($product->getPriceMin() != $product->getPriceMax()): ?>
             <span><?= __('From') ?></span>
-            <span class="text-primary-500" x-text="getPrice(<?= $product->getPriceMin() ?>)"></span>
-        </div>
-    </template>
-    <template x-if="!<?= json_encode($isSpecialPriceValid) ?> && product.price_min == product.price_max">
-        <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
+            <span>
+                <?= /** @noEscape */
+                $productViewModel->format($product->getPriceMin()) ?>
+            </span>
+        <?php else: ?>
             <span class="sr-only"><?= __('Regular Price') ?></span>
-            <span class="text-primary-500" x-text="getPrice(<?= $regularPrice ?>)"></span>
-        </div>
-    </template>
-<?php else: ?>
-    <div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
-        <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
-            <?php if ($isSpecialPriceValid): ?>
-                <span class="sr-only"><?= __('Sale Price') ?></span>
-                <span class="text-primary-500">
-                    <?= /** @noEscape */ $productViewModel->currency($specialPrice) ?>
-                </span>
-                <s>
-                    <?= /** @noEscape */ $productViewModel->currency($regularPrice) ?>
-                </s>
-            <?php elseif ($product->getPriceMin() != $product->getPriceMax()): ?>
-                <span><?= __('From') ?></span>
-                <span>
-                    <?= /** @noEscape */ $productViewModel->currency($product->getPriceMin()) ?>
-                </span>
-            <?php else: ?>
-                <span class="sr-only"><?= __('Regular Price') ?></span>
-                <span class="text-primary-500">
-                    <?= /** @noEscape */ $productViewModel->currency($regularPrice) ?>
-                </span>
-            <?php endif; ?>
-            <?php if ($block->getData('showBadge')): ?>
-                <?= $block->getChildHtml('_discount-badge', true) ?>
-            <?php endif; ?>
-        </div>
-        <?php if ($product->getUnitPriceMeasurement() !== null): ?>
-            <div class="mt-2 text-md">
-                <span class="sr-only"><?= __('Unit Price') ?></span>
-                <span class="text-primary-500">
-                    <span>
-                        <?= /** @noEscape */ $productViewModel->currency($product->getUnitPrice()) ?>
-                    </span>
-                    <span aria-hidden="true">/</span>
-                    <span class="sr-only">&nbsp;<?= __('per') ?>&nbsp;</span>
-                    <span>
-                        <?= $product->getUnitPriceMeasurement()->getReferenceValue() != 1 ? $product->getUnitPriceMeasurement()->getReferenceValue() : '' ?>
-                        <?= $product->getUnitPriceMeasurement()->getReferenceUnit() ?>
-                    </span>
-                </span>
-            </div>
+            <span class="text-primary-500">
+                <?= /** @noEscape */
+                $productViewModel->format($regularPrice) ?>
+            </span>
+        <?php endif; ?>
+
+        <?php if ($showBadge): ?>
+            <?=
+            $template
+                ->setData([
+                    'product' => $product,
+                    'isAlpineTemplate' => $isAlpineTemplate,
+                    'class' => 'ms-3 static max-md:hidden !bg-secondary-500',
+                ])
+                ->render('Magento_Catalog::product/element/_discount-badge.phtml');
+            ?>
         <?php endif; ?>
     </div>
-<?php endif; ?>
+    <?php if ($product->getUnitPriceMeasurement() !== null): ?>
+        <div class="mt-2 text-md">
+            <span class="sr-only"><?= __('Unit Price') ?></span>
+            <span class="text-primary-500">
+                <span>
+                    <?= /** @noEscape */
+                    $productViewModel->format($product->getUnitPrice()) ?>
+                </span>
+                <span aria-hidden="true">/</span>
+                <span class="sr-only">&nbsp;<?= __('per') ?>&nbsp;</span>
+                <span>
+                    <?= $product->getUnitPriceMeasurement()->getReferenceValue() != 1 ? $product->getUnitPriceMeasurement()->getReferenceValue() : '' ?>
+                    <?= $product->getUnitPriceMeasurement()->getReferenceUnit() ?>
+                </span>
+            </span>
+        </div>
+    <?php endif; ?>
+</div>
