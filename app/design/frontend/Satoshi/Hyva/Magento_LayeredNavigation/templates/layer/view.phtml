@@ -33,51 +33,40 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
         <div class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"
              :class="$store.productList.isFiltersSidebarExpanded ? 'translate-x-0' : 'translate-x-full'"
         >
-            <h2
-                id="filters-heading"
-                class="block-title"
-            >
-                <button
-                    type="button"
-                    @click="blockOpen = !blockOpen"
-                    class="block-title flex items-center justify-between w-full text-start"
-                    aria-controls="filters-content"
-                    :aria-expanded="blockOpen"
-                    :aria-disabled="!isMobile"
-                    :disabled="!isMobile ? '' : null"
-                >
-                <span class="text-primary text-md md:text-3xl font-medium uppercase">
-                    <?= $escaper->escapeHtml(__('Shop By')) ?>
-                </span>
-                    <span
-                        class="py-1 px-1 bg-container-lighter rounded border border-container-darker md:hidden"
-                        x-ref="LayeredNavigationMobileToggleIcon"
-                    >
-                    <?= $heroicons->chevronDownHtml(
-                        'transition-transform transform duration-300 ease-in-out',
-                        24,
-                        24,
-                        [
-                            ":class" => "{ 'rotate-180': blockOpen }",
-                            "aria-hidden" => "true",
-                            "focusable" => "false"
-                        ]
-                    ); ?>
-                </span>
-                </button>
-            </h2>
             <div
                 id="filters-content"
                 class="block-content filter-content hidden md:block pt-4"
-                :class="{ 'hidden': !blockOpen }"
             >
-                <?= $block->getChildHtml('state') ?>
-                <a
-                    href="#product-list"
-                    class="sr-only focus:not-sr-only bg-blue-600 text-white px-12 py-4 text-center block rounded-sm"
-                >
-                    <?= $escaper->escapeHtml(__('Skip to product list')) ?>
-                </a>
+                <div class="overflow-x-scroll overscroll-x-contain" x-show="!$store.main.isMobile || $store.popup.currentPopup === 'bottom-filters'">
+                    <div class="">
+
+                        <div id="selected-filters-mobile" class="shrink-0 grow"></div>
+
+                        <div >
+                            <div class="md:pb-7 md:pt-2">
+                                <div class="mb-5 hidden items-center justify-between md:flex">
+                                    <h2 class="text-text-500"><?= __('Selected filters') ?></h2>
+                                    <button
+                                        class="link link--primary"
+                                        @click="resetAll"
+                                    >
+                                        <?=__('Reset all')?>
+                                    </button>
+                                </div>
+                                <div x-if="getIsDefault()">
+                                    <p class="pr-3 text-center md:pr-0 md:text-left">
+                                        <?=__('The selected filters will appear here.')?>
+                                    </p>
+                                </div>
+<!--                                <div x-if="!getIsDefault()">-->
+<!--                                    {{ selectedFilters }}-->
+<!--                                </div>-->
+                                <?= $block->getChildHtml('state') ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <?php foreach ($block->getFilters() as $filter): ?>
                     <?php if ($filter->getItemsCount()): ?>
                         <div
@@ -96,7 +85,7 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
                                 </h2>
                                 <button
                                     class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
-                                    aria-label="<?=__('Sort by')?>">
+                                    aria-label="<?= __('Sort by') ?>">
                                         <span style="rotate: -180deg;" x-ref="AccordionIcon">
                                             <?= $hyvaicons->renderHtml('chevron-up'); ?>
                                         </span>
@@ -108,7 +97,6 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
                                     'transition-none': $store.main.isReducedMotion,
                                     'transition': $store.main.isReducedMotion
                                 }"
-                                :id="`${id}-content`"
                             >
                                 <?= /* @noEscape */
                                 $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
