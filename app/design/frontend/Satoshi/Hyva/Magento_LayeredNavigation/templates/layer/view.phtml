@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Magento\Framework\Escaper;
 use Magento\LayeredNavigation\Block\Navigation;
 use Hyva\Theme\ViewModel\SvgIcons;
@@ -14,11 +13,9 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
-/** @var HeroiconsOutline $heroicons */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
-$heroicons = $viewModels->require(HeroiconsOutline::class);
 ?>
 <?php if ($block->canShowBlock()): ?>
     <div
@@ -37,36 +34,8 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
                 id="filters-content"
                 class="block-content filter-content hidden md:block pt-4"
             >
-                <div class="overflow-x-scroll overscroll-x-contain" x-show="!$store.main.isMobile || $store.popup.currentPopup === 'bottom-filters'">
-                    <div class="">
+                <?= $block->getChildHtml('state') ?>
 
-                        <div id="selected-filters-mobile" class="shrink-0 grow"></div>
-
-                        <div >
-                            <div class="md:pb-7 md:pt-2">
-                                <div class="mb-5 hidden items-center justify-between md:flex">
-                                    <h2 class="text-text-500"><?= __('Selected filters') ?></h2>
-                                    <button
-                                        class="link link--primary"
-                                        @click="resetAll"
-                                    >
-                                        <?=__('Reset all')?>
-                                    </button>
-                                </div>
-                                <div x-if="getIsDefault()">
-                                    <p class="pr-3 text-center md:pr-0 md:text-left">
-                                        <?=__('The selected filters will appear here.')?>
-                                    </p>
-                                </div>
-<!--                                <div x-if="!getIsDefault()">-->
-<!--                                    {{ selectedFilters }}-->
-<!--                                </div>-->
-                                <?= $block->getChildHtml('state') ?>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <?php foreach ($block->getFilters() as $filter): ?>
                     <?php if ($filter->getItemsCount()): ?>

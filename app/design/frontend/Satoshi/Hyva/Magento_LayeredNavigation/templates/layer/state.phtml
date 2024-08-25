@@ -6,78 +6,68 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Magento\Framework\Escaper;
 use Magento\LayeredNavigation\Block\Navigation\State;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var State $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-
 /** @var HeroiconsOutline $heroicons */
-$heroicons = $viewModels->require(HeroiconsOutline::class);
-?>
+/** @var SvgIcons $hyvaicons */
+
+$hyvaicons = $viewModels->require(SvgIcons::class); ?>
+
 <?php $filters = $block->getActiveFilters() ?>
-<?php if (!empty($filters)): ?>
-    <div
-        x-data="{ open: true }"
-        class="filter-current bg-container-lighter border border-container p-4 md:px-8 md:mt-4"
-    >
-        <h3 id="active-filtering-heading">
-            <button
-                type="button"
-                @click="open = !open"
-                class="w-full filter-options-title flex justify-between items-center text-start cursor-pointer"
-                aria-controls="active-filtering-content"
-                :aria-expanded="open"
-                x-init="$nextTick(() => $el.focus())"
-            >
-                <strong><?= $escaper->escapeHtml(__('Active filtering')) ?></strong>
-                <span class="py-1 px-1 rounded border border-container">
-                <?= $heroicons->chevronDownHtml(
-                    'transition-transform transform duration-300 ease-in-out',
-                    24,
-                    24,
-                    [
-                        ":class" => "{ 'rotate-180': open }",
-                        "aria-hidden" => "true",
-                        "focusable" => "false"
-                    ]
-                ); ?>
-            </span>
-            </button>
-        </h3>
-        <div
-            id="active-filtering-content"
-            class="items pt-1 pb-3"
-            x-show="open"
-            aria-labelledby="active-filtering-heading"
-            role="region"
-        >
-            <?php foreach ($filters as $filter): ?>
-                <?php
-                $filterName = $filter->getName();
-                $filterLabel = $block->stripTags($filter->getLabel());
-                ?>
-                <div class="item flex justify-between items-center">
-                <span>
-                    <span class="filter-label block"><?= $escaper->escapeHtml(__($filterName)) ?></span>
-                    <span class="filter-value text-sm block">
-                        <?= $escaper->escapeHtml($filterLabel) ?>
-                    </span>
-                </span>
-                    <span>
-                    <a class="py-2 px-2 text-center block action remove text-primary hover:text-primary-darker"
-                       href="<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>"
-                       title="<?= /* @noEscape */ $escaper->escapeHtmlAttr(__('Remove active %1 filter: %2', $filterName, $filterLabel)) ?>">
-                        <?= $heroicons->trashHtml('', 20, 20, ["aria-hidden" => "true"]); ?>
-                    </a>
-                </span>
-                </div>
-            <?php endforeach; ?>
-        </div>
-        <?php if ($block->getLayer()->getState()->getFilters()): ?>
-            <div class="block-actions filter-actions">
-                <a href="<?= $escaper->escapeUrl($block->getClearUrl()) ?>"
-                   class="text-xs text-primary hover:text-primary-darker"><?= $escaper->escapeHtml(__('Clear All')) ?></a>
+<div class="overflow-x-scroll overscroll-x-contain"
+     x-show="!$store.main.isMobile || $store.popup.currentPopup === 'bottom-filters'">
+    <div class="">
+
+        <div id="selected-filters-mobile" class="shrink-0 grow"></div>
+
+        <div x-data="Fetch()">
+            <div class="mb-5 hidden items-center justify-between md:flex">
+                <h2 class="text-text-500"><?= __('Selected filters') ?></h2>
+                <?php if (!empty($filters)): ?>
+                    <?php if ($block->getLayer()->getState()->getFilters()): ?>
+                        <button
+                            class="link link--primary"
+                            @click="fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
+                        >
+                            <?= $escaper->escapeHtml(__('Reset All')) ?>
+                        </button>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
-        <?php endif; ?>
+            <?php if (empty($filters)): ?>
+                <div>
+                    <p class="pr-3 text-center md:pr-0 md:text-left">
+                        <?= __('The selected filters will appear here.') ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+            <?php if (!empty($filters)): ?>
+                <div class="flex flex-col md:gap-3 md:pb-7 md:pt-2">
+                    <?php foreach ($filters as $filter): ?>
+                        <div>
+                            <button
+                                type="button"
+                                class="button button--outline-secondary button--size-sm mr-3 shrink-0 md:mr-0"
+                                @click="fetchPage('<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>')"
+                            >
+                            <span class="mr-2">
+                                <?= $escaper->escapeHtml(__($filter->getName())) ?>:
+                            </span>
+                                <span>
+                                <?= $escaper->escapeHtml($block->stripTags($filter->getLabel())) ?>
+                            </span>
+                                <span class="ml-3 text-lg">
+                                <?= $hyvaicons->renderHtml('close'); ?>
+                            </span>
+                            </button>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
-<?php endif; ?>
+</div>
+</div>

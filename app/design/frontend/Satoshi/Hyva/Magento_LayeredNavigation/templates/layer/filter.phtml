@@ -21,29 +21,20 @@ $catalogHelper = $this->helper(Data::class);
 
 <ol class="items" aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter options', $block->getFilterTitle())) ?>">
     <?php foreach ($filterItems as $filterItem): ?>
-        <li x-data="{
-            fetchPage(queryString) {
-                this._fetchPage(queryString);
-                window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                }
-            }"
-        >
+        <li x-data="Fetch()">
             <?php if ($filterItem->getCount() > 0): ?>
                 <button @click="fetchPage('<?= $escaper->escapeUrl($filterItem->getUrl()) ?>')"
                         class="radio mb-0 h-full w-full py-3"">
-                    <span class="radio__control " aria-hidden="true"></span>
-                    <span class="radio__label text-md ">
+                <span class="radio__control " aria-hidden="true"></span>
+                <span class="radio__label text-md ">
                         <?= /* @noEscape */
                         $filterItem->getLabel() ?>
                     </span>
-                    &nbsp;
-                    <?php if ($catalogHelper->shouldDisplayProductCountOnLayer()): ?>
-                        <span class="count text-primary">(<?= /* @noEscape */
-                            $localeFormatter->formatNumber((int)$filterItem->getCount()) ?>)</span>
-                    <?php endif; ?>
+                &nbsp;
+                <?php if ($catalogHelper->shouldDisplayProductCountOnLayer()): ?>
+                    <span class="count text-primary">(<?= /* @noEscape */
+                        $localeFormatter->formatNumber((int)$filterItem->getCount()) ?>)</span>
+                <?php endif; ?>
                 </button>
             <?php else: ?>
                 <span class="flex justify-between py-1 hover:text-black">
