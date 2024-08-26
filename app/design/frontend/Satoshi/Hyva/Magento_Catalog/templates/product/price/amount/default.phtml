@@ -1,0 +1,35 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Framework\Pricing\Render\Amount;
+use Magento\Framework\Escaper;
+
+/** @var Amount $block */
+/** @var Escaper $escaper */
+?>
+<span
+    <?php if ($block->getPriceId()): ?>x-data x-id="['<?= $escaper->escapeJs($block->getPriceId()) ?>']"<?php endif; ?>
+    class="price-container <?= $escaper->escapeHtmlAttr($block->getAdjustmentCssClasses()) ?>"
+    <?= $block->getSchema() ? ' itemprop="offers" itemscope itemtype="http://schema.org/Offer"' : '' ?>
+>
+    <?php if ($block->getDisplayLabel()): ?>
+        <span class="price-label text-gray-500"><?= $escaper->escapeHtml($block->getDisplayLabel()) ?></span>
+    <?php endif; ?>
+    <span
+        <?php if ($block->getPriceId()): ?>
+            :id="$id('<?= $escaper->escapeJs($block->getPriceId()) ?>')"
+        <?php endif; ?>
+        data-price-amount="<?= $escaper->escapeHtmlAttr($block->getDisplayValue()) ?>"
+        data-price-type="<?= $escaper->escapeHtmlAttr($block->getPriceType()) ?>"
+        class="price-wrapper <?= $escaper->escapeHtmlAttr($block->getPriceWrapperCss()) ?> text-primary-500"
+    >
+        <?= $escaper->escapeHtml($block->formatCurrency($block->getDisplayValue(), (bool)$block->getIncludeContainer()), ['span']) ?>
+    </span>
+    <?php if ($block->hasAdjustmentsHtml()): ?>
+        <?= $block->getAdjustmentsHtml() ?>
+    <?php endif; ?>
+    <?php if ($block->getSchema()): ?>
+        <meta itemprop="price" content="<?= $escaper->escapeHtmlAttr($block->getDisplayValue()) ?>" />
+        <meta itemprop="priceCurrency" content="<?= $escaper->escapeHtmlAttr($block->getDisplayCurrencyCode()) ?>" />
+    <?php endif; ?>
+</span>

@@ -8,6 +8,7 @@ use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Catalog\Pricing\Price\RegularPrice;
 use Magento\Catalog\Pricing\Price\TierPrice;
 use Magento\Catalog\Pricing\Price\SpecialPrice;
+use Magento\Msrp\Pricing\Price\MsrpPrice;
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
@@ -28,13 +29,16 @@ $showBadge = (bool)$block->getData('showBadge');
 $regularPrice = $productPriceViewModel->getPriceValue(RegularPrice::PRICE_CODE, $product);
 $finalPrice = $productPriceViewModel->getPriceValue(FinalPrice::PRICE_CODE, $product);
 $specialPrice = $productPriceViewModel->getPriceValue(SpecialPrice::PRICE_CODE, $product);
+$tierPrices = $productPriceViewModel->getTierPrices(TierPrice::PRICE_CODE, $product);
 
 $specialPriceFrom = $product->getSpecialFromDate();
 $specialPriceTo = $product->getSpecialToDate();
 $currentDate = date('Y-m-d H:i:s');
 
 $isSpecialPriceValid = $specialPrice && $specialPriceFrom <= $currentDate && $specialPriceTo >= $currentDate;
-//$tierPrices = $productPriceViewModel->getTierPrices(TierPrice::PRICE_CODE, $product);
+$msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPrice::PRICE_CODE] ?? null;
+$displayTax = $productPriceViewModel->displayPriceIncludingTax();
+$customOptionPrices = [];
 
 ?>
 
@@ -64,6 +68,36 @@ $isSpecialPriceValid = $specialPrice && $specialPriceFrom <= $currentDate && $sp
             </span>
         <?php endif; ?>
 
+        <?php if ($tierPrices): ?>
+            <span class="sr-only"><?= __('As low as') ?></span>
+            <span class="text-primary-500">
+                <?= /** @noEscape */
+                $productViewModel->format($productPriceViewModel->getLowestTierPrice($tierPrices)) ?>
+            </span>
+        <?php endif; ?>
+
+        <?php if ($msrpPrice && $msrpPrice->canApplyMsrp($product) && $msrpPrice->isMinimalPriceLessMsrp($product)): ?>
+            <span class="sr-only"><?= __('MSRP') ?></span>
+            <span class="text-gray-500">
+                <?= /** @noEscape */
+                $productViewModel->format($msrpPrice->getAmount()->getValue()) ?>
+            </span>
+        <?php endif; ?>
+
+        <?php if ($displayTax): ?>
+            <div class="text-nowrap text-[14px]"><?= __('Tax included.') ?></div>
+        <?php else: ?>
+            <div class="text-nowrap text-[14px]"><?= __('Tax excluded.') ?></div>
+        <?php endif; ?>
+
+        <?php if (!empty($customOptionPrices)): ?>
+            <span class="sr-only"><?= __('Custom Options Price') ?></span>
+            <span class="text-primary-500">
+                <?= /** @noEscape */
+                $productViewModel->format($finalPrice + array_sum($customOptionPrices)) ?>
+            </span>
+        <?php endif; ?>
+
         <?php if ($showBadge): ?>
             <?=
             $template
@@ -75,22 +109,9 @@ $isSpecialPriceValid = $specialPrice && $specialPriceFrom <= $currentDate && $sp
                 ->render('Magento_Catalog::product/element/_discount-badge.phtml');
             ?>
         <?php endif; ?>
+
+        <?php if (!$product->isSaleable()): ?>
+            <span class="unavailable"><?= __('Out of Stock') ?></span>
+        <?php endif; ?>
     </div>
-    <?php if ($product->getUnitPriceMeasurement() !== null): ?>
-        <div class="mt-2 text-md">
-            <span class="sr-only"><?= __('Unit Price') ?></span>
-            <span class="text-primary-500">
-                <span>
-                    <?= /** @noEscape */
-                    $productViewModel->format($product->getUnitPrice()) ?>
-                </span>
-                <span aria-hidden="true">/</span>
-                <span class="sr-only">&nbsp;<?= __('per') ?>&nbsp;</span>
-                <span>
-                    <?= $product->getUnitPriceMeasurement()->getReferenceValue() != 1 ? $product->getUnitPriceMeasurement()->getReferenceValue() : '' ?>
-                    <?= $product->getUnitPriceMeasurement()->getReferenceUnit() ?>
-                </span>
-            </span>
-        </div>
-    <?php endif; ?>
 </div>
