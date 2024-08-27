@@ -26,91 +26,97 @@ $isInline = (bool)$block->getData('isInline');
 $isAlpineTemplate = (bool)$block->getData('isAlpineTemplate');
 $showBadge = (bool)$block->getData('showBadge');
 
-$regularPrice = $productPriceViewModel->getPriceValue(RegularPrice::PRICE_CODE, $product);
-$finalPrice = $productPriceViewModel->getPriceValue(FinalPrice::PRICE_CODE, $product);
-$specialPrice = $productPriceViewModel->getPriceValue(SpecialPrice::PRICE_CODE, $product);
-$tierPrices = $productPriceViewModel->getTierPrices(TierPrice::PRICE_CODE, $product);
+$regularPrice = $finalPrice = $specialPrice = $tierPrices = $msrpPrice = null;
+if ($product) {
+    $regularPrice = $productPriceViewModel->getPriceValue(RegularPrice::PRICE_CODE, $product);
+    $finalPrice = $productPriceViewModel->getPriceValue(FinalPrice::PRICE_CODE, $product);
+    $specialPrice = $productPriceViewModel->getPriceValue(SpecialPrice::PRICE_CODE, $product);
+    $tierPrices = $productPriceViewModel->getTierPrices(TierPrice::PRICE_CODE, $product);
+    $msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPrice::PRICE_CODE] ?? null;
+}
 
-$specialPriceFrom = $product->getSpecialFromDate();
-$specialPriceTo = $product->getSpecialToDate();
+$specialPriceFrom = $product?->getSpecialFromDate();
+$specialPriceTo = $product?->getSpecialToDate();
 $currentDate = date('Y-m-d H:i:s');
 
 $isSpecialPriceValid = $specialPrice && $specialPriceFrom <= $currentDate && $specialPriceTo >= $currentDate;
-$msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPrice::PRICE_CODE] ?? null;
 $customOptionPrices = [];
 
 ?>
 
-<div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
-    <div class="price__element flex items-center gap-2 text-text-500 flex-wrap<?= $customClass ?>">
-        <?php if ($isSpecialPriceValid): ?>
-            <span class="sr-only"><?= __('Sale Price') ?></span>
-            <span class="text-primary-500">
+<?php if ($product): ?>
+    <div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
+        <div
+            class="price__element flex items-center gap-x-2 text-text-500 flex-wrap sm:justify-start justify-end sm:text-left text-right<?= $customClass ?>">
+            <?php if ($isSpecialPriceValid): ?>
+                <span class="sr-only"><?= __('Sale Price') ?></span>
+                <span class="text-primary-500">
                 <?= /** @noEscape */
                 $productViewModel->format($specialPrice) ?>
             </span>
-            <s>
-                <?= /** @noEscape */
-                $productViewModel->format($regularPrice) ?>
-            </s>
-        <?php elseif ($product->getPriceMin() != $product->getPriceMax()): ?>
-            <span><?= __('From') ?></span>
-            <span>
+                <s>
+                    <?= /** @noEscape */
+                    $productViewModel->format($regularPrice) ?>
+                </s>
+            <?php elseif ($product->getPriceMin() != $product->getPriceMax()): ?>
+                <span><?= __('From') ?></span>
+                <span>
                 <?= /** @noEscape */
                 $productViewModel->format($product->getPriceMin()) ?>
             </span>
-        <?php else: ?>
-            <span class="sr-only"><?= __('Regular Price') ?></span>
-            <span class="text-primary-500">
+            <?php else: ?>
+                <span class="sr-only"><?= __('Regular Price') ?></span>
+                <span class="text-primary-500">
                 <?= /** @noEscape */
                 $productViewModel->format($regularPrice) ?>
             </span>
-        <?php endif; ?>
+            <?php endif; ?>
 
-        <?php if ($tierPrices): ?>
-            <span class="sr-only"><?= __('As low as') ?></span>
-            <span class="text-primary-500">
+            <?php if ($tierPrices): ?>
+                <span class="sr-only"><?= __('As low as') ?></span>
+                <span class="text-primary-500">
                 <?= /** @noEscape */
                 $productViewModel->format($productPriceViewModel->getLowestTierPrice($tierPrices)) ?>
             </span>
-        <?php endif; ?>
+            <?php endif; ?>
 
-        <?php if ($msrpPrice && $msrpPrice->canApplyMsrp($product) && $msrpPrice->isMinimalPriceLessMsrp($product)): ?>
-            <span class="sr-only"><?= __('MSRP') ?></span>
-            <span class="text-gray-500">
+            <?php if ($msrpPrice && $msrpPrice->canApplyMsrp($product) && $msrpPrice->isMinimalPriceLessMsrp($product)): ?>
+                <span class="sr-only"><?= __('MSRP') ?></span>
+                <span class="text-gray-500">
                 <?= /** @noEscape */
                 $productViewModel->format($msrpPrice->getAmount()->getValue()) ?>
             </span>
-        <?php endif; ?>
+            <?php endif; ?>
 
-        <?php if ($productPriceViewModel->displayPriceIncludingTax()): ?>
-            <div class="text-nowrap text-[14px] w-full"><?= __('Tax included.') ?></div>
-        <?php elseif($productPriceViewModel->displayPriceInclAndExclTax()): ?>
-            <div class="text-nowrap text-[14px] w-full"><?= __('Tax excluded.') ?></div>
-        <?php endif; ?>
+            <?php if ($productPriceViewModel->displayPriceIncludingTax()): ?>
+                <div class="text-nowrap text-[14px] w-full"><?= __('Tax included.') ?></div>
+            <?php elseif ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+                <div class="text-nowrap text-[14px] w-full"><?= __('Tax excluded.') ?></div>
+            <?php endif; ?>
 
-        <?php if (!empty($customOptionPrices)): ?>
-            <span class="sr-only"><?= __('Custom Options Price') ?></span>
-            <span class="text-primary-500">
+            <?php if (!empty($customOptionPrices)): ?>
+                <span class="sr-only"><?= __('Custom Options Price') ?></span>
+                <span class="text-primary-500">
                 <?= /** @noEscape */
                 $productViewModel->format($finalPrice + array_sum($customOptionPrices)) ?>
             </span>
-        <?php endif; ?>
+            <?php endif; ?>
 
-        <?php if ($showBadge): ?>
-            <?=
-            $template
-                ->setData([
-                    'product' => $product,
-                    'isAlpineTemplate' => $isAlpineTemplate,
-                    'class' => 'ms-3 static max-md:hidden !bg-secondary-500',
-                ])
-                ->render('Magento_Catalog::product/element/_discount-badge.phtml');
-            ?>
-        <?php endif; ?>
+            <?php if ($showBadge): ?>
+                <?=
+                $template
+                    ->setData([
+                        'product' => $product,
+                        'isAlpineTemplate' => $isAlpineTemplate,
+                        'class' => 'ms-3 static max-md:hidden !bg-secondary-500',
+                    ])
+                    ->render('Magento_Catalog::product/element/_discount-badge.phtml');
+                ?>
+            <?php endif; ?>
 
-        <?php if (!$product->isSaleable()): ?>
-            <span class="unavailable"><?= __('Out of Stock') ?></span>
-        <?php endif; ?>
+            <?php if (!$product->isSaleable()): ?>
+                <span class="unavailable"><?= __('Out of Stock') ?></span>
+            <?php endif; ?>
+        </div>
     </div>
-</div>
+<?php endif; ?>
