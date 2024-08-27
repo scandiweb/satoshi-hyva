@@ -73,7 +73,7 @@ $customOptionPrices = [];
             <?php endif; ?>
 
             <?php if ($tierPrices): ?>
-                <span class="sr-only"><?= __('As low as') ?></span>
+                <span class="sr-only"><?= __('From') ?></span>
                 <span class="text-primary-500">
                 <?= /** @noEscape */
                 $productViewModel->format($productPriceViewModel->getLowestTierPrice($tierPrices)) ?>

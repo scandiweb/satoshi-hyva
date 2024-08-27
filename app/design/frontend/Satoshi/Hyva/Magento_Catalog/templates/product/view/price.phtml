@@ -241,7 +241,7 @@ return;
             <div class="final-price inline-block" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                 <span class="price-label block">
                     <?= ($product->canConfigure() && is_int($product->getPrice())) ?
-                        $escaper->escapeHtml(__('As low as')) . ':' :
+                        $escaper->escapeHtml(__('From')) . ':' :
                         '&nbsp;' ?>
                 </span>
                 <span id="product-price-<?= (int)$product->getId() ?>" class="price-wrapper title-font font-medium text-2xl text-gray-900">
@@ -275,7 +275,7 @@ return;
         <div class="final-price inline-block">
             <?php if ($product->canConfigure() && is_int($product->getPrice())): ?>
                 <span class="price-label block" :class="{ 'invisible' : !showRegularPriceLabel }">
-                    <?= $escaper->escapeHtml(__('As low as')) ?>:
+                    <?= $escaper->escapeHtml(__('From')) ?>:
                 </span>
             <?php endif; ?>
             <span id="product-price-<?= (int)$product->getId() ?>" class="price-wrapper title-font font-medium text-2xl text-gray-900">
