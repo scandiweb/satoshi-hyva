@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
@@ -13,33 +12,28 @@ use Satoshi\Theme\ViewModel\StoreSelector;
 /** @var StoreSelector $storeViewModel */
 
 $storeViewModel = $viewModels->require(StoreSelector::class);
-$languages = $storeViewModel->getAvailableStores();
-$currentLanguageCode = $storeViewModel->getCurrentLanguageCode();
-$defaultLanguageCode = $storeViewModel->getDefaultLanguageCode();
+$stores = $storeViewModel->getAvailableStores();
+$currentStoreCode = $storeViewModel->getCurrentStoreCode();
+$currentLabel = __($stores[$currentStoreCode]['name'] ?? '');
 
 $options = [];
-foreach ($languages as $key => $language) {
-    $url = $language['url'];
-    if ($key !== $defaultLanguageCode) {
-        $url .= '?___store=' . $escaper->escapeJs($key);
-    }
+foreach ($stores as $key => $store) {
+    $onClick = ($key === $currentStoreCode) ? 'return false;' : 'window.location.href=`' . $store['url'] . '`';
 
     $options[] = [
         'value' => $escaper->escapeHtml($key),
-        'label' => $escaper->escapeHtml($language['name'] ?? ''),
-        'on_click' => 'window.location.href=`' . $url . '`',
-        'is_active' => $key === $currentLanguageCode,
+        'label' => $escaper->escapeHtml($store['name'] ?? ''),
+        'on_click' => $onClick,
+        'is_active' => $key === $currentStoreCode,
     ];
 }
-
-$currentLabel = __($languages[$currentLanguageCode]['name'] ?? '');
 ?>
 
 <?php if (count($options) > 1): ?>
     <?=
     $template
         ->setData([
-            'id' => 'language-selector',
+            'id' => 'store-selector',
             'label' => $escaper->escapeHtml($currentLabel),
             'options' => $options,
             'placement' => 'top',
