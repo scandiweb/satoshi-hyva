@@ -5,10 +5,16 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
-
+use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\Store;
+use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
 use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Template $template */
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
 /** @var Template $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
@@ -16,17 +22,52 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-$title = (string)$block->getTitle();
+/** @var Store $viewModelStore */
+$viewModelStore = $viewModels->require(Store::class);
 
-$items = $block->getItems();
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
 
-if (!$items) {
-    return;
-}
+/** @var ProductListItem $productListItemViewModel */
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
 
+$viewMode = 'grid';
+$imageDisplayArea = 'category_page_grid';
+$showDescription = false;
+
+$name = (string) $block->getName();
+$title = (string) $block->getTitle();
+$headingTag = $block->getData('heading_tag') ?: 'h3';
+$items = $block->getItems() ?? [];
 if (is_object($items) && $items instanceof Iterator) {
     $items = iterator_to_array($items);
 }
+if (!$itemCount = count($items)) {
+    return;
+}
+
+$sliderIndex = 1;
+$sliderItemRenderer = $block->getLayout()->getBlock('product_list_item')
+    ?: $block->getChildBlock('slider.item.template')
+        ?: $block->getLayout()->createBlock(Template::class);
+
+$hideRatingSummary = (bool) $block->getData('hide_rating_summary');
+$hideDetails       = (bool) $block->getData('hide_details');
+
+$sliderItemRenderer->setData('hide_details', $hideDetails);
+$sliderItemRenderer->setData('hide_rating_summary', $hideRatingSummary);
+
+// The slider item renderer block is often a shared instance.
+// If a specific item template is set for this slider, the previously set template must be reset later
+// so the item template is only replaced for the one slider it is specified on.
+$sharedItemRendererTemplate = null;
+$isSharedItemRenderer = $sliderItemRenderer !== $block->getChildBlock('slider.item.template');
+if ($isSharedItemRenderer && $block->getChildBlock('slider.item.template')) {
+    $sharedItemRendererTemplate = $sliderItemRenderer->getTemplate();
+    $sliderSpecificItemTemplate = $block->getChildBlock('slider.item.template')->getTemplate();
+    $sliderItemRenderer->setTemplate($sliderSpecificItemTemplate);
+}
+
 ?>
 
 <div
@@ -90,14 +131,15 @@ if (is_object($items) && $items instanceof Iterator) {
         <?php foreach ($items as $product): ?>
             <div class="slider__slide"
             >
-                <?=
-                $template
-                    ->setData([
-                        'imageLoading' => 'lazy',
-                        'product' => $product
-                    ])
-                    ->render('Magento_Catalog::product/list/item-details-article.phtml')
-                ?>
+                <?= /** @noEscape */ $productListItemViewModel->getItemHtmlWithRenderer(
+                    $sliderItemRenderer,
+                    $product,
+                    $block,
+                    $viewMode,
+                    ProductReviewRenderer::SHORT_VIEW,
+                    $imageDisplayArea,
+                    $showDescription
+                ) ?>
             </div>
         <?php endforeach; ?>
     </div>
