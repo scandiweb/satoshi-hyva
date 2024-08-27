@@ -44,7 +44,7 @@ $customOptionPrices = [];
 
 ?>
 
-<?php if ($product): ?>
+<?php if (!$isAlpineTemplate): ?>
     <div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
         <div
             class="price__element flex items-center gap-x-2 text-text-500 flex-wrap sm:justify-start justify-end sm:text-left text-right<?= $customClass ?>">
