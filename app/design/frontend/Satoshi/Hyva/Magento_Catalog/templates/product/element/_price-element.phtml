@@ -84,9 +84,9 @@ $customOptionPrices = [];
         <?php endif; ?>
 
         <?php if ($productPriceViewModel->displayPriceIncludingTax()): ?>
-            <div class="text-nowrap text-[14px]"><?= __('Tax included.') ?></div>
+            <div class="text-nowrap text-[14px] w-full"><?= __('Tax included.') ?></div>
         <?php elseif($productPriceViewModel->displayPriceInclAndExclTax()): ?>
-            <div class="text-nowrap text-[14px]"><?= __('Tax excluded.') ?></div>
+            <div class="text-nowrap text-[14px] w-full"><?= __('Tax excluded.') ?></div>
         <?php endif; ?>
 
         <?php if (!empty($customOptionPrices)): ?>
