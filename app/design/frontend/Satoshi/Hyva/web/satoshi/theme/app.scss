@@ -62,12 +62,6 @@ h3 {
   }
 }
 
-p[data-spam-detection-disclaimer] {
-  a {
-    @apply underline;
-  }
-}
-
 [x-cloak] {
   display: none !important;
 }
