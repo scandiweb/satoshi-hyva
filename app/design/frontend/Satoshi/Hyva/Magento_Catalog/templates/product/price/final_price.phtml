@@ -16,7 +16,7 @@ $schema = ($block->getZone() == 'item_view') ? true : false;
 <div class="price__element flex items-center gap-2 text-text-500">
     <?php if ($block->hasSpecialPrice()) :?>
         <span class="sr-only"><?= __('Sale Price') ?></span>
-        <span class="text-primary-500">
+        <span>
             <?= /* @noEscape */ $block->renderAmount($finalPriceModel->getAmount(), [
                 'price_id'          => $block->getPriceId('product-price-' . $idSuffix),
                 'price_type'        => 'finalPrice',
@@ -34,7 +34,7 @@ $schema = ($block->getZone() == 'item_view') ? true : false;
         </s>
     <?php else :?>
         <span class="sr-only"><?= __('Regular Price') ?></span>
-        <span class="text-primary-500">
+        <span>
             <?= /* @noEscape */ $block->renderAmount($finalPriceModel->getAmount(), [
                 'price_id'          => $block->getPriceId('product-price-' . $idSuffix),
                 'price_type'        => 'finalPrice',

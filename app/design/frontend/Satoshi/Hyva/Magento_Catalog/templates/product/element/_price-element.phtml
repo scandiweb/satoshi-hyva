@@ -37,13 +37,12 @@ $currentDate = date('Y-m-d H:i:s');
 
 $isSpecialPriceValid = $specialPrice && $specialPriceFrom <= $currentDate && $specialPriceTo >= $currentDate;
 $msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPrice::PRICE_CODE] ?? null;
-$displayTax = $productPriceViewModel->displayPriceIncludingTax();
 $customOptionPrices = [];
 
 ?>
 
 <div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
-    <div class="price__element flex items-center gap-2 text-text-500<?= $customClass ?>">
+    <div class="price__element flex items-center gap-2 text-text-500 flex-wrap<?= $customClass ?>">
         <?php if ($isSpecialPriceValid): ?>
             <span class="sr-only"><?= __('Sale Price') ?></span>
             <span class="text-primary-500">
@@ -84,9 +83,9 @@ $customOptionPrices = [];
             </span>
         <?php endif; ?>
 
-        <?php if ($displayTax): ?>
+        <?php if ($productPriceViewModel->displayPriceIncludingTax()): ?>
             <div class="text-nowrap text-[14px]"><?= __('Tax included.') ?></div>
-        <?php else: ?>
+        <?php elseif($productPriceViewModel->displayPriceInclAndExclTax()): ?>
             <div class="text-nowrap text-[14px]"><?= __('Tax excluded.') ?></div>
         <?php endif; ?>
 

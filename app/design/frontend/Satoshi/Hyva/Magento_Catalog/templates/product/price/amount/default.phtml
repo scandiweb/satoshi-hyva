@@ -21,7 +21,7 @@ use Magento\Framework\Escaper;
         <?php endif; ?>
         data-price-amount="<?= $escaper->escapeHtmlAttr($block->getDisplayValue()) ?>"
         data-price-type="<?= $escaper->escapeHtmlAttr($block->getPriceType()) ?>"
-        class="price-wrapper <?= $escaper->escapeHtmlAttr($block->getPriceWrapperCss()) ?> text-primary-500"
+        class="price-wrapper <?= $block->getPriceType() === 'finalPrice' ? 'text-primary-500' : '' ?><?= $escaper->escapeHtmlAttr($block->getPriceWrapperCss()) ?>"
     >
         <?= $escaper->escapeHtml($block->formatCurrency($block->getDisplayValue(), (bool)$block->getIncludeContainer()), ['span']) ?>
     </span>
