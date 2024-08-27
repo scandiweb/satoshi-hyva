@@ -20,7 +20,7 @@ use Magento\Framework\Escaper;
 
 $specialEscaper = $viewModels->require(EscapeHtmlAllowingAnchorAttributes::class)
 ?>
-<p data-spam-detection-disclaimer>
+<p data-spam-detection-disclaimer class="[&>a]:underline">
 <?= $specialEscaper->escapeHtml(
     __(
         'This site is protected by reCAPTCHA and the Google <a href="%1">Privacy Policy</a> and <a href="%2">Terms of Service</a> apply.',
