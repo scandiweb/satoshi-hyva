@@ -30,8 +30,8 @@
         <!-- END: Wrap content within preview-content comment -->
 
         <!-- Add h-full classes to columns and main -->
-        <referenceContainer name="columns" htmlTag="div" htmlClass="columns h-full"/>
-        <referenceContainer name="main" label="Main Content Container" htmlTag="div" htmlClass="column main h-full"/>
+        <referenceContainer name="columns" htmlClass="columns h-full"/>
+        <referenceContainer name="main" htmlClass="column main h-full"/>
 
         <referenceContainer name="header.container" htmlClass="page-header contents"/>
         <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-bg-500">
