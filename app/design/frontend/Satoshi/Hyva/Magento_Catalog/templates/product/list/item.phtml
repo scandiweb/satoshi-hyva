@@ -8,7 +8,9 @@ use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Helper\Image;
 use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
 
+/** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
@@ -109,13 +111,13 @@ if ($product) {
                                 class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
                                 src="<?= $escaper->escapeUrl($imageUrl) ?>"
                                 alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>" loading="lazy">
-                            <?php if (isset($discountPercentage) && $discountPercentage > 0) : ?>
-                                <div class="absolute bottom-4 left-0 rounded-full">
-                            <span class="card-product__badge bg-white px-3 py-2 text-sm font-bold rounded-r-full">
-                                -<?php echo $discountPercentage; ?>% OFF
-                            </span>
-                                </div>
-                            <?php endif; ?>
+                            <?=
+                            $template
+                                ->setData([
+                                    'product' => $product,
+                                ])
+                                ->render('Magento_Catalog::/product/list/discount-badge.phtml')
+                            ?>
                         </div>
                     <?php else: ?>
                         <div
