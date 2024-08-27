@@ -12,6 +12,28 @@ export const searchQuery = (term: string, size: number) => {
             items {
                 id
                 name
+                price_range {
+                    minimum_price {
+                        regular_price {
+                            value
+                            currency
+                        }
+                        final_price {
+                            value
+                            currency
+                        }
+                    }
+                    maximum_price {
+                        regular_price {
+                            value
+                            currency
+                        }
+                        final_price {
+                            value
+                            currency
+                        }
+                    }
+                }
                 sku,
                 image {
                     url,

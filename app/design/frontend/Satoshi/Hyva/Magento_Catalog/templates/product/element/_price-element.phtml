@@ -44,7 +44,29 @@ $customOptionPrices = [];
 
 ?>
 
-<?php if (!$isAlpineTemplate): ?>
+<?php if ($isAlpineTemplate): ?>
+    <div class="price__element flex items-center gap-2 text-text-500 <?= $customClass ?>">
+        <template x-if="product.price_range.minimum_price.final_price.value < product.price_range.minimum_price.regular_price.value">
+            <div>
+                <span class="sr-only"><?= __('Sale Price') ?></span>
+                <span class="text-primary-500" x-text="parseFloat(product.price_range.minimum_price.final_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.final_price.currency"></span>
+                <s x-text="parseFloat(product.price_range.minimum_price.regular_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.regular_price.currency"></s>
+            </div>
+        </template>
+        <template x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value != product.price_range.maximum_price.value">
+            <div>
+                <span><?= __('From') ?></span>
+                <span class="text-primary-500" x-text="parseFloat(product.price_range.minimum_price.final_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.final_price.currency"></span>
+            </div>
+        </template>
+        <template x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value === product.price_range.maximum_price.value">
+            <div>
+                <span class="sr-only"><?= __('Regular Price') ?></span>
+                <span class="text-primary-500" x-text="parseFloat(product.price_range.minimum_price.final_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.final_price.currency"></span>
+            </div>
+        </template>
+    </div>
+<?php else: ?>
     <div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
         <div
             class="price__element flex items-center gap-x-2 text-text-500 flex-wrap sm:justify-start justify-end sm:text-left text-right<?= $customClass ?>">

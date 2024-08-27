@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
@@ -8,16 +7,18 @@ use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Helper\Image;
 use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
 
+/** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
 /** @var AbstractProduct $block */
 $product = $block->getData('product');
 $imageUrl = $this->helper(Image::class)
-                 ->init($product, 'product_base_image')
-                 ->resize(600)
-                 ->getUrl();
+    ->init($product, 'product_base_image')
+    ->resize(600)
+    ->getUrl();
 
 // Calculating is large
 $nthLarge = $block->getData('n_of_large_card') ?? 0;
@@ -159,6 +160,14 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
                 <?php if ($product) : ?>
                     <?= /* @noEscape */
                     $productListItemViewModel->getProductPriceHtml($product) ?>
+                <?php else: ?>
+                    <?=
+                        $template
+                            ->setData([
+                                'isAlpineTemplate' => true,
+                            ])
+                            ->render('Magento_Catalog::product/element/_price-element.phtml');
+                    ?>
                 <?php endif; ?>
             </div>
         </article>
