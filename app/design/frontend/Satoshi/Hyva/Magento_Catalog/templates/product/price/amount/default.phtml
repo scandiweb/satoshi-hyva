@@ -13,7 +13,7 @@ use Magento\Framework\Escaper;
     <?= $block->getSchema() ? ' itemprop="offers" itemscope itemtype="http://schema.org/Offer"' : '' ?>
 >
     <?php if ($block->getDisplayLabel()): ?>
-        <span class="price-label text-gray-500"><?= $escaper->escapeHtml($block->getDisplayLabel()) ?></span>
+        <span class="price-label"><?= $escaper->escapeHtml($block->getDisplayLabel()) ?></span>
     <?php endif; ?>
     <span
         <?php if ($block->getPriceId()): ?>
