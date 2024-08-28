@@ -65,13 +65,14 @@ export type FiltersType = {
 const POPUP_FILTERS = "filters";
 const POPUP_BOTTOM_FILTERS = "bottom-filters";
 
-export const FILTER_SORT = "sort_by";
+export const FILTER_SORT = "product_list_order";
 export const FILTER_PRICE = "Price";
 export const FILTER_PRICE_PARAM_NAME = "filter.v.price";
 export const FILTER_PRICE_MIN = "filter.v.price.gte";
 export const FILTER_PRICE_MAX = "filter.v.price.lte";
 
 export const Filters = (
+  sortOptions: [],
   defaultSort: string | unknown,
   minPrice: string | unknown,
   maxPrice: string | unknown,
@@ -83,7 +84,7 @@ export const Filters = (
     isTopLevel: true,
     isTopFilterVisible: null,
     filters: [],
-    sortOptions: [],
+    sortOptions: sortOptions,
     // If the default sort option is selected, then this.sortBy will be false.
     // otherwise, this.sortBy will have the string value of the selected sort option.
     sortBy: false,

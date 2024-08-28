@@ -1,0 +1,35 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\ProductList\Toolbar;
+use Satoshi\Theme\Block\Template;
+use Magento\Framework\Escaper;
+
+/** @var Toolbar $block */
+/** @var Template $template */
+/** @var Escaper $escaper */
+
+$availableOrders = $block->getAvailableOrders();
+$sortOptions = array_map(function ($option, $key) use ($escaper) {
+    return [
+        'value' => $key,
+        'name' => $escaper->escapeHtml($option),
+    ];
+}, $availableOrders, array_keys($availableOrders));
+?>
+
+<form
+    class="filter-form"
+    id="FilterForm"
+    x-show="$store.main.isMobile ? !isTopLevel : true"
+    x-data="{isTopLevel: true}"
+>
+    <?=
+    $template
+        ->setData([
+            'sortOptions' => $sortOptions,
+            'defaultSort' => $block->getCurrentOrder(),
+        ])
+        ->render('Magento_Catalog::html/_filter-sort.phtml');
+    ?>
+</form>
