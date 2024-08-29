@@ -61,16 +61,22 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
             <button type="button"
                     class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
                     :aria-label="'<?= __($sortByLabel) ?>'">
-            <span :class="isTopLevel ? '-rotate-90' : 'rotate-90'" x-ref="AccordionIcon">
+            <span
+                class="transition-transform duration-300 -rotate-90"
+                :class="!isTopLevel ? '!rotate-90' : ''"
+                x-ref="AccordionIcon"
+            >
                 <?= $hyvaicons->renderHtml('chevron') ?>
             </span>
             </button>
         </div>
 
-        <div x-cloak x-show="isTopLevel" x-ref="AccordionPanel" class="overflow-hidden md:px-2" :class="{
-      'transition-none': $store.main.isReducedMotion,
-      'transition': !$store.main.isReducedMotion
-    }">
+        <div x-cloak x-show="isTopLevel" x-ref="AccordionPanel" class="overflow-hidden md:px-2"
+             :class="{
+                'transition-none': $store.main.isReducedMotion,
+                'transition': !$store.main.isReducedMotion,
+            }"
+        >
             <div class="md:pb-3 md:pt-2">
                 <div class="flex flex-col gap-4 py-3" id="filter-<?= $sortByLabelForFilter ?>">
                     <div role="radiogroup" aria-label="<?= __('products.facets.sort_button') ?>">
