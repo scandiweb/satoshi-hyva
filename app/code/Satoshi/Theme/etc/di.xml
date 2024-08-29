@@ -14,6 +14,12 @@
         for="Magento\Checkout\Block\Cart\Coupon"
         type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
     />
-    <preference for="Magento\Customer\Controller\Account\CreatePost"
-                type="Satoshi\Theme\Plugin\Customer\Controller\Account\CreatePost"/>
+    <preference
+        for="Hyva\Theme\ViewModel\Currency"
+        type="Satoshi\Theme\ViewModel\Currency"
+    />
+    <preference
+        for="Magento\Customer\Controller\Account\CreatePost"
+        type="Satoshi\Theme\Plugin\Customer\Controller\Account\CreatePost"
+    />
 </config>
