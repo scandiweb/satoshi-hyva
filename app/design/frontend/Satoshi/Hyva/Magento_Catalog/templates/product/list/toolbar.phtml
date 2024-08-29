@@ -16,6 +16,8 @@ $sortOptions = array_map(function ($option, $key) use ($escaper) {
         'name' => $escaper->escapeHtml($option),
     ];
 }, $availableOrders, array_keys($availableOrders));
+
+$defaultSort = $sortOptions[0]['value'] ?? $block->getCurrentOrder();
 ?>
 
 <form
@@ -28,7 +30,7 @@ $sortOptions = array_map(function ($option, $key) use ($escaper) {
     $template
         ->setData([
             'sortOptions' => $sortOptions,
-            'defaultSort' => $block->getCurrentOrder(),
+            'defaultSort' => $defaultSort,
         ])
         ->render('Magento_Catalog::html/_filter-sort.phtml');
     ?>
