@@ -16,16 +16,41 @@ use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
+
+$stateBlock = $block->getChildBlock('state');
+
+$filters = $block->getFilters();
+
+$filteredFilters = array_filter($filters, function ($filter) {
+    return $filter->getItemsCount();
+});
+
+$allFilters = array_unique(array_merge($stateBlock->getActiveFilters(), $filteredFilters), SORT_REGULAR);
+
 ?>
 <?php if ($block->canShowBlock()): ?>
+    <template x-portal="document.getElementById('toolbar-filters')">
+        <nav
+            class="overflow-x-scroll pb-4 pt-2 md:hidden" aria-label="{{ 'products.facets.filter_aria_label' | t }}">
+            <div
+                class="flex w-max gap-3 transition-transform duration-300 {% if isDefault %}translate-x-[-52px]{%- else -%}translate-x-0{% endif %}"
+            >
+                <?php foreach ($allFilters as $filter): ?>
+                    <button
+                        type="button"
+                        aria-label="{{ 'products.facets.clear_all' | t }}"
+                        class="button duration-300 button--outline-secondary"
+                    >
+                        <?= $filter->getName() ?>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+        </nav>
+    </template>
     <div
-        x-data="initLayeredNavigation()"
-        x-init="checkIsMobileResolution()"
-        @resize.window.debounce="checkIsMobileResolution()"
-        @visibilitychange.window.debounce="checkIsMobileResolution()"
         role="region"
         aria-label="<?= $escaper->escapeHtmlAttr(__('Product filters')) ?>"
-        class="overflow-hidden w-[275px]"
+        class="overflow-hidden w-[275px] hidden md:block"
     >
         <div class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"
              :class="$store.productList.isFiltersSidebarExpanded ? 'translate-x-0' : 'translate-x-full'"
@@ -77,18 +102,4 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             </div>
         </div>
     </div>
-    <script>
-        function initLayeredNavigation() {
-            return {
-                isMobile: false,
-                blockOpen: false,
-                checkIsMobileResolution() {
-                    const mobileElement = this.$refs.LayeredNavigationMobileToggleIcon;
-                    this.isMobile = mobileElement
-                        ? getComputedStyle(mobileElement).display !== "none"
-                        : window.matchMedia('(max-width: 767px)').matches; // Fallback to `md` breakpoint
-                }
-            }
-        }
-    </script>
 <?php endif; ?>
