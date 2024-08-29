@@ -1,0 +1,120 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\ProductList\Toolbar as Block;
+use Magento\Framework\Escaper;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Escaper $escaper */
+/** @var Block $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var SvgIcons $hyvaicons */
+
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$sortByLabel = $block->getData('sortByLabel') ?? 'Sort By';
+$sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($sortByLabel)));
+
+$availableOrders = $block->getAvailableOrders();
+$sortOptions = array_map(function ($option, $key) use ($escaper) {
+    return [
+        'value' => $key,
+        'name' => $option,
+    ];
+}, $availableOrders, array_keys($availableOrders));
+
+$modifiedSortOptions = [];
+foreach ($sortOptions as $option) {
+    $value = $escaper->escapeHtml($option['value']);
+    $name = $escaper->escapeHtml($option['name']);
+
+    if ($value === 'price') {
+        $modifiedSortOptions[] = ['value' => $value, 'name' => $name . ', low to high'];
+        $modifiedSortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $name . ', high to low'];
+    } elseif ($value === 'name') {
+        $modifiedSortOptions[] = ['value' => $value, 'name' => 'Alphabetically, A-Z'];
+        $modifiedSortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => 'Alphabetically, Z-A'];
+    } else {
+        $modifiedSortOptions[] = ['value' => $value, 'name' => $name . ', ascending'];
+        $modifiedSortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $name . ', descending'];
+    }
+}
+$sortOptions = $modifiedSortOptions;
+
+$defaultSort = $sortOptions[0]['value'] ?? $block->getCurrentOrder();
+?>
+
+<form
+    class="filter-form"
+    id="FilterForm"
+    x-show="$store.main.isMobile ? !isTopLevel : true"
+    x-data="{isTopLevel: true}"
+>
+    <fieldset
+        class="flex-1 md:border-t md:border-bg-600 md:py-5"
+        x-data="Filters(<?= $escaper->escapeHtml(json_encode($sortOptions)) ?>, '<?= $escaper->escapeHtml($defaultSort) ?>')"
+        x-show="$store.main.isMobile ? currentName == '<?= $escaper->escapeHtml(__($sortByLabel)) ?>' : true"
+    >
+        <legend class="sr-only"><?= __($sortByLabel) ?></legend>
+
+        <div
+            class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2"
+            x-ref="AccordionButton"
+            @click="isTopLevel = !isTopLevel"
+        >
+            <h2 class="grow text-left text-text-500"><?= __($sortByLabel) ?></h2>
+            <button type="button"
+                    class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
+                    :aria-label="'<?= __($sortByLabel) ?>'">
+            <span :class="isTopLevel ? '-rotate-90' : 'rotate-90'" x-ref="AccordionIcon">
+                <?= $hyvaicons->renderHtml('chevron') ?>
+            </span>
+            </button>
+        </div>
+
+        <div x-cloak x-show="isTopLevel" x-ref="AccordionPanel" class="overflow-hidden md:px-2" :class="{
+      'transition-none': $store.main.isReducedMotion,
+      'transition': !$store.main.isReducedMotion
+    }">
+            <div class="md:pb-3 md:pt-2">
+                <div class="flex flex-col gap-4 py-3" id="filter-<?= $sortByLabelForFilter ?>">
+                    <div role="radiogroup" aria-label="<?= __('products.facets.sort_button') ?>">
+                        <?php foreach ($sortOptions as $option): ?>
+                            <?php
+                            $value = is_array($option) ? $option['value'] : (string)$option;
+                            $name = is_array($option) ? $option['name'] : (string)$option;
+                            ?>
+                            <div class="relative h-11 w-full">
+                                <label class="radio mb-0 h-full w-full py-1"
+                                       for="sort-<?= $escaper->escapeHtml($value) ?>">
+                                    <input
+                                        type="radio"
+                                        class="radio__input"
+                                        id="sort-<?= $value ?>"
+                                        name="product_list_order"
+                                        value="<?= $value ?>"
+                                        :checked="getIsFilterValueSelected('product_list_order', '<?= $value ?>')"
+                                        @change="updateFilters()"
+                                        aria-label="<?= $name ?>"
+                                    >
+                                    <span class="radio__control" aria-hidden="true"></span>
+                                    <span class="radio__label text-md"><?= $name ?></span>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <button
+                    x-show="getIsFilterSelected('product_list_order')"
+                    type="button"
+                    class="link link--primary mt-4 hidden md:inline-block"
+                    @click="resetCurrent('filter-<?= $sortByLabelForFilter ?>')"
+                >
+                    <?= __('Reset') ?>
+                </button>
+            </div>
+        </div>
+    </fieldset>
+</form>
