@@ -19,19 +19,19 @@ foreach ($block->getAvailableOrders() ?? [] as $key => $option) {
     $name = $escaper->escapeHtml($option);
 
     $ascendingLabel = match ($value) {
-        'price' => ', low to high',
-        'name' => ', A-Z',
-        default => ', ascending',
+        'price' => "{$name}, low to high",
+        'name' => 'Alphabetically, A-Z',
+        default => "{$name}, ascending",
     };
 
     $descendingLabel = match ($value) {
-        'price' => ', high to low',
-        'name' => ', Z-A',
-        default => ', descending',
+        'price' => "{$name}, high to low",
+        'name' => 'Alphabetically, Z-A',
+        default => "{$name}, descending",
     };
 
-    $sortOptions[] = ['value' => $value, 'name' => $name . $ascendingLabel];
-    $sortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $name . $descendingLabel];
+    $sortOptions[] = ['value' => $value, 'name' => $ascendingLabel];
+    $sortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $descendingLabel];
 }
 
 $defaultSort = $sortOptions[0]['value'] ?? $block->getCurrentOrder();
