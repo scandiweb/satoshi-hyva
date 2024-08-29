@@ -95,7 +95,12 @@ export const Filters = (
 
       this.searchQuery = this._getSearchQuery();
 
-      // Change popup height on content change
+      const sortByParam = new URLSearchParams(window.location.search).get(FILTER_SORT);
+      if (sortByParam) {
+        this.setSortBy(sortByParam);
+      }
+
+        // Change popup height on content change
       this.$watch("currentName", (value, oldValue) => {
         if (value != oldValue) {
           this.$nextTick(() => {
