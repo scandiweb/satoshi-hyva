@@ -13,7 +13,7 @@ use Magento\Catalog\Pricing\Price\RegularPrice;
 /** @var ProductPrice $productPriceViewModel */
 
 $product = $block->getData('product');
-$customClass = $block->getData('class') ? " {$block->getData('class')}" : '';
+$customClass = $block->getData('class');
 $isAlpineTemplate = (bool)$block->getData('isAlpineTemplate');
 
 $productViewModel = $viewModels->require(ProductPage::class);
@@ -29,7 +29,7 @@ $discountPercentage = $difference > 0 ? round(($difference / $regularPrice) * 10
 
 <?php if ($isAlpineTemplate): ?>
     <div
-        class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm<?= $customClass ?>"
+        class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm <?= $customClass ?>"
         x-show="<?= $discountPercentage !== null ?>"
     >
         <span class="font-semibold">
@@ -38,7 +38,7 @@ $discountPercentage = $difference > 0 ? round(($difference / $regularPrice) * 10
     </div>
 <?php elseif ($discountPercentage && $product->isAvailable()): ?>
     <div
-        class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm<?= $customClass ?>"
+        class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm <?= $customClass ?>"
         x-element-transition-badge
     >
         <span class="font-semibold">

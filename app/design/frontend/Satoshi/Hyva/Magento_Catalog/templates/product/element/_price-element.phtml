@@ -21,7 +21,7 @@ $productViewModel = $viewModels->require(ProductPage::class);
 $productPriceViewModel = $viewModels->require(ProductPrice::class);
 
 $product = $block->getData('product');
-$customClass = $block->getData('class') ? " {$block->getData('class')}" : '';
+$customClass = $block->getData('class');
 $isInline = (bool)$block->getData('isInline');
 $isAlpineTemplate = (bool)$block->getData('isAlpineTemplate');
 $showBadge = (bool)$block->getData('showBadge');
@@ -69,7 +69,7 @@ $customOptionPrices = [];
 <?php else: ?>
     <div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
         <div
-            class="price__element flex items-center gap-x-2 text-text-500 flex-wrap sm:justify-start justify-end sm:text-left text-right<?= $customClass ?>">
+            class="price__element flex items-center gap-x-2 text-text-500 flex-wrap sm:justify-start justify-end sm:text-left text-right <?= $customClass ?>">
             <?php if ($isSpecialPriceValid): ?>
                 <span class="sr-only"><?= __('Sale Price') ?></span>
                 <span class="text-primary-500">
