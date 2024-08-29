@@ -13,36 +13,30 @@ use Hyva\Theme\ViewModel\SvgIcons;
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-$sortByLabel = $block->getData('sortByLabel') ?? 'Sort By';
-$sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($sortByLabel)));
+$sortOptions = [];
+foreach ($block->getAvailableOrders() ?? [] as $key => $option) {
+    $value = $escaper->escapeHtml($key);
+    $name = $escaper->escapeHtml($option);
 
-$availableOrders = $block->getAvailableOrders();
-$sortOptions = array_map(function ($option, $key) use ($escaper) {
-    return [
-        'value' => $key,
-        'name' => $option,
-    ];
-}, $availableOrders, array_keys($availableOrders));
+    $ascendingLabel = match ($value) {
+        'price' => ', low to high',
+        'name' => ', A-Z',
+        default => ', ascending',
+    };
 
-$modifiedSortOptions = [];
-foreach ($sortOptions as $option) {
-    $value = $escaper->escapeHtml($option['value']);
-    $name = $escaper->escapeHtml($option['name']);
+    $descendingLabel = match ($value) {
+        'price' => ', high to low',
+        'name' => ', Z-A',
+        default => ', descending',
+    };
 
-    if ($value === 'price') {
-        $modifiedSortOptions[] = ['value' => $value, 'name' => $name . ', low to high'];
-        $modifiedSortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $name . ', high to low'];
-    } elseif ($value === 'name') {
-        $modifiedSortOptions[] = ['value' => $value, 'name' => 'Alphabetically, A-Z'];
-        $modifiedSortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => 'Alphabetically, Z-A'];
-    } else {
-        $modifiedSortOptions[] = ['value' => $value, 'name' => $name . ', ascending'];
-        $modifiedSortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $name . ', descending'];
-    }
+    $sortOptions[] = ['value' => $value, 'name' => $name . $ascendingLabel];
+    $sortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $name . $descendingLabel];
 }
-$sortOptions = $modifiedSortOptions;
 
 $defaultSort = $sortOptions[0]['value'] ?? $block->getCurrentOrder();
+$sortByLabel = 'Sort By';
+$sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($sortByLabel)));
 ?>
 
 <form
