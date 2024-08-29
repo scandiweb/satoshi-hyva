@@ -20,6 +20,23 @@ $defaultSort = $block->getData('defaultSort');
 $sortByLabel = $block->getData('sortByLabel') ?? 'Sort By';
 $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($sortByLabel)));
 
+$modifiedSortOptions = [];
+foreach ($sortOptions as $option) {
+    $value = $escaper->escapeHtml($option['value']);
+    $name = $escaper->escapeHtml($option['name']);
+
+    if ($value === 'price') {
+        $modifiedSortOptions[] = ['value' => $value, 'name' => $name . ', low to high'];
+        $modifiedSortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $name . ', high to low'];
+    } elseif ($value === 'name') {
+        $modifiedSortOptions[] = ['value' => $value, 'name' => 'Alphabetically, A-Z'];
+        $modifiedSortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => 'Alphabetically, Z-A'];
+    } else {
+        $modifiedSortOptions[] = ['value' => $value, 'name' => $name . ', ascending'];
+        $modifiedSortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $name . ', descending'];
+    }
+}
+$sortOptions = $modifiedSortOptions;
 ?>
 
 <fieldset
@@ -37,10 +54,7 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
         <h2 class="grow text-left text-text-500"><?= __($sortByLabel) ?></h2>
         <button type="button" class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
                 :aria-label="'<?= __($sortByLabel) ?>'">
-            <span
-                :class="isTopLevel ? '-rotate-90' : 'rotate-90'"
-                x-ref="AccordionIcon"
-            >
+            <span :class="isTopLevel ? '-rotate-90' : 'rotate-90'" x-ref="AccordionIcon">
                 <?= $hyvaicons->renderHtml('chevron') ?>
             </span>
         </button>
@@ -55,8 +69,8 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
                 <div role="radiogroup" aria-label="<?= __('products.facets.sort_button') ?>">
                     <?php foreach ($sortOptions as $option): ?>
                         <?php
-                        $value = is_array($option) ? $escaper->escapeHtml($option['value']) : (string)$option;
-                        $name = is_array($option) ? $escaper->escapeHtml($option['name']) : (string)$option;
+                        $value = is_array($option) ? $option['value'] : (string)$option;
+                        $name = is_array($option) ? $option['name'] : (string)$option;
                         ?>
                         <div class="relative h-11 w-full">
                             <label class="radio mb-0 h-full w-full py-1" for="sort-<?= $escaper->escapeHtml($value) ?>">
