@@ -30,8 +30,8 @@ foreach ($block->getAvailableOrders() ?? [] as $key => $option) {
         default => "{$name}, descending",
     };
 
-    $sortOptions[] = ['value' => $value, 'name' => $ascendingLabel];
-    $sortOptions[] = ['value' => $value . '&product_list_dir=desc', 'name' => $descendingLabel];
+    $sortOptions[] = ['value' => $value, 'name' => $ascendingLabel, 'dir' => 'asc'];
+    $sortOptions[] = ['value' => $value, 'name' => $descendingLabel, 'dir' => 'desc'];
 }
 
 $defaultSort = $sortOptions[0]['value'] ?? $block->getCurrentOrder();
@@ -47,7 +47,7 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
 >
     <fieldset
         class="flex-1 md:border-t md:border-bg-600 md:py-5"
-        x-data="Filters(<?= $escaper->escapeHtml(json_encode($sortOptions)) ?>, '<?= $escaper->escapeHtml($defaultSort) ?>')"
+        x-data="Filters(<?= $escaper->escapeHtml(json_encode($sortOptions)) ?>, '<?= $escaper->escapeHtml($defaultSort) ?>', 'asc')"
         x-show="$store.main.isMobile ? currentName == '<?= $escaper->escapeHtml(__($sortByLabel)) ?>' : true"
     >
         <legend class="sr-only"><?= __($sortByLabel) ?></legend>
@@ -82,20 +82,23 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
                     <div role="radiogroup" aria-label="<?= __('products.facets.sort_button') ?>">
                         <?php foreach ($sortOptions as $option): ?>
                             <?php
-                            $value = is_array($option) ? $option['value'] : (string)$option;
-                            $name = is_array($option) ? $option['name'] : (string)$option;
+                            $value = $option['value'];
+                            $name = $option['name'];
+                            $dir = $option['dir'];
                             ?>
                             <div class="relative h-11 w-full">
-                                <label class="radio mb-0 h-full w-full py-1"
-                                       for="sort-<?= $escaper->escapeHtml($value) ?>">
+                                <label
+                                    class="radio mb-0 h-full w-full py-1"
+                                    for="sort-<?= $value ?>-<?= $dir ?>"
+                                >
                                     <input
                                         type="radio"
                                         class="radio__input"
-                                        id="sort-<?= $value ?>"
+                                        id="sort-<?= $value ?>-<?= $dir ?>"
                                         name="product_list_order"
                                         value="<?= $value ?>"
-                                        :checked="getIsFilterValueSelected('product_list_order', '<?= $value ?>')"
-                                        @change="updateFilters()"
+                                        :checked="getIsFilterValueSelected('product_list_order', '<?= $value ?>') && getIsFilterValueSelected('product_list_dir', '<?= $dir ?>')"
+                                        @change="setSortDir('<?= $dir ?>'), updateFilters()"
                                         aria-label="<?= $name ?>"
                                     >
                                     <span class="radio__control" aria-hidden="true"></span>
@@ -103,11 +106,17 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
                                 </label>
                             </div>
                         <?php endforeach; ?>
+                        <input
+                            type="hidden"
+                            name="product_list_dir"
+                            :value="sortDir"
+                            aria-hidden="true"
+                        />
                     </div>
                 </div>
 
                 <button
-                    x-show="getIsFilterSelected('product_list_order')"
+                    x-show="getIsFilterSelected('product_list_order') || getIsFilterSelected('product_list_dir')"
                     type="button"
                     class="link link--primary mt-4 hidden md:inline-block"
                     @click="resetCurrent('filter-<?= $sortByLabelForFilter ?>')"
