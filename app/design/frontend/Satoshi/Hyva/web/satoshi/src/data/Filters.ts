@@ -48,7 +48,7 @@ export type FiltersType = {
   getFormattedMaxPrice(): string;
   resetSelectedFiltersState(): void;
   setSortBy(value: string): void;
-  setSortDir(dir: string): void;
+  setSortDir(value: string): void;
   getSelectedSortOption(): SortOptionType;
   getIsFilterValueSelected(param_name: string, value: string): boolean;
   getIsFilterSelected(param_name: string): boolean;
@@ -113,7 +113,7 @@ export const Filters = (
         this.setSortDir(sortDirParam);
       }
 
-        // Change popup height on content change
+      // Change popup height on content change
       this.$watch("currentName", (value, oldValue) => {
         if (value != oldValue) {
           this.$nextTick(() => {
@@ -203,8 +203,8 @@ export const Filters = (
       }
     },
 
-     setSortDir(dir: string) {
-       this.sortDir = dir;
+     setSortDir(value: string) {
+       this.sortDir = value || false;
 
        if (this.sortDir === defaultSortDir) {
          this.sortDir = false;
