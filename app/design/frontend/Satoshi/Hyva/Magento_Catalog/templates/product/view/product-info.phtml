@@ -1,0 +1,103 @@
+<?php
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductAttributes;
+use Hyva\Theme\ViewModel\ProductCompare;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+/** @var ProductAttributes $attributesViewModel */
+$attributesViewModel = $viewModels->require(ProductAttributes::class);
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+$productType = $product->getTypeId();
+
+?>
+<div class="w-full mb-6">
+    <div class="my-2 flex">
+        <?= $block->getChildHtml('product.info.review') ?>
+    </div>
+
+    <?php if ($shortDescription = $productViewModel->getShortDescription()) { ?>
+        <div class="mb-4 leading-relaxed product-description prose"><?= /* @noEscape */ $shortDescription ?></div>
+    <?php } ?>
+
+    <div class="flex flex-col sm:flex-row justify-between my-4">
+        <?= $block->getChildHtml("product.info.stockstatus") ?>
+        <?= $block->getChildHtml("alert.urls") ?>
+    </div>
+
+    <dl id="product-details">
+        <?php foreach ($block->getAttributes() as $attributeConfig):
+            $attribute = $attributesViewModel->getAttributeFromLayoutConfig($attributeConfig); ?>
+            <?php if ($value = $attribute['value'] ?? null): ?>
+                <div class="flex border-t border-gray-300 py-2 last:mb-6 last:border-b attribute-<?=/* @noEscape */ $attribute['code'] ?: "" ?>">
+                    <dt class="w-1/2 text-left text-gray-700 product-detail-label">
+                        <?= $escaper->escapeHtml($attribute['label']) ?>
+                    </dt>
+                    <dd class="w-1/2 ml-2 text-left text-gray-900 product-detail-value">
+                        <?= $escaper->escapeHtml($value) ?>
+                    </dd>
+                </div>
+            <?php endif ?>
+        <?php endforeach; ?>
+    </dl>
+
+    <?= $block->getChildHtml('product.info.form') ?>
+
+    <div class="mb-8 flex flex-col flex-wrap gap-x-8 gap-y-5 md:gap-y-3 max-md:px-4">
+
+        <?php if ($productType === 'bundle'): ?>
+            <span class="sr-only">
+                <?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?>
+            </span>
+        <?php endif; ?>
+
+        <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
+            <?= $block->getChildHtml("product.info.price") ?>
+        </div>
+
+        <div class="relative flex flex-grow flex-wrap justify-stretch gap-3 " id="product-actions" x-transition="" x-intersect:enter="toggleStickyProductActions(false)" x-intersect:leave="toggleStickyProductActions(true)">
+            <?php if ($product->isSaleable()): ?>
+                <?= $block->getChildHtml("product.info.quantity") ?>
+                <?= $block->getChildHtml("product.info.addtocart") ?>
+            <?php endif; ?>
+        </div>
+
+        <!-- buy now btn -->
+        <!-- <div class="rte contents max-w-full">
+            <div data-shopify="payment-button" class="shopify-payment-button"> <shopify-accelerated-checkout recommended="null" fallback="{&quot;name&quot;:&quot;buy_it_now&quot;,&quot;wallet_params&quot;:{}}" access-token="0594fd0d9da9ed9a117a91d7e0568506" buyer-country="US" buyer-locale="en" buyer-currency="EUR" variant-params="[{&quot;id&quot;:49369972375827,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972408595,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972441363,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972474131,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972506899,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972539667,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972572435,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972605203,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972637971,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972670739,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972703507,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972736275,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972769043,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972801811,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972834579,&quot;requiresShipping&quot;:true}]" shop-id="86876029203" disable-compat="" requires-shipping=""><shopify-buy-it-now-button access-token="0594fd0d9da9ed9a117a91d7e0568506" buyer-country="US" buyer-currency="EUR" wallet-params="{}" page-type="product" slot="button" call-to-action="" requires-shipping=""><button type="button" class="shopify-payment-button__button shopify-payment-button__button--unbranded">Buy it now</button></shopify-buy-it-now-button></shopify-accelerated-checkout> </div>
+        </div> -->
+    </div>
+
+    <?php if ($product->isSaleable()): ?>
+        <div class="flex mt-4 justify-end">
+            <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
+        </div>
+    <?php endif; ?>
+
+    <div class="flex mt-4 justify-end">
+        <?= $block->getChildHtml('product.info.addtowishlist'); ?>
+        <?= $block->getChildHtml('product.info.addtocompare'); ?>
+        <?= $block->getChildHtml('product.info.emailtofriend'); ?>
+        <?= $block->getChildHtml('product.info.additional.actions'); ?>
+    </div>
+
+    <?php if ($tierPriceBlock = $block->getChildHtml("product.price.tier")): ?>
+        <div class="py-4 my-2 tier-price-container">
+            <?= /** @noEscape */ $tierPriceBlock ?>
+        </div>
+    <?php endif; ?>
+
+    <?= $block->getChildHtml("product.info.additional") ?>
+</div>
