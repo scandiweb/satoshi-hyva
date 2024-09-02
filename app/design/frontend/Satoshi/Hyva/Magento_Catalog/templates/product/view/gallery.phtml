@@ -25,12 +25,12 @@ $images = json_decode($block->getGalleryImagesJson(), true);
 >
     <?php foreach ($images as $index => $image): ?>
         <div
-            class="bg-white animate-on-transition relative flex-shrink-0 overflow-hidden border-black rounded-xl">
-            <div class="aspect-product w-full object-cover object-center">
+            class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl">
+            <div class="flex items-center justify-center size-full">
                 <img
                     alt="<?= $escaper->escapeHtmlAttr($image['caption'] ?? $productName) ?>"
                     title="<?= $escaper->escapeHtmlAttr($image['caption'] ?? $productName) ?>"
-                    class="absolute inset-0 object-contain object-center w-full m-auto max-h-screen-75"
+                    class="object-cover size-full"
                     loading="lazy"
                     src="<?= $image['img'] ?>"
                 />
