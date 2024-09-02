@@ -4,12 +4,23 @@ declare(strict_types=1);
 
 use Magento\Catalog\Block\Product\View;
 use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
 
+/** @var Template $template */
 /** @var Escaper $escaper */
 /** @var View $block */
 
 $images = $block->getGalleryImages()->getItems();
 $productName = $block->getProduct()->getName();
+$product = $block->getData('product');
+if ($product) {
+    $price = $product->getPrice();
+    $finalPrice = $product->getData('final_price');
+    if ($price && $finalPrice) {
+        $difference = $price - $finalPrice;
+        $discountPercentage = round(($difference * 100.0) / $price);
+    }
+}
 ?>
 
 <div
@@ -34,7 +45,7 @@ $productName = $block->getProduct()->getName();
     >
         <div class="mb-4 md:hidden">
             <?php if ($images): ?>
-                <div class="relative flex aspect-product min-h-0 justify-center">
+                <div class="relative flex aspect-product min-h-0 justify-center p-[4%]">
                     <div
                         class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center transition-opacity delay-1000 duration-300"
                         x-data="TransitionImage({
@@ -61,17 +72,16 @@ $productName = $block->getProduct()->getName();
                         loading="lazy"
                         src="<?= reset($images)['medium_image_url'] ?>"
                     >
-<!--                    --><?php //if ($product): ?>
-<!--                        --><?php
-//                        $badgeClass = 'md:hidden ' . $settings->getBadgePosition();
-//                        ?>
-<!--                        <div class="--><?php //= $badgeClass ?><!--">-->
-<!--                            --><?php //= $this->render('_discount-badge.phtml', ['product' => $product->getSelectedOrFirstAvailableVariant()]) ?>
-<!--                        </div>-->
-<!--                    --><?php //endif; ?>
-<!--                </div>-->
-<!--            --><?php //else: ?>
-<!--                --><?php //= $this->render('_product-missing-image.phtml', ['is_gift' => $product->isGiftCard()]) ?>
+                    <div>
+                        <?=
+                        $template
+                            ->setData([
+                                'product' => $product,
+                            ])
+                            ->render('Magento_Catalog::/product/list/discount-badge.phtml')
+                        ?>
+                    </div>
+                </div>
             <?php endif; ?>
         </div>
         <?= $block->getChildHtml('product.details.info') ?>
