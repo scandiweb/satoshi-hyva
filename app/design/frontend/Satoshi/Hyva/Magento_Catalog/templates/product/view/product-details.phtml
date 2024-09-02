@@ -32,15 +32,47 @@ $productName = $block->getProduct()->getName();
       }
     "
     >
-        <div class="w-full bg-red-50 md:hidden max-h-screen-75">
-            <img
-                alt="<?= $escaper->escapeJs($productName) ?>"
-                title="<?= $escaper->escapeJs($productName) ?>"
-                class=" inset-0 object-contain object-center w-full h-full m-auto"
-                loading="lazy"
-                src="<?= reset($images)['medium_image_url'] ?>"
-            />
-
+        <div class="mb-4 md:hidden">
+            <?php if ($images): ?>
+                <div class="relative flex aspect-product min-h-0 justify-center">
+                    <div
+                        class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center transition-opacity delay-1000 duration-300"
+                        x-data="TransitionImage({
+                            src: ($store['transition'].pageData?.productImg || $store['transition'].pageData?.variantImg),
+                            imageId: 'id'
+                        })"
+                        x-show="!!src"
+                        :class="{ 'opacity-0': isImgLoaded }"
+                    >
+                        <img
+                            height="100%"
+                            width="100%"
+                            class="max-h-full w-auto object-center object-cover h-full mix-blend-darken"
+                            :src="src"
+                        >
+                    </div>
+                    <img
+                        height="100%"
+                        width="100%"
+                        class="max-h-full w-auto object-center object-cover h-full mix-blend-darken"
+                        alt="<?= $escaper->escapeJs($productName) ?>"
+                        title="<?= $escaper->escapeJs($productName) ?>"
+                        class=" inset-0 object-contain object-center w-full h-full m-auto"
+                        loading="lazy"
+                        src="<?= reset($images)['medium_image_url'] ?>"
+                    >
+<!--                    --><?php //if ($product): ?>
+<!--                        --><?php
+//                        $badgeClass = 'md:hidden ' . $settings->getBadgePosition();
+//                        ?>
+<!--                        <div class="--><?php //= $badgeClass ?><!--">-->
+<!--                            --><?php //= $this->render('_discount-badge.phtml', ['product' => $product->getSelectedOrFirstAvailableVariant()]) ?>
+<!--                        </div>-->
+<!--                    --><?php //endif; ?>
+<!--                </div>-->
+<!--            --><?php //else: ?>
+<!--                --><?php //= $this->render('_product-missing-image.phtml', ['is_gift' => $product->isGiftCard()]) ?>
+            <?php endif; ?>
         </div>
         <?= $block->getChildHtml('product.details.info') ?>
     </div>
