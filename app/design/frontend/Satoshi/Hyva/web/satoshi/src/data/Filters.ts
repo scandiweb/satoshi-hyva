@@ -285,13 +285,18 @@ export const Filters = (
       const formData = new FormData(form as HTMLFormElement);
       let urlParams = new URLSearchParams(formData as any);
 
-        urlParams.delete(FILTER_SORT_DIR);
-        if (typeof this.sortDir === "string" && this.sortDir !== defaultSortDir) {
-          urlParams.set(FILTER_SORT_DIR, this.sortDir);
-        }
-
       // Remove empty filter values and attributes that equal default value
       [...urlParams.entries()].forEach(([key, value]) => {
+        if(key === FILTER_SORT_DIR) {
+          if (typeof this.sortDir === "string" && this.sortDir !== defaultSortDir) {
+            urlParams.set(FILTER_SORT_DIR, this.sortDir);
+          } else {
+            urlParams.delete(FILTER_SORT_DIR);
+          }
+          return;
+        }
+
+
         if (this._isFilterEmptyOrDefault(key, value)) {
           urlParams.delete(key);
           return;
@@ -320,10 +325,10 @@ export const Filters = (
         return;
       }
 
-      // Remove old selected filters from this.filters and this.sortBy
+      // Remove old selected filters from this.filters, this.sortBy and this.sortDir
       this.resetSelectedFiltersState();
 
-      // Add the new selected filters to this.filters and this.sortBy
+      // Add the new selected filters to this.filters, this.sortBy and this.sortDir
       [...urlParams.entries()].forEach(([key, value]) => {
         if (key === FILTER_SORT) {
           this.setSortBy(value);
@@ -394,7 +399,6 @@ export const Filters = (
     _isFilterEmptyOrDefault(key: string, value: string) {
       return (
         !value ||
-        (key === FILTER_SORT && value === String(defaultSort)) ||
         (key === FILTER_PRICE_MIN && value === String(minPrice)) ||
         (key === FILTER_PRICE_MAX && value === String(maxPrice))
       );
