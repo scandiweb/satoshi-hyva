@@ -3,100 +3,164 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
-use Hyva\Theme\ViewModel\HeroiconsSolid;
-use Hyva\Theme\ViewModel\ProductCompare;
 use Hyva\Theme\ViewModel\ProductListItem;
-use Hyva\Theme\ViewModel\ProductPage;
-use Hyva\Theme\ViewModel\Wishlist;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Block\Product\AbstractProduct;
-use Magento\Catalog\Helper\Output as CatalogOutputHelper;
-use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
+use Magento\Catalog\Helper\Image;
 use Magento\Framework\Escaper;
-use Satoshi\Theme\Block\Template;
 
-// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
-// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
-// phpcs:disable Generic.Files.LineLength.TooLong
-
-/** @var AbstractProduct $block */
-/** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
-/** @var ProductPage $productViewModel */
-$productViewModel = $viewModels->require(ProductPage::class);
+/** @var AbstractProduct $block */
+$product = $block->getData('product');
+$imageUrl = $this->helper(Image::class)
+                 ->init($product, 'product_base_image')
+                 ->resize(600)
+                 ->getUrl();
 
-/** @var ProductListItem $productListItemViewModel */
+// Calculating is large
+$nthLarge = $block->getData('n_of_large_card') ?? 0;
+$index = $block->getData('index');
+$isLarge = $nthLarge && !(($index + 1) % $nthLarge);
+
+// Add a setting allowing merchants to choose between cover or contain ?
+$fitType = 'cover';
+$isContain = $fitType === 'contain';
+
+$isSearch = $block->getData('is_search_card');
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
-
-/** @var CatalogOutputHelper $catalogOutputHelper */
-$catalogOutputHelper = $this->helper(CatalogOutputHelper::class);
-
-/** @var ProductCompare $compareViewModel */
-$compareViewModel = $viewModels->require(ProductCompare::class);
-/** @var Wishlist $wishlistViewModel */
-$wishlistViewModel = $viewModels->require(Wishlist::class);
-
-/** @var HeroiconsOutline $heroicons */
-$heroicons = $viewModels->require(HeroiconsOutline::class);
-
-/** @var HeroiconsSolid $heroiconsSolid */
-$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
-
-$productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
-
-$isLarge = $block->getData('isLarge');
-$class = $block->getData('class');
-$isSearchCard = $block->getData('isSearchCard');
-$isAlpineTemplate = $block->getData('isAlpineTemplate');
-$featuredImage = false;
-
-if (!$isAlpineTemplate) {
-  $product = $block->getData('product');
-
-  if (!$product) {
-    return '';
-  }
-
-  $id = $product->getId();
-}
 ?>
 
 <div
-  <?php if (!$isAlpineTemplate) : ?>
-  x-element-transition-area="p-<?= $id ?>"
-  key="<?= $id ?>"
-  <?php endif; ?>
-  class="<?= $class ?> <?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product"
->
-  <?php // TODO: Pass product data ?>
-  <a
-    <?php if ($isAlpineTemplate) : ?>
-    :href="product.url"
-    x-element-transition-trigger:product<?= $isSearchCard ? '' : '.preview' ?>.animate="
-      {
-        'productImg': product.image,
-        'title': product.title
-      }
-    "
-    <?php else : ?>
-    href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
-    x-element-transition-trigger:product.preview.animate
+    <?php if ($product): ?>
+        x-element-transition-area="p-<?= $product->getId() ?>"
+        key="<?= $product->getId() ?>"
     <?php endif; ?>
-    class="group relative flex min-w-0 rounded-md"
-  >
-    <div
-      class="h-0 w-0"
-      style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"
-    ></div>
-    <?=
-      $template
-        ->setData([
-          'imageLoading' => 'lazy',
-          'isAlpineTemplate' => false
-          ])
-        ->render('Magento_Catalog::product/list/item-details-article.phtml')
-    ?>
-  </a>
+    class="<?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product h-full"
+>
+    <a
+        <?php if ($product): ?>
+            x-element-transition-trigger:product.preview.animate="
+                {
+                    <?php if ($product->getImage()): ?>
+                        'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
+                    <?php endif ?>
+                    'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>'
+                }
+            "
+            href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
+        <?php else: ?>
+            :href="`/${product.url_rewrites?.[0].url}`"
+            x-element-transition-trigger:product
+            <?= !$isSearch ? '.preview' : '' ?>
+            .animate="
+              {
+                'productImg': product.image?.url,
+                'title': product.name
+              }
+            "
+        <?php endif ?>
+        class="card-hover group relative flex h-full min-w-0 rounded-md"
+    >
+        <!-- Aspect Ratio div -->
+        <div class="h-0 w-0" style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"></div>
+
+        <!-- Product Article -->
+        <article
+            class="contrast-border z-10 flex h-full w-full flex-col items-stretch justify-start overflow-hidden rounded-xl text-start"
+            x-data="ProductPage()"
+            <?php if ($product): ?>
+                x-init="
+                    () => {
+                        $data.setProductPageProps({
+                            productId: <?= $product->getId() ?>,
+                            isScrollingToTop: false
+                        })
+                    }
+                "
+            <?php endif ?>
+        >
+            <!-- this image is needed to avoid blink in preview on desktop as there, the select variant is shown, not featured image -->
+            <img width="0" height="0" class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
+                 src="<?= $escaper->escapeUrl($imageUrl) ?>" alt="">
+
+            <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg]" x-element-transition-src="img"
+                 style="transform: translateZ(0)">
+
+                <?php if ($product): ?>
+                    <?php if ($product->getImage()): ?>
+
+                        <div
+                            class="aspect-product w-full h-full flex items-center justify-center transition-transform md:group-hover:scale-105 bg-[--fade-in-bg]">
+                            <img
+                                class="mix-blend-darken object-center max-h-full <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
+                                src="<?= $escaper->escapeUrl($imageUrl) ?>"
+                                alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>" loading="lazy">
+                        </div>
+                    <?php else: ?>
+                        <div
+                            class="flex aspect-product w-full items-center justify-center bg-secondary-400 text-center">
+                            <?= __('Missing image') ?>
+                        </div>
+                    <?php endif ?>
+
+                <?php else: ?>
+                    <template x-if="product.image?.url">
+                        <div
+                            class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform  md:group-hover:scale-105">
+                            <img
+                                :src="product.image.url"
+                                :alt="product.image.label"
+                                class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
+                                loading="lazy"
+                                width=""
+                                height=""
+                            />
+                        </div>
+                    </template>
+                <?php endif ?>
+                <!-- TODO: Render discount badge -->
+            </div>
+
+            <div class="relative flex flex-1 flex-col">
+                <div class="mt-4 flex flex-1 flex-col gap-1 contrast-more:px-3">
+                    <h2
+                        class="text-md text-text-500 max-md:w-[calc(100%-40px)]"
+                        <?php if (!$product): ?>
+                            x-text="product.name"
+                        <?php endif ?>
+                    >
+                        <?= $product?->getName() ?>
+                    </h2>
+                    <p
+                        class="truncate max-md:w-[calc(100%-40px)] "
+                        <?php if (!$product): ?>
+                            x-text="product.sku"
+                        <?php endif ?>
+                    >
+                        <?= $product?->getSku() ?>
+                    </p>
+                    <?php if ($product): ?>
+                        <button
+                            class="absolute right-0 text-2xl text-primary-500 md:hidden"
+                            @click.prevent.stop="quickBuy()"
+                            aria-label="<?= __('Add to cart') ?>"
+                            type="button"
+                        >
+                            <?= $hyvaicons->renderHtml('cart'); ?>
+                        </button>
+                    <?php endif ?>
+                    <!-- TODO: Implement quick buy popup here -->
+                </div>
+                <?php if ($product) : ?>
+                    <?= /* @noEscape */
+                    $productListItemViewModel->getProductPriceHtml($product) ?>
+                <?php endif; ?>
+            </div>
+        </article>
+    </a>
 </div>
