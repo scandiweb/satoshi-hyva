@@ -98,7 +98,7 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
                                         name="product_list_order"
                                         value="<?= $value ?>"
                                         :checked="getIsFilterValueSelected('product_list_order', '<?= $value ?>') && getIsFilterValueSelected('product_list_dir', '<?= $dir ?>')"
-                                        @change="setSortDir('<?= $dir ?>'), updateFilters()"
+                                        @change="setSortDir('<?= $dir ?>'); updateFilters()"
                                         aria-label="<?= $name ?>"
                                     >
                                     <span class="radio__control" aria-hidden="true"></span>
