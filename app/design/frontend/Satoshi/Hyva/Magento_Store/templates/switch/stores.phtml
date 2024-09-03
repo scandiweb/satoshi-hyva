@@ -1,0 +1,34 @@
+<?php
+declare(strict_types=1);
+
+/** @var \Magento\Store\Block\Switcher $block */
+
+if (count($block->getGroups()) > 1):
+    $currentGroupId = $block->getCurrentGroupId();
+    $id = 'switcher-store';
+    $currentLabel = '';
+
+    $options = array_map(static function ($group) use ($block, $currentGroupId, &$currentLabel) {
+        $isCurrent = $group->getId() === $currentGroupId;
+        if ($isCurrent) {
+            $currentLabel = $block->escapeHtml($group->getName());
+        }
+        return [
+            'value' => $block->escapeHtml($group->getId()),
+            'label' => $block->escapeHtml($group->getName()),
+            'on_click' => $isCurrent ? 'return false;' : 'window.location.href=`' . $block->escapeUrl($block->getTargetStoreUrl($group->getDefaultStore())) . '`',
+            'is_active' => $isCurrent,
+        ];
+    }, $block->getGroups());
+    ?>
+
+    <div class="switcher store switcher-store" id="<?= $block->escapeHtmlAttr($id) ?>">
+        <?= $template->setData([
+                'id' => $block->escapeHtmlAttr($id),
+                'label' => $currentLabel,
+                'options' => $options,
+                'placement' => 'top',
+            ])->render('Magento_Theme::html/components/dropdown.phtml'); ?>
+    </div>
+
+<?php endif; ?>
