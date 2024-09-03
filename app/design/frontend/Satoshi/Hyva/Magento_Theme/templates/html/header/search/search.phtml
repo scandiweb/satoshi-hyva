@@ -25,10 +25,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         'md:max-w-24': !$store.resizable.isVisible('search-desktop')
       }
     "
-    <?php // TODO: Replace with magento search url ?>
-    action="/"
+    action="/catalogsearch/result"
     method="GET"
-    @submit.prevent="goToSearchPage('/')"
+    @submit.prevent="goToSearchPage('/catalogsearch/result')"
   >
     <div class="relative isolate flex w-full md:min-h-[56px] md:items-center">
       <label
