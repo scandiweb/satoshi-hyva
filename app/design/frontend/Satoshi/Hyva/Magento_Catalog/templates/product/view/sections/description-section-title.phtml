@@ -33,7 +33,7 @@ $product = $productViewModel->getProduct();
             :aria-expanded="isExpanded"
             aria-controls="description_panel"
             aria-labelledby="description_label"
-    <span class="text-base font-bold leading-tight">
+    <span class="text-base font-semibold leading-tight text-text-500" style="color: black">
                 <?= $escaper->escapeHtml(__('Description')) ?> /
                 <?= $escaper->escapeHtml($product->getName()) ?>
             </span>
