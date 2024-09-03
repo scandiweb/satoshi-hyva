@@ -24,14 +24,15 @@ $productViewModel = $viewModels->require(ProductPage::class);
 $product = $productViewModel->getProduct();
 
 ?>
-<div x-data="Accordion('true', 300)" x-effect="$store.description.isExpanded = isExpanded"
+<div
      class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0"
 >
     <button class="flex items-center justify-between"
-            id="controlsAccordionItemOne" type="button"
-            aria-controls="accordionItemOne"
+            type="button"
             x-ref="AccordionButton"
             :aria-expanded="isExpanded"
+            aria-controls="description_panel"
+            aria-labelledby="description_label"
     <span class="text-base font-bold leading-tight">
                 <?= $escaper->escapeHtml(__('Description')) ?> /
                 <?= $escaper->escapeHtml($product->getName()) ?>
@@ -41,11 +42,3 @@ $product = $productViewModel->getProduct();
     </span>
     </button>
 </div>
-
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('description', {
-            isExpanded: true
-        });
-    });
-</script>
