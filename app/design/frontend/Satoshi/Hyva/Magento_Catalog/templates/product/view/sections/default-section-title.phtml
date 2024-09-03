@@ -15,8 +15,8 @@ use Magento\Framework\View\Element\AbstractBlock;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div x-data="Accordion('true', 300)" x-effect="$store.information.isExpanded = isExpanded"
-     class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0"
+<div
+    class="align-start animate-on-transition mb-8 flex flex-col"
 >
     <button class="flex items-center justify-between"
             type="button"
