@@ -14,7 +14,7 @@ use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\LayoutInterface;
 
 /**
- * Extend to pass loop index to product card
+ * Extend to pass loop index, and breadcrumbs to product card
  */
 class ProductListItem extends CoreProductListItem
 {
@@ -44,6 +44,7 @@ class ProductListItem extends CoreProductListItem
     ) {
         parent::__construct($layout, $productViewModel, $currentCategory, $blockCache, $customerSession);
         $this->layout = $layout;
+        $this->blockCache = $blockCache;
     }
 
 
@@ -55,6 +56,7 @@ class ProductListItem extends CoreProductListItem
      * @param  string  $imageDisplayArea
      * @param  bool  $showDescription
      * @param  int|null  $index
+     * @param  array  $breadcrumbs
      * @return string
      */
     public function getItemHtml(
@@ -64,7 +66,8 @@ class ProductListItem extends CoreProductListItem
         string $templateType,
         string $imageDisplayArea,
         bool $showDescription,
-        int $index = null
+        int $index = null,
+        array $breadcrumbs = []
     ): string {
         /** @var AbstractBlock $itemRendererBlock */
         $itemRendererBlock = $this->layout->getBlock('product_list_item');
@@ -81,7 +84,8 @@ class ProductListItem extends CoreProductListItem
             $templateType,
             $imageDisplayArea,
             $showDescription,
-            $index
+            $index,
+            $breadcrumbs
         );
     }
 
@@ -94,6 +98,7 @@ class ProductListItem extends CoreProductListItem
      * @param  string  $imageDisplayArea
      * @param  bool  $showDescription
      * @param  int|null  $index
+     * @param  array  $breadcrumbs
      * @return string
      */
     public function getItemHtmlWithRenderer(
@@ -104,7 +109,8 @@ class ProductListItem extends CoreProductListItem
         string $templateType,
         string $imageDisplayArea,
         bool $showDescription,
-        int $index = null
+        int $index = null,
+        array $breadcrumbs = []
     ): string {
         return $this->withParentChildLayoutRelationshipExecute($parentBlock, $itemRendererBlock,
             [$this, 'renderItemHtml'], func_get_args());
@@ -149,6 +155,7 @@ class ProductListItem extends CoreProductListItem
      * @param  string  $imageDisplayArea
      * @param  bool  $showDescription
      * @param  int|null  $index
+     * @param  array  $breadcrumbs
      * @return string
      */
     private function renderItemHtml(
@@ -159,13 +166,15 @@ class ProductListItem extends CoreProductListItem
         string $templateType,
         string $imageDisplayArea,
         bool $showDescription,
-        int $index = null
+        int $index = null,
+        array $breadcrumbs = []
     ): string {
         // Careful! Temporal coupling!
         // First the values on the block need to be set, then the cache key info array can be created.
 
         $itemRendererBlock->setData('product', $product)
                           ->setData('index', $index)
+            ->setData('breadcrumbs', $breadcrumbs)
                           ->setData('view_mode', $viewMode)
                           ->setData('item_relation_type', $parentBlock->getData('item_relation_type'))
                           ->setData('image_display_area', $imageDisplayArea)

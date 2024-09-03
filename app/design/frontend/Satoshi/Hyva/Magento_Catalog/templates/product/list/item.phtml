@@ -13,11 +13,13 @@ use Magento\Framework\Escaper;
 /** @var ViewModelRegistry $viewModels */
 
 /** @var AbstractProduct $block */
+/** @var Magento\Catalog\Model\Product $product */
 $product = $block->getData('product');
 $imageUrl = $this->helper(Image::class)
                  ->init($product, 'product_base_image')
                  ->resize(600)
                  ->getUrl();
+$breadcrumbs = $block->getData('breadcrumbs') ?? [];
 
 // Calculating is large
 $nthLarge = $block->getData('n_of_large_card') ?? 0;
@@ -33,8 +35,8 @@ $isSearch = $block->getData('is_search_card');
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
-?>
 
+?>
 <div
     <?php if ($product): ?>
         x-element-transition-area="p-<?= $product->getId() ?>"
@@ -44,12 +46,14 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
 >
     <a
         <?php if ($product): ?>
-            x-element-transition-trigger:product.preview.animate="
+          x-element-transition-trigger:product.preview.animate="
                 {
                     <?php if ($product->getImage()): ?>
                         'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
                     <?php endif ?>
-                    'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>'
+                    'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>',
+                    'mediaCount': <?= $product?->getMediaGalleryImages()->count() ?? 3 ?>,
+                    'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>
                 }
             "
             href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
@@ -60,7 +64,8 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
             .animate="
               {
                 'productImg': product.image?.url,
-                'title': product.name
+                'title': product.name,
+                'mediaCount': product.media_gallery?.length || 3
               }
             "
         <?php endif ?>
@@ -109,11 +114,11 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
                     <?php endif ?>
 
                 <?php else: ?>
-                    <template x-if="product.image?.url">
+                    <template x-if="product.media_gallery?.[0]?.url">
                         <div
                             class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform  md:group-hover:scale-105">
                             <img
-                                :src="product.image.url"
+                                :src="product.media_gallery?.[0]?.url"
                                 :alt="product.image.label"
                                 class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
                                 loading="lazy"
