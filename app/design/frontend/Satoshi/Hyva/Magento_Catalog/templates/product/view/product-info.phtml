@@ -24,34 +24,35 @@ $product = $productViewModel->getProduct();
 $productType = $product->getTypeId();
 
 ?>
-<div class="w-full mb-6">
-    <div class="my-2 flex">
-        <?= $block->getChildHtml('product.info.review') ?>
+    <div class="md:max-w-full md:w-full">
+        <div class="md:my-2">
+            <?= $block->getChildHtml('product.info.review') ?>
+        </div>
+        <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
+            <?= $block->getChildHtml("product.info.price") ?>
+        </div>
+        <div class="flex my-4">
+            <?= $block->getChildHtml("product.info.stockstatus") ?>
+            <?= $block->getChildHtml("alert.urls") ?>
+        </div>
     </div>
-    <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
-        <?= $block->getChildHtml("product.info.price") ?>
+    <div class="w-full">
+        <?= $block->getChildHtml('product.info.form') ?>
     </div>
-    <div class="flex flex-col sm:flex-row justify-between my-4">
-        <?= $block->getChildHtml("product.info.stockstatus") ?>
-        <?= $block->getChildHtml("alert.urls") ?>
-    </div>
-
-    <?= $block->getChildHtml('product.info.form') ?>
 
 
     <?php if ($productType === 'bundle'): ?>
         <span class="sr-only">
-                <?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?>
-            </span>
+                    <?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?>
+                </span>
     <?php endif; ?>
 
-    <div class="flex gap-3 mt-4 ml-auto sm:mt-0 h-12">
+    <div class="flex gap-3 mt-4 sm:mt-0 h-12">
         <?php if ($product->isSaleable()): ?>
             <?= $block->getChildHtml("product.info.quantity") ?>
             <?= $block->getChildHtml("product.info.addtocart") ?>
         <?php endif; ?>
     </div>
-
 
     <?php if ($product->isSaleable()): ?>
         <div class="flex mt-4 justify-end">
@@ -74,4 +75,3 @@ $productType = $product->getTypeId();
     <?php endif; ?>
 
     <?= $block->getChildHtml("product.info.additional") ?>
-</div>

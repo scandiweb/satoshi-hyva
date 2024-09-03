@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Theme\Block\Html\Title;
+
+/** @var Escaper $escaper */
+/** @var Title $block */
+
+$textSizeCssClass = $block->getCssClass() ? ' ' . $block->getCssClass() : ' text-3xl';
+$titleContainerClasses = $block->getData('maybe_purged_tailwind_section_classes')
+    ?? 'container flex flex-col md:flex-row flex-wrap my-6 font-bold lg:mt-8';
+$titleHtml = '';
+if (trim((string)$block->getPageHeading())) {
+    $titleHtml = '<span class="base" data-ui-id="page-title-wrapper" '
+        . $block->getAddBaseAttribute()
+        . '>'
+        . $escaper->escapeHtml($block->getPageHeading())
+        . '</span>';
+}
+?>
+<?php if ($titleHtml): ?>
+    <div class="w-1/2 md:w-full">
+        <h1 class="mb-1 text-md leading-tight text-text-500 md:px-0 md:text-4xl"
+            <?php if ($block->getId()): ?> id="<?= $escaper->escapeHtmlAttr($block->getId()) ?>" <?php endif; ?>>
+            <?= /* @noEscape */ $titleHtml ?>
+        </h1>
+        <?= $block->getChildHtml() ?>
+    </div>
+<?php endif; ?>
