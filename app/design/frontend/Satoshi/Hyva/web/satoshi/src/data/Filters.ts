@@ -242,7 +242,7 @@ export const Filters = (
       if (param_name === FILTER_SORT) {
         return Boolean(this.sortBy);
       } else if (param_name === FILTER_SORT_DIR) {
-        return Boolean(this.sortDir && this.sortDir !== defaultSortDir);
+        return Boolean(this.sortDir);
       } else if (param_name === FILTER_PRICE_PARAM_NAME) {
         const priceFilter = this.getPriceFilter();
         return (
