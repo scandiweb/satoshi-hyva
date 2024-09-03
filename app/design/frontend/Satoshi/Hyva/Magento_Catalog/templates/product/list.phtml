@@ -12,6 +12,7 @@ use Hyva\Theme\ViewModel\ProductListItem;
 use Hyva\Theme\ViewModel\ProductPage;
 use Magento\Catalog\Block\Product\ListProduct;
 use Magento\Catalog\Block\Product\ReviewRendererInterface;
+use Magento\Catalog\Helper\Data;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
 
@@ -25,10 +26,14 @@ $productViewModel = $viewModels->require(ProductPage::class);
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
 $currentCategoryViewModel = $viewModels->require(CurrentCategory::class);
 
-$eagerLoadImagesCount = (int) ($block->getData('eager_load_images_count') ?? 3);
-$productCollection = $block->getLoadedProductCollection();
+$eagerLoadImagesCount = (int) ($block->getData('eager_load_images_count') ?? 5);
+$productCollection = $block->getLoadedProductCollection()->AddMediaGalleryData();
+
+$catalogData = $this->helper(Data::class);
+$breadcrumbs = $catalogData->getBreadcrumbPath();
 
 ?>
+
 <?php if (!$productCollection->count()): ?>
     <div class="message info empty">
         <div>
@@ -74,7 +79,7 @@ $productCollection = $block->getLoadedProductCollection();
                         $product->setData('image_custom_attributes', ['loading' => 'eager', 'fetchpriority' => 'high']);
                     }
                     ?>
-                    <li class="contents">
+                  <li class="contents">
                         <?= $productListItemViewModel->getItemHtml(
                             $product,
                             $block,
@@ -82,7 +87,8 @@ $productCollection = $block->getLoadedProductCollection();
                             $templateType,
                             $imageDisplayArea,
                             $showDescription,
-                            $index
+                            $index,
+                            $breadcrumbs
                         ); ?>
                     </li>
                 <?php endforeach; ?>
