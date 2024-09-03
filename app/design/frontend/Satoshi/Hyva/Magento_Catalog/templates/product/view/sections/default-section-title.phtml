@@ -24,9 +24,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             :aria-expanded="isExpanded"
             aria-controls="attributes_panel"
             aria-labelledby="attributes_label"
-    <span class="text-base font-bold leading-tight">
+    <p class="text-base font-semibold leading-tight text-text-500" style="color: black">
         <?= $sectionBlock->getTitle() ? $escaper->escapeHtml($sectionBlock->getTitle()) : '&nbsp;' ?>
-    </span>
+    </p>
     <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs">
         <?= $hyvaicons->renderHtml('chevron-up', 'rotate-180'); ?>
     </span>

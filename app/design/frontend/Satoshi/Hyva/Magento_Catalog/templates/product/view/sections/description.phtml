@@ -32,7 +32,7 @@ $cssClasses = $block->getData('css_classes') ?? 'prose';
      role="region"
      aria-labelledby="description_label"
 >
-    <div class="rte mt-3 overflow-hidden text-text-100 contrast-more:text-secondary-700">
+    <div class="rte mt-3 overflow-hidden">
         <?= $productViewModel->productAttributeHtml($product, $product->getDescription(), 'description') ?>
     </div>
 </div>
