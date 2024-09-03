@@ -103,10 +103,10 @@ $maxSalesQtyLength = ($maxSalesQty ? strlen((string) $maxSalesQty) : 4)
                     :disabled="qty === <?= $minSalesQty ?> || !true"
                     @click.prevent.stop="decreaseQty()">
                 <span class="sr-only">Decrease quantity</span>
-                <span x-show="variantQty < 2">
+                <span x-show="qty < 2">
                     <?= $hyvaicons->renderHtml('remove'); ?>
                 </span>
-                <span x-show="variantQty > 1">
+                <span x-show="qty > 1">
                     <?= $hyvaicons->renderHtml('minus'); ?>
                 </span>
             </button>
@@ -136,7 +136,7 @@ $maxSalesQtyLength = ($maxSalesQty ? strlen((string) $maxSalesQty) : 4)
                     class="animate-on-transition input__field flex-shrink-0 basis-14 text-center md:h-auto bg-transparent"
                     x-model.number="qty"
                     @input="$dispatch('update-qty-<?= (int)$product->getId() ?>', qty)">
-                    
+
             <!-- Increase Quantity Button -->
             <button type="button"
                     class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-md md:icon-button--size-lg"
@@ -149,5 +149,5 @@ $maxSalesQtyLength = ($maxSalesQty ? strlen((string) $maxSalesQty) : 4)
             </button>
         </div>
     <?php endif; ?>
-    
+
 <?php endif; ?>
