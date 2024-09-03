@@ -1,44 +1,30 @@
 <?php
 declare(strict_types=1);
 
-use Hyva\Theme\Model\ViewModelRegistry;
-use Magento\Framework\Escaper;
-use Satoshi\Theme\Block\Template;
-use Satoshi\Theme\ViewModel\StoreSelector;
+/** @var \Magento\Store\Block\Switcher $block */
 
-/** @var Template $template */
-/** @var Escaper $escaper */
-/** @var ViewModelRegistry $viewModels */
-/** @var StoreSelector $storeViewModel */
+if (count($block->getStores()) > 1):
+    $id = $block->getIdModifier() ? '-' . $block->getIdModifier() : '';
+    $currentStoreId = $block->getCurrentStoreId();
+    $currentStoreCode = $block->getCurrentStoreCode();
+    $currentLabel = $block->escapeHtml($block->getStoreName());
 
-$storeViewModel = $viewModels->require(StoreSelector::class);
-$stores = $storeViewModel->getAvailableStores();
-$currentStoreCode = $storeViewModel->getCurrentStoreCode();
+    $options = array_map(static function ($store) use ($block, $currentStoreId) {
+        $isCurrent = $store->getId() === $currentStoreId;
+        return [
+            'value' => $block->escapeHtml($store->getCode()),
+            'label' => $block->escapeHtml($store->getName()),
+            'on_click' => $isCurrent ? 'return false;' : 'window.location.href=`' . $block->escapeUrl($block->getViewModel()->getTargetStoreRedirectUrl($store)) . '`',
+            'is_active' => $isCurrent,
+        ];
+    }, $block->getStores());
+    ?>
 
-$options = [];
-foreach ($stores as $key => $store) {
-    $onClick = ($key === $currentStoreCode) ? 'return false;' : 'window.location.href=`' . $store['url'] . '`';
-
-    $options[] = [
-        'value' => $escaper->escapeHtml($key),
-        'label' => $escaper->escapeHtml($store['name'] ?? ''),
-        'on_click' => $onClick,
-        'is_active' => $key === $currentStoreCode,
-    ];
-}
-
-$currentLabel = __($stores[$currentStoreCode]['name'] ?? '');
-?>
-
-<?php if (count($options) > 1): ?>
-    <?=
-    $template
-        ->setData([
-            'id' => 'store-selector',
-            'label' => $escaper->escapeHtml($currentLabel),
+    <?= $template->setData([
+            'id' => 'store-selector' . $block->escapeHtmlAttr($id),
+            'label' => $currentLabel,
             'options' => $options,
             'placement' => 'top',
-        ])
-        ->render('Magento_Theme::html/components/dropdown.phtml');
-    ?>
+        ])->render('Magento_Theme::html/components/dropdown.phtml'); ?>
+
 <?php endif; ?>
