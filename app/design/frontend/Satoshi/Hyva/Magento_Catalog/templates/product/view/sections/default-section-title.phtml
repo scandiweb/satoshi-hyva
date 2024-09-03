@@ -19,10 +19,11 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
      class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0"
 >
     <button class="flex items-center justify-between"
-            id="controlsAccordionItemOne" type="button"
-            aria-controls="accordionItemOne"
+            type="button"
             x-ref="AccordionButton"
             :aria-expanded="isExpanded"
+            aria-controls="attributes_panel"
+            aria-labelledby="attributes_label"
     <span class="text-base font-bold leading-tight">
         <?= $sectionBlock->getTitle() ? $escaper->escapeHtml($sectionBlock->getTitle()) : '&nbsp;' ?>
     </span>
@@ -31,11 +32,3 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     </span>
     </button>
 </div>
-
-<script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.store('information', {
-            isExpanded: true
-        });
-    });
-</script>

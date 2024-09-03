@@ -23,7 +23,7 @@ $defaultTitleTemplate = $titleRenderer->getTemplate();
             continue;
         }
         ?>
-        <section id="<?= $escaper->escapeHtmlAttr($sectionBlock->getNameInLayout()) ?>">
+        <section x-data="Accordion('true', 300)" id="<?= $escaper->escapeHtmlAttr($sectionBlock->getNameInLayout()) ?>">
             <?=
             $titleRenderer->setTemplate($titleTemplate)
                 ->assign('sectionBlock', $sectionBlock)
