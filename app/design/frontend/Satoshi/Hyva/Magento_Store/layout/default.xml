@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="footer-content">
+            <block name="footer-column-store"
+                   template="Magento_Theme::html/footer/column.phtml"
+                   after="-"
+            >
+                <block class="Magento\Store\Block\Switcher"
+                       name="store-switcher"
+                       template="Magento_Store::switch/stores.phtml"
+                >
+                    <arguments>
+                        <argument name="view_model" xsi:type="object">Magento\Store\ViewModel\SwitcherUrlProvider</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Store\Block\Switcher"
+                       name="store-language-switcher"
+                       template="Magento_Store::switch/languages.phtml"
+                >
+                    <arguments>
+                        <argument name="view_model" xsi:type="object">Magento\Store\ViewModel\SwitcherUrlProvider</argument>
+                    </arguments>
+                </block>
+            </block>
+        </referenceBlock>
+    </body>
+</page>
