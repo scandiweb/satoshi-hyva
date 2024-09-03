@@ -67,7 +67,13 @@ $productType = $product->getTypeId();
             <?= $block->getChildHtml("product.info.price") ?>
         </div>
 
-        <div class="relative flex flex-grow flex-wrap justify-stretch gap-3 " id="product-actions" x-transition="" x-intersect:enter="toggleStickyProductActions(false)" x-intersect:leave="toggleStickyProductActions(true)">
+        <div
+            class="relative flex flex-grow flex-wrap justify-stretch gap-3"
+            id="product-actions"
+            x-transition
+            x-intersect:enter="toggleStickyProductActions(false)"
+            x-intersect:leave="toggleStickyProductActions(true)"
+        >
             <?php if ($product->isSaleable()): ?>
                 <?= $block->getChildHtml("product.info.quantity") ?>
                 <?= $block->getChildHtml("product.info.addtocart") ?>
