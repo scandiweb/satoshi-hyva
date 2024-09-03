@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-use Satoshi\Theme\Block\Template;
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\Block\Template;
 
 /** @var Template $block */
+/** @var Template $template */
+/** @var ViewModelRegistry $viewModels */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
-
 ?>
 
 <div>
