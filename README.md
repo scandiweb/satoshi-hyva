@@ -62,10 +62,6 @@ $popup
 
 ## Features to implement
 
-### Product card
+### PLP
 
-1. Add to wishlist
-2. Add to compare
-3. Quick buy on desktop?
-4. Ratings results
-5. Add a setting to allow merchant to choose object-fit between cover and contain?
+1. Add an option to switch between grid and list layout
