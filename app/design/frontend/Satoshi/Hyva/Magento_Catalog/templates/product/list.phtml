@@ -35,6 +35,9 @@ $productCollection = $block->getLoadedProductCollection();
              x-data="ProductList('')"
              key="ProductList-all"
     >
+        <?= $block->getToolbarHtml() ?>
+        <?= $block->getAdditionalHtml() ?>
+
         <div class="flex md:items-start">
             <div class="flex-grow">
                 <div
@@ -68,5 +71,6 @@ $productCollection = $block->getLoadedProductCollection();
                 </div>
             </div>
         </div>
+        <?= $block->getChildBlock('toolbar')->setIsBottom(true)->toHtml() ?>
     </section>
 <?php endif; ?>
