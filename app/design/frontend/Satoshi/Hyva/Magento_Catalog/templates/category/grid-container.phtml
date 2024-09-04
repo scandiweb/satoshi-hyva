@@ -11,9 +11,8 @@ use Magento\Framework\View\Element\Template;
   id="ProductGridContainer"
   class="content-wrapper animate-on-transition mx-auto"
   x-ref="ProductGridContainer"
-  <?php // path set to empty temporarily, will refactored in filters task ?>
   x-data="ProductList('')"
-  key="ProductList-someId"
+  key="ProductList-all"
 >
   <!-- Filters on mobile goes here -->
   <?= $block->getChildHtml() ?>
