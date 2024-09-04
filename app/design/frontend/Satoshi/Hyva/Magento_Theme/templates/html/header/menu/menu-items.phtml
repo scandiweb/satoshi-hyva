@@ -1,6 +1,14 @@
 <?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Navigation;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var Template $template */
 
 /** @var Navigation $viewModelNavigation */
 $viewModelNavigation = $viewModels->require(Navigation::class, $block);
@@ -8,10 +16,11 @@ $viewModelNavigation = $viewModels->require(Navigation::class, $block);
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-$id = $block->getId();
+$id = $block->getData('id');
 $title = $block->getData('title');
 $path = $block->getData('path');
 $menuItems = $block->getData('menuItems');
+$breadcrumbs = $block->getData('breadcrumbs') ?? [];
 $url = $block->getData('url');
 $level = $block->getData('level') ?? 1;
 
@@ -124,7 +133,13 @@ if (!$menuItems) {
               'title' => $menuItem['name'],
               'path' => $path . ',' . $menuItem['id'],
               'id' => $menuItem['id'],
-              'url' => $menuItem['url']
+              'url' => $menuItem['url'],
+              'breadcrumbs' => [
+                ...$breadcrumbs, [
+                  'title' => $menuItem['name'],
+                  'url' => $menuItem['url']
+                ]
+              ]
             ])
             ->render('Magento_Theme::html/header/menu/menu-items.phtml');
         ?>
@@ -139,7 +154,10 @@ if (!$menuItems) {
         x-element-transition-trigger:category="
           {
             'title': '<?= $menuItem['name'] ?>',
-            'url': '<?= $menuItem['url'] ?>'
+            'url': '<?= $menuItem['url'] ?>',
+            'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
+            'img': '<?= $menuItem['image'] ?>',
+            'description': `<?= $escaper->escapeUrl($menuItem['description']) ?>`,
           }
         "
         class="focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1"
