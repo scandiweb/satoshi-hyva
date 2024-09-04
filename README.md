@@ -60,6 +60,8 @@ $popup
   ->render()
 ```
 
-## TODO
+## Features to implement
 
-- Implement logic in the product listing page to automatically switch between list and grid view modes based on predefined conditions.
+### PLP
+
+1. Add an option to switch between grid and list layout
