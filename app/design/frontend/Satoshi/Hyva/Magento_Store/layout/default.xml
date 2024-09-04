@@ -2,9 +2,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="footer-content">
-            <block name="footer-column-store"
-                   template="Magento_Theme::html/footer/column.phtml"
-                   after="-"
+            <referenceBlock name="footer-column-store"
             >
                 <block class="Magento\Store\Block\Switcher"
                        name="store-switcher"
@@ -22,7 +20,7 @@
                         <argument name="view_model" xsi:type="object">Magento\Store\ViewModel\SwitcherUrlProvider</argument>
                     </arguments>
                 </block>
-            </block>
+            </referenceBlock>
         </referenceBlock>
     </body>
 </page>

@@ -1,7 +1,11 @@
 <?php
 declare(strict_types=1);
 
-/** @var \Magento\Store\Block\Switcher $block */
+use Magento\Store\Block\Switcher;
+use Satoshi\Theme\Block\Template;
+
+/** @var Switcher $block */
+/** @var Template $template */
 
 if (count($block->getGroups()) > 1):
     $currentGroupId = $block->getCurrentGroupId();
