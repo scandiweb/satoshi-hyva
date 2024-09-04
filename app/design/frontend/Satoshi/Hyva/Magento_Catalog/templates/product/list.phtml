@@ -71,8 +71,6 @@ $productCollection = $block->getLoadedProductCollection();
                 </div>
             </div>
         </div>
-        <?php if ($toolbarBlock = $block->getChildBlock('toolbar')): ?>
-            <?= $toolbarBlock->setIsBottom(true)->toHtml() ?>
-        <?php endif; ?>
+        <?= $block->getChildBlock('toolbar')->setIsBottom(true)->toHtml() ?>
     </section>
 <?php endif; ?>
