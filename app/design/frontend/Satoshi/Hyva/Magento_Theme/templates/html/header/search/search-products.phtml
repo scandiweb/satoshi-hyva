@@ -34,11 +34,7 @@ use Satoshi\Theme\Block\Template;
         x-for="product in products"
         :key="product.id"
       >
-        <?= $template
-            ->setData([
-              'is_search_card' => true,
-            ])
-            ->render('Magento_Catalog::product/list/item.phtml') ?>
+        <?= $template->setData([ 'is_search_card' => true, 'is_alpine_template' => true ])->render('Magento_Catalog::product/list/item.phtml') ?>
       </template>
     </div>
     <div
