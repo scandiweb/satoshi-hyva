@@ -1,0 +1,43 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\Block\Popup;
+use Satoshi\Theme\Block\Template;
+
+/** @var Popup $popup */
+/** @var SvgIcons $hyvaicons */
+/** @var ViewModelRegistry $viewModels */
+/** @var Template $block */
+
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+<div x-data="{ open: false }" class="mb-8 px-4 md:p-0 mt-12">
+    <button @click="() => {
+            if(open === false && $store.main.isMobile) {
+                $store.popup.showPopup('share');
+            }
+            open = !open;
+        }"
+            class="button button--ghost-primary animate-on-transition w-full">
+        Share
+        <span class="ms-3 leading-none">
+            <?= $hyvaicons->renderHtml('share'); ?>
+        </span>
+    </button>
+
+    <div x-show="open" class="hidden md:block mt-2">
+        <?= $block->getChildHtml('product.share.content') ?>
+    </div>
+
+    <?=
+    $popup
+        ->setData([
+            'id' => 'share',
+            'isFocused' => true,
+            'desktopTarget' => 'menu-desktop',
+        ])
+        ->setChildTemplate('Magento_Catalog::product/view/share-content.phtml')
+        ->render()
+    ?>
+</div>
