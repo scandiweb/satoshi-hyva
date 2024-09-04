@@ -1,3 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Catalog\ViewModel\Product\Breadcrumbs;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$breadcrumbsViewModel = $viewModels->require(Breadcrumbs::class);
+$categoryUrlSuffix = $breadcrumbsViewModel->getCategoryUrlSuffix();
+
+?>
 <div
   x-show="categories.length"
   class="relative flex grow flex-col gap-4 p-3 pb-2 transition-opacity duration-300 md:p-5"
@@ -9,11 +24,11 @@
   <div class="flex min-h-11 flex-col gap-2 md:min-h-[48px]">
     <div
       x-show="categories.length"
-      class="-mx-5 flex gap-3 overflow-x-auto px-5 py-1 md:max-w-[--search-width]"
+      class="-mx-5 flex gap-3 overflow-x-auto px-5 py-1 md:max-w-[--search-width] max-md:pb-3"
     >
       <template x-for="category in categories">
         <a
-          :href="`/${category.url_path}.html`"
+          :href="`/${category.url_path}<?= $escaper->escapeUrl($categoryUrlSuffix) ?>`"
           class="button button--outline-secondary"
           x-element-transition-trigger:category.animate="{
             'title': category.name,
