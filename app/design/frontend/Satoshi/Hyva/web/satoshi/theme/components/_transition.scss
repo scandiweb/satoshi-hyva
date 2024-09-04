@@ -1,5 +1,5 @@
 .element-transition {
-  @apply pointer-events-none fixed left-0 top-0 z-[35] h-full w-full max-w-screen bg-fg transition-opacity;
+  @apply bg-bg-500 pointer-events-none fixed left-0 top-0 z-[35] h-full w-full max-w-screen transition-opacity;
 
   > * {
     @apply absolute origin-top-left translate-x-0 translate-y-0 transition-all duration-300;
@@ -51,7 +51,7 @@
   }
 
   &__bg {
-    @apply absolute left-0 right-0 -z-10 mx-auto bg-fg;
+    @apply bg-bg-500 absolute left-0 right-0 -z-10 mx-auto;
 
     --target-scale-x: calc(
       var(--screen-width) / (var(--content-wrapper-width) - 16 * 4)

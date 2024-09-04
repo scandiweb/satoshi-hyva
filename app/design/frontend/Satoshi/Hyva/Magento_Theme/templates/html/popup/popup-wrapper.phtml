@@ -1,5 +1,6 @@
 <div
   x-data
+  x-cloak
   class="contents"
   :style="
     {
@@ -15,10 +16,10 @@
     :class="
       {
         'popup__overlay--full-screen': $store.popup.isCurrentPopupFullScreen,
-        'popup__overlay--focused': $store.main.isMobile ? $store.popup.isCurrentPopupFocused : Object.keys($store.resizable._current).length > 0,
+        'popup__overlay--focused': $store.main.isPopupFocused()
       }
     "
-    @click="$store.popup.onPopupOverlayClick(); $store.resizable.hideAll();"
+    @click="$store.main.hideAllPopupsAndResizables()"
   ></div>
   <div class="popup__main">
     <div
@@ -36,6 +37,7 @@
           'popup__wrapper--visible': $store.popup._isPopupVisible,
         }
       "
+      x-a11y-trap="$store.popup._isPopupVisible"
     >
       <div class="popup__content-wrapper">
         <div
