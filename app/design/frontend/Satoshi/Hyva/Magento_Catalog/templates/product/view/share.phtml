@@ -20,13 +20,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             open = !open;
         }"
             class="button button--ghost-primary animate-on-transition w-full">
-        Share
+        <?= __('Share') ?>
         <span class="ms-3 leading-none">
             <?= $hyvaicons->renderHtml('share'); ?>
         </span>
     </button>
 
-    <div x-show="open" class="hidden md:block mt-2">
+    <div x-show="open" class="hidden md:block mt-2 rounded-md border bg-bg-500 p-5 shadow-sm">
         <?= $block->getChildHtml('product.share.content') ?>
     </div>
 
