@@ -1,0 +1,10 @@
+<div
+  x-data
+  x-element-transition-wrapper
+  class="element-transition opacity-0"
+  :class="
+    {
+      'opacity-100': $store['transition'].isTransitioning
+    }
+  "
+></div>
