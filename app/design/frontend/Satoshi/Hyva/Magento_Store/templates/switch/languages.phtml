@@ -15,10 +15,11 @@ if (count($block->getStores()) > 1):
 
     $options = array_map(static function ($store) use ($block, $currentStoreId) {
         $isCurrent = $store->getId() === $currentStoreId;
+
         return [
             'value' => $block->escapeHtml($store->getCode()),
             'label' => $block->escapeHtml($store->getName()),
-            'on_click' => $isCurrent ? 'return false;' : 'window.location.href=`' . $block->escapeUrl($block->getViewModel()->getTargetStoreRedirectUrl($store)) . '`',
+            'on_click' => $isCurrent ? '' : "fetchAndReplaceContent('{$block->getViewModel()->getTargetStoreRedirectUrl($store)}')",
             'is_active' => $isCurrent,
         ];
     }, $block->getStores());
