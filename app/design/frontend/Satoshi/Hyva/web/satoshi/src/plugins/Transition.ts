@@ -361,7 +361,7 @@ export const fetchAndCachePage = async (url: string) => {
   return html;
 };
 
-export const navigateWithTransition = async (
+export const navigateWithTransition = (
   nextUrl: string,
   options: {
     preview?: boolean;
@@ -410,8 +410,12 @@ export const navigateWithTransition = async (
       Alpine.store("resizable").hideAll();
       history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
+      const html = await fetchAndCachePage(nextUrl!);
 
-      if (!isPreview) {
+      if (isPreview) {
+        replacePreviewContent(html);
+      } else {
+        replaceMainContent(html);
         window.scrollTo(0, 0);
       }
 

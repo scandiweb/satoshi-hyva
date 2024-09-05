@@ -1,6 +1,5 @@
 import type { Magics } from "alpinejs";
 import { ESC_KEY } from "../utils/keyboard-keys";
-import { navigateWithTransition } from "../plugins/Transition";
 
 export type DropdownType = {
   isDropdownVisible: boolean;
@@ -14,7 +13,7 @@ export type DropdownType = {
   show(): void;
   hide(): void;
   search(value: string): void;
-    navigateAndReplaceContent(url: string, targetSelector: string, options: object): void;
+  fetchAndReplaceContent(url: string, targetSelector: string): void;
 } & Magics<{}>;
 
 export const Dropdown = () =>
@@ -79,52 +78,62 @@ export const Dropdown = () =>
       });
     },
 
-    navigateAndReplaceContent(url: string, targetSelector: string = "document", options: object = {}) {
-      if (!url) return;
-
-      (async () => {
-          this.hide();
-
-          try {
-            await navigateWithTransition(url, options);
-
-            // Fetch the new content, following any redirects automatically
-            const response = await fetch(url, { redirect: "follow" });
-
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-
-            const responseUrl = response.url;
-            const data = await response.text();
-
-            // Create a temporary container to hold the fetched HTML
-            const resultHtml = document.createElement("div");
-            resultHtml.innerHTML = data;
-
-            let newContentHtml = resultHtml.querySelector(
-        targetSelector === "document" ? "body" : targetSelector
-            )?.innerHTML;
-
-            // Fallback: If the body or target content is not found, try using the entire fetched HTML structure
-            if (!newContentHtml) {
-              newContentHtml = resultHtml.innerHTML;
-            }
-
-            const currentContentElem = document.querySelector(targetSelector === "document" ? "body" : targetSelector);
-
-            // If both the new content and the current content element exist, perform the replacement
-            if (newContentHtml && currentContentElem) {
-              currentContentElem.innerHTML = newContentHtml;
-            } else {
-              window.location.href = url;
+      /**
+       * Fetches new content from the provided URL and replaces the content
+       * within the specified target selector on the current page. If it fails,
+       * redirects the browser to the URL as a fallback.
+       *
+       * @param {string} url - The URL from which to fetch the new content.
+       * @param {string} targetSelector - The CSS selector for the element to replace (default is "document").
+       */
+      fetchAndReplaceContent(url, targetSelector = "document") {
+          if (!url) {
               return;
-            }
-
-            history.replaceState(history.state, "", responseUrl);
-          } catch (error) {
-            window.location.href = url;
           }
-      })();
-    },
+
+          let responseUrl = '';
+
+          // Start the fetch process and automatically follow any redirects.
+          fetch(url, { redirect: "follow" })
+              .then((response) => {
+                  this.hide();
+                  responseUrl = response.url;
+
+                  if (!response.ok) {
+                      throw new Error(`Failed to fetch content. Status: ${response.status}`);
+                  }
+
+                  return response.text();
+              })
+              .then((data) => {
+                  // Create a temporary container to parse the fetched HTML.
+                  const resultHtml = document.createElement("div");
+                  resultHtml.innerHTML = data;
+
+                  let newContentHtml = resultHtml.querySelector(
+                      targetSelector === "document" ? "body" : targetSelector
+                  )?.innerHTML;
+
+                  // Fallback: If no content is found, use the entire HTML structure.
+                  if (!newContentHtml) {
+                      newContentHtml = resultHtml.innerHTML;
+                  }
+
+                  const currentContentElem = document.querySelector(targetSelector === "document" ? "body" : targetSelector);
+
+                  // If both the new content and the current content element exist, perform the replacement
+                  if (newContentHtml && currentContentElem) {
+                      currentContentElem.innerHTML = newContentHtml;
+                  } else {
+                      window.location.href = url;
+                      return;
+                  }
+
+                  history.replaceState(history.state, "", responseUrl);
+              })
+              .catch(() => {
+                  window.location.href = url;
+              });
+      },
+
   };
