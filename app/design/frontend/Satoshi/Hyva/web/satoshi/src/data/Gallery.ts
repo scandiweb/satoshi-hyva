@@ -10,8 +10,6 @@ export const Gallery = (images: any) => <any>{
     images: JSON.parse(images),
 
     activateVideo(index: number) {
-        console.log(index)
-        console.log(this.images);
         const videoData: VideoData | false = this.getVideoData(index);
 
         if (!videoData) {
