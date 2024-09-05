@@ -13,7 +13,7 @@ export type DropdownType = {
   show(): void;
   hide(): void;
   search(value: string): void;
-  fetchAndReplaceContent(url: string, targetSelector: string): void;
+  fetchAndReplaceContent(url: string, targetSelector?: string, formData?: object | null): void;
 } & Magics<{}>;
 
 export const Dropdown = () =>
@@ -79,24 +79,30 @@ export const Dropdown = () =>
     },
 
       /**
-       * Fetches new content from the provided URL and replaces the content
-       * within the specified target selector on the current page. If it fails,
-       * redirects the browser to the URL as a fallback.
+       * Fetches new content from the provided URL, and replaces the content within the specified target selector.
+       * Can send data via POST if necessary.
        *
        * @param {string} url - The URL from which to fetch the new content.
        * @param {string} targetSelector - The CSS selector for the element to replace (default is "document").
+       * @param {Object} data - Optional data to be sent with the request.
        */
-      fetchAndReplaceContent(url, targetSelector = "document") {
+      fetchAndReplaceContent(url, targetSelector = "document", formData= null) {
           if (!url) {
               return;
           }
 
           let responseUrl = '';
 
-          // Start the fetch process and automatically follow any redirects.
-          fetch(url, { redirect: "follow" })
+          fetch(url, {
+              method: formData ? "POST" : "GET",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              redirect: "follow",
+              body: formData ? JSON.stringify(formData) : null,
+          })
               .then((response) => {
-                  this.hide();
+                  this.hide(); // Close the dropdown
                   responseUrl = response.url;
 
                   if (!response.ok) {
@@ -114,7 +120,6 @@ export const Dropdown = () =>
                       targetSelector === "document" ? "body" : targetSelector
                   )?.innerHTML;
 
-                  // Fallback: If no content is found, use the entire HTML structure.
                   if (!newContentHtml) {
                       newContentHtml = resultHtml.innerHTML;
                   }
@@ -135,5 +140,4 @@ export const Dropdown = () =>
                   window.location.href = url;
               });
       },
-
   };
