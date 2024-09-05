@@ -45,12 +45,12 @@ if ($product) {
     >
         <div class="mb-4 md:hidden">
             <?php if ($images): ?>
-                <div class="relative flex aspect-product min-h-0 justify-center p-[4%]">
+                <div class="relative flex aspect-product min-h-0 justify-center">
                     <div
                         class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center transition-opacity delay-1000 duration-300"
                         x-data="TransitionImage({
-                            src: ($store['transition'].pageData?.productImg || $store['transition'].pageData?.variantImg),
-                            imageId: 'id'
+                            src: '<?= reset($images)['medium_image_url'] ?>',
+                            imageId: '-mobile-image'
                         })"
                         x-show="!!src"
                         :class="{ 'opacity-0': isImgLoaded }"
@@ -63,6 +63,7 @@ if ($product) {
                         >
                     </div>
                     <img
+                        id="-mobile-image"
                         height="100%"
                         width="100%"
                         class="max-h-full w-auto object-center object-cover h-full mix-blend-darken"
