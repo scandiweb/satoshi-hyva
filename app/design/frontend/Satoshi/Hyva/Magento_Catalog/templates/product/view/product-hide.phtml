@@ -1,0 +1,22 @@
+<?php
+
+use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\Model\ViewModelRegistry;
+
+/** @var ViewModelRegistry $viewModels */
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<button
+    style="display: none"
+    x-show="typeof hidePreview === 'function'"
+    class="button button--ghost-primary animate-on-transition max-md:hidden w-full"
+    @click="hidePreview"
+    type="button"
+>
+    <?= __('Hide product') ?>
+    <span class="button__icon button__icon--right text-lg">
+        <?= $hyvaicons->renderHtml('close'); ?>
+    </span>
+</button>
