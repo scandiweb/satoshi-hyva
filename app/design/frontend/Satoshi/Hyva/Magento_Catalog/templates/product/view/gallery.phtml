@@ -16,6 +16,10 @@ $heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
 
 $productName = $block->getProduct()->getName();
 $images = json_decode($block->getGalleryImagesJson(), true);
+$firstImage = array_shift($images);
+
+$isContain = false;
+
 ?>
 
 <div
@@ -23,6 +27,77 @@ $images = json_decode($block->getGalleryImagesJson(), true);
     x-data='Gallery(<?= json_encode($block->getGalleryImagesJson()) ?>)'
     class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8"
 >
+    <div
+        class="relative flex aspect-product flex-shrink-0 items-center justify-center overflow-hidden border-black bg-[--fade-in-bg] md:rounded-2xl max-md:hidden"
+    >
+        <div
+            x-data="
+          TransitionImage({
+            src: '<?=$firstImage['img']?>',
+            imageId: 'firstImage'
+          })
+        "
+            x-show="!!src"
+            class="<?= $isContain ? 'p-[4%] size-full' : 'size-full' ?> hide-unless-transition absolute inset-0 z-10 flex items-center justify-center bg-[--fade-in-bg] {% if is_contain %}p-[4%]{% endif %} transition-opacity delay-1000 duration-300"
+            :class="{ 'opacity-0': isImgLoaded }"
+        >
+            <img
+                height="100%"
+                width="100%"
+                class="
+                <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>
+                "
+                :src="src"
+            >
+        </div>
+        <div class="
+                flex items-center justify-center
+                <?= $isContain ? 'p-[4%] size-full' : 'size-full' ?>
+              ">
+            <img
+                class="
+                object-center no-fade
+                <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>
+              "
+                 src="<?=$firstImage['img']?>"
+                 alt=""
+                 id="firstImage"
+
+            >
+        </div>
+        <?php if ($firstImage['type'] === 'video' && !in_array(0, $playingVideoIndexes ?? [])): ?>
+            <button
+                type="button"
+                class="group absolute inset-0 z-50 outline-offset-2 grid place-items-center"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
+                @click="activateVideo(0)"
+            >
+                <?= $heroiconsSolid->playHtml(
+                    'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
+                    44,
+                    44,
+                    ['aria-hidden' => 'true']
+                ); ?>
+            </button>
+        <?php endif; ?>
+        <?php if ($firstImage['type'] === 'video'): ?>
+            <div class="absolute inset-0 hidden w-full h-full bg-black nonmobile z-50"
+                 :class="{ 'hidden': activeVideoType !== 'youtube' }"
+                 x-transition.opacity.duration.500ms
+                 x-show="activeVideoType === 'youtube'"
+            >
+                <div id="youtube-player-0 class="w-full h-full"></div>
+            </div>
+            <div class="absolute inset-0 hidden w-full h-full bg-white"
+                 :class="{ 'hidden': activeVideoType !== 'vimeo' }"
+                 x-transition.opacity.duration.500ms
+                 x-show="activeVideoType === 'vimeo'"
+            >
+                <div id="vimeo-player-0" class="w-full h-full"></div>
+            </div>
+        <?php endif; ?>
+    </div>
+
     <?php foreach ($images as $index => $image): ?>
         <div
             class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl">
@@ -39,7 +114,7 @@ $images = json_decode($block->getGalleryImagesJson(), true);
                         type="button"
                         class="group absolute inset-0 outline-offset-2 grid place-items-center"
                         aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                        @click="activateVideo(<?= $index ?>)"
+                        @click="activateVideo(<?= $index + 1 ?>)"
                     >
                         <?= $heroiconsSolid->playHtml(
                             'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
@@ -53,16 +128,16 @@ $images = json_decode($block->getGalleryImagesJson(), true);
                     <div class="absolute inset-0 hidden w-full h-full bg-black nonmobile"
                          :class="{ 'hidden': activeVideoType !== 'youtube' }"
                          x-transition.opacity.duration.500ms
-                         x-show="activeVideoType === 'youtube' && playingVideoIndexes.includes(<?= $index ?>)"
+                         x-show="activeVideoType === 'youtube' && playingVideoIndexes.includes(<?= $index + 1 ?>)"
                     >
-                        <div id="youtube-player-<?= $index ?>" class="w-full h-full"></div>
+                        <div id="youtube-player-<?= $index + 1 ?>" class="w-full h-full"></div>
                     </div>
                     <div class="absolute inset-0 hidden w-full h-full bg-white"
                          :class="{ 'hidden': activeVideoType !== 'vimeo' }"
                          x-transition.opacity.duration.500ms
                          x-show="activeVideoType === 'vimeo'"
                     >
-                        <div id="vimeo-player-<?= $index ?>" class="w-full h-full"></div>
+                        <div id="vimeo-player-<?= $index + 1 ?>" class="w-full h-full"></div>
                     </div>
                 <?php endif; ?>
             </div>
