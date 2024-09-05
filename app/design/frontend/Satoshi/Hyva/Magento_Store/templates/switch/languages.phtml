@@ -19,7 +19,7 @@ if (count($block->getStores()) > 1):
         return [
             'value' => $block->escapeHtml($store->getCode()),
             'label' => $block->escapeHtml($store->getName()),
-            'on_click' => $isCurrent ? '' : "navigateAndReplaceContent('{$block->getViewModel()->getTargetStoreRedirectUrl($store)}')",
+            'on_click' => $isCurrent ? '' : "fetchAndReplaceContent('{$block->getViewModel()->getTargetStoreRedirectUrl($store)}')",
             'is_active' => $isCurrent,
         ];
     }, $block->getStores());
