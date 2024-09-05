@@ -361,7 +361,7 @@ export const fetchAndCachePage = async (url: string) => {
   return html;
 };
 
-export const navigateWithTransition = (
+export const navigateWithTransition = async (
   nextUrl: string,
   options: {
     preview?: boolean;
@@ -405,19 +405,11 @@ export const navigateWithTransition = (
       Alpine.store("transition")._showTransitionFallback(isPreview);
     }
 
-    Alpine.nextTick(async () => {
+    Alpine.nextTick(() => {
       Alpine.store("popup").hideAllPopups();
       Alpine.store("resizable").hideAll();
       history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
-      const html = await fetchAndCachePage(nextUrl!);
-
-      if (isPreview) {
-        replacePreviewContent(html);
-      } else {
-        replaceMainContent(html);
-        window.scrollTo(0, 0);
-      }
 
       Alpine.store("transition")._clearFallback();
       nProgress.done();
@@ -427,7 +419,7 @@ export const navigateWithTransition = (
   if (options.areaId) {
     Alpine.store("transition")._doTransition(options.areaId!, navigate);
   } else {
-    navigate();
+    await navigate();
   }
 };
 
