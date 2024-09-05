@@ -6,7 +6,9 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Magento\Catalog\Block\Product\View\Gallery;
 use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
 
+/** @var Template $template */
 /** @var Escaper $escaper */
 /** @var Gallery $block */
 /** @var ViewModelRegistry $viewModels */
@@ -33,7 +35,7 @@ $isContain = false;
         <div
             x-data="
           TransitionImage({
-            src: '<?=$firstImage['img']?>',
+            src: '<?= $firstImage['img'] ?>',
             imageId: 'firstImage'
           })
         "
@@ -59,43 +61,17 @@ $isContain = false;
                 object-center no-fade
                 <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>
               "
-                 src="<?=$firstImage['img']?>"
-                 alt=""
-                 id="firstImage"
+                src="<?= $firstImage['img'] ?>"
+                alt=""
+                id="firstImage"
 
             >
         </div>
-        <?php if ($firstImage['type'] === 'video' && !in_array(0, $playingVideoIndexes ?? [])): ?>
-            <button
-                type="button"
-                class="group absolute inset-0 z-50 outline-offset-2 grid place-items-center"
-                aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                @click="activateVideo(0)"
-            >
-                <?= $heroiconsSolid->playHtml(
-                    'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
-                    44,
-                    44,
-                    ['aria-hidden' => 'true']
-                ); ?>
-            </button>
-        <?php endif; ?>
-        <?php if ($firstImage['type'] === 'video'): ?>
-            <div class="absolute inset-0 hidden w-full h-full bg-black nonmobile z-50"
-                 :class="{ 'hidden': activeVideoType !== 'youtube' }"
-                 x-transition.opacity.duration.500ms
-                 x-show="activeVideoType === 'youtube'"
-            >
-                <div id="youtube-player-0 class="w-full h-full"></div>
-            </div>
-            <div class="absolute inset-0 hidden w-full h-full bg-white"
-                 :class="{ 'hidden': activeVideoType !== 'vimeo' }"
-                 x-transition.opacity.duration.500ms
-                 x-show="activeVideoType === 'vimeo'"
-            >
-                <div id="vimeo-player-0" class="w-full h-full"></div>
-            </div>
-        <?php endif; ?>
+        <?=
+            $template
+                ->setData(['image' => $firstImage, 'index' => 0])
+                ->render('Magento_Catalog::product/view/video.phtml');
+        ?>
     </div>
 
     <?php foreach ($images as $index => $image): ?>
@@ -109,37 +85,11 @@ $isContain = false;
                     loading="lazy"
                     src="<?= $image['img'] ?>"
                 />
-                <?php if ($image['type'] === 'video' && !in_array($index, $playingVideoIndexes ?? [])): ?>
-                    <button
-                        type="button"
-                        class="group absolute inset-0 outline-offset-2 grid place-items-center"
-                        aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                        @click="activateVideo(<?= $index + 1 ?>)"
-                    >
-                        <?= $heroiconsSolid->playHtml(
-                            'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
-                            44,
-                            44,
-                            ['aria-hidden' => 'true']
-                        ); ?>
-                    </button>
-                <?php endif; ?>
-                <?php if ($image['type'] === 'video'): ?>
-                    <div class="absolute inset-0 hidden w-full h-full bg-black nonmobile"
-                         :class="{ 'hidden': activeVideoType !== 'youtube' }"
-                         x-transition.opacity.duration.500ms
-                         x-show="activeVideoType === 'youtube' && playingVideoIndexes.includes(<?= $index + 1 ?>)"
-                    >
-                        <div id="youtube-player-<?= $index + 1 ?>" class="w-full h-full"></div>
-                    </div>
-                    <div class="absolute inset-0 hidden w-full h-full bg-white"
-                         :class="{ 'hidden': activeVideoType !== 'vimeo' }"
-                         x-transition.opacity.duration.500ms
-                         x-show="activeVideoType === 'vimeo'"
-                    >
-                        <div id="vimeo-player-<?= $index + 1 ?>" class="w-full h-full"></div>
-                    </div>
-                <?php endif; ?>
+                <?=
+                    $template
+                        ->setData(['image' => $image, 'index' => $index + 1])
+                        ->render('Magento_Catalog::product/view/video.phtml');
+                ?>
             </div>
         </div>
     <?php endforeach; ?>
