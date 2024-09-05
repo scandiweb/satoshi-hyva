@@ -83,10 +83,10 @@ export const Dropdown = () =>
        * Can send data via POST if necessary.
        *
        * @param {string} url - The URL from which to fetch the new content.
-       * @param {string} targetSelector - The CSS selector for the element to replace (default is "document").
+       * @param {string} targetSelector - The CSS selector for the element to replace (default is "body").
        * @param {Object} data - Optional data to be sent with the request.
        */
-      fetchAndReplaceContent(url, targetSelector = "document", formData= null) {
+      fetchAndReplaceContent(url, targetSelector = "body", formData= null) {
           if (!url) {
               return;
           }
@@ -102,7 +102,7 @@ export const Dropdown = () =>
               body: formData ? JSON.stringify(formData) : null,
           })
               .then((response) => {
-                  this.hide(); // Close the dropdown
+                  this.hide();
                   responseUrl = response.url;
 
                   if (!response.ok) {
@@ -116,15 +116,13 @@ export const Dropdown = () =>
                   const resultHtml = document.createElement("div");
                   resultHtml.innerHTML = data;
 
-                  let newContentHtml = resultHtml.querySelector(
-                      targetSelector === "document" ? "body" : targetSelector
-                  )?.innerHTML;
+                  let newContentHtml = resultHtml.querySelector(targetSelector)?.innerHTML;
 
                   if (!newContentHtml) {
                       newContentHtml = resultHtml.innerHTML;
                   }
 
-                  const currentContentElem = document.querySelector(targetSelector === "document" ? "body" : targetSelector);
+                  const currentContentElem = document.querySelector(targetSelector);
 
                   // If both the new content and the current content element exist, perform the replacement
                   if (newContentHtml && currentContentElem) {
