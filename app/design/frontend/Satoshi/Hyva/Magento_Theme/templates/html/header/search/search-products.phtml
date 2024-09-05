@@ -17,11 +17,8 @@ use Satoshi\Theme\Block\Template;
     <h2 class="text-lg"><?= __('Products') ?></h2>
   </div>
   <div class="flex min-h-11 flex-col gap-2 md:min-h-0">
-    <p
-      x-show="!products.length && searchTerm"
-      class="text-text-100 contrast-more:text-secondary-700"
-    >
-      <b class="font-bold text-secondary-700"><?= __('Oops!') ?></b>
+    <p x-show="!products.length && searchTerm">
+      <b class="font-semibold text-secondary-700"><?= __('Oops!') ?></b>
       <?= __('We could not find any products matching your search.') ?>
     </p>
     <div
@@ -46,11 +43,11 @@ use Satoshi\Theme\Block\Template;
     x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('search-actions')"
   >
     <div
-      x-show="$store.main.isMobile ? $store.popup.currentPopup == 'menu' && getIsSearchActive() && products.length : getIsSearchActive() && products.length"
-      class="relative bg-fg px-4 pb-2 transition-opacity duration-300 md:p-0"
+      x-show="$store.main.isMobile ? $store.popup.currentPopup === 'menu' && getIsSearchActive() && products.length : getIsSearchActive() && products.length"
+      class="relative bg-bg-500 px-4 pb-2 transition-opacity duration-300 md:p-0 md:pt-1"
       :class="{ 'opacity-0': isLoading }"
     >
-      <div class="absolute -top-10 end-0 start-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
+      <div class="absolute -top-10 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>
       <a
         class="button button--filled-primary w-full"
         :href="getSearchUrl('/catalogsearch/result')"
