@@ -1,5 +1,6 @@
 import type { Magics } from "alpinejs";
 import { ESC_KEY } from "../utils/keyboard-keys";
+import { navigateWithTransition } from "../plugins/Transition";
 
 export type DropdownType = {
   isDropdownVisible: boolean;
@@ -13,7 +14,7 @@ export type DropdownType = {
   show(): void;
   hide(): void;
   search(value: string): void;
-  fetchAndReplaceContent(url: string, targetSelector: string): void;
+  fetchAndReplaceContent(url: string, targetSelector: string, options: object): void;
 } & Magics<{}>;
 
 export const Dropdown = () =>
@@ -78,93 +79,86 @@ export const Dropdown = () =>
       });
     },
 
-    /**
-    * Fetches new content from the provided URL and replaces the content
-    * within the specified target selector on the current page. If it fails,
-    * redirects the browser to the URL as a fallback.
-    *
-    * @param {string} url - The URL from which to fetch the new content.
-    * @param {string} targetSelector - The CSS selector for the element to replace (default is "document").
-    */
-    fetchAndReplaceContent(url, targetSelector = "document") {
-      if (!url) {
-        return;
-      }
+      fetchAndReplaceContent (
+          url: string,
+          targetSelector: string = "document",
+          options: {
+              preview?: boolean;
+              animate?: boolean;
+              type?: string;
+              data?: Record<string, any>;
+              areaId?: string;
+              target?: HTMLElement | null;
+          } = {} ) {
+          if (!url) {
+              return;
+          }
 
-      let responseUrl = '';
+          let responseUrl = '';
 
-      // Start the fetch process and automatically follow any redirects.
-      fetch(url, { redirect: "follow" })
-        .then((response) => {
-              // Store the final redirected URL.
-              responseUrl = response.url;
+          navigateWithTransition(url, options);
 
-              // Ensure the response is successful (HTTP status 200–299).
-              if (!response.ok) {
-                  throw new Error(`Failed to fetch content. Status: ${response.status}`);
-              }
+          // Fetch the new content, following any redirects automatically
+          fetch(url, { redirect: "follow" })
+              .then((response) => {
+                  responseUrl = response.url;
 
-              // Parse the response as HTML text.
-              return response.text();
-          })
-          .then((data) => {
-              // Create a temporary container to parse the fetched HTML.
-              const resultHtml = document.createElement("div");
-              resultHtml.innerHTML = data;
+                  if (!response.ok) {
+                      throw new Error("Network response was not ok");
+                  }
 
-              let newContentHtml = null;
+                  return response.text();
+              })
+              .then((data) => {
+                  // Create a temporary container to hold the fetched HTML
+                  const resultHtml = document.createElement("div");
+                  resultHtml.innerHTML = data;
 
-              // Determine the content to replace based on the target selector.
-              if (targetSelector === "document") {
-                  // If the whole document is being replaced, get the <body> content.
-                  newContentHtml = resultHtml.querySelector("body")?.innerHTML;
-              } else {
-                  // Otherwise, get the content for the specific selector (e.g., '.footer').
-                  newContentHtml = resultHtml.querySelector(targetSelector)?.innerHTML;
-              }
+                  let newContentHtml = null;
 
-              // Fallback: If no content is found, use the entire HTML structure.
-              if (!newContentHtml) {
-                  console.warn("Specified content not found. Falling back to entire HTML structure.");
-                  newContentHtml = resultHtml.innerHTML;
-              }
+                  if (targetSelector === "document") {
+                      newContentHtml = resultHtml.querySelector("body")?.innerHTML;
+                  } else {
+                      newContentHtml = resultHtml.querySelector(targetSelector)?.innerHTML;
+                  }
 
-              // Get the current element on the page to replace.
-              const currentContentElem = document.querySelector(targetSelector === "document" ? "body" : targetSelector);
+                  // Fallback: If the body or target content is not found, try using the entire fetched HTML structure
+                  if (!newContentHtml) {
+                      console.error("Body content not found. Trying entire HTML structure instead.");
+                      newContentHtml = resultHtml.innerHTML;
+                  }
 
-              // Ensure both the new content and the current element exist before replacing.
-              if (newContentHtml && currentContentElem) {
-                  // Replace the content while keeping the outer tag (e.g., <body>) intact.
-                  currentContentElem.innerHTML = newContentHtml;
+                  // Select the current content element on the page based on the target selector
+                  const currentContentElem = document.querySelector(targetSelector === "document" ? "body" : targetSelector);
 
-                  console.log("Content replaced successfully.");
+                  // If both the new content and the current content element exist, perform the replacement
+                  if (newContentHtml && currentContentElem) {
+                      // Replace the content while keeping the outer <body> tag intact
+                      currentContentElem.innerHTML = newContentHtml;
 
-                  // Optional: Re-run all scripts after replacing the content (disabled for performance reasons).
-                  // Array.from(document.querySelectorAll("script")).forEach(oldScript => {
-                  //     const newScript = document.createElement("script");
-                  //     if (oldScript.src) {
-                  //         newScript.src = oldScript.src;  // For external scripts.
-                  //     } else {
-                  //         newScript.textContent = oldScript.textContent;  // For inline scripts.
-                  //     }
-                  //     document.body.appendChild(newScript);
-                  //     oldScript.remove();
-                  // });
-              } else {
-                  console.error("Could not find the target content element for replacement.");
-              }
+                      // Re-run all scripts after body replacement
+                      // Array.from(document.querySelectorAll("script")).forEach(oldScript => {
+                      //     const newScript = document.createElement("script");
+                      //     if (oldScript.src) {
+                      //         newScript.src = oldScript.src;
+                      //     } else {
+                      //         newScript.textContent = oldScript.textContent;
+                      //     }
+                      //     document.body.appendChild(newScript);
+                      //     oldScript.remove();
+                      // });
+                  } else {
+                      // Target content not found for replacement. Fallback to redirecting the user to the provided URL
+                      window.location.href = url;
+                      return;
+                  }
 
-              // Update the browser's URL without refreshing the page.
-              history.replaceState(history.state, "", responseUrl);
-          })
-          .catch((error) => {
-              // Handle any errors that occurred during the fetch or content replacement process.
-              console.error("Error fetching and replacing content:", error);
-
-              // Fallback: If an error occurs, redirect the user to the provided URL.
-              console.log("Redirecting to:", url);
-              window.location.href = url;
-          });
-    },
+                  history.replaceState(history.state, "", responseUrl);
+              })
+              .catch(() => {
+                  // Fallback: If an error occurs, redirect the user to the provided URL
+                  window.location.href = url;
+              });
+      },
 
   };
