@@ -14,7 +14,7 @@ export type DropdownType = {
   show(): void;
   hide(): void;
   search(value: string): void;
-  fetchAndReplaceContent(url: string, targetSelector: string, options: object): void;
+    navigateAndReplaceContent(url: string, targetSelector: string, options: object): void;
 } & Magics<{}>;
 
 export const Dropdown = () =>
@@ -79,63 +79,52 @@ export const Dropdown = () =>
       });
     },
 
-      fetchAndReplaceContent(url: string, targetSelector: string = "document", options: object = {}) {
-          if (!url) return;
+    navigateAndReplaceContent(url: string, targetSelector: string = "document", options: object = {}) {
+      if (!url) return;
 
-          (async () => {
-              try {
-                  await navigateWithTransition(url, options);
+      (async () => {
+          this.hide();
 
-                  // Fetch the new content, following any redirects automatically
-                  const response = await fetch(url, { redirect: "follow" });
+          try {
+            await navigateWithTransition(url, options);
 
-                  if (!response.ok) {
-                      throw new Error("Network response was not ok");
-                  }
+            // Fetch the new content, following any redirects automatically
+            const response = await fetch(url, { redirect: "follow" });
 
-                  const responseUrl = response.url;
-                  const data = await response.text();
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
 
-                  // Create a temporary container to hold the fetched HTML
-                  const resultHtml = document.createElement("div");
-                  resultHtml.innerHTML = data;
+            const responseUrl = response.url;
+            const data = await response.text();
 
-                  let newContentHtml;
+            // Create a temporary container to hold the fetched HTML
+            const resultHtml = document.createElement("div");
+            resultHtml.innerHTML = data;
 
-                  // Determine what content to replace based on the target selector
-                  if (targetSelector === "document") {
-                      newContentHtml = resultHtml.querySelector("body")?.innerHTML;
-                  } else {
-                      newContentHtml = resultHtml.querySelector(targetSelector)?.innerHTML;
-                  }
+            let newContentHtml = resultHtml.querySelector(
+        targetSelector === "document" ? "body" : targetSelector
+            )?.innerHTML;
 
-                  // Fallback: If the body or target content is not found, try using the entire fetched HTML structure
-                  if (!newContentHtml) {
-                      console.error("Target content not found. Using entire HTML structure as fallback.");
-                      newContentHtml = resultHtml.innerHTML;
-                  }
+            // Fallback: If the body or target content is not found, try using the entire fetched HTML structure
+            if (!newContentHtml) {
+              newContentHtml = resultHtml.innerHTML;
+            }
 
-                  // Select the current content element on the page based on the target selector
-                  const currentContentElem = document.querySelector(targetSelector === "document" ? "body" : targetSelector);
+            const currentContentElem = document.querySelector(targetSelector === "document" ? "body" : targetSelector);
 
-                  // If both the new content and the current content element exist, perform the replacement
-                  if (newContentHtml && currentContentElem) {
-                      currentContentElem.innerHTML = newContentHtml;
-                  } else {
-                      console.error("Target content not found for replacement. Redirecting to the URL.");
-                      window.location.href = url;
-                      return;
-                  }
+            // If both the new content and the current content element exist, perform the replacement
+            if (newContentHtml && currentContentElem) {
+              currentContentElem.innerHTML = newContentHtml;
+            } else {
+              window.location.href = url;
+              return;
+            }
 
-                  // Update the URL without refreshing the page
-                  history.replaceState(history.state, "", responseUrl);
-              } catch (error) {
-                  // Fallback: If an error occurs, redirect the user to the provided URL
-                  console.error("Error fetching and replacing content:", error);
-                  window.location.href = url;
-              }
-          })();
-      }
-
-
+            history.replaceState(history.state, "", responseUrl);
+          } catch (error) {
+            window.location.href = url;
+          }
+      })();
+    },
   };

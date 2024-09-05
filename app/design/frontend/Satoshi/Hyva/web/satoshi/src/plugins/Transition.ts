@@ -405,11 +405,15 @@ export const navigateWithTransition = async (
       Alpine.store("transition")._showTransitionFallback(isPreview);
     }
 
-    Alpine.nextTick(() => {
+    Alpine.nextTick(async () => {
       Alpine.store("popup").hideAllPopups();
       Alpine.store("resizable").hideAll();
       history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
+
+      if (!isPreview) {
+        window.scrollTo(0, 0);
+      }
 
       Alpine.store("transition")._clearFallback();
       nProgress.done();
@@ -419,7 +423,7 @@ export const navigateWithTransition = async (
   if (options.areaId) {
     Alpine.store("transition")._doTransition(options.areaId!, navigate);
   } else {
-    await navigate();
+    navigate();
   }
 };
 
