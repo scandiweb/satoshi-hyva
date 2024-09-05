@@ -79,43 +79,30 @@ export const Dropdown = () =>
       });
     },
 
-      fetchAndReplaceContent (
-          url: string,
-          targetSelector: string = "document",
-          options: {
-              preview?: boolean;
-              animate?: boolean;
-              type?: string;
-              data?: Record<string, any>;
-              areaId?: string;
-              target?: HTMLElement | null;
-          } = {} ) {
-          if (!url) {
-              return;
-          }
+      fetchAndReplaceContent(url: string, targetSelector: string = "document", options: object = {}) {
+          if (!url) return;
 
-          let responseUrl = '';
+          (async () => {
+              try {
+                  await navigateWithTransition(url, options);
 
-          navigateWithTransition(url, options);
-
-          // Fetch the new content, following any redirects automatically
-          fetch(url, { redirect: "follow" })
-              .then((response) => {
-                  responseUrl = response.url;
+                  // Fetch the new content, following any redirects automatically
+                  const response = await fetch(url, { redirect: "follow" });
 
                   if (!response.ok) {
                       throw new Error("Network response was not ok");
                   }
 
-                  return response.text();
-              })
-              .then((data) => {
+                  const responseUrl = response.url;
+                  const data = await response.text();
+
                   // Create a temporary container to hold the fetched HTML
                   const resultHtml = document.createElement("div");
                   resultHtml.innerHTML = data;
 
-                  let newContentHtml = null;
+                  let newContentHtml;
 
+                  // Determine what content to replace based on the target selector
                   if (targetSelector === "document") {
                       newContentHtml = resultHtml.querySelector("body")?.innerHTML;
                   } else {
@@ -124,7 +111,7 @@ export const Dropdown = () =>
 
                   // Fallback: If the body or target content is not found, try using the entire fetched HTML structure
                   if (!newContentHtml) {
-                      console.error("Body content not found. Trying entire HTML structure instead.");
+                      console.error("Target content not found. Using entire HTML structure as fallback.");
                       newContentHtml = resultHtml.innerHTML;
                   }
 
@@ -133,32 +120,22 @@ export const Dropdown = () =>
 
                   // If both the new content and the current content element exist, perform the replacement
                   if (newContentHtml && currentContentElem) {
-                      // Replace the content while keeping the outer <body> tag intact
                       currentContentElem.innerHTML = newContentHtml;
-
-                      // Re-run all scripts after body replacement
-                      // Array.from(document.querySelectorAll("script")).forEach(oldScript => {
-                      //     const newScript = document.createElement("script");
-                      //     if (oldScript.src) {
-                      //         newScript.src = oldScript.src;
-                      //     } else {
-                      //         newScript.textContent = oldScript.textContent;
-                      //     }
-                      //     document.body.appendChild(newScript);
-                      //     oldScript.remove();
-                      // });
                   } else {
-                      // Target content not found for replacement. Fallback to redirecting the user to the provided URL
+                      console.error("Target content not found for replacement. Redirecting to the URL.");
                       window.location.href = url;
                       return;
                   }
 
+                  // Update the URL without refreshing the page
                   history.replaceState(history.state, "", responseUrl);
-              })
-              .catch(() => {
+              } catch (error) {
                   // Fallback: If an error occurs, redirect the user to the provided URL
+                  console.error("Error fetching and replacing content:", error);
                   window.location.href = url;
-              });
-      },
+              }
+          })();
+      }
+
 
   };
