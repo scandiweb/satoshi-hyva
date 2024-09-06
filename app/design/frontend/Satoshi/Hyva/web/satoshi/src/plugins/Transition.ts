@@ -426,6 +426,7 @@ export const navigateWithTransition = (
         replacePreviewContent(html);
       } else if (options.isBodyOverwritten) {
           replaceBodyContent(html);
+          window.scrollTo(0, 0);
       } else {
         replaceMainContent(html);
         window.scrollTo(0, 0);
