@@ -315,6 +315,13 @@ const replacePreviewContent = (rawContent: string) => {
   );
 };
 
+const replaceBodyContent = (rawContent: string) => {
+  const parser = new DOMParser();
+  const newDocument = parser.parseFromString(rawContent, "text/html");
+
+  document.body.innerHTML = newDocument.body.innerHTML;
+};
+
 const pushStateAndNotify = (...args: Parameters<History["pushState"]>) => {
   history.pushState(...args);
 
@@ -334,7 +341,7 @@ export const fetchPage = (url: string) => {
 
   return fetch(url).then((res) => {
     if (res.ok || res.status === 404) {
-      return res.text();
+      return res;
     }
 
     throw new Error("Failed to get page for transition");
@@ -355,10 +362,12 @@ export const cachePage = (url: string, html: string) => {
 };
 
 export const fetchAndCachePage = async (url: string) => {
-  const html = await fetchPage(url);
-  cachePage(url, html);
+    const response = await fetchPage(url);
+    const html = await response.text();
+    const finalUrl = response.url;
+    cachePage(finalUrl, html);
 
-  return html;
+    return { html, finalUrl };
 };
 
 export const navigateWithTransition = (
@@ -370,6 +379,7 @@ export const navigateWithTransition = (
     data?: Record<string, any>;
     areaId?: string;
     target?: HTMLElement | null;
+    isBodyOverwritten?: boolean;
   } = {},
 ) => {
   Alpine.store("transition").isAnimating = false;
@@ -410,15 +420,18 @@ export const navigateWithTransition = (
       Alpine.store("resizable").hideAll();
       history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
-      const html = await fetchAndCachePage(nextUrl!);
+      const { html, finalUrl } = await fetchAndCachePage(nextUrl!);
 
       if (isPreview) {
         replacePreviewContent(html);
+      } else if (options.isBodyOverwritten) {
+          replaceBodyContent(html);
       } else {
         replaceMainContent(html);
         window.scrollTo(0, 0);
       }
 
+      history.replaceState({ ...history.state, scrollPosition }, "", finalUrl);
       Alpine.store("transition")._clearFallback();
       nProgress.done();
     });
@@ -521,7 +534,7 @@ function TransitionPlugin(Alpine: AlpineType) {
       return;
     }
 
-    const html = await fetchAndCachePage(
+    const { html } = await fetchAndCachePage(
       window.location.pathname + window.location.search,
     );
 

@@ -1,5 +1,6 @@
 import type { Magics } from "alpinejs";
 import { ESC_KEY } from "../utils/keyboard-keys";
+import { navigateWithTransition } from "../plugins/Transition";
 
 export type DropdownType = {
   isDropdownVisible: boolean;
@@ -13,7 +14,7 @@ export type DropdownType = {
   show(): void;
   hide(): void;
   search(value: string): void;
-  fetchAndReplaceContent(url: string, targetSelector?: string, formData?: object | null): void;
+  fetchAndReplaceContent(url: string, options?: { animate?: boolean; isBodyOverwritten?: boolean }): void;
 } & Magics<{}>;
 
 export const Dropdown = () =>
@@ -78,64 +79,16 @@ export const Dropdown = () =>
       });
     },
 
-      /**
-       * Fetches new content from the provided URL, and replaces the content within the specified target selector.
-       * Can send data via POST if necessary.
-       *
-       * @param {string} url - The URL from which to fetch the new content.
-       * @param {string} targetSelector - The CSS selector for the element to replace (default is "body").
-       * @param {Object} data - Optional data to be sent with the request.
-       */
-      fetchAndReplaceContent(url, targetSelector = "body", formData= null) {
-          if (!url) {
-              return;
-          }
+    fetchAndReplaceContent(url: string, options?: { animate?: boolean; isBodyOverwritten?: boolean }) {
+      if (!url) return;
 
-          let responseUrl = '';
+      options = {
+        ...options,
+        animate: options?.animate ?? true,
+        isBodyOverwritten: options?.isBodyOverwritten ?? true,
+      };
 
-          fetch(url, {
-              method: formData ? "POST" : "GET",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              redirect: "follow",
-              body: formData ? JSON.stringify(formData) : null,
-          })
-              .then((response) => {
-                  this.hide();
-                  responseUrl = response.url;
-
-                  if (!response.ok) {
-                      throw new Error(`Failed to fetch content. Status: ${response.status}`);
-                  }
-
-                  return response.text();
-              })
-              .then((data) => {
-                  // Create a temporary container to parse the fetched HTML.
-                  const resultHtml = document.createElement("div");
-                  resultHtml.innerHTML = data;
-
-                  let newContentHtml = resultHtml.querySelector(targetSelector)?.innerHTML;
-
-                  if (!newContentHtml) {
-                      newContentHtml = resultHtml.innerHTML;
-                  }
-
-                  const currentContentElem = document.querySelector(targetSelector);
-
-                  // If both the new content and the current content element exist, perform the replacement
-                  if (newContentHtml && currentContentElem) {
-                      currentContentElem.innerHTML = newContentHtml;
-                  } else {
-                      window.location.href = url;
-                      return;
-                  }
-
-                  history.replaceState(history.state, "", responseUrl);
-              })
-              .catch(() => {
-                  window.location.href = url;
-              });
-      },
+      this.hide();
+      navigateWithTransition(url, options );
+    },
   };
