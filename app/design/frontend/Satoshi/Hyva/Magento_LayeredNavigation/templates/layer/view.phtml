@@ -3,12 +3,15 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Catalog\Model\Layer\Filter\Item;
 use Magento\Framework\Escaper;
 use Magento\LayeredNavigation\Block\Navigation;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\Block\Popup;
 
 // phpcs:disable Generic.Files.LineLength.TooLong
 
+/** @var Popup $popup */
 /** @var Navigation $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
@@ -36,13 +39,28 @@ $allFilters = array_unique(array_merge($stateBlock->getActiveFilters(), $filtere
                 class="flex w-max gap-3 transition-transform duration-300 {% if isDefault %}translate-x-[-52px]{%- else -%}translate-x-0{% endif %}"
             >
                 <?php foreach ($allFilters as $filter): ?>
+                    <?php if ($filter instanceof Item) {
+                        $filter = $filter->getFilter();
+                    } ?>
                     <button
+                        @click="$store.popup.showPopup('<?= $filter->getName() ?>')"
                         type="button"
                         aria-label="{{ 'products.facets.clear_all' | t }}"
                         class="button duration-300 button--outline-secondary"
                     >
                         <?= $filter->getName() ?>
                     </button>
+                    <?=
+                    $popup
+                        ->setData([
+                            'id' => $filter->getName(),
+                            'isFocused' => true,
+                            'isFullScreen' => false,
+                            'desktopTarget' => 'menu-desktop',
+                        ])
+                        ->setChildHtml($block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter))
+                        ->render()
+                    ?>
                 <?php endforeach; ?>
             </div>
         </nav>

@@ -6,20 +6,61 @@ use Hyva\Theme\Model\LocaleFormatter;
 use Magento\Catalog\Helper\Data;
 use Magento\Framework\Escaper;
 use Magento\LayeredNavigation\Block\Navigation\FilterRenderer;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
 
+/** @var SvgIcons $hyvaicons */
 /** @var FilterRenderer $block */
 /** @var Escaper $escaper */
 /** @var LocaleFormatter $localeFormatter */
 
+$hyvaicons = $viewModels->require(SvgIcons::class);
 $catalogHelper = $this->helper(Data::class);
 
 /** @var array $filterItems */
 ?>
 
-<ol class="items" aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter options', $block->getFilterTitle())) ?>">
+<div x-show="$store.main.isMobile" class="sticky start-0 top-0 z-10 flex flex-col gap-3 bg-bg-500 px-3 md:pt-2">
+    <div class="flex justify-between">
+        <div class="flex gap-3 items-center">
+            <button
+                type="button"
+                class="button button--ghost-primary icon-button icon-button--size-xs text-xxl transition-transform duration-300 motion-reduce:transition-none"
+                aria-label="{{ 'products.facets.filters_popup.go_back' | t }}"
+                @click="isTopLevel = true; currentName = ''"
+                :tabindex="isTopLevel ? -1 : 0"
+                :class="{
+          '-translate-x-full': isTopLevel,
+          'translate-x-0': !isTopLevel,
+        }"
+            >
+                <?= $hyvaicons->renderHtml('chevron-left'); ?>
+            </button>
+            <h2
+                class="text-md text-text-500 transition-transform duration-300 motion-reduce:transition-none"
+                :class="{
+          'translate-x-0': isTopLevel,
+          'translate-x-[34px]': !isTopLevel,
+        }"
+            >
+                <?= __('Sort by') ?>
+            </h2>
+        </div>
+        <button
+            type="button"
+            class="button button--outline-secondary icon-button icon-button--size-xs"
+            aria-label="{{ 'products.facets.filters_popup.close' | t }}"
+            click="$store.popup.hidePopup('<?= $block->getFilterTitle() ?>')"
+        >
+            <?= $hyvaicons->renderHtml('close'); ?>
+        </button>
+    </div>
+    <hr class="divider -mx-5">
+</div>
+<ol class="items" :class="$store.main.isMobile && 'px-3'"
+    aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter options', $block->getFilterTitle())) ?>">
     <?php foreach ($filterItems as $filterItem): ?>
         <li x-data="Fetch()">
             <?php if ($filterItem->getCount() > 0): ?>
@@ -51,3 +92,22 @@ $catalogHelper = $this->helper(Data::class);
         </li>
     <?php endforeach ?>
 </ol>
+
+<div x-show="$store.main.isMobile" class="mb-3">
+    <div class="-top-10 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>
+    <div class="flex items-center gap-3 bg-bg-500 px-4 pb-2">
+        <button
+            type="button"
+            class="button button--outline-secondary"
+            @click="onResetButtonClick"
+        >
+            <?= __('Reset') ?>
+        </button>
+        <button
+            type="button"
+            class="button button--filled-primary grow"
+        >
+            <?= __('Apply') ?>
+        </button>
+    </div>
+</div>
