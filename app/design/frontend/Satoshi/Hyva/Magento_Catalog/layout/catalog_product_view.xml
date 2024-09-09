@@ -4,12 +4,7 @@
     <body>
         <referenceBlock name="product.detail.page">
             <block class="Magento\Catalog\Block\Product\View" name="product.details" template="Magento_Catalog::product/view/product-details.phtml">
-                <block class="Magento\Catalog\Block\Product\View" name="product.details.info" template="Magento_Catalog::product/view/product-details-info.phtml">
-                    <block name="product.hide" template="Magento_Catalog::product/view/product-hide.phtml"/>
-                    <block name="product.share" template="Magento_Catalog::product/view/share.phtml">
-                        <block name="product.share.content" template="Magento_Catalog::product/view/share-content.phtml"/>
-                    </block>
-                </block>
+                <block class="Magento\Catalog\Block\Product\View" name="product.details.info" template="Magento_Catalog::product/view/product-details-info.phtml"/>
             </block>
         </referenceBlock>
 
