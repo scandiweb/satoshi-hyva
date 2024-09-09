@@ -35,6 +35,7 @@ foreach ($block->getAvailableOrders() ?? [] as $key => $option) {
 }
 
 $defaultSort = $sortOptions[0]['value'] ?? $block->getCurrentOrder();
+$defaultSortDir = 'asc';
 $sortByLabel = 'Sort By';
 $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($sortByLabel)));
 ?>
@@ -47,7 +48,13 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
 >
     <fieldset
         class="flex-1 md:border-t md:border-bg-600 md:py-5"
-        x-data="Filters(<?= $escaper->escapeHtml(json_encode($sortOptions)) ?>, '<?= $escaper->escapeHtml($defaultSort) ?>', 'asc')"
+        x-data="Filters(
+            <?= $escaper->escapeHtml(json_encode($sortOptions)) ?>,
+            '<?= $escaper->escapeHtml($defaultSort) ?>',
+            '<?= $defaultSortDir ?>',
+            '<?= $block->getCurrentOrder() ?>',
+            '<?= $block->getCurrentDirection() ?>'
+        )"
         x-show="$store.main.isMobile ? currentName == '<?= $escaper->escapeHtml(__($sortByLabel)) ?>' : true"
     >
         <legend class="sr-only"><?= __($sortByLabel) ?></legend>
@@ -97,7 +104,7 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
                                         id="sort-<?= $value ?>-<?= $dir ?>"
                                         name="product_list_order"
                                         value="<?= $value ?>"
-                                        :checked="getIsFilterValueSelected('product_list_order', '<?= $value ?>') && getIsFilterValueSelected('product_list_dir', '<?= $dir ?>')"
+                                        :checked="'<?= $block->getCurrentDirection() ?>' === '<?= $dir ?>' && '<?= $block->getCurrentOrder() ?>' === '<?= $value ?>'"
                                         @change="setSortDir('<?= $dir ?>'); updateFilters()"
                                         aria-label="<?= $name ?>"
                                     >
@@ -109,17 +116,17 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
                         <input
                             type="hidden"
                             name="product_list_dir"
-                            :value="sortDir"
+                            :value="this.sortDir"
                             aria-hidden="true"
                         />
                     </div>
                 </div>
 
                 <button
-                    x-show="getIsFilterSelected('product_list_order') || getIsFilterSelected('product_list_dir')"
+                    x-show="!getIsFilterValueSelected('product_list_order', '<?= $defaultSort ?>') || !getIsFilterValueSelected('product_list_dir', '<?= $defaultSortDir ?>')"
                     type="button"
                     class="link link--primary mt-4 hidden md:inline-block"
-                    @click="resetCurrent('filter-<?= $sortByLabelForFilter ?>')"
+                    @click="setSortDir('<?= $defaultSortDir ?>'); resetCurrent('filter-<?= $sortByLabelForFilter ?>')"
                 >
                     <?= __('Reset') ?>
                 </button>

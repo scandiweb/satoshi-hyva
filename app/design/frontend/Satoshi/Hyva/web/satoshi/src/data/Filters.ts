@@ -37,7 +37,7 @@ export type FiltersType = {
   filters: FilterType[] | [];
   sortOptions: SortOptionType[] | [];
   sortBy: string | boolean;
-  sortDir: string | boolean;
+  sortDir: string;
 
   init(): void;
   onResetButtonClick(): void;
@@ -76,9 +76,11 @@ export const FILTER_PRICE_MIN = "filter.v.price.gte";
 export const FILTER_PRICE_MAX = "filter.v.price.lte";
 
 export const Filters = (
-  sortOptions: [],
+  sortOptions: SortOptionType[],
   defaultSort: string | unknown,
-  defaultSortDir: string | unknown,
+  defaultSortDir: string,
+  currentSort: string,
+  currentSortDir: string,
   minPrice: string | unknown,
   maxPrice: string | unknown,
   currency: string,
@@ -92,26 +94,14 @@ export const Filters = (
     sortOptions: sortOptions,
     // If the default sort option is selected, then this.sortBy will be false.
     // otherwise, this.sortBy will have the string value of the selected sort option.
-    sortBy: false,
-    sortDir: false,
+    sortBy: currentSort || defaultSort || false,
+    sortDir: currentSortDir || defaultSortDir,
 
     init() {
       this.updateFilters = this.updateFilters.bind(this);
       this.onResetButtonClick = this.onResetButtonClick.bind(this);
 
       this.searchQuery = this._getSearchQuery();
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const sortByParam = urlParams.get(FILTER_SORT);
-      const sortDirParam = urlParams.get(FILTER_SORT_DIR);
-
-      if (sortByParam) {
-        this.setSortBy(sortByParam);
-      }
-
-      if (sortDirParam) {
-        this.setSortDir(sortDirParam);
-      }
 
       // Change popup height on content change
       this.$watch("currentName", (value, oldValue) => {
@@ -179,7 +169,7 @@ export const Filters = (
       );
     },
 
-    // Remove all of the selected filters from this.filters, this.sortBy, and this.sortDir
+    // Remove all of the selected filters from this.filters and this.sortBy
     // This function only changes the state data. so it only affects the UI.
     resetSelectedFiltersState() {
       this.filters.forEach((filter: FilterType) => {
@@ -192,7 +182,6 @@ export const Filters = (
       });
 
       this.sortBy = false;
-      this.sortDir = false;
     },
 
     setSortBy(value: string) {
@@ -203,28 +192,24 @@ export const Filters = (
       }
     },
 
-     setSortDir(value: string) {
-       this.sortDir = value || false;
-
-       if (this.sortDir === defaultSortDir) {
-         this.sortDir = false;
-       }
-     },
+    setSortDir(value: string) {
+      this.sortDir = value || defaultSortDir;
+    },
 
     getSelectedSortOption() {
-      const sortBy = this.sortBy || defaultSort;
-      const sortDir = this.sortDir || defaultSortDir;
-
-      return this.sortOptions.find(
-        (option) => option.value === sortBy && option.dir === sortDir
-      );
+      const currSortDir = this.sortDir || defaultSortDir;
+      if (this.sortBy) {
+        return this.sortOptions.find((option) => option.value === this.sortBy && option.dir === currSortDir);
+      } else {
+        return this.sortOptions.find((option) => option.value === defaultSort && option.dir === currSortDir);
+      }
     },
 
     // Determine if a specific filter value is selected or not. For example it can be used to see if a filter checkbox/radio should be checked or not.
     getIsFilterValueSelected(param_name: string, value: string) {
       if (param_name === FILTER_SORT) {
         return this.getSelectedSortOption().value === value;
-      } else if(param_name === FILTER_SORT_DIR) {
+      } else if (param_name === FILTER_SORT_DIR) {
         return this.getSelectedSortOption().dir === value;
       } else {
         const filter = this.filters.find(
@@ -242,7 +227,7 @@ export const Filters = (
       if (param_name === FILTER_SORT) {
         return Boolean(this.sortBy);
       } else if (param_name === FILTER_SORT_DIR) {
-        return Boolean(this.sortDir);
+        return this.sortDir && this.sortDir !== defaultSortDir;
       } else if (param_name === FILTER_PRICE_PARAM_NAME) {
         const priceFilter = this.getPriceFilter();
         return (
@@ -288,14 +273,13 @@ export const Filters = (
       // Remove empty filter values and attributes that equal default value
       [...urlParams.entries()].forEach(([key, value]) => {
         if(key === FILTER_SORT_DIR) {
-          if (typeof this.sortDir === "string" && this.sortDir !== defaultSortDir) {
-            urlParams.set(FILTER_SORT_DIR, this.sortDir);
-          } else {
+          if(!!removedAttr[FILTER_SORT_DIR]) {
             urlParams.delete(FILTER_SORT_DIR);
+          } else {
+            urlParams.set(FILTER_SORT_DIR, this.sortDir);
           }
           return;
         }
-
 
         if (this._isFilterEmptyOrDefault(key, value)) {
           urlParams.delete(key);
@@ -325,15 +309,13 @@ export const Filters = (
         return;
       }
 
-      // Remove old selected filters from this.filters, this.sortBy and this.sortDir
+      // Remove old selected filters from this.filters and this.sortBy
       this.resetSelectedFiltersState();
 
-      // Add the new selected filters to this.filters, this.sortBy and this.sortDir
+      // Add the new selected filters to this.filters and this.sortBy
       [...urlParams.entries()].forEach(([key, value]) => {
         if (key === FILTER_SORT) {
           this.setSortBy(value);
-        } else if (key === FILTER_SORT_DIR) {
-          this.setSortDir(value);
         } else if (key === FILTER_PRICE_MIN) {
           this.getPriceFilter().min_value.value = value;
         } else if (key === FILTER_PRICE_MAX) {
@@ -399,6 +381,7 @@ export const Filters = (
     _isFilterEmptyOrDefault(key: string, value: string) {
       return (
         !value ||
+        (key === FILTER_SORT && value === String(defaultSort)) ||
         (key === FILTER_PRICE_MIN && value === String(minPrice)) ||
         (key === FILTER_PRICE_MAX && value === String(maxPrice))
       );
