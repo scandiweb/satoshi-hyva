@@ -350,7 +350,7 @@ export const fetchPage = (url: string) => {
 
   return fetch(url).then((res) => {
     if (res.ok || res.status === 404) {
-      return res;
+      return res.text();
     }
 
     throw new Error("Failed to get page for transition");
@@ -371,12 +371,10 @@ export const cachePage = (url: string, html: string) => {
 };
 
 export const fetchAndCachePage = async (url: string) => {
-    const response = await fetchPage(url);
-    const html = await response.text();
-    const finalUrl = response.url;
-    cachePage(finalUrl, html);
+    const html = await fetchPage(url);
+    cachePage(url, html);
 
-    return { html, finalUrl };
+    return html;
 };
 
 export const navigateWithTransition = (
@@ -427,9 +425,9 @@ export const navigateWithTransition = (
     Alpine.nextTick(async () => {
       Alpine.store("popup").hideAllPopups();
       Alpine.store("resizable").hideAll();
+      history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
-      const { html, finalUrl } = await fetchAndCachePage(nextUrl!);
-      history.replaceState({ ...history.state, scrollPosition }, "", finalUrl);
+      const html= await fetchAndCachePage(nextUrl!);
 
       if (isPreview) {
         replacePreviewContent(html);
@@ -543,7 +541,7 @@ function TransitionPlugin(Alpine: AlpineType) {
       return;
     }
 
-    const { html } = await fetchAndCachePage(
+    const html = await fetchAndCachePage(
       window.location.pathname + window.location.search,
     );
 
