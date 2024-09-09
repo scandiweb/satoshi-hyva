@@ -300,7 +300,7 @@ const replaceTagContent = (rawContent: string, tag: string) => {
   const content = rawContent.match(regex);
   const newContent = content ? content[1] : '';
 
-  const target = document.querySelector(`${tag}`) as HTMLElement;
+  const target = document.querySelector(tag) as HTMLElement;
   if (newContent && target) {
     target.innerHTML = newContent;
   }
@@ -327,8 +327,7 @@ const replacePreviewContent = (rawContent: string) => {
 };
 
 const replaceWholeDocument = (rawContent: string) => {
-    replaceTagContent(rawContent, 'head');
-    replaceTagContent(rawContent, 'body');
+    replaceTagContent(rawContent, 'html');
 };
 
 const pushStateAndNotify = (...args: Parameters<History["pushState"]>) => {
