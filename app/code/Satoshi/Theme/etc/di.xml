@@ -18,4 +18,8 @@
         for="Hyva\Theme\ViewModel\Currency"
         type="Satoshi\Theme\ViewModel\Currency"
     />
+    <preference
+        for="Magento\Theme\Block\Html\Footer"
+        type="Satoshi\Theme\Block\Html\Footer"
+    />
 </config>
