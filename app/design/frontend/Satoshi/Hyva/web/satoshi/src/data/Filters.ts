@@ -197,12 +197,12 @@ export const Filters = (
     },
 
     getSelectedSortOption() {
-      const currSortDir = this.sortDir || defaultSortDir;
-      if (this.sortBy) {
-        return this.sortOptions.find((option) => option.value === this.sortBy && option.dir === currSortDir);
-      } else {
-        return this.sortOptions.find((option) => option.value === defaultSort && option.dir === currSortDir);
-      }
+      const sortBy = this.sortBy || defaultSort;
+      const sortDir = this.sortDir || defaultSortDir;
+
+      return this.sortOptions.find(
+        (option) => option.value === sortBy && option.dir === sortDir
+      ) || this.sortOptions[0];
     },
 
     // Determine if a specific filter value is selected or not. For example it can be used to see if a filter checkbox/radio should be checked or not.
