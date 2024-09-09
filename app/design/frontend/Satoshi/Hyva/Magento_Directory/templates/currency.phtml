@@ -25,15 +25,15 @@ foreach ($currencies as $code => $currency) {
     ";
 
     $postData = json_decode($currencyViewModel->getSwitchCurrencyPostData($code), true);
-    $switchUrl = is_array($postData)
-        ? "fetchAndReplaceContent('{$escaper->escapeUrl($postData['action'] . "?currency=" . $postData['data']['currency'] . "&uenc=" . $postData['data']['uenc'])}')"
-        : "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})";
+    $url = "{$postData['action']}?currency={$postData['data']['currency']}&uenc={$postData['data']['uenc']}";
+    $switchUrl = "fetchAndReplaceContent('{$escaper->escapeUrl($url)}')";
+    $isCurrent = $code === $currentCurrencyCode;
 
     $options[] = [
         'value' => $escaper->escapeHtml($code),
         'label' => $label,
-        'on_click' => $switchUrl,
-        'is_active' => $code === $currentCurrencyCode,
+        'on_click' => $isCurrent ? "'return false;'" : $escaper->escapeHtml($switchUrl),
+        'is_active' => $isCurrent,
     ];
 }
 

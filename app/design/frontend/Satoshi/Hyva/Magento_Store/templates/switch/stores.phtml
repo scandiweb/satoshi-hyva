@@ -20,7 +20,7 @@ if (count($block->getGroups()) > 1):
         return [
             'value' => $block->escapeHtml($group->getId()),
             'label' => $block->escapeHtml($group->getName()),
-            'on_click' => $isCurrent ? 'return false;' : 'window.location.href=`' . $block->escapeUrl($block->getTargetStoreUrl($group->getDefaultStore())) . '`',
+            'on_click' => $isCurrent ? "'return false;'" : $block->escapeUrl($block->getTargetStoreUrl($group->getDefaultStore())),
             'is_active' => $isCurrent,
         ];
     }, $block->getGroups());

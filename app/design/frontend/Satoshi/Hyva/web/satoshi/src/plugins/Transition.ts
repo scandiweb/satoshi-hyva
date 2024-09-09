@@ -379,7 +379,7 @@ export const navigateWithTransition = (
     data?: Record<string, any>;
     areaId?: string;
     target?: HTMLElement | null;
-    isBodyOverwritten?: boolean;
+    replaceBody?: boolean;
   } = {},
 ) => {
   Alpine.store("transition").isAnimating = false;
@@ -418,13 +418,13 @@ export const navigateWithTransition = (
     Alpine.nextTick(async () => {
       Alpine.store("popup").hideAllPopups();
       Alpine.store("resizable").hideAll();
-      history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
       const { html, finalUrl } = await fetchAndCachePage(nextUrl!);
+      history.replaceState({ ...history.state, scrollPosition }, "", finalUrl);
 
       if (isPreview) {
         replacePreviewContent(html);
-      } else if (options.isBodyOverwritten) {
+      } else if (options.replaceBody) {
           replaceBodyContent(html);
           window.scrollTo(0, 0);
       } else {
@@ -432,7 +432,6 @@ export const navigateWithTransition = (
         window.scrollTo(0, 0);
       }
 
-      history.replaceState({ ...history.state, scrollPosition }, "", finalUrl);
       Alpine.store("transition")._clearFallback();
       nProgress.done();
     });
