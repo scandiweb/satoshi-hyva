@@ -295,6 +295,17 @@ export const replaceContent = (
   target.innerHTML = newContent;
 };
 
+const replaceTagContent = (rawContent: string, tag: string) => {
+  const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
+  const content = rawContent.match(regex);
+  const newContent = content ? content[1] : '';
+
+  const target = document.querySelector(`${tag}`) as HTMLElement;
+  if (newContent && target) {
+    target.innerHTML = newContent;
+  }
+};
+
 const replaceMainContent = (rawContent: string) => {
   lastMainContentUpdateUrl = window.location.href;
   replaceMeta(rawContent);
@@ -315,11 +326,9 @@ const replacePreviewContent = (rawContent: string) => {
   );
 };
 
-const replaceBodyContent = (rawContent: string) => {
-  const parser = new DOMParser();
-  const newDocument = parser.parseFromString(rawContent, "text/html");
-
-  document.body.innerHTML = newDocument.body.innerHTML;
+const replaceWholeDocument = (rawContent: string) => {
+    replaceTagContent(rawContent, 'head');
+    replaceTagContent(rawContent, 'body');
 };
 
 const pushStateAndNotify = (...args: Parameters<History["pushState"]>) => {
@@ -379,7 +388,7 @@ export const navigateWithTransition = (
     data?: Record<string, any>;
     areaId?: string;
     target?: HTMLElement | null;
-    replaceBody?: boolean;
+    replaceDocument?: boolean;
   } = {},
 ) => {
   Alpine.store("transition").isAnimating = false;
@@ -424,8 +433,8 @@ export const navigateWithTransition = (
 
       if (isPreview) {
         replacePreviewContent(html);
-      } else if (options.replaceBody) {
-          replaceBodyContent(html);
+      } else if (options.replaceDocument) {
+          replaceWholeDocument(html);
           window.scrollTo(0, 0);
       } else {
         replaceMainContent(html);
