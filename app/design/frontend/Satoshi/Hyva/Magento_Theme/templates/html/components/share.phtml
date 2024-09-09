@@ -9,6 +9,7 @@ use Satoshi\Theme\Block\Template;
 /** @var SvgIcons $hyvaicons */
 /** @var ViewModelRegistry $viewModels */
 /** @var Template $block */
+/** @var Template $template */
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
@@ -27,7 +28,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     </button>
 
     <div x-show="open" class="hidden md:block mt-2 rounded-md border bg-bg-500 p-5 shadow-sm">
-        <?= $block->getChildHtml('product.share.content') ?>
+        <?= $template->render('Magento_Theme::html/components/share-content.phtml') ?>
     </div>
 
     <?=
@@ -37,7 +38,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             'isFocused' => true,
             'desktopTarget' => 'menu-desktop',
         ])
-        ->setChildTemplate('Magento_Catalog::product/view/share-content.phtml')
+        ->setChildTemplate('Magento_Theme::html/components/share-content.phtml')
         ->render()
     ?>
 </div>
