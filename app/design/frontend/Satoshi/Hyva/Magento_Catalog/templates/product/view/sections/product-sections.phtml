@@ -23,26 +23,23 @@ $defaultTitleTemplate = $titleRenderer->getTemplate();
     <div class="grid grid-cols-1 gap-8">
         <?php
         foreach ($block->getGroupSortedChildNames('detailed_info', '') as $sectionName) {
-            $sectionBlock  = $block->getLayout()->getBlock($sectionName);
-            $sectionHtml   = (string) $sectionBlock->toHtml();
-            $titleTemplate = $sectionBlock->getData('title_template') ?? $defaultTitleTemplate;
+            $sectionBlock = $block->getLayout()->getBlock($sectionName);
+            $sectionHtml = (string)$sectionBlock->toHtml();
 
             if (empty(trim($sectionHtml))) {
                 continue;
             }
             ?>
-            <section x-data="Accordion('true', 300)" id="<?= $escaper->escapeHtmlAttr($sectionBlock->getNameInLayout()) ?>">
-                <?=
-                $titleRenderer->setTemplate($titleTemplate)
-                    ->assign('sectionBlock', $sectionBlock)
-                    ->toHtml()
-                ?>
+            <section
+                id="<?= $escaper->escapeHtmlAttr($sectionBlock->getNameInLayout()) ?>">
                 <div class="card w-full">
-                    <?= /** @noEscape  */ $sectionHtml ?>
+                    <?= /** @noEscape */
+                    $sectionHtml ?>
                 </div>
             </section>
         <?php } ?>
     </div>
+
     <?= $template->render('Magento_Theme::html/components/share.phtml') ?>
 
     <button
@@ -54,7 +51,7 @@ $defaultTitleTemplate = $titleRenderer->getTemplate();
     >
         <?= __('Hide product') ?>
         <span class="button__icon button__icon--right text-lg">
-        <?= $hyvaicons->renderHtml('close'); ?>
-    </span>
+            <?= $hyvaicons->renderHtml('close'); ?>
+        </span>
     </button>
 </div>
