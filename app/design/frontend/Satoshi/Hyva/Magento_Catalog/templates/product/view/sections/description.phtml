@@ -7,10 +7,14 @@ use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\SvgIcons;
 
+/** @var SvgIcons $hyvaicons */
+/** @var ViewModelRegistry $viewModels */
 /** @var Escaper $escaper */
 /** @var Template $block */
-/** @var ViewModelRegistry $viewModels */
+
+$hyvaicons = $viewModels->require(SvgIcons::class);
 
 /** @var ProductPage $productViewModel */
 $productViewModel = $viewModels->require(ProductPage::class);
@@ -24,15 +28,35 @@ if (!$product->getDescription()) {
 $cssClasses = $block->getData('css_classes') ?? 'prose';
 
 ?>
-<div x-ref="AccordionPanel"
-     :inert="!isExpanded"
-     class="overflow-hidden"
-     x-cloak
-     id="description_panel"
-     role="region"
-     aria-labelledby="description_label"
->
-    <div class="rte mt-3 overflow-hidden">
-        <?= $productViewModel->productAttributeHtml($product, $product->getDescription(), 'description') ?>
+<div x-data="Accordion('true', 300)">
+    <div
+        class="align-start animate-on-transition mb-8 flex flex-col"
+    >
+        <button class="flex items-center justify-between"
+                type="button"
+                x-ref="AccordionButton"
+                :aria-expanded="isExpanded"
+                aria-controls="attributes_panel"
+                aria-labelledby="attributes_label">
+        <p class="text-base font-semibold leading-tight text-text-500">
+            <?= $escaper->escapeHtml(__('Description')) ?> /
+            <?= $escaper->escapeHtml($product->getName()) ?>
+        </p>
+        <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs">
+        <?= $hyvaicons->renderHtml('chevron-up', 'rotate-180'); ?>
+    </span>
+        </button>
+    </div>
+    <div x-ref="AccordionPanel"
+         :inert="!isExpanded"
+         class="overflow-hidden"
+         x-cloak
+         id="description_panel"
+         role="region"
+         aria-labelledby="description_label"
+    >
+        <div class="rte mt-3 overflow-hidden">
+            <?= $productViewModel->productAttributeHtml($product, $product->getDescription(), 'description') ?>
+        </div>
     </div>
 </div>
