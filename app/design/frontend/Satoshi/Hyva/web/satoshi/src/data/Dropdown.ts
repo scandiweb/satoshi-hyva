@@ -85,6 +85,6 @@ export const Dropdown = () =>
             if (!url) return;
 
             this.hide();
-            navigateWithTransition(url, { replaceBody: true });
+            navigateWithTransition(url, { replaceDocument: true });
         },
     };
