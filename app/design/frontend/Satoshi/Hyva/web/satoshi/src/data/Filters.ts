@@ -197,12 +197,12 @@ export const Filters = (
     },
 
     getSelectedSortOption() {
-      const currSortDir = this.sortDir || defaultSortDir;
-      if (this.sortBy) {
-        return this.sortOptions.find((option) => option.value === this.sortBy && option.dir === currSortDir);
-      } else {
-        return this.sortOptions.find((option) => option.value === defaultSort && option.dir === currSortDir);
-      }
+      const sortBy = this.sortBy || defaultSort;
+      const sortDir = this.sortDir || defaultSortDir;
+
+      return this.sortOptions.find(
+        (option) => option.value === sortBy && option.dir === sortDir
+      );
     },
 
     // Determine if a specific filter value is selected or not. For example it can be used to see if a filter checkbox/radio should be checked or not.
@@ -376,6 +376,16 @@ export const Filters = (
         this.updateFilters(removedAttr);
         this.$dispatch("reset-filters", { name: this.currentName });
       }
+
+      setTimeout(() => {
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
+
+        if (params.get(FILTER_SORT_DIR) === defaultSortDir) {
+          params.delete(FILTER_SORT_DIR);
+          window.history.replaceState({}, '', url.toString());
+        }
+      }, 500);
     },
 
     _isFilterEmptyOrDefault(key: string, value: string) {
