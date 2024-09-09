@@ -20,7 +20,7 @@ const appendPaginationContent = (rawContent: string) => {
 export default function (Alpine: AlpineType) {
   let isPaginating = false;
   let currentPage = parseInt(
-    new URLSearchParams(window.location.search).get("page") || "1",
+    new URLSearchParams(window.location.search).get("p") || "1",
   );
 
   Alpine.directive(
@@ -43,7 +43,7 @@ export default function (Alpine: AlpineType) {
 
         if (currentPage < lastPage) {
           const nextPage = currentPage + 1;
-          const nextUrl = `${window.location.pathname}?page=${nextPage}`;
+          const nextUrl = `${window.location.pathname}?p=${nextPage}`;
           const fullUrl = window.location.pathname + window.location.search;
           const html = await fetchPage(nextUrl);
           appendPaginationContent(html);
@@ -66,7 +66,7 @@ export default function (Alpine: AlpineType) {
         el.removeEventListener("click", onClick);
         isPaginating = false;
         currentPage = parseInt(
-          new URLSearchParams(window.location.search).get("page") || "1",
+          new URLSearchParams(window.location.search).get("p") || "1",
         );
       });
     },
