@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Magento\Swatches\ViewModel\Product\Renderer\Configurable as ConfigurableViewModel;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ConfigurableViewModel $configurableViewModel */
+$configurableViewModel = $viewModels->require(ConfigurableViewModel::class);
+
+$productId = $block->getProductId();
+$attributeId = $block->getAttributeId();
+
+if (!$productId || !$attributeId) {
+  return '';
+}
+
+?>
+
+<template x-if="optionIsEnabled(<?= (int) $attributeId ?>, item.id)">
+  <div
+    @click="changeOption(<?= (int) $attributeId ?>, item.id)"
+    class="button button--size-sm select-none transition-all ease-in-out"
+    :class="
+      {
+        'button--outline-primary button--disabled !opacity-100': selectedValues[<?= (int) $attributeId ?>] === item.id || !optionIsActive(<?= (int) $attributeId ?>, item.id),
+        'button--outline-secondary': selectedValues[<?= (int) $attributeId ?>] !== item.id,
+      }
+    "
+    role="radio"
+    aria-label="getSwatchText(<?= (int) $attributeId ?>, item.id)"
+    :tabindex="selectedValues[<?= (int) $attributeId ?>] ? (selectedValues[<?= (int) $attributeId ?>] === item.id ? '0' : '-1') : (index === 0) - 1"
+    :aria-checked="selectedValues[<?= (int) $attributeId ?>] ? (selectedValues[<?= (int) $attributeId ?>] === item.id ? 'true' : 'false') : (index === 0)"
+    x-a11y-radio
+    :style="getSwatchBackgroundStyle(<?= (int) $attributeId ?>, item.id)"
+    :disabled="selectedValues[<?= (int) $attributeId ?>] === item.id || !optionIsActive(<?= (int) $attributeId ?>, item.id)"
+    <?php // !FIX: Do we need tooltip? ?>
+    <?php if ($configurableViewModel->getShowSwatchTooltip() && false): ?>
+      @mouseenter.self="activeTooltipItem = {
+                  attribute: '<?= (int) $attributeId ?>',
+                  item: item.id,
+                  index
+              }; tooltipPositionElement = $event.target;"
+      @mouseleave.self="activeTooltipItem = false"
+    <?php endif; ?>
+  >
+    <template x-if="isTextSwatch(<?= (int) $attributeId ?>, item.id)">
+      <span class="line-clamp-2 text-wrap text-sm md:text-md" x-html="getSwatchText(<?= (int) $attributeId ?>, item.id)"></span>
+    </template>
+  </div>
+</template>
