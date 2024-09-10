@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var SvgIcons $hyvaicons */
+/** @var ViewModelRegistry $viewModels */
+
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$class = $block->getData('class') ?? '';
+
+?>
+<button
+    class="button button--outline-primary icon-button icon-button--size-sm rotate-180 <?= $escaper->escapeHtml($class); ?>"
+    @click.prevent="showPrevSlide();"
+    :class="isPrevBtnDisabled && 'button--disabled'"
+    :disabled="isPrevBtnDisabled"
+    aria-label="<?= $escaper->escapeHtml(__('Previous slide')) ?>"
+    role="button"
+    type="button"
+>
+    <?= $hyvaicons->renderHtml('chevron'); ?>
+</button>
+
+<button
+    class="button button--outline-primary icon-button icon-button--size-sm <?= $escaper->escapeHtml($class); ?>"
+    @click.prevent="showNextSlide();"
+    :class="isNextBtnDisabled && 'button--disabled'"
+    :disabled="isNextBtnDisabled"
+    aria-label="<?= $escaper->escapeHtml(__('Next slide')) ?>"
+    role="button"
+    type="button"
+>
+    <?= $hyvaicons->renderHtml('chevron'); ?>
+</button>
