@@ -1,0 +1,268 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\Store;
+use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Store $viewModelStore */
+$viewModelStore = $viewModels->require(Store::class);
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var ProductListItem $productListItemViewModel */
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+
+$viewMode = 'grid';
+$imageDisplayArea = 'category_page_grid';
+$showDescription = false;
+
+$name = (string) $block->getName();
+$title = (string) $block->getTitle();
+$headingTag = $block->getData('heading_tag') ?: 'h3';
+$items = $block->getItems() ?? [];
+if (is_object($items) && $items instanceof Iterator) {
+    $items = iterator_to_array($items);
+}
+if (!$itemCount = count($items)) {
+    return '';
+}
+
+$sliderIndex = 1;
+$sliderItemRenderer = $block->getLayout()->getBlock('product_list_item')
+    ?: $block->getChildBlock('slider.item.template')
+        ?: $block->getLayout()->createBlock(Template::class);
+
+$hideRatingSummary = (bool) $block->getData('hide_rating_summary');
+$hideDetails       = (bool) $block->getData('hide_details');
+
+$sliderItemRenderer->setData('hide_details', $hideDetails);
+$sliderItemRenderer->setData('hide_rating_summary', $hideRatingSummary);
+
+// The slider item renderer block is often a shared instance.
+// If a specific item template is set for this slider, the previously set template must be reset later
+// so the item template is only replaced for the one slider it is specified on.
+$sharedItemRendererTemplate = null;
+$isSharedItemRenderer       = $sliderItemRenderer !== $block->getChildBlock('slider.item.template');
+if ($isSharedItemRenderer && $block->getChildBlock('slider.item.template')) {
+    $sharedItemRendererTemplate = $sliderItemRenderer->getTemplate();
+    $sliderSpecificItemTemplate = $block->getChildBlock('slider.item.template')->getTemplate();
+    $sliderItemRenderer->setTemplate($sliderSpecificItemTemplate);
+}
+
+// The number of slides visible on the xl breakpoint
+$maxVisibleSlides = $block->getData('max_visible') ?? 4;
+
+// Breakpoints for 1 visible slider items on mobile, 2 visible on md, 3 on lg and 4 on xl (see $sliderPageSize).
+$defaultSliderItemClasses = 'mr-2 py-1 md:w-1/2 lg:w-1/3 xl:w-1/4';
+
+$sliderSectionClasses = $block->getData('maybe_purged_tailwind_section_classes') ?? 'my-12 text-gray-700 body-font';
+$slideItemClasses = $block->getData('maybe_purged_tailwind_slide_item_classes') ?? $defaultSliderItemClasses;
+
+?>
+<script>
+    'use strict';
+
+    function initSliderComponent() {
+        return {
+            active: 0,
+            itemCount: 0,
+            getSlider() {
+                return this.$root.querySelector('.js_slides');
+            },
+            pageSize: 4,
+            pageFillers: 0,
+            calcPageSize() {
+                const slider = this.getSlider();
+                if (slider) {
+                    this.itemCount = slider.querySelectorAll('.js_slide').length;
+                    this.pageSize = Math.round(slider.clientWidth / slider.querySelector('.js_slide').clientWidth);
+                    this.pageFillers = (
+                        this.pageSize * Math.ceil(this.itemCount / this.pageSize)
+                    ) - this.itemCount;
+                }
+            },
+            calcActive() {
+                const slider = this.getSlider();
+                if (slider) {
+                    const sliderItems = this.itemCount + this.pageFillers;
+                    const calculatedActiveSlide = slider.scrollLeft / (slider.scrollWidth / sliderItems);
+                    this.active = Math.round(calculatedActiveSlide / this.pageSize) * this.pageSize;
+                }
+            },
+            scrollPrevious() {
+                this.scrollTo(this.active - this.pageSize);
+            },
+            scrollNext() {
+                this.scrollTo(this.active + this.pageSize);
+            },
+            scrollTo(idx) {
+                const slider = this.getSlider();
+                if (slider) {
+                    const slideWidth = slider.scrollWidth / (this.itemCount + this.pageFillers);
+                    slider.scrollLeft = Math.floor(slideWidth) * idx;
+                    this.active = idx;
+                }
+            },
+            skipCarouselToNavigation(navSelector) {
+                const element = document.getElementById(navSelector)
+                if (element) {
+                    element.scrollIntoView({behavior: 'smooth', block: 'end'});
+                    const button = element.querySelector('button:not([disabled])');
+                    this.$nextTick(() => button && button.focus({preventScroll: true}))
+                }
+            }
+        }
+    }
+</script>
+<section
+    class="<?= $escaper->escapeHtmlAttr($sliderSectionClasses) ?>"
+    x-data="initSliderComponent()"
+    x-init="calcPageSize();"
+    x-id="['slider-nav', 'slider-desc', 'slider-id']"
+    @resize.window.debounce="calcPageSize(); $nextTick( function() { calcActive() })"
+    role="group"
+    aria-roledescription="<?= $escaper->escapeHtmlAttr(__('Carousel')) ?>"
+    aria-label="<?= $escaper->escapeHtmlAttr(__('Carousel %1', $title)) ?>"
+    :aria-describedby="$id('slider-desc')"
+    x-defer="intersect"
+>
+    <?php if ($items): ?>
+        <div class="relative">
+        <?php if ($title): ?>
+            <div class="container flex flex-col items-center pt-6 pb-3 mx-auto mb-6 border-b-2
+                    border-gray-300 md:flex-row">
+            <<?= /* @noEscape */ $headingTag ?> class="text-2xl font-medium text-gray-900 title-font">
+            <?= $escaper->escapeHtml($title); ?>
+            </<?= /* @noEscape */ $headingTag ?>>
+            </div>
+        <?php endif; ?>
+        <span
+            class="sr-only"
+            :id="$id('slider-desc')"
+            tabindex="-1"
+        >
+                <?= $escaper->escapeHtml(__('Navigating through the elements of the carousel is possible using the tab key. You can skip the carousel or go straight to carousel navigation using the skip links.')) ?>
+            </span>
+
+        <a
+            href="#<?= $escaper->escapeHtmlAttr($name) ?>-slider-end"
+            class="action skip sr-only focus:not-sr-only focus:absolute focus:z-30 focus:bg-white"
+        >
+            <?= $escaper->escapeHtml(__('Press to skip carousel')) ?>
+        </a>
+        <button
+            x-show="itemCount > pageSize"
+            type="button"
+            class="action skip sr-only focus:not-sr-only focus:absolute focus:z-30 focus:bg-white"
+            @click.prevent="skipCarouselToNavigation($id('slider-nav'))"
+        >
+            <?= $escaper->escapeHtml(__('Press to go to carousel navigation')) ?>
+        </button>
+        <div class="flex-none relative w-full overflow-x-hidden focus-within:ring-2 ring-offset-2 active:ring-0 ring-blue-500/50">
+            <div class="relative flex flex-nowrap w-full overflow-auto js_slides snap md:px-1 xl:px-2"
+                 @scroll.debounce="calcActive"
+            >
+                <?php foreach ($items as $product): ?>
+                    <div class="js_slide flex shrink-0 w-full <?= $escaper->escapeHtmlAttr($slideItemClasses) ?>"
+                         role="group"
+                         :aria-hidden="<?= (int) $sliderIndex ?> > active && <?= (int) $sliderIndex ?> <= (active + pageSize) ? 'false' : 'true'"
+                         aria-label="<?= $escaper->escapeHtmlAttr(__('Item %1', $sliderIndex++)) ?>"
+                         :aria-describedby="`slide-desc-<?= $escaper->escapeHtmlAttr($product->getId()) ?>-${$id('slider-id')}`"
+                    >
+                        <?= /** @noEscape */ $productListItemViewModel->getItemHtmlWithRenderer(
+                            $sliderItemRenderer,
+                            $product,
+                            $block,
+                            $viewMode,
+                            ProductReviewRenderer::SHORT_VIEW,
+                            $imageDisplayArea,
+                            $showDescription
+                        ) ?>
+                    </div>
+                <?php endforeach; ?>
+                <?php for ($i = 0; $i < $maxVisibleSlides; $i++): /* Add empty filler slides in case the number of items is not dividable by the pagesize */ ?>
+                    <div :class="{
+                        'js_dummy_slide w-full flex-none <?= $escaper->escapeJs($slideItemClasses) ?>' : pageFillers > <?= (int) $i ?>
+                        }"></div>
+                <?php endfor; ?>
+            </div>
+        </div>
+        <div style="min-height: 76px">
+            <template x-if="itemCount > pageSize">
+                <div
+                    class="flex items-center justify-center py-4"
+                    :id="$id('slider-nav')"
+                >
+                    <button
+                        type="button"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Previous slide')) ?>"
+                        :disabled="active === 0"
+                        class="text-black flex-none p-3"
+                        :class="{ 'opacity-25 pointer-events-none' : active === 0 }"
+                        @click="scrollPrevious"
+                    >
+                        <?= $heroicons->chevronLeftHtml("w-5 h-5", 25, 25, ['aria-hidden' => 'true']) ?>
+                    </button>
+                    <div class="flex flex-wrap w-full md:w-auto justify-center">
+                        <?php for ($i=0; $i < $itemCount; $i++): ?>
+                            <button
+                                type="button"
+                                :class="{
+                                    'hidden': (pageSize !== 1 && !!(<?= (int) $i ?> % pageSize))
+                                }"
+                                :aria-current="active === <?= (int) $i ?>"
+                                :aria-label="hyva.str('<?= $escaper->escapeJs(__('Display slide %1')) ?>', (<?= (int) $i ?> / pageSize) + 1)"
+                                @click="scrollTo(<?= (int) $i ?>)"
+                            >
+                            <span
+                                class="shrink-0 block w-3 h-3 m-4 bg-black bg-opacity-25 rounded-full shadow cursor-pointer"
+                                :class="{
+                                    'bg-opacity-100': active === <?= (int) $i ?>,
+                                    'bg-opacity-25': active !== <?= (int) $i ?>,
+                                    'hidden': (pageSize !== 1 && !!(<?= (int) $i ?> % pageSize))
+                                }"
+                                @click="scrollTo(<?= (int) $i ?>)"
+                            ></span>
+                            </button>
+                        <?php endfor; ?>
+                    </div>
+                    <button
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Next slide')) ?>"
+                        :disabled="active >= itemCount-pageSize"
+                        class="text-black flex-none p-3"
+                        :class="{ 'opacity-25 pointer-events-none' : active >= itemCount-pageSize }"
+                        @click="scrollNext"
+                    >
+                        <?= $heroicons->chevronRightHtml("w-5 h-5", 25, 25, ['aria-hidden' => 'true']) ?>
+                    </button>
+                </div>
+            </template>
+        </div>
+        <span id="<?= $escaper->escapeHtmlAttr($name) ?>-slider-end" tabindex="-1"></span>
+        </div>
+    <?php endif; ?>
+</section>
+<?php
+
+if ($sharedItemRendererTemplate) {
+    $sliderItemRenderer->setTemplate($sharedItemRendererTemplate);
+}
+
+?>
