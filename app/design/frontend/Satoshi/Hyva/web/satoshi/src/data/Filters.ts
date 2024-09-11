@@ -20,6 +20,7 @@ export type FilterType = {
 export type SortOptionType = {
   value: string;
   name: string;
+  dir: string;
 };
 
 type RemovedAttributesType = {
@@ -36,6 +37,7 @@ export type FiltersType = {
   filters: FilterType[] | [];
   sortOptions: SortOptionType[] | [];
   sortBy: string | boolean;
+  sortDir: string;
 
   init(): void;
   onResetButtonClick(): void;
@@ -46,6 +48,7 @@ export type FiltersType = {
   getFormattedMaxPrice(): string;
   resetSelectedFiltersState(): void;
   setSortBy(value: string): void;
+  setSortDir(value: string): void;
   getSelectedSortOption(): SortOptionType;
   getIsFilterValueSelected(param_name: string, value: string): boolean;
   getIsFilterSelected(param_name: string): boolean;
@@ -65,14 +68,19 @@ export type FiltersType = {
 const POPUP_FILTERS = "filters";
 const POPUP_BOTTOM_FILTERS = "bottom-filters";
 
-export const FILTER_SORT = "sort_by";
+export const FILTER_SORT = "product_list_order";
+export const FILTER_SORT_DIR = "product_list_dir";
 export const FILTER_PRICE = "Price";
 export const FILTER_PRICE_PARAM_NAME = "filter.v.price";
 export const FILTER_PRICE_MIN = "filter.v.price.gte";
 export const FILTER_PRICE_MAX = "filter.v.price.lte";
 
 export const Filters = (
+  sortOptions: SortOptionType[],
   defaultSort: string | unknown,
+  defaultSortDir: string,
+  currentSort: string,
+  currentSortDir: string,
   minPrice: string | unknown,
   maxPrice: string | unknown,
   currency: string,
@@ -83,10 +91,11 @@ export const Filters = (
     isTopLevel: true,
     isTopFilterVisible: null,
     filters: [],
-    sortOptions: [],
+    sortOptions: sortOptions,
     // If the default sort option is selected, then this.sortBy will be false.
     // otherwise, this.sortBy will have the string value of the selected sort option.
-    sortBy: false,
+    sortBy: currentSort || defaultSort || false,
+    sortDir: currentSortDir || defaultSortDir,
 
     init() {
       this.updateFilters = this.updateFilters.bind(this);
@@ -183,18 +192,25 @@ export const Filters = (
       }
     },
 
+    setSortDir(value: string) {
+      this.sortDir = value || defaultSortDir;
+    },
+
     getSelectedSortOption() {
-      if (this.sortBy) {
-        return this.sortOptions.find((option) => option.value === this.sortBy);
-      } else {
-        return this.sortOptions.find((option) => option.value === defaultSort);
-      }
+      const sortBy = this.sortBy || defaultSort;
+      const sortDir = this.sortDir || defaultSortDir;
+
+      return this.sortOptions.find(
+        (option) => option.value === sortBy && option.dir === sortDir
+      ) || this.sortOptions[0];
     },
 
     // Determine if a specific filter value is selected or not. For example it can be used to see if a filter checkbox/radio should be checked or not.
     getIsFilterValueSelected(param_name: string, value: string) {
       if (param_name === FILTER_SORT) {
         return this.getSelectedSortOption().value === value;
+      } else if (param_name === FILTER_SORT_DIR) {
+        return this.getSelectedSortOption().dir === value;
       } else {
         const filter = this.filters.find(
           (filter) => filter.param_name === param_name,
@@ -210,6 +226,8 @@ export const Filters = (
     getIsFilterSelected(param_name: string) {
       if (param_name === FILTER_SORT) {
         return Boolean(this.sortBy);
+      } else if (param_name === FILTER_SORT_DIR) {
+        return this.sortDir && this.sortDir !== defaultSortDir;
       } else if (param_name === FILTER_PRICE_PARAM_NAME) {
         const priceFilter = this.getPriceFilter();
         return (
@@ -254,6 +272,15 @@ export const Filters = (
 
       // Remove empty filter values and attributes that equal default value
       [...urlParams.entries()].forEach(([key, value]) => {
+        if(key === FILTER_SORT_DIR) {
+          if(removedAttr.hasOwnProperty(FILTER_SORT) || this.sortDir === defaultSortDir) {
+            urlParams.delete(FILTER_SORT_DIR);
+          } else {
+            urlParams.set(FILTER_SORT_DIR, this.sortDir);
+          }
+          return;
+        }
+
         if (this._isFilterEmptyOrDefault(key, value)) {
           urlParams.delete(key);
           return;
@@ -355,6 +382,7 @@ export const Filters = (
       return (
         !value ||
         (key === FILTER_SORT && value === String(defaultSort)) ||
+        (key === FILTER_SORT_DIR && value === String(defaultSortDir)) ||
         (key === FILTER_PRICE_MIN && value === String(minPrice)) ||
         (key === FILTER_PRICE_MAX && value === String(maxPrice))
       );
