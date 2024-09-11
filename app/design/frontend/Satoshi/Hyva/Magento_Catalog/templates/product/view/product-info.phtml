@@ -1,14 +1,15 @@
 <?php
+
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ProductAttributes;
-use Hyva\Theme\ViewModel\ProductCompare;
 use Hyva\Theme\ViewModel\ProductPage;
-use Hyva\Theme\ViewModel\Wishlist;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
+use Magento\Checkout\Helper\Cart;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
@@ -22,6 +23,31 @@ $attributesViewModel = $viewModels->require(ProductAttributes::class);
 $product = $productViewModel->getProduct();
 $productType = $product->getTypeId();
 
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$isProductInCart = $productType !== 'simple' && $this->helper(Cart::class)->getQuote()->hasProductId($product->getId());
+$isPopup = false;
+$isSmall = false;
+
+$is_variant_in_cart = false;
+$is_variants_popup = $isPopup && $productType === 'configurable';
+$is_variant_in_stock = $product->isSaleable();
+$is_hide_add_to_cart_on_mobile = !$product->isSaleable() || $productType === 'configurable';
+$variant_count = 0;
+
+$hideOnMobile = false;
+if ($product->isSaleable()) {
+  $hideOnMobile = true;
+} else {
+  if (!$isPopup && $productType === 'configurable') {
+    $hideOnMobile = true;
+  } else {
+    if ($isPopup && $is_variant_in_cart) {
+      $hideOnMobile = true;
+    }
+  }
+}
 ?>
 <div class="w-full mb-6">
     <div class="my-2 flex">
@@ -55,35 +81,92 @@ $productType = $product->getTypeId();
 
     <?= $block->getChildHtml('product.info.form') ?>
 
-    <div class="mb-8 flex flex-col flex-wrap gap-x-8 gap-y-5 md:gap-y-3 max-md:px-4">
-
+    <div class="flex flex-col sm:flex-row items-end my-4">
         <?php if ($productType === 'bundle'): ?>
             <span class="sr-only">
                 <?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?>
             </span>
         <?php endif; ?>
 
-        <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
+        <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>" class="hidden">
             <?= $block->getChildHtml("product.info.price") ?>
         </div>
 
-        <div
-            class="relative flex flex-grow flex-wrap justify-stretch gap-3"
-            id="product-actions"
-            x-transition
-            x-intersect:enter="toggleStickyProductActions(false)"
-            x-intersect:leave="toggleStickyProductActions(true)"
-        >
-            <?php if ($product->isSaleable()): ?>
-                <?= $block->getChildHtml("product.info.quantity") ?>
-                <?= $block->getChildHtml("product.info.addtocart") ?>
-            <?php endif; ?>
-        </div>
+        <?php if ($product->isSaleable()): ?>
+            <div
+                class="relative flex flex-grow flex-wrap justify-stretch gap-3 w-full"
+                id="product-actions"
+                x-transition
+                x-intersect:enter="toggleStickyProductActions(false)"
+                x-intersect:leave="toggleStickyProductActions(true)"
+            >
+                <?= $block->getChildHtml('product.actions') ?>
+            </div>
 
-        <!-- buy now btn -->
-        <!-- <div class="rte contents max-w-full">
-            <div data-shopify="payment-button" class="shopify-payment-button"> <shopify-accelerated-checkout recommended="null" fallback="{&quot;name&quot;:&quot;buy_it_now&quot;,&quot;wallet_params&quot;:{}}" access-token="0594fd0d9da9ed9a117a91d7e0568506" buyer-country="US" buyer-locale="en" buyer-currency="EUR" variant-params="[{&quot;id&quot;:49369972375827,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972408595,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972441363,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972474131,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972506899,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972539667,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972572435,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972605203,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972637971,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972670739,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972703507,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972736275,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972769043,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972801811,&quot;requiresShipping&quot;:true},{&quot;id&quot;:49369972834579,&quot;requiresShipping&quot;:true}]" shop-id="86876029203" disable-compat="" requires-shipping=""><shopify-buy-it-now-button access-token="0594fd0d9da9ed9a117a91d7e0568506" buyer-country="US" buyer-currency="EUR" wallet-params="{}" page-type="product" slot="button" call-to-action="" requires-shipping=""><button type="button" class="shopify-payment-button__button shopify-payment-button__button--unbranded">Buy it now</button></shopify-buy-it-now-button></shopify-accelerated-checkout> </div>
-        </div> -->
+            <!-- StickyProductActionsPopup -->
+            <?php
+                $stickyActions = <<<HTML
+                    <div class="h-9"></div>
+                    <template x-portal="document.getElementById('popup-fixed-content-portal')">
+                        <div
+                            id="ProductBottomActionsPopup"
+                            x-show="\$store.popup.currentPopup == 'product_bottom_actions'"
+                            class="flex w-full items-center justify-end gap-3 bg-bg-500 px-3"
+                        >
+                            <div
+                                class="ml-3 flex flex-grow gap-3"
+                                x-show="!isVariantInCart"
+                                x-transition
+                            >
+                                123$
+                            </div>
+                            <div
+                                class="flex flex-grow justify-stretch gap-3"
+                                :class="{
+                                    'w-full': isVariantInCart
+                                }"
+                            >
+                                {$block->getChildBlock('product.actions')->setData('is_small', true)->toHtml()}
+                            </div>
+                        </div>
+                    </template>
+                HTML;
+            ?>
+
+             <?= $popup
+                    ->setData(['id' => 'product_bottom_actions'])
+                    ->setChildHtml($stickyActions)
+                    ->render(); ?>
+            <!-- StickyProductActionsPopup -->
+
+            <!-- Product actions popup -->
+            <?php
+                $popup_id = 'product_actions-' . $product->getId();
+                $optionsBlock = $block->getLayout()->getBlock('product.info.options.configurable');
+                $productActions = <<<HTML
+                    <div class="contents" id="product-options">
+                        {$optionsBlock->setData('is_popup', true)->toHtml()}
+                    </div>
+
+                    <div class="min-h-20 md:hidden"></div>
+                    <template x-portal="document.getElementById('popup-fixed-content-portal')">
+                        <div x-show="\$store.popup.currentPopup === productActionsPopup">
+                            <div class="mb-2 flex flex-grow justify-stretch gap-3 bg-bg-500 px-4">
+                                {$block->getChildBlock('product.actions')->setData('is_popup', true)->toHtml()}
+                            </div>
+                        </div>
+                    </template>
+                HTML;
+            ?>
+            <?= $popup
+                ->setData([
+                    'id' => $popup_id,
+                    'isFocused' => true
+                ])
+                ->setChildHtml($productActions)
+                ->render() ?>
+            <!-- Product actions popup -->
+        <?php endif; ?>
     </div>
 
     <?php if ($product->isSaleable()): ?>

@@ -1,0 +1,120 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductAttributes;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Magento\Checkout\Helper\Cart;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+/** @var ProductAttributes $attributesViewModel */
+$attributesViewModel = $viewModels->require(ProductAttributes::class);
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+$productType = $product->getTypeId();
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$isProductInCart = $productType !== 'simple' && $this->helper(Cart::class)->getQuote()->hasProductId($product->getId());
+$isPopup = $block->getData('is_popup') || false;
+$isSmall = $block->getData('is_small') || false;
+
+$is_variant_in_cart = false;
+$is_variants_popup = $isPopup && $productType === 'configurable';
+$is_variant_in_stock = $product->isSaleable();
+$is_hide_add_to_cart_on_mobile = !$product->isSaleable() || $productType === 'configurable';
+$variant_count = 0;
+
+$hideOnMobile = false;
+if ($product->isSaleable()) {
+  $hideOnMobile = true;
+} else {
+  if (!$isPopup && $productType === 'configurable') {
+    $hideOnMobile = true;
+  } else {
+    if ($isPopup && $is_variant_in_cart) {
+      $hideOnMobile = true;
+    }
+  }
+}
+
+?>
+<!-- Quantity Controls -->
+<?= $block->getChildHtml("product.info.quantity") ?>
+
+<!-- Add to cart button, appears on desktop, and on mobile for simple products -->
+<button
+    x-show="<?= $product->isSaleable() ?> && (!isVariantInCart || <?= (int) $is_variants_popup ?>)"
+    class="animate-on-transition button button--filled-primary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= $hideOnMobile ? 'max-md:hidden' : '' ?> <?= !$product->isSaleable() ? 'md:hidden' : '' ?>"
+    @click.prevent="addToCart()"
+    x-a11y-trap-target.end="$store.popup.currentPopup === productActionsPopup"
+    :class="
+        {
+            'max-md:hidden': <?= (int) ($productType === 'configurable') ?> && (!<?= (int) $is_variants_popup ?> || (<?= (int) $is_variants_popup ?> && isVariantInCart)),
+            'button--disabled': isProductBeingAdded || isProductBeingRemoved
+        }
+    "
+    :disabled="isProductBeingAdded || isProductBeingRemoved"
+    type="button"
+>
+    <span
+        class="flex"
+        x-show="!isProductBeingAdded && !isProductBeingRemoved"
+    >
+        <?= __('Add to cart') ?>
+        <span class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>">
+            <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+        </span>
+    </span>
+
+    <span style="display: none" x-show="isProductBeingRemoved">
+        <?= __('Removing from cart...') ?>
+    </span>
+
+    <span style="display: none" x-show="isProductBeingAdded">
+        <?= __('Adding...') ?>
+    </span>
+</button>
+
+<!-- Select another option, visible for configurable products on mobile -->
+<button
+    x-show="<?= (int)($productType === 'configurable') ?> && isVariantInCart && !<?= (int)$isPopup ?>"
+    class="animate-on-transition button button--filled-primary w-full md:hidden <?= $isSmall ? 'button--size-sm' : '' ?>"
+    @click.prevent="showProductActions()"
+    type="button"
+>
+    <span>
+        <?= __('Select another option') ?>
+    </span>
+    <span
+        class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>"
+    >
+        <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+    </span>
+</button>
+
+<!-- Show product button, appears only in popup if variant is in cart -->
+<a
+  x-show="!isVariantInCart || <?= (int) $isPopup ?>"
+  class="animate-on-transition button button--outline-primary w-full md:hidden"
+  :class="
+    {
+      'max-md:hidden': !isVariantInCart || !<?= (int) $isPopup ?>
+    }
+  "
+    href="#"
+    @click.prevent="hideProductActions()"
+>
+<?= __('Show product') ?>
+</a>

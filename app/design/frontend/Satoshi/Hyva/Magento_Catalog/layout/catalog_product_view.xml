@@ -8,6 +8,12 @@
             </block>
         </referenceBlock>
 
+        <referenceBlock name="product.info">
+            <!-- Product actions -->
+            <block name="product.actions" template="Magento_Catalog::product/view/product-actions.phtml" />
+        </referenceBlock>
+        <move element="product.info.quantity" destination="product.actions" />
+
         <move element="product.media" destination="product.details" />
         <move element="page.main.title" destination="product.details.info" as="product.title" />
         <move element="product.info" destination="product.details.info" />
