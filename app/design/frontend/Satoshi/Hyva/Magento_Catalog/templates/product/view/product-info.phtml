@@ -8,7 +8,6 @@ use Hyva\Theme\ViewModel\ProductPage;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
-use Magento\Checkout\Helper\Cart;
 use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Template $block */
@@ -26,28 +25,6 @@ $productType = $product->getTypeId();
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-$isProductInCart = $productType !== 'simple' && $this->helper(Cart::class)->getQuote()->hasProductId($product->getId());
-$isPopup = false;
-$isSmall = false;
-
-$is_variant_in_cart = false;
-$is_variants_popup = $isPopup && $productType === 'configurable';
-$is_variant_in_stock = $product->isSaleable();
-$is_hide_add_to_cart_on_mobile = !$product->isSaleable() || $productType === 'configurable';
-$variant_count = 0;
-
-$hideOnMobile = false;
-if ($product->isSaleable()) {
-  $hideOnMobile = true;
-} else {
-  if (!$isPopup && $productType === 'configurable') {
-    $hideOnMobile = true;
-  } else {
-    if ($isPopup && $is_variant_in_cart) {
-      $hideOnMobile = true;
-    }
-  }
-}
 ?>
 <div class="w-full mb-6">
     <div class="my-2 flex">
@@ -143,9 +120,10 @@ if ($product->isSaleable()) {
             <?php
                 $popup_id = 'product_actions-' . $product->getId();
                 $optionsBlock = $block->getLayout()->getBlock('product.info.options.configurable');
+                $options = $optionsBlock ? $optionsBlock->setData('is_popup', true)->toHtml() : '';
                 $productActions = <<<HTML
                     <div class="contents" id="product-options">
-                        {$optionsBlock->setData('is_popup', true)->toHtml()}
+                        {$options}
                     </div>
 
                     <div class="min-h-20 md:hidden"></div>
