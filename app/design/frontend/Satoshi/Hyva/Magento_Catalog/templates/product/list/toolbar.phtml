@@ -76,19 +76,17 @@ $additionalOptions = ['page' => 'p'];
     }
 </script>
 <?php if ($block->getCollection()->getSize()): ?>
-    <div x-data="initToolbar<?= /** @noEscape */ $uniqueId ?>()"
-         class="toolbar toolbar-products grid grid-cols-4 sm:grid-cols-8 md:grid-cols-4
-            lg:grid-cols-8  grid-flow-row gap-2 items-center">
-        <div id="toolbar-filters" class="grid col-span-8"></div>
-        <?php if ($block->getIsBottom()): ?>
-            <?= /** @noEscape */  $block->fetchView($block->getTemplateFile('Magento_Catalog::product/list/toolbar/amount.phtml')) ?>
-            <?= $block->getPagerHtml() ?>
-            <?= /** @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Catalog::product/list/toolbar/limiter.phtml')) ?>
-        <?php else: ?>
+    <?php if ($block->getIsBottom()): ?>
+        <?= $block->getPagerHtml() ?>
+    <?php else: ?>
+        <div x-data="initToolbar<?= /** @noEscape */ $uniqueId ?>()"
+            class="toolbar toolbar-products grid grid-cols-4 sm:grid-cols-8 md:grid-cols-4
+                lg:grid-cols-8  grid-flow-row gap-2 items-center">
+            <div id="toolbar-filters" class="grid col-span-full"></div>
             <?php if ($block->isExpanded()): ?>
                 <?= /** @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Catalog::product/list/toolbar/viewmode.phtml')) ?>
                 <?= /** @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Catalog::product/list/toolbar/sorter.phtml')) ?>
             <?php endif ?>
-        <?php endif ?>
-    </div>
+        </div>
+    <?php endif ?>
 <?php endif ?>

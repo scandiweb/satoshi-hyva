@@ -59,3 +59,9 @@ $popup
   ->setChildTemplate('Magento_Theme::html/header/menu/menu.phtml')
   ->render()
 ```
+
+## Features to implement
+
+### PLP
+
+1. Add an option to switch between grid and list layout
