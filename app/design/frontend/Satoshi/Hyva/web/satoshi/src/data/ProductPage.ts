@@ -155,7 +155,9 @@ export const ProductPage = () =>
       this.productActionsPopup += `-${productId}`;
       this.isScrollingToTop = !!isScrollingToTop;
 
-      this._updateSelectedVariantCartState();
+      Alpine.nextTick(() => {
+        this._updateSelectedVariantCartState();
+      });
     },
 
     _updateSelectedVariantCartState(): void {
@@ -175,7 +177,7 @@ export const ProductPage = () =>
       }
 
       // Match product id
-      if (item.item_id !== this.productId) {
+      if (item.product_id != this.productId) {
         return false;
       }
 

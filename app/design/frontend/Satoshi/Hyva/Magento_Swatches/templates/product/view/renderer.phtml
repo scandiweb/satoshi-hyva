@@ -32,12 +32,16 @@ $swatchItemBlock = $layout->getBlock('product.swatch.item');
 $swatchItemBlock->setData('product_id', $productId);
 
 $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
+
+$is_popup = $block->getData('is_popup') ?? false;
 ?>
 <?php if ($product->isSaleable() && count($attributes)): ?>
-  <div class="animate-on-transition md:mb-5 max-md:hidden"
+  <div 
+      <?php if (!$is_popup): ?>
+        class="animate-on-transition md:mb-5 max-md:hidden"
+      <?php endif; ?>
        x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)"
   >
-    <!-- product-options-content -->
     <div class="flex flex-col gap-5 max-md:mx-2">
       <?php foreach ($attributes as $i => $attribute): ?>
         <?php $attributeId = $attribute->getAttributeId(); ?>
@@ -63,7 +67,7 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
                     @click.prevent="hideProductActions()"
                     :class="
                       {
-                        'max-md:hidden': true // TODO: hide if not popup
+                        'max-md:hidden': <?= (int) $is_popup ?>
                       }
                     "
                   >
@@ -96,7 +100,7 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
                   @click.prevent="hideProductActions()"
                   :class="
                     {
-                      'max-md:hidden': true // TODO: hide if not popup
+                      'max-md:hidden': <?= (int) $is_popup ?>
                     }
                   "
                 >
@@ -130,10 +134,5 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
         </div>
       <?php endforeach; ?>
     </div>
-    <!-- end-product-options-content -->
-
-    <?php /* @noEscape */
-    // $tooltipBlockHtml
-    ?>
   </div>
 <?php endif; ?>
