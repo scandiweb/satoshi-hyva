@@ -20,32 +20,25 @@ use Satoshi\Theme\Block\Popup;
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-$stateBlock = $block->getChildBlock('state');
-
 $filters = $block->getFilters();
 
 $filteredFilters = array_filter($filters, function ($filter) {
     return $filter->getItemsCount();
 });
-
-$allFilters = array_unique(array_merge($stateBlock->getActiveFilters(), $filteredFilters), SORT_REGULAR);
-
 ?>
 <?php if ($block->canShowBlock()): ?>
     <template x-portal="document.getElementById('toolbar-filters')">
         <nav
-            class="overflow-x-scroll pb-4 pt-2 md:hidden" aria-label="{{ 'products.facets.filter_aria_label' | t }}">
+            class="overflow-x-scroll pb-4 pt-2 md:hidden" aria-label="<?= __('Available filters') ?>">
             <div
                 class="flex w-max gap-3 transition-transform duration-300 {% if isDefault %}translate-x-[-52px]{%- else -%}translate-x-0{% endif %}"
             >
-                <?php foreach ($allFilters as $filter): ?>
-                    <?php if ($filter instanceof Item) {
-                        $filter = $filter->getFilter();
-                    } ?>
+                <?= $block->getChildHtml('state') ?>
+                <?php foreach ($filteredFilters as $filter): ?>
                     <button
                         @click="$store.popup.showPopup('<?= $filter->getName() ?>')"
                         type="button"
-                        aria-label="{{ 'products.facets.clear_all' | t }}"
+                        aria-label="<?= __('Clear all') ?>"
                         class="button duration-300 button--outline-secondary"
                     >
                         <?= $filter->getName() ?>
@@ -80,42 +73,40 @@ $allFilters = array_unique(array_merge($stateBlock->getActiveFilters(), $filtere
                 <?= $block->getChildHtml('state') ?>
 
 
-                <?php foreach ($block->getFilters() as $filter): ?>
-                    <?php if ($filter->getItemsCount()): ?>
+                <?php foreach ($filteredFilters as $filter): ?>
+                    <div
+                        class="flex-1 md:border-t md:border-bg-600 md:py-5"
+                        x-data="Accordion(true, 300)"
+                    >
                         <div
-                            class="flex-1 md:border-t md:border-bg-600 md:py-5"
-                            x-data="Accordion(true, 300)"
+                            class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2"
+                            x-ref="AccordionButton"
                         >
-                            <div
-                                class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2"
-                                x-ref="AccordionButton"
-                            >
-                                <h2 class="grow text-left text-text-500">
-                                    <?= $escaper->escapeHtml(__($filter->getName())) ?>
-                                    <span class="sr-only">
+                            <h2 class="grow text-left text-text-500">
+                                <?= $escaper->escapeHtml(__($filter->getName())) ?>
+                                <span class="sr-only">
                                         <?= $escaper->escapeHtml(__('filter')) ?>
                                     </span>
-                                </h2>
-                                <button
-                                    class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
-                                    aria-label="<?= __('Sort by') ?>">
+                            </h2>
+                            <button
+                                class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
+                                aria-label="<?= __('Sort by') ?>">
                                         <span style="rotate: -180deg;" x-ref="AccordionIcon">
                                             <?= $hyvaicons->renderHtml('chevron-up'); ?>
                                         </span>
-                                </button>
-                            </div>
-                            <div
-                                x-cloak x-ref="AccordionPanel" class="overflow-hidden md:px-2"
-                                :class="{
+                            </button>
+                        </div>
+                        <div
+                            x-cloak x-ref="AccordionPanel" class="overflow-hidden md:px-2"
+                            :class="{
                                     'transition-none': $store.main.isReducedMotion,
                                     'transition': $store.main.isReducedMotion
                                 }"
-                            >
-                                <?= /* @noEscape */
-                                $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
-                            </div>
+                        >
+                            <?= /* @noEscape */
+                            $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
                         </div>
-                    <?php endif; ?>
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>

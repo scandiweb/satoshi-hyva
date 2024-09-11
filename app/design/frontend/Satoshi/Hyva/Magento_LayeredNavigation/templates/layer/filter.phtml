@@ -15,70 +15,68 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var FilterRenderer $block */
 /** @var Escaper $escaper */
 /** @var LocaleFormatter $localeFormatter */
+/** @var array $filterItems */
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $catalogHelper = $this->helper(Data::class);
 
-/** @var array $filterItems */
 ?>
-
-<div x-show="$store.main.isMobile" class="sticky start-0 top-0 z-10 flex flex-col gap-3 bg-bg-500 px-3 md:pt-2">
-    <div class="flex justify-between">
-        <div class="flex gap-3 items-center">
+<div>
+    <div x-show="$store.main.isMobile" class="sticky start-0 top-0 z-10 flex flex-col gap-3 bg-bg-500 px-3 md:pt-2">
+        <div class="flex justify-between">
+            <div class="flex gap-3 items-center">
+                <button
+                    type="button"
+                    class="button button--ghost-primary icon-button icon-button--size-xs text-xxl transition-transform duration-300 motion-reduce:transition-none"
+                    aria-label="<?= __('Go to back to all filters') ?>"
+                    @click="isTopLevel = true; currentName = ''"
+                >
+                    <?= $hyvaicons->renderHtml('chevron-left'); ?>
+                </button>
+                <h2
+                    class="text-md text-text-500 transition-transform duration-300 motion-reduce:transition-none"
+                >
+                    <?= __('Sort by') ?>
+                </h2>
+            </div>
             <button
                 type="button"
-                class="button button--ghost-primary icon-button icon-button--size-xs text-xxl transition-transform duration-300 motion-reduce:transition-none"
-                aria-label="{{ 'products.facets.filters_popup.go_back' | t }}"
-                @click="isTopLevel = true; currentName = ''"
-                :tabindex="isTopLevel ? -1 : 0"
-                :class="{
-          '-translate-x-full': isTopLevel,
-          'translate-x-0': !isTopLevel,
-        }"
+                class="button button--outline-secondary icon-button icon-button--size-xs"
+                aria-label="<?= __('Close') ?>"
+                @click="$store.popup.hidePopup('<?= $block->getFilterTitle() ?>')"
             >
-                <?= $hyvaicons->renderHtml('chevron-left'); ?>
+                <?= $hyvaicons->renderHtml('close'); ?>
             </button>
-            <h2
-                class="text-md text-text-500 transition-transform duration-300 motion-reduce:transition-none"
-                :class="{
-          'translate-x-0': isTopLevel,
-          'translate-x-[34px]': !isTopLevel,
-        }"
-            >
-                <?= __('Sort by') ?>
-            </h2>
         </div>
-        <button
-            type="button"
-            class="button button--outline-secondary icon-button icon-button--size-xs"
-            aria-label="{{ 'products.facets.filters_popup.close' | t }}"
-            click="$store.popup.hidePopup('<?= $block->getFilterTitle() ?>')"
-        >
-            <?= $hyvaicons->renderHtml('close'); ?>
-        </button>
+        <hr class="divider -mx-5">
     </div>
-    <hr class="divider -mx-5">
-</div>
-<ol class="items" :class="$store.main.isMobile && 'px-3'"
-    aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter options', $block->getFilterTitle())) ?>">
-    <?php foreach ($filterItems as $filterItem): ?>
-        <li x-data="Fetch()">
-            <?php if ($filterItem->getCount() > 0): ?>
-                <button @click="fetchPage('<?= $escaper->escapeUrl($filterItem->getUrl()) ?>')"
-                        class="radio mb-0 h-full w-full py-3"">
-                <span class="radio__control " aria-hidden="true"></span>
-                <span class="radio__label text-md ">
+    <ol class="items" :class="$store.main.isMobile && 'px-3'"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter options', $block->getFilterTitle())) ?>">
+        <?php foreach ($filterItems as $filterItem): ?>
+            <li>
+                <?php if ($filterItem->getCount() > 0): ?>
+                    <button @click="() => {
+                    $store.popup.hidePopup('<?= $block->getFilterTitle() ?>');
+                    _fetchPage('<?= $escaper->escapeUrl($filterItem->getUrl()) ?>');
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }"
+                            class="radio mb-0 h-full w-full py-3"">
+                    <span class="radio__control " aria-hidden="true"></span>
+                    <span class="radio__label text-md ">
                         <?= /* @noEscape */
                         $filterItem->getLabel() ?>
                     </span>
-                &nbsp;
-                <?php if ($catalogHelper->shouldDisplayProductCountOnLayer()): ?>
-                    <span class="count text-primary">(<?= /* @noEscape */
-                        $localeFormatter->formatNumber((int)$filterItem->getCount()) ?>)</span>
-                <?php endif; ?>
-                </button>
-            <?php else: ?>
-                <span class="flex justify-between py-1 hover:text-black">
+                    &nbsp;
+                    <?php if ($catalogHelper->shouldDisplayProductCountOnLayer()): ?>
+                        <span class="count text-primary">(<?= /* @noEscape */
+                            $localeFormatter->formatNumber((int)$filterItem->getCount()) ?>)</span>
+                    <?php endif; ?>
+                    </button>
+                <?php else: ?>
+                    <span class="flex justify-between py-1 hover:text-black">
                     <span><?= /* @noEscape */
                         $filterItem->getLabel() ?>
                     </span>
@@ -88,26 +86,27 @@ $catalogHelper = $this->helper(Data::class);
                             $localeFormatter->formatNumber((int)$filterItem->getCount()) ?>)</span>
                     <?php endif; ?>
             </span>
-            <?php endif; ?>
-        </li>
-    <?php endforeach ?>
-</ol>
+                <?php endif; ?>
+            </li>
+        <?php endforeach ?>
+    </ol>
 
-<div x-show="$store.main.isMobile" class="mb-3">
-    <div class="-top-10 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>
-    <div class="flex items-center gap-3 bg-bg-500 px-4 pb-2">
-        <button
-            type="button"
-            class="button button--outline-secondary"
-            @click="onResetButtonClick"
-        >
-            <?= __('Reset') ?>
-        </button>
-        <button
-            type="button"
-            class="button button--filled-primary grow"
-        >
-            <?= __('Apply') ?>
-        </button>
+    <div x-show="$store.main.isMobile" class="mb-3">
+        <div class="-top-10 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>
+        <div class="flex items-center gap-3 bg-bg-500 px-4 pb-2">
+            <button
+                type="button"
+                class="button button--outline-secondary"
+                @click="$store.popup.hidePopup('<?= $block->getFilterTitle() ?>')"
+            >
+                <?= __('Reset') ?>
+            </button>
+            <button
+                type="button"
+                class="button button--filled-primary grow"
+            >
+                <?= __('Apply') ?>
+            </button>
+        </div>
     </div>
 </div>

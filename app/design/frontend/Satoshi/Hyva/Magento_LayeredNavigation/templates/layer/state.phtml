@@ -17,20 +17,16 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $hyvaicons = $viewModels->require(SvgIcons::class); ?>
 
 <?php $filters = $block->getActiveFilters() ?>
-<div class="overflow-x-scroll overscroll-x-contain"
-     x-show="!$store.main.isMobile || $store.popup.currentPopup === 'bottom-filters'">
-    <div class="">
-
-        <div id="selected-filters-mobile" class="shrink-0 grow"></div>
-
-        <div x-data="Fetch()">
+<div class="overflow-x-scroll overscroll-x-contain">
+    <div>
+        <div>
             <div class="mb-5 hidden items-center justify-between md:flex">
                 <h2 class="text-text-500"><?= __('Selected filters') ?></h2>
                 <?php if (!empty($filters)): ?>
                     <?php if ($block->getLayer()->getState()->getFilters()): ?>
                         <button
                             class="link link--primary"
-                            @click="fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
+                            @click="_fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
                         >
                             <?= $escaper->escapeHtml(__('Reset All')) ?>
                         </button>
@@ -38,20 +34,29 @@ $hyvaicons = $viewModels->require(SvgIcons::class); ?>
                 <?php endif; ?>
             </div>
             <?php if (empty($filters)): ?>
-                <div>
+                <div class="hidden md:block">
                     <p class="pr-3 text-center md:pr-0 md:text-left">
                         <?= __('The selected filters will appear here.') ?>
                     </p>
                 </div>
             <?php endif; ?>
             <?php if (!empty($filters)): ?>
-                <div class="flex flex-col md:gap-3 md:pb-7 md:pt-2">
+                <div class="flex flex-row md:flex-col gap-3 md:pb-7 md:pt-2">
+                    <button
+                        type="button"
+                        aria-label="<?= __('Clear all') ?>"
+                        class="md:hidden button min-w-[44px] px-0 text-xl button--filled-primary opacity-100"
+                        :tabindex="getIsDefault() ? -1 : 0"
+                        @click="_fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
+                    >
+                        <span><?= $hyvaicons->renderHtml('remove'); ?></span>
+                    </button>
                     <?php foreach ($filters as $filter): ?>
                         <div>
                             <button
                                 type="button"
-                                class="button button--outline-secondary button--size-sm mr-3 shrink-0 md:mr-0"
-                                @click="fetchPage('<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>')"
+                                :class="$store.main.isMobile ? 'button duration-300 button--outline-primary' : 'button button--outline-secondary button--size-sm mr-3 shrink-0 md:mr-0'"
+                                @click="_fetchPage('<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>')"
                             >
                             <span class="mr-2">
                                 <?= $escaper->escapeHtml(__($filter->getName())) ?>:
@@ -69,5 +74,4 @@ $hyvaicons = $viewModels->require(SvgIcons::class); ?>
             <?php endif; ?>
         </div>
     </div>
-</div>
 </div>
