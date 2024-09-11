@@ -9,6 +9,7 @@ use Hyva\Theme\ViewModel\Store;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template as Block;
 use Satoshi\Theme\Block\Template;
+use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
 
 /** @var Template $template */
 /** @var Block $block */
@@ -26,8 +27,8 @@ $viewMode = 'grid';
 $imageDisplayArea = 'category_page_grid';
 $showDescription = false;
 
-$name = (string)$block->getName();
-$title = (string)$block->getTitle();
+$name = (string) $block->getName();
+$title = (string) $block->getTitle();
 $headingTag = $block->getData('heading_tag') ?: 'h3';
 $items = $block->getItems() ?? [];
 if (is_object($items) && $items instanceof Iterator) {
@@ -42,17 +43,21 @@ $sliderItemRenderer = $block->getLayout()->getBlock('product_list_item')
     ?: $block->getChildBlock('slider.item.template')
         ?: $block->getLayout()->createBlock(Template::class);
 
-$hideRatingSummary = (bool)$block->getData('hide_rating_summary');
-$hideDetails = (bool)$block->getData('hide_details');
+$hideRatingSummary = (bool) $block->getData('hide_rating_summary');
+$hideDetails = (bool) $block->getData('hide_details');
 
 $slidesHtml = '';
 foreach ($items as $product) {
     $slidesHtml .= '<div class="slider__slide">' .
-        $template->setData([
-            'product' => $product,
-            'hide_details' => $hideDetails,
-            'hide_rating_summary' => $hideRatingSummary
-        ])->render('Magento_Catalog::product/list/item.phtml') .
+        $productListItemViewModel->getItemHtmlWithRenderer(
+            $sliderItemRenderer,
+            $product,
+            $block,
+            $viewMode,
+            ProductReviewRenderer::SHORT_VIEW,
+            $imageDisplayArea,
+            $showDescription
+        ) .
         '</div>';
 }
 
@@ -67,4 +72,3 @@ echo $template
         'class' => 'py-9',
     ])
     ->render('Magento_Catalog::html/slider.phtml');
-?>
