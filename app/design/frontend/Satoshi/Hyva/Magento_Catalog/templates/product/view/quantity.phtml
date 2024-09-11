@@ -68,13 +68,13 @@ $isSmall = $block->getData('is_small');
       </span>
       <span
         x-show="variantQty < 2"
-        x-cloak
-        >
+        x-cloak <?php // Replace this with auto display none if variant qty > 1 ?>
+      >
         <?= $hyvaicons->renderHtml('remove'); ?>
       </span>
       <span
         x-show="variantQty > 1"
-        x-cloak
+        x-cloak <?php // Replace this with auto display none if variant qty < 2 ?>
         >
         <?= $hyvaicons->renderHtml('minus'); ?>
       </span>
