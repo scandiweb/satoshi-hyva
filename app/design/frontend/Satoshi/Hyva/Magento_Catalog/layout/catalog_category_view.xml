@@ -18,8 +18,7 @@
         <referenceBlock name="category.cms" remove="true" />
 
         <referenceBlock name="product_list_toolbar">
-            <block class="Magento\Catalog\Block\Product\ProductList\Toolbar" name="product_filter_sort"
-                   template="Magento_Catalog::product/html/filter-sort.phtml" before="-"/>
+            <block class="Magento\Catalog\Block\Product\ProductList\Toolbar" name="product_filter_sort" template="Magento_Catalog::product/html/filter-sort.phtml" before="-"/>
         </referenceBlock>
         <move element="product_filter_sort" destination="sidebar.main" before="-"/>
     </body>
