@@ -273,7 +273,7 @@ export const Filters = (
       // Remove empty filter values and attributes that equal default value
       [...urlParams.entries()].forEach(([key, value]) => {
         if(key === FILTER_SORT_DIR) {
-          if(!!removedAttr[FILTER_SORT_DIR]) {
+          if(removedAttr.hasOwnProperty(FILTER_SORT) || this.sortDir === defaultSortDir) {
             urlParams.delete(FILTER_SORT_DIR);
           } else {
             urlParams.set(FILTER_SORT_DIR, this.sortDir);
@@ -382,6 +382,7 @@ export const Filters = (
       return (
         !value ||
         (key === FILTER_SORT && value === String(defaultSort)) ||
+        (key === FILTER_SORT_DIR && value === String(defaultSortDir)) ||
         (key === FILTER_PRICE_MIN && value === String(minPrice)) ||
         (key === FILTER_PRICE_MAX && value === String(maxPrice))
       );
