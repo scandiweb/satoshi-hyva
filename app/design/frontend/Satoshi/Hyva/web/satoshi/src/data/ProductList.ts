@@ -45,9 +45,9 @@ export const ProductList = (...args: unknown[]) => {
     _fetchPage(queryString, isReset = false) {
       this.isLoadingProducts = true;
 
-        // If queryString is empty, set it to "?" to avoid browser caching of old query parameters.
-        // This ensures that the fetch request is recognized as a new request.
-        if (queryString === "") {
+      // If queryString is empty, set it to "?" to avoid browser caching of old query parameters.
+      // This ensures that the fetch request is recognized as a new request.
+      if (queryString === "") {
         queryString = "?";
       }
 
