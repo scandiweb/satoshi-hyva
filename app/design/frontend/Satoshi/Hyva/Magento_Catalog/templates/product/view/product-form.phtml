@@ -17,15 +17,19 @@ $product = $block->getProduct();
  * @see \Magento\Checkout\Block\Cart\Item\Configure::_prepareLayout
  */
 $productInfoBlock = $block->getLayout()->getBlock('product.info');
+$is_popup = $block->getData('is_popup') ?? false;
 
 ?>
 
 <?php if ($product->isSaleable()): ?>
     <form method="post"
-          action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
-          class="mb-6"
-          id="product_addtocart_form"<?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
-          @submit.prevent="addToCart($event.target)"
+        action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
+        id="product_addtocart_form"<?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
+        @submit.prevent="addToCart($event)"
+        x-ref="ProductForm"
+        <?php if (!$is_popup): ?>
+            class="animate-on-transition md:mb-5 max-md:hidden"
+        <?php endif; ?>
     >
         <input type="hidden" name="product" value="<?= (int)$product->getId() ?>" />
         <input type="hidden" name="selected_configurable_option" value=""  />
