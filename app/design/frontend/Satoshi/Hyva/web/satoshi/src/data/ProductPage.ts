@@ -8,6 +8,8 @@ export type ProductPageType = {
   isVariantInCart: boolean;
   variantQty: number;
   selectedValues: string[];
+  selectedDownloadableLinks: string[];
+  linksPurchasedSeparately: boolean;
   productId: string;
   groupedIds: string[];
   contentId: string;
@@ -124,6 +126,8 @@ export const ProductPage = () =>
     isVariantInCart: false,
     variantQty: 1,
     selectedValues: [],
+    selectedDownloadableLinks: [],
+    linksPurchasedSeparately: false,
     productId: "",
     groupedIds: [],
     contentId: "product-page",
@@ -192,7 +196,28 @@ export const ProductPage = () =>
         return false;
       }
 
-      // Match options
+      // Match options of downloadable product
+      if (item.product_type === "downloadable") {
+        if (this.linksPurchasedSeparately) {
+          if (
+            item.options.length &&
+            Array.isArray(item.options[0].value) &&
+            item.options[0].value.length ===
+              this.selectedDownloadableLinks.length
+          ) {
+            const links = item.options[0].value as string[];
+            return this.selectedDownloadableLinks.every((title) =>
+              links.some((link) => link === title),
+            );
+          }
+          return false;
+        }
+
+        // downloadable product has no options + same id => match
+        return true;
+      }
+
+      // Match options / configurable product
       const keys = Object.keys(this.selectedValues);
       if (keys.length !== item.options.length) {
         return false;
@@ -237,30 +262,28 @@ export const ProductPage = () =>
     },
 
     validateGroupedProduct() {
+      const isMobile = Alpine.store("main").isMobile;
       const validateInputs = Array.from(
         document.querySelectorAll("input[name^=super_group]"),
       );
-      const isMobile = Alpine.store("main").isMobile;
 
       // at least one of the inputs has to have a qty > 0
-      this.isGroupValid = validateInputs.filter(
-        (input) => input.value > 0,
+      this.isGroupValid = !!validateInputs.filter(
+        (input: Record<string, any>) => input.value > 0,
       ).length;
 
       // we set or unset validity for all fields at once
       // and empty string un-sets invalidity
-      validateInputs.map((input) =>
+      validateInputs.map((input: Record<string, any>) => {
         input.setCustomValidity(
           this.isGroupValid ? "" : "Please specify the quantity of product(s).",
-        ),
-      );
+        );
+      });
 
       if (!this.isGroupValid) {
         // this triggers an immediate display of the form errors
         document
-          .querySelector(
-            (isMobile ? "#product-options " : "") + "#product_addtocart_form",
-          )!
+          .querySelector(`#product_addtocart_form${isMobile ? "_popup" : ""}`)!
           .reportValidity();
         return false;
       }
@@ -268,6 +291,7 @@ export const ProductPage = () =>
     },
 
     addToCart(event) {
+      // Validated if grouped product
       if (this.groupedIds.length) {
         if (!this.validateGroupedProduct()) {
           return event.preventDefault();

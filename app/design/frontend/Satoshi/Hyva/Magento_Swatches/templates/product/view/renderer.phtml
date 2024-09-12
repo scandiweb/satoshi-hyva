@@ -33,12 +33,13 @@ $swatchItemBlock->setData('product_id', $productId);
 
 $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
 
-$is_popup = $block->getData('is_popup') ?? false;
+$index = 0;
 ?>
 <?php if ($product->isSaleable() && count($attributes)): ?>
   <div x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)">
-    <div class="flex flex-col gap-5 max-md:mx-2">
+    <div class="flex flex-col gap-5">
       <?php foreach ($attributes as $i => $attribute): ?>
+        <?php $index++ ?>
         <?php $attributeId = $attribute->getAttributeId(); ?>
         <?php $productAttribute = $attribute->getProductAttribute(); ?>
         <div
@@ -50,22 +51,16 @@ $is_popup = $block->getData('is_popup') ?? false;
           <?php if ($swatchRendererViewModel->isSwatchAttribute($productAttribute)): ?>
             <div class="contents">
               <div class="relative flex h-full w-full flex-row items-center justify-between">
-              <span class="font-semibold text-text-500" id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
->
+              <span class="font-semibold text-text-500" id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>">
                 <?= $escaper->escapeHtml(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>
               </span>
 
-                <?php if ($i === 0): ?>
+                <?php if ($index === 1): ?>
                   <button
                     type="button"
                     class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
                     aria-label="<?= __('Close') ?>"
                     @click.prevent="hideProductActions()"
-                    :class="
-                      {
-                        'max-md:hidden': <?= (int) $is_popup ?>
-                      }
-                    "
                   >
                     <?= $hyvaicons->renderHtml('close') ?>
                   </button>
@@ -88,17 +83,12 @@ $is_popup = $block->getData('is_popup') ?? false;
                 <?= $escaper->escapeHtml(__('Select your %1', strtolower($attribute->getProductAttribute()->getStoreLabel()))) ?>
               </label>
 
-              <?php if ($i === 0): ?>
+              <?php if ($index === 1): ?>
                 <button
                   type="button"
                   class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
                   aria-label="<?= __('Close') ?>"
                   @click.prevent="hideProductActions()"
-                  :class="
-                    {
-                      'max-md:hidden': <?= (int) $is_popup ?>
-                    }
-                  "
                 >
                   <?= $hyvaicons->renderHtml('close') ?>
                 </button>

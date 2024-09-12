@@ -11,33 +11,38 @@ use Magento\Framework\Escaper;
 
 /** @var Product $product */
 $product = $block->getProduct();
+$productType = $product->getTypeId();
 
 /**
  * Add to cart url is set on 'product.info' block by
  * @see \Magento\Checkout\Block\Cart\Item\Configure::_prepareLayout
  */
 $productInfoBlock = $block->getLayout()->getBlock('product.info');
-$is_popup = $block->getData('is_popup') ?? false;
+$isPopup = $block->getData('is_popup') ?? false;
 
 ?>
 
 <?php if ($product->isSaleable()): ?>
-    <form method="post"
-        action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
-        id="product_addtocart_form"<?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
-        @submit.prevent="addToCart($event)"
-        x-ref="ProductForm"
-        <?php if (!$is_popup): ?>
-            class="animate-on-transition md:mb-5 max-md:hidden"
-        <?php endif; ?>
-    >
-        <input type="hidden" name="product" value="<?= (int)$product->getId() ?>" />
-        <input type="hidden" name="selected_configurable_option" value=""  />
-        <input type="hidden" name="related_product" id="related-products-field" value="" />
-        <input type="hidden" name="item"  value="<?= (int)$block->getRequest()->getParam('id') ?>">
-        <?= $block->getBlockHtml('formkey') ?>
+    <template x-if="!$store.main.isMobile || <?= (int) ($isPopup || in_array($productType, ['simple', 'virtual'])) ?>">
+        <form method="post"
+            action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
+            id="product_addtocart_form<?= $isPopup ? '_popup' : '' ?>"
+            <?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
+            @submit.prevent="addToCart($event)"
+            <?php if (!$isPopup): ?>
+                class="animate-on-transition md:mb-5 max-md:hidden"
+            <?php else: ?>
+                class="max-md:mx-2"
+            <?php endif; ?>
+        >
+            <input type="hidden" name="product" value="<?= (int)$product->getId() ?>" />
+            <input type="hidden" name="selected_configurable_option" value=""  />
+            <input type="hidden" name="related_product" id="related-products-field" value="" />
+            <input type="hidden" name="item"  value="<?= (int)$block->getRequest()->getParam('id') ?>">
+            <?= $block->getBlockHtml('formkey') ?>
 
-        <?= $block->getChildHtml() ?>
+            <?= $block->getChildHtml() ?>
 
-    </form>
+        </form>
+    </template>
 <?php endif; ?>
