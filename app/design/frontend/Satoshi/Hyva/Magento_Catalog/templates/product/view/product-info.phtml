@@ -120,8 +120,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <!-- Product actions popup -->
             <?php
                 $popup_id = 'product_actions-' . $product->getId();
-                $optionsBlock = $block->getLayout()->getBlock('product.info.options.configurable');
-                $options = $optionsBlock ? $optionsBlock->setData(['is_popup' => true, 'is_small' => false])->toHtml() : '';
+                $optionsBlock = $block->getLayout()->getBlock('product.info.form');
+                $options = $optionsBlock ? $optionsBlock->setData(['is_popup' => true])->toHtml() : '';
                 $productActions = <<<HTML
                     <div class="contents" id="product-options">
                         {$options}

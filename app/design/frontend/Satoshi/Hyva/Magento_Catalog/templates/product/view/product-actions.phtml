@@ -30,6 +30,7 @@ $isProductInCart = $productType !== 'simple' && $this->helper(Cart::class)->getQ
 $isPopup = $block->getData('is_popup') ?? false;
 $isSmall = $block->getData('is_small') ?? false;
 $hasVariants = $productType === 'configurable';
+$isGroup = $productType === 'grouped';
 
 $isVariantsPopup = $isPopup && $hasVariants;
 
@@ -40,28 +41,34 @@ if (!$product->isSaleable()) {
 } elseif ($isPopup) {
   $hideOnMobile = $isProductInCart;
 } else {
-  $hideOnMobile = $hasVariants;
+  $hideOnMobile = $isGroup ?? $hasVariants;
 }
 
 ?>
 <!-- Quantity Controls -->
 <?= $block->getChildBlock('product.info.quantity')->setData(['is_popup' => $isPopup, 'is_small' => $isSmall])->toHtml() ?>
 
+<!-- buttons are very complex, needs to be refactored ! -->
+
 <!-- Add to cart button -->
 <button
-    <?php if ($isProductInCart && !$isVariantsPopup && $product->isSalable()): ?>
+    <?php if (!$product->isSalable() || ($isProductInCart && !$isVariantsPopup) || ($isGroup && !$isPopup)): ?>
       style="display: none"
     <?php endif; ?>
+    <?php if ($isGroup): ?>
+      x-show="<?= (int) $product->isSaleable() ?>"
+    <?php else: ?>
+      x-show="<?= (int) $product->isSaleable() ?> && (!isVariantInCart || <?= (int) $isVariantsPopup ?>)"
+    <?php endif; ?>
+    class="animate-on-transition button button--filled-primary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= $hideOnMobile ? 'max-md:hidden' : 'smthelse' ?>"
     type="submit"
     form="product_addtocart_form"
     title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
     data-addto="cart"
-    x-show="<?= $product->isSaleable() ?> && (!isVariantInCart || <?= (int) $isVariantsPopup ?>)"
-    class="animate-on-transition button button--filled-primary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= $hideOnMobile ? 'max-md:hidden' : '' ?>"
     x-a11y-trap-target.end="$store.popup.currentPopup === productActionsPopup"
     :class="
         {
-            'max-md:hidden': <?= (int) $hasVariants ?> && (!<?= (int) $isVariantsPopup ?> || (<?= (int) $isVariantsPopup ?> && isVariantInCart)),
+            'max-md:hidden': (<?= (int)($isGroup && !$isPopup) ?>) || (<?= (int) $hasVariants ?> && (!<?= (int) $isVariantsPopup ?> || (<?= (int) $isVariantsPopup ?> && isVariantInCart))),
             'button--disabled': isProductBeingAdded || isProductBeingRemoved
         }
     "
@@ -85,6 +92,42 @@ if (!$product->isSaleable()) {
     <span style="display: none" x-show="isProductBeingAdded">
         <?= __('Adding...') ?>
     </span>
+</button>
+
+<!-- Select items, only for grouped products -->
+<button
+  <?php if($productType !== 'grouped'): ?>
+    style="display: none"
+  <?php endif; ?>
+  class="animate-on-transition button button--filled-primary w-full md:hidden <?= $isSmall ? 'button--size-sm' : '' ?> <?= ($isPopup || $productType !== 'grouped') ? 'max-md:hidden' : '' ?>"
+  @click.prevent="showProductActions()"
+  :class="
+    {
+      'button--disabled': isProductBeingAdded || isProductBeingRemoved
+    }
+  "
+  :disabled="isProductBeingAdded || isProductBeingRemoved"
+  type="button"
+>
+  <span
+    x-show="!isProductBeingAdded && !isProductBeingRemoved"
+    class="inline-flex items-center"
+  >
+    <?= __('Select items') ?>
+    <span
+      class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>"
+    >
+      <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+    </span>
+  </span>
+
+  <span style="display: none" x-show="isProductBeingRemoved">
+      <?= __('Removing from cart...') ?>
+  </span>
+
+  <span style="display: none" x-show="isProductBeingAdded">
+      <?= __('Adding...') ?>
+  </span>
 </button>
 
 <!-- Already in cart -->
@@ -123,10 +166,7 @@ if (!$product->isSaleable()) {
     x-show="!isProductBeingAdded && !isProductBeingRemoved"
     class="inline-flex items-center"
   >
-    <?= __('Select') ?>
-    <span class="ml-2">
-      <!-- TODO: Add first attribute name -->
-    </span>
+    <?= __('Select options') ?>
     <span
       class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>"
     >

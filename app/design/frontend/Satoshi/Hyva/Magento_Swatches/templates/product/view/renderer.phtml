@@ -36,12 +36,7 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
 $is_popup = $block->getData('is_popup') ?? false;
 ?>
 <?php if ($product->isSaleable() && count($attributes)): ?>
-  <div
-      <?php if (!$is_popup): ?>
-        class="animate-on-transition md:mb-5 max-md:hidden"
-      <?php endif; ?>
-       x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)"
-  >
+  <div x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)">
     <div class="flex flex-col gap-5 max-md:mx-2">
       <?php foreach ($attributes as $i => $attribute): ?>
         <?php $attributeId = $attribute->getAttributeId(); ?>
