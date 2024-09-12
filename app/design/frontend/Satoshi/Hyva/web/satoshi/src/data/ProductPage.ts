@@ -9,6 +9,7 @@ export type ProductPageType = {
   variantQty: number;
   selectedValues: string[];
   productId: string;
+  groupedIds: string[];
   contentId: string;
   isScrollingToTop: boolean;
   cartItemKey: string | undefined;
@@ -27,6 +28,7 @@ export type ProductPageType = {
   setProductPageProps(props: {
     productId: string;
     isScrollingToTop?: Boolean;
+    groupedIds?: string[];
   }): void;
   _updateSelectedVariantCartState(): void;
   checkIsItemInCart(item: CartItem): boolean;
@@ -34,7 +36,7 @@ export type ProductPageType = {
   decreaseQty(): void;
   increaseQty(): void;
   setQuantity(quantity: number): void;
-  addToCart(): void;
+  addToCart(formElement: HTMLFormElement): void;
   showProductActions(): void;
   hideProductActions(): void;
   _handleStickyProductActionsClosure(): boolean | void;
@@ -82,6 +84,7 @@ export type ProductPageType = {
   findAttributeByOptionId(optionId: string): string | void;
   findSimpleIndex(): void;
   calculateSimpleIndexForPartialSelection(selectedValues: string[]): string;
+  sortImagesByPosition(images: Record<string, any>[]): Record<string, any>[];
 };
 
 type OptionConfig = {
@@ -121,6 +124,7 @@ export const ProductPage = () =>
     variantQty: 1,
     selectedValues: [],
     productId: "",
+    groupedIds: [],
     contentId: "product-page",
     isScrollingToTop: true,
     cartItemKey: undefined,
@@ -150,17 +154,22 @@ export const ProductPage = () =>
       });
     },
 
-    setProductPageProps({ productId, isScrollingToTop = false }): void {
+    setProductPageProps({
+      productId,
+      isScrollingToTop = false,
+      groupedIds = [],
+    }) {
       this.productId = productId;
       this.productActionsPopup += `-${productId}`;
       this.isScrollingToTop = !!isScrollingToTop;
+      this.groupedIds = groupedIds;
 
       Alpine.nextTick(() => {
         this._updateSelectedVariantCartState();
       });
     },
 
-    _updateSelectedVariantCartState(): void {
+    _updateSelectedVariantCartState() {
       const cartItem = Alpine.store("cart").cartItems.find(
         this.checkIsItemInCart.bind(this),
       );
@@ -170,7 +179,7 @@ export const ProductPage = () =>
       this.cartItemKey = cartItem?.item_id;
     },
 
-    checkIsItemInCart(item: CartItem): boolean {
+    checkIsItemInCart(item: CartItem) {
       // Skip deleted items
       if (item.isDeleted) {
         return false;
@@ -181,13 +190,21 @@ export const ProductPage = () =>
         return false;
       }
 
-      // TODO: Match options
-
-      // Item found
-      return true;
+      // Match options
+      const keys = Object.keys(this.selectedValues);
+      if (keys.length !== item.options.length) {
+        return false;
+      }
+      return keys.every((key) =>
+        item.options.some(
+          (option) =>
+            option.option_id === parseInt(key) &&
+            option.option_value === this.selectedValues[parseInt(key)],
+        ),
+      );
     },
 
-    toggleStickyProductActions(show: boolean): void {
+    toggleStickyProductActions(show: boolean) {
       if (
         this.$store.popup.currentPopup &&
         this.$store.popup.currentPopup !== POPUP_BOTTOM_ACTIONS
@@ -202,39 +219,96 @@ export const ProductPage = () =>
       }
     },
 
-    decreaseQty(): void {
+    decreaseQty() {
       this.variantQty -= 1;
       Alpine.store("cart").decreaseQty(this.cartItemKey!);
     },
 
-    increaseQty(): void {
+    increaseQty() {
       this.variantQty += 1;
       Alpine.store("cart").increaseQty(this.cartItemKey!);
     },
 
-    setQuantity(quantity: number): void {
+    setQuantity(quantity: number) {
       this.variantQty = Math.max(0, Number(quantity));
       Alpine.store("cart").setQty(quantity, this.cartItemKey!);
     },
 
-    addToCart(): void {
+    addToCart(formEl) {
+      const formData = new FormData(formEl);
+
+      if (!Alpine.store("cart").addingItemIds.includes(this.productId)) {
+        Alpine.store("cart").addingItemIds.push(this.productId);
+      }
+
+      window.addEventListener(
+        "private-content-loaded",
+        (event: any) => {
+          const { cart: { items = [] } = {} } = event.detail.data || {};
+
+          if (this.groupedIds.length) {
+            const itemIds = this.groupedIds
+              .map(
+                (id) =>
+                  items.find((item: CartItem) => item.product_id === id)
+                    ?.item_id,
+              )
+              .filter((id) => !!id);
+
+            if (itemIds.length) {
+              console.log("itemIds", itemIds);
+
+              Alpine.store("cart").focusInCart(itemIds);
+            }
+          } else {
+            const item = items.find((item: CartItem) =>
+              this.checkIsItemInCart(item),
+            );
+
+            if (item) {
+              Alpine.store("cart").focusInCart(item.item_id);
+            }
+          }
+        },
+        { once: true },
+      );
+
       this.hideProductActions();
-      this.$store.cart.addToCart({
-        id: this.productId,
-        quantity: this.variantQty,
-      });
+      fetch(formEl.action, {
+        method: formEl.method,
+        body: formData,
+      })
+        .then((result) => {
+          return result.text();
+        })
+        .then((content) => {
+          window.hyva.replaceDomElement("#cart-button", content);
+        })
+        .catch((error) => console.error("Error:", error))
+        .finally(() => {
+          Alpine.store("cart").addingItemIds = Alpine.store(
+            "cart",
+          ).addingItemIds.filter((itemId) => itemId !== this.productId);
+        });
+
+      // console.log("adding to cart", this.productId, this.selectedValues);
+      // this.hideProductActions();
+      // this.$store.cart.addToCart({
+      //   id: this.productId,
+      //   quantity: this.variantQty,
+      // });
     },
 
-    showProductActions(): void {
+    showProductActions() {
       this.$store.popup.showPopup(this.productActionsPopup, true);
     },
 
-    hideProductActions(): void {
+    hideProductActions() {
       this._handleStickyProductActionsClosure();
       this.$store.popup.hidePopup(this.productActionsPopup);
     },
 
-    _handleStickyProductActionsClosure(): boolean | void {
+    _handleStickyProductActionsClosure() {
       // account for the sticky product actions visibility
       const el = document.getElementById(
         "product-actions",
@@ -248,12 +322,12 @@ export const ProductPage = () =>
       }
     },
 
-    quickBuy(): void {
+    quickBuy() {
       this.contentId = "product-options";
       this.showProductActions();
     },
 
-    scrollToTop(): void {
+    scrollToTop() {
       if (typeof this.scrollToPreviewTop !== "undefined") {
         this.scrollToPreviewTop();
       } else {
@@ -261,7 +335,7 @@ export const ProductPage = () =>
       }
     },
 
-    changeOption(attributeId: number, value: string): void {
+    changeOption(attributeId: number, value: string) {
       if (value === "") {
         this.selectedValues = this.removeAttrFromSelection(
           this.selectedValues,
@@ -294,6 +368,9 @@ export const ProductPage = () =>
           },
         }),
       );
+
+      // Update cart state
+      this._updateSelectedVariantCartState();
 
       // Scroll to top
       if (this.isScrollingToTop) {

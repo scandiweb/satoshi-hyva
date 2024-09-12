@@ -7,8 +7,6 @@ use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 use Magento\Swatches\ViewModel\Product\Renderer\Configurable as ConfigurableViewModel;
 
-// phpcs:disable Generic.Files.LineLength.TooLong
-
 /** @var Template $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
@@ -26,9 +24,10 @@ if (!$productId || !$attributeId) {
 ?>
 
 <template x-if="optionIsEnabled(<?= (int) $attributeId ?>, item.id)">
-  <div
+  <label
+    :for="`attribute-option-<?= (int) $productId ?>-${item.id}`"
     @click="changeOption(<?= (int) $attributeId ?>, item.id)"
-    class="button button--size-sm select-none transition-all ease-in-out"
+    class="button button--size-sm select-none transition-all ease-in-out relative bg-bg-500"
     :class="
       {
         'button--outline-primary button--disabled !opacity-100': selectedValues[<?= (int) $attributeId ?>] === item.id || !optionIsActive(<?= (int) $attributeId ?>, item.id),
@@ -52,8 +51,18 @@ if (!$productId || !$attributeId) {
       @mouseleave.self="activeTooltipItem = false"
     <?php endif; ?>
   >
+    <input
+      :id="`attribute-option-<?= (int) $productId ?>-${item.id}`"
+      :value="item.id"
+      name="super_attribute[<?= (int) $attributeId ?>]"
+      class="-z-10 absolute"
+      type="radio"
+      :required="getAllowedAttributeOptions(<?= (int) $attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
+      :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
+      aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
+    >
     <template x-if="isTextSwatch(<?= (int) $attributeId ?>, item.id)">
       <span class="line-clamp-2 text-wrap text-sm md:text-md" x-html="getSwatchText(<?= (int) $attributeId ?>, item.id)"></span>
     </template>
-  </div>
+  </label>
 </template>

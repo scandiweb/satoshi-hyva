@@ -42,8 +42,8 @@ $maxSalesQtyLength = ($maxSalesQty ? strlen((string) $maxSalesQty) : 4)
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-$isPopup = $block->getData('is_popup');
-$isSmall = $block->getData('is_small');
+$isPopup = $block->getData('is_popup') ?? false;
+$isSmall = $block->getData('is_small') ?? false;
 ?>
 <?php if ($block->shouldRenderQuantity()): ?>
   <div class="contents <?= !$isPopup ? 'max-md:hidden' : '' ?>">
@@ -52,7 +52,7 @@ $isSmall = $block->getData('is_small');
       class="animate-on-transition button button--outline-secondary icon-button select-none <?= $isSmall ? 'icon-button--size-sm' : 'icon-button--size-md md:icon-button--size-lg' ?>"
       :class="
         {
-          'button--disabled': variantQty === 1 || !<?= $product->isSaleable() ?>
+          'button--disabled': (!isVariantInCart && variantQty === 1) || !<?= $product->isSaleable() ?>
         }
       "
       :aria-label="
@@ -60,7 +60,7 @@ $isSmall = $block->getData('is_small');
         ? '<?= __('Decrease quantity') ?>'
         : '<?= __('Remove from cart') ?>'
       "
-      :disabled="variantQty === 1 || !<?= $product->isSaleable() ?>"
+      :disabled="(!isVariantInCart && variantQty === 1) || !<?= $product->isSaleable() ?>"
       @click.prevent.stop="decreaseQty()"
     >
       <span class="sr-only">
@@ -96,6 +96,8 @@ $isSmall = $block->getData('is_small');
         <?php if ($maxSalesQty): ?>max="<?= /** @noEscape */ $maxSalesQty ?>"<?php endif; ?>
         <?php if ($step): ?>step="<?= /** @noEscape */ $step ?>"<?php endif; ?>
       <?php endif; ?>
+      name="qty"
+      form="product_addtocart_form"
       :value="variantQty || <?= $block->getProductDefaultQty() * 1 ?>"
       class="animate-on-transition input__field flex-shrink-0 basis-14 text-center md:h-auto bg-transparent <?= $isSmall ? 'h-9 px-3' : '' ?>"
       min="1"
@@ -103,7 +105,6 @@ $isSmall = $block->getData('is_small');
       aria-label="<?= __('Quantity') ?>"
       id="quantity"
       :disabled="!<?= $product->isSaleable() ?>"
-      @private-content-loaded.window="console.log('listening content loaded', $event.detail)"
     >
 
     <button
