@@ -18,20 +18,8 @@ foreach ($block->getAvailableOrders() ?? [] as $key => $option) {
     $value = $escaper->escapeHtml($key);
     $name = $escaper->escapeHtml($option);
 
-    $ascendingLabel = match ($value) {
-        'price' => "{$name}, low to high",
-        'name' => 'Alphabetically, A-Z',
-        default => "{$name}, ascending",
-    };
-
-    $descendingLabel = match ($value) {
-        'price' => "{$name}, high to low",
-        'name' => 'Alphabetically, Z-A',
-        default => "{$name}, descending",
-    };
-
-    $sortOptions[] = ['value' => $value, 'name' => $ascendingLabel, 'dir' => 'asc'];
-    $sortOptions[] = ['value' => $value, 'name' => $descendingLabel, 'dir' => 'desc'];
+    $sortOptions[] = ['value' => $value, 'name' => "{$name}, ascending", 'dir' => 'asc'];
+    $sortOptions[] = ['value' => $value, 'name' => "{$name}, descending", 'dir' => 'desc'];
 }
 
 $defaultSort = $sortOptions[0]['value'] ?? $block->getCurrentOrder();
