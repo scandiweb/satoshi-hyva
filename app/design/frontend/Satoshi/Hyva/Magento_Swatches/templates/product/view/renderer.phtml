@@ -36,7 +36,7 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
 $is_popup = $block->getData('is_popup') ?? false;
 ?>
 <?php if ($product->isSaleable() && count($attributes)): ?>
-  <div 
+  <div
       <?php if (!$is_popup): ?>
         class="animate-on-transition md:mb-5 max-md:hidden"
       <?php endif; ?>
@@ -55,7 +55,8 @@ $is_popup = $block->getData('is_popup') ?? false;
           <?php if ($swatchRendererViewModel->isSwatchAttribute($productAttribute)): ?>
             <div class="contents">
               <div class="relative flex h-full w-full flex-row items-center justify-between">
-              <span class="font-semibold text-text-500">
+              <span class="font-semibold text-text-500" id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
+>
                 <?= $escaper->escapeHtml(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>
               </span>
 
@@ -110,7 +111,8 @@ $is_popup = $block->getData('is_popup') ?? false;
             </div>
             <article class="flex h-fit w-full flex-wrap gap-3">
               <select
-                id="attribute_<?= $attribute->getAttributeId() ?>"
+                name="super_attribute[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>]"
+                id="attribute_<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>"
                 class="w-full h-9 px-5 input__field"
                 x-on:change="changeOption(<?= (int) $attribute->getAttributeId() ?>, event.target.value)"
                 required

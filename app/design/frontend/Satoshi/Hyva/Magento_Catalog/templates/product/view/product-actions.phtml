@@ -27,8 +27,8 @@ $productType = $product->getTypeId();
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
 $isProductInCart = $productType !== 'simple' && $this->helper(Cart::class)->getQuote()->hasProductId($product->getId());
-$isPopup = $block->getData('is_popup') || false;
-$isSmall = $block->getData('is_small') || false;
+$isPopup = $block->getData('is_popup') ?? false;
+$isSmall = $block->getData('is_small') ?? false;
 $hasVariants = $productType === 'configurable';
 
 $isVariantsPopup = $isPopup && $hasVariants;
@@ -45,16 +45,19 @@ if (!$product->isSaleable()) {
 
 ?>
 <!-- Quantity Controls -->
-<?= $block->getChildHtml("product.info.quantity") ?>
+<?= $block->getChildBlock('product.info.quantity')->setData(['is_popup' => $isPopup, 'is_small' => $isSmall])->toHtml() ?>
 
 <!-- Add to cart button -->
 <button
     <?php if ($isProductInCart && !$isVariantsPopup && $product->isSalable()): ?>
       style="display: none"
     <?php endif; ?>
+    type="submit"
+    form="product_addtocart_form"
+    title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
+    data-addto="cart"
     x-show="<?= $product->isSaleable() ?> && (!isVariantInCart || <?= (int) $isVariantsPopup ?>)"
     class="animate-on-transition button button--filled-primary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= $hideOnMobile ? 'max-md:hidden' : '' ?>"
-    @click.prevent="addToCart()"
     x-a11y-trap-target.end="$store.popup.currentPopup === productActionsPopup"
     :class="
         {
@@ -82,6 +85,22 @@ if (!$product->isSaleable()) {
     <span style="display: none" x-show="isProductBeingAdded">
         <?= __('Adding...') ?>
     </span>
+</button>
+
+<!-- Already in cart -->
+<button
+  <?php if ($isProductInCart): ?>
+    style="display: none"
+  <?php endif; ?>
+  x-show="isVariantInCart && contentId !== 'product-options'"
+  class="animate-on-transition button button--disabled button--outline-secondary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= $hasVariants ? 'max-md:hidden' : '' ?>"
+  @click.prevent="$store.cart.showCart()"
+  x-a11y-trap-target.end="$store.popup.currentPopup === productActionsPopup"
+  type="button"
+>
+  <span>
+    <?= __('Already in cart') ?>
+  </span>
 </button>
 
 <!-- Select option button, appears only on mobile if variant not in cart -->
