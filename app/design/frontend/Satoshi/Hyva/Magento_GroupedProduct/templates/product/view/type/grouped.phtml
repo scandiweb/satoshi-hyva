@@ -22,13 +22,10 @@ $product = $block->getProduct();
 $associatedProducts = $block->getAssociatedProducts();
 $hasAssociatedProducts = count($associatedProducts) > 0;
 
-
-$is_popup = $block->getData('is_popup') ?? false;
-
 ?>
 <?php if ($hasAssociatedProducts): ?>
-  <div class="flex justify-between items-center">
-    <h2 class="text-base font-semibold leading-tight text-text-500 mb-3">
+  <div class="flex justify-between items-center mb-3">
+    <h2 class="font-semibold text-text-500">
         <?= $escaper->escapeHtml(__('Grouped product items')) ?>
     </h2>
     <button
@@ -36,11 +33,6 @@ $is_popup = $block->getData('is_popup') ?? false;
       class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
       aria-label="<?= __('Close') ?>"
       @click.prevent="hideProductActions()"
-      :class="
-        {
-          'max-md:hidden': <?= (int) !$is_popup ?>
-        }
-      "
     >
       <?= $hyvaicons->renderHtml('close') ?>
     </button>
@@ -71,7 +63,12 @@ $is_popup = $block->getData('is_popup') ?? false;
                         type="button"
                         class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-sm me-2"
                         aria-label="<?= __('Decrease quantity') ?>"
-                        @click.prevent.stop="value--"
+                        @click.prevent.stop="() => {
+                          value--;
+                          Alpine.nextTick(() => {
+                            validateGroupedProduct();
+                          })
+                        }"
                       >
                         <span class="sr-only">
                           <?= __('Decrease quantity for %1', $product->getName()) ?>
@@ -90,7 +87,7 @@ $is_popup = $block->getData('is_popup') ?? false;
                               title="<?= $escaper->escapeHtmlAttr(__('Qty')) ?>"
                               class="animate-on-transition input__field flex-shrink-0 basis-14 text-center bg-transparent h-9 px-3 me-2"
                               :class=" { 'border-red-500 focus:border-red-500 focus:ring-red-500': !isGroupValid }"
-                              @input.debounce="validateForm()"
+                              @input.debounce="validateGroupedProduct()"
                               aria-label="<?= __('Quantity') ?>"
                       />
 
@@ -98,7 +95,12 @@ $is_popup = $block->getData('is_popup') ?? false;
                         type="button"
                         class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-sm"
                         aria-label="<?= __('Increase quantity') ?>"
-                        @click.prevent.stop="value++"
+                        @click.prevent.stop="() => {
+                          value++;
+                          Alpine.nextTick(() => {
+                            validateGroupedProduct();
+                          })
+                        }"
                       >
                         <span class="sr-only">
                           <?= __('Increase quantity') ?>

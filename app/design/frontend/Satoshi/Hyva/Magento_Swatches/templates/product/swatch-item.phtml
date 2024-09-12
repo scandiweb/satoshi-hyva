@@ -41,13 +41,12 @@ if (!$productId || !$attributeId) {
     x-a11y-radio
     :style="getSwatchBackgroundStyle(<?= (int) $attributeId ?>, item.id)"
     :disabled="selectedValues[<?= (int) $attributeId ?>] === item.id || !optionIsActive(<?= (int) $attributeId ?>, item.id)"
-    <?php // !FIX: Do we need tooltip? ?>
-    <?php if ($configurableViewModel->getShowSwatchTooltip() && false): ?>
+    <?php if ($configurableViewModel->getShowSwatchTooltip()): ?>
       @mouseenter.self="activeTooltipItem = {
-                  attribute: '<?= (int) $attributeId ?>',
-                  item: item.id,
-                  index
-              }; tooltipPositionElement = $event.target;"
+            attribute: '<?= (int) $attributeId ?>',
+            item: item.id,
+            index
+        }; tooltipPositionElement = $event.target;"
       @mouseleave.self="activeTooltipItem = false"
     <?php endif; ?>
   >

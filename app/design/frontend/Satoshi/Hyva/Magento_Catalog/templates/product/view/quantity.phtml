@@ -97,7 +97,6 @@ $isSmall = $block->getData('is_small') ?? false;
         <?php if ($step): ?>step="<?= /** @noEscape */ $step ?>"<?php endif; ?>
       <?php endif; ?>
       name="qty"
-      form="product_addtocart_form"
       :value="variantQty || <?= $block->getProductDefaultQty() * 1 ?>"
       class="animate-on-transition input__field flex-shrink-0 basis-14 text-center md:h-auto bg-transparent <?= $isSmall ? 'h-9 px-3' : '' ?>"
       min="1"
