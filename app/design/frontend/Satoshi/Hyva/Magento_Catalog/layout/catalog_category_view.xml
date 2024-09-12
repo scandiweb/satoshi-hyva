@@ -16,10 +16,5 @@
         <referenceBlock name="category.description" remove="true" />
         <referenceBlock name="category.image" remove="true" />
         <referenceBlock name="category.cms" remove="true" />
-
-        <referenceBlock name="product_list_toolbar">
-            <block class="Magento\Catalog\Block\Product\ProductList\Toolbar" name="product_filter_sort" template="Magento_Catalog::product/html/filter-sort.phtml" before="-"/>
-        </referenceBlock>
-        <move element="product_filter_sort" destination="sidebar.main" before="-"/>
     </body>
 </page>

@@ -38,6 +38,17 @@ $defaultSort = $sortOptions[0]['value'] ?? $block->getCurrentOrder();
 $defaultSortDir = 'asc';
 $sortByLabel = 'Sort By';
 $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($sortByLabel)));
+$currentOrder = $block->getCurrentOrder();
+$currentDirection = $block->getCurrentDirection();
+
+foreach ($sortOptions as $option) {
+    if ($option['value'] === $currentOrder && $option['dir'] === $currentDirection) {
+        $selectedSortName = $option['name'];
+    }
+}
+
+var_dump($selectedSortName);
+
 ?>
 
 <form
@@ -48,7 +59,7 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
 >
     <fieldset
         class="flex-1 md:border-t md:border-bg-600 md:py-5"
-        x-data="Filters(
+        x-init="initOption(
             <?= $escaper->escapeHtml(json_encode($sortOptions)) ?>,
             '<?= $escaper->escapeHtml($defaultSort) ?>',
             '<?= $defaultSortDir ?>',
