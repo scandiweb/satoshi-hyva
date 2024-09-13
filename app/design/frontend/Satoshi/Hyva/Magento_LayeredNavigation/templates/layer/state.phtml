@@ -35,13 +35,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class); ?>
                     <?= $escaper->escapeHtml(__('Reset All')) ?>
                 </button>
             </div>
-            <?php if (empty($filters)): ?>
-                <div class="hidden md:block">
-                    <p class="pr-3 text-center md:pr-0 md:text-left">
-                        <?= __('The selected filters will appear here.') ?>
-                    </p>
-                </div>
-            <?php endif; ?>
+            <div
+                x-show="<?= !empty($filters) ? 'true' : 'false' ?> || (getIsFilterValueSelected('product_list_order', defaultSort) && getIsFilterValueSelected('product_list_dir', 'asc'))"
+                class="hidden md:block">
+                <p class="pr-3 text-center md:pr-0 md:text-left">
+                    <?= __('The selected filters will appear here.') ?>
+                </p>
+            </div>
             <div
                 x-show="<?= !empty($filters) ? 'true' : 'false' ?> || !getIsFilterValueSelected('product_list_order', defaultSort) || !getIsFilterValueSelected('product_list_dir', 'asc')"
                 class="flex flex-row md:flex-col gap-3 md:pb-7 md:pt-2">

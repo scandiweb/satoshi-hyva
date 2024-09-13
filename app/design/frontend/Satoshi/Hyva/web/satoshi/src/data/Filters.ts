@@ -42,7 +42,7 @@ export type FiltersType = {
     init(): void;
     initOption(
         sortOptions: SortOptionType[],
-        defaultSort: string | unknown,
+        defaultSort: string,
         defaultSortDir: string,
         currentSort: string,
         currentSortDir: string,
