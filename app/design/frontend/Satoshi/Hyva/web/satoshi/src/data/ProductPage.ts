@@ -262,7 +262,6 @@ export const ProductPage = () =>
     },
 
     validateGroupedProduct() {
-      const isMobile = Alpine.store("main").isMobile;
       const validateInputs = Array.from(
         document.querySelectorAll("input[name^=super_group]"),
       );
@@ -283,7 +282,7 @@ export const ProductPage = () =>
       if (!this.isGroupValid) {
         // this triggers an immediate display of the form errors
         document
-          .querySelector(`#product_addtocart_form${isMobile ? "_popup" : ""}`)!
+          .querySelector('#product_addtocart_form')!
           .reportValidity();
         return false;
       }

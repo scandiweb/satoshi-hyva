@@ -14,77 +14,46 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 $product = $block->getProduct();
 ?>
 <?php if ($product->isSaleable() && $block->hasOptions()): ?>
-  <div
-    class="align-start animate-on-transition mb-3 flex flex-col"
-    x-data="Accordion(false, 300)"
-    id="bundleSummary"
-  >
-    <button
-      class="group flex items-center justify-between"
-      x-ref="AccordionButton"
-      type="button"
-      :aria-expanded="isExpanded"
-      aria-controls="bundle_summary_panel"
-      aria-labelledby="bundle_summary_label"
+  <div id="bundleSummary">
+    <?= $block->getChildHtml('product.info.form') ?>
+    <?= $block->getChildHtml("product.price.tier") ?>
+    <div x-data="initBundleSummary()"
+         x-bind="eventListeners"
     >
-      <h2 class="font-semibold text-text-500" id="bundle_summary_label">
-        <?= $escaper->escapeHtml(__('Total')) ?>
-      </h2>
+      <div x-show="selectedOptions.length">
+        <ul class="bundle items">
+          <template x-for="option in selectedOptions">
+            <li class="mb-3" x-show="option.products.length">
+              <span class="font-semibold" x-html="option.label"></span>
+              <template x-for="product in option.products">
+                <div><span x-html="product.qty"></span> x <span x-html="product.name"></span></div>
+              </template>
+            </li>
+          </template>
+        </ul>
+      </div>
+      <div class="flex items-center justify-between gap-5">
+        <h2 class="font-semibold text-text-500" id="bundle_summary_label">
+          <?= $escaper->escapeHtml(__('Total')) ?>
+        </h2>
 
-      <div class="flex items-center gap-5">
         <div class="font-semibold">
           <?= $block->getChildHtml("product.info.bundle.price") ?>
         </div>
-        <span
-          x-ref="AccordionIcon"
-          class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
-        >
-          <span class="rotate-90">
-            <?= $hyvaicons->renderHtml('chevron') ?>
-          </span>
-        </span>
       </div>
-    </button>
-
-    <div
-      x-ref="AccordionPanel"
-      :inert="!isExpanded"
-      id="bundle_summary_panel"
-      role="region"
-      aria-labelledby="bundle_summary_label"
-    >
-      <?= $block->getChildHtml('product.info.form') ?>
-      <?= $block->getChildHtml("product.price.tier") ?>
-      <div x-data="initBundleSummary()"
-           x-bind="eventListeners"
-      >
-        <div x-show="selectedOptions.length">
-          <ul class="bundle items">
-            <template x-for="option in selectedOptions">
-              <li class="mb-3" x-show="option.products.length">
-                <span class="font-semibold" x-html="option.label"></span>
-                <template x-for="product in option.products">
-                  <div><span x-html="product.qty"></span> x <span x-html="product.name"></span></div>
-                </template>
-              </li>
-            </template>
-          </ul>
-        </div>
-
-      </div>
-      <script>
-        // TODO: Move to alpine files
-        function initBundleSummary() {
-          return {
-            selectedOptions: [],
-            eventListeners: {
-              ['@update-bundle-option-selection.window'](event) {
-                this.selectedOptions = event.detail;
-              }
+    </div>
+    <script>
+      // TODO: Move to alpine files
+      function initBundleSummary() {
+        return {
+          selectedOptions: [],
+          eventListeners: {
+            ['@update-bundle-option-selection.window'](event) {
+              this.selectedOptions = event.detail;
             }
           }
         }
-      </script>
-    </div>
+      }
+    </script>
   </div>
 <?php endif; ?>
