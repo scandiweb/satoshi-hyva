@@ -28,6 +28,7 @@ $filteredFilters = array_filter($filters, function ($filter) {
 
 $sortVariable = $block->getSortVariable();
 
+
 ?>
 <div x-data="Filters()">
     <?php if ($block->canShowBlock()): ?>
@@ -35,9 +36,28 @@ $sortVariable = $block->getSortVariable();
             <nav
                 class="overflow-x-scroll pb-4 pt-2 md:hidden" aria-label="<?= __('Available filters') ?>">
                 <div
-                    class="flex w-max gap-3 transition-transform duration-300 {% if isDefault %}translate-x-[-52px]{%- else -%}translate-x-0{% endif %}"
+                    class="flex w-max gap-3 transition-transform duration-300"
                 >
                     <?= $block->getChildHtml('state') ?>
+                    <button
+                        @click="$store.popup.showPopup('sort-popup')"
+                        type="button"
+                        aria-label="<?= __('Clear all') ?>"
+                        class="button duration-300 button--outline-secondary"
+                    >
+                        <?= __('Sort by') ?>
+                    </button>
+                    <?=
+                    $popup
+                        ->setData([
+                            'id' => 'sort-popup',
+                            'isFocused' => true,
+                            'isFullScreen' => false,
+                            'desktopTarget' => 'menu-desktop',
+                        ])
+                        ->setChildHtml($block->getChildHtml('sort'))
+                        ->render()
+                    ?>
                     <?php foreach ($filteredFilters as $filter): ?>
                         <button
                             @click="$store.popup.showPopup('<?= $filter->getName() ?>')"

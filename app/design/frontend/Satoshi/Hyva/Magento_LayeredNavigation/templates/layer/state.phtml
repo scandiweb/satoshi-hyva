@@ -14,10 +14,6 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var HeroiconsOutline $heroicons */
 /** @var SvgIcons $hyvaicons */
 
-$defaultSortDir = 'asc';
-$sortByLabel = 'Sort By';
-$sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($sortByLabel)));
-
 $hyvaicons = $viewModels->require(SvgIcons::class); ?>
 
 
@@ -27,16 +23,17 @@ $hyvaicons = $viewModels->require(SvgIcons::class); ?>
         <div>
             <div class="mb-5 hidden items-center justify-between md:flex">
                 <h2 class="text-text-500"><?= __('Selected filters') ?></h2>
-                <?php if (!empty($filters)): ?>
-                    <?php if ($block->getLayer()->getState()->getFilters()): ?>
-                        <button
-                            class="link link--primary"
-                            @click="_fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
-                        >
-                            <?= $escaper->escapeHtml(__('Reset All')) ?>
-                        </button>
-                    <?php endif; ?>
-                <?php endif; ?>
+                <button
+                    x-show="<?= !empty($filters) ? 'true' : 'false' ?> || <?= $block->getLayer()->getState()->getFilters() ? 'true' : 'false' ?> || !getIsFilterValueSelected('product_list_order', defaultSort) || !getIsFilterValueSelected('product_list_dir', 'asc')"
+                    class="link link--primary"
+                    @click="() => {
+                        _fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>');
+                        setSortDir('asc');
+                        resetCurrent('filter-sort-by');
+                    }"
+                >
+                    <?= $escaper->escapeHtml(__('Reset All')) ?>
+                </button>
             </div>
             <?php if (empty($filters)): ?>
                 <div class="hidden md:block">
@@ -45,21 +42,28 @@ $hyvaicons = $viewModels->require(SvgIcons::class); ?>
                     </p>
                 </div>
             <?php endif; ?>
-            <div x-show="<?= !empty($filters) ? 'true' : 'false' ?> || !getIsFilterValueSelected('product_list_order', defaultSort) || !getIsFilterValueSelected('product_list_dir', '<?= $defaultSortDir ?>')" class="flex flex-row md:flex-col gap-3 md:pb-7 md:pt-2">
+            <div
+                x-show="<?= !empty($filters) ? 'true' : 'false' ?> || !getIsFilterValueSelected('product_list_order', defaultSort) || !getIsFilterValueSelected('product_list_dir', 'asc')"
+                class="flex flex-row md:flex-col gap-3 md:pb-7 md:pt-2">
                 <button
                     type="button"
                     aria-label="<?= __('Clear all') ?>"
                     class="md:hidden button min-w-[44px] px-0 text-xl button--filled-primary opacity-100"
                     :tabindex="getIsDefault() ? -1 : 0"
-                    @click="_fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
+                    @click="() => {
+                        _fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>');
+                        setSortDir('asc');
+                        resetCurrent('filter-sort-by');
+                    }"
                 >
                     <span><?= $hyvaicons->renderHtml('remove'); ?></span>
                 </button>
-                <div>
+                <div
+                    x-show="!getIsFilterValueSelected('product_list_order', defaultSort) || !getIsFilterValueSelected('product_list_dir', 'asc')">
                     <button
                         type="button"
                         :class="$store.main.isMobile ? 'button duration-300 button--outline-primary' : 'button button--outline-secondary button--size-sm mr-3 shrink-0 md:mr-0'"
-                        @click="setSortDir('<?= $defaultSortDir ?>'); resetCurrent('filter-<?= $sortByLabelForFilter ?>')"
+                        @click="setSortDir('asc'); resetCurrent('filter-sort-by')"
                     >
                             <span x-text="() => {
                                 selectedPos = getSelectedSortOption();

@@ -42,35 +42,62 @@ $currentOrder = $block->getCurrentOrder();
 $currentDirection = $block->getCurrentDirection();
 
 ?>
-
-<form
-    class="filter-form"
-    id="FilterForm"
-    x-show="$store.main.isMobile ? !isTopLevel : true"
-    x-data="{isTopLevel: true}"
->
-    <fieldset
-        class="flex-1 md:border-t md:border-bg-600 md:py-5"
-        x-init="initOption(
+<div>
+    <div x-show="$store.main.isMobile" class="sticky start-0 top-0 z-10 flex flex-col gap-3 bg-bg-500 px-3 md:pt-2">
+        <div class="flex justify-between">
+            <div class="flex gap-3 items-center">
+                <button
+                    type="button"
+                    class="button button--ghost-primary icon-button icon-button--size-xs text-xxl transition-transform duration-300 motion-reduce:transition-none"
+                    aria-label="<?= __('Go to back to all filters') ?>"
+                    @click="isTopLevel = true; currentName = ''"
+                >
+                    <?= $hyvaicons->renderHtml('chevron-left'); ?>
+                </button>
+                <h2
+                    class="text-md text-text-500 transition-transform duration-300 motion-reduce:transition-none"
+                >
+                    <?= __('Sort by') ?>
+                </h2>
+            </div>
+            <button
+                type="button"
+                class="button button--outline-secondary icon-button icon-button--size-xs"
+                aria-label="<?= __('Close') ?>"
+                @click="$store.popup.hidePopup('sort-popup')"
+            >
+                <?= $hyvaicons->renderHtml('close'); ?>
+            </button>
+        </div>
+        <hr class="divider -mx-5">
+    </div>
+    <form
+        class="filter-form"
+        id="FilterForm"
+        x-data="{isTopLevel: true}"
+    >
+        <fieldset
+            class="flex-1 md:border-t md:border-bg-600 md:py-5"
+            x-init="initOption(
             <?= $escaper->escapeHtml(json_encode($sortOptions)) ?>,
             '<?= $escaper->escapeHtml($defaultSort) ?>',
             '<?= $defaultSortDir ?>',
             '<?= $block->getCurrentOrder() ?>',
             '<?= $block->getCurrentDirection() ?>'
         )"
-        x-show="$store.main.isMobile ? currentName == '<?= $escaper->escapeHtml(__($sortByLabel)) ?>' : true"
-    >
-        <legend class="sr-only"><?= __($sortByLabel) ?></legend>
 
-        <div
-            class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2"
-            x-ref="AccordionButton"
-            @click="isTopLevel = !isTopLevel"
         >
-            <h2 class="grow text-left text-text-500"><?= __($sortByLabel) ?></h2>
-            <button type="button"
-                    class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
-                    :aria-label="'<?= __($sortByLabel) ?>'">
+            <legend class="sr-only"><?= __($sortByLabel) ?></legend>
+
+            <div
+                class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 flex md:px-2"
+                x-ref="AccordionButton"
+                @click="isTopLevel = !isTopLevel"
+            >
+                <h2 class="grow text-left text-text-500"><?= __($sortByLabel) ?></h2>
+                <button type="button"
+                        class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
+                        :aria-label="'<?= __($sortByLabel) ?>'">
             <span
                 class="transition-transform duration-300 -rotate-90"
                 :class="!isTopLevel ? '!rotate-90' : ''"
@@ -78,62 +105,85 @@ $currentDirection = $block->getCurrentDirection();
             >
                 <?= $hyvaicons->renderHtml('chevron') ?>
             </span>
-            </button>
-        </div>
+                </button>
+            </div>
 
-        <div x-cloak x-show="isTopLevel" x-ref="AccordionPanel" class="overflow-hidden md:px-2"
-             :class="{
+            <div x-cloak x-ref="AccordionPanel" class="overflow-hidden md:px-2"
+                 :class="{
                 'transition-none': $store.main.isReducedMotion,
                 'transition': !$store.main.isReducedMotion,
             }"
-        >
-            <div class="md:pb-3 md:pt-2">
-                <div class="flex flex-col gap-4 py-3" id="filter-<?= $sortByLabelForFilter ?>">
-                    <div role="radiogroup" aria-label="<?= __('products.facets.sort_button') ?>">
-                        <?php foreach ($sortOptions as $option): ?>
-                            <?php
-                            $value = $option['value'];
-                            $name = $option['name'];
-                            $dir = $option['dir'];
-                            ?>
-                            <div class="relative h-11 w-full">
-                                <label
-                                    class="radio mb-0 h-full w-full py-1"
-                                    for="sort-<?= $value ?>-<?= $dir ?>"
-                                >
-                                    <input
-                                        type="radio"
-                                        class="radio__input"
-                                        id="sort-<?= $value ?>-<?= $dir ?>"
-                                        name="product_list_order"
-                                        value="<?= $value ?>"
-                                        :checked="'<?= $block->getCurrentDirection() ?>' === '<?= $dir ?>' && '<?= $block->getCurrentOrder() ?>' === '<?= $value ?>'"
-                                        @change="setSortDir('<?= $dir ?>'); updateFilters()"
-                                        aria-label="<?= $name ?>"
+            >
+                <div class="md:pb-3 md:pt-2">
+                    <div class="flex flex-col gap-4 py-3" id="filter-<?= $sortByLabelForFilter ?>">
+                        <div role="radiogroup" aria-label="<?= __('products.facets.sort_button') ?>">
+                            <?php foreach ($sortOptions as $option): ?>
+                                <?php
+                                $value = $option['value'];
+                                $name = $option['name'];
+                                $dir = $option['dir'];
+                                ?>
+                                <div class="relative h-11 w-full">
+                                    <label
+                                        class="radio mb-0 h-full w-full py-1"
+                                        for="sort-<?= $value ?>-<?= $dir ?>"
                                     >
-                                    <span class="radio__control" aria-hidden="true"></span>
-                                    <span class="radio__label text-md"><?= $name ?></span>
-                                </label>
-                            </div>
-                        <?php endforeach; ?>
-                        <input
-                            type="hidden"
-                            name="product_list_dir"
-                            :value="this.sortDir"
-                            aria-hidden="true"
-                        />
+                                        <input
+                                            type="radio"
+                                            class="radio__input"
+                                            id="sort-<?= $value ?>-<?= $dir ?>"
+                                            name="product_list_order"
+                                            value="<?= $value ?>"
+                                            :checked="'<?= $block->getCurrentDirection() ?>' === '<?= $dir ?>' && '<?= $block->getCurrentOrder() ?>' === '<?= $value ?>'"
+                                            @change="setSortDir('<?= $dir ?>'); updateFilters()"
+                                            aria-label="<?= $name ?>"
+                                        >
+                                        <span class="radio__control" aria-hidden="true"></span>
+                                        <span class="radio__label text-md"><?= $name ?></span>
+                                    </label>
+                                </div>
+                            <?php endforeach; ?>
+                            <input
+                                type="hidden"
+                                name="product_list_dir"
+                                :value="this.sortDir"
+                                aria-hidden="true"
+                            />
+                        </div>
                     </div>
-                </div>
 
-                <button
-                    x-show="!getIsFilterValueSelected('product_list_order', '<?= $defaultSort ?>') || !getIsFilterValueSelected('product_list_dir', '<?= $defaultSortDir ?>')"
-                    type="button"
-                    class="link link--primary mt-4 hidden md:inline-block"
-                    @click="setSortDir('<?= $defaultSortDir ?>'); resetCurrent('filter-<?= $sortByLabelForFilter ?>')"
-                >
-                    <?= __('Reset') ?>
-                </button>
+                    <button
+                        x-show="!getIsFilterValueSelected('product_list_order', '<?= $defaultSort ?>') || !getIsFilterValueSelected('product_list_dir', '<?= $defaultSortDir ?>')"
+                        type="button"
+                        class="link link--primary mt-4 hidden md:inline-block"
+                        @click="setSortDir('<?= $defaultSortDir ?>'); resetCurrent('filter-<?= $sortByLabelForFilter ?>')"
+                    >
+                        <?= __('Reset') ?>
+                    </button>
+                </div>
             </div>
+        </fieldset>
+    </form>
+    <div x-show="$store.main.isMobile" class="mb-3">
+        <div class="-top-10 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>
+        <div class="flex items-center gap-3 bg-bg-500 px-4 pb-2">
+            <button
+                type="button"
+                class="button button--outline-secondary"
+                @click="() => {
+                    setSortDir('<?= $defaultSortDir ?>'); resetCurrent('filter-<?= $sortByLabelForFilter ?>');
+                    $store.popup.hidePopup('sort-popup')
+                }"
+            >
+                <?= __('Reset') ?>
+            </button>
+            <button
+                type="button"
+                class="button button--filled-primary grow"
+                @click="$store.popup.hidePopup('sort-popup')"
+            >
+                <?= __('Apply') ?>
+            </button>
         </div>
-    </fieldset>
-</form>
+    </div>
+</div>
