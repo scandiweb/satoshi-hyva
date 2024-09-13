@@ -474,12 +474,15 @@ export const ProductPage = () =>
       ) as AttributeOption;
       const type = this.getSwatchType(attributeId, optionId);
 
+      let opacity = "";
+      if (this.selectedValues[attributeId] === optionId) {
+        opacity = "95";
+      }
+
       if (type === "color") {
-        return "background-color:" + config.value;
+        return `background-color: ${config.value}${opacity}`;
       } else if (type === "image") {
-        return (
-          "background: #ffffff url('" + config.value + "') no-repeat center"
-        );
+        return `background: #ffffff${opacity} url('${config.value}') no-repeat center`;
       } else {
         return "";
       }
