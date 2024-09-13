@@ -78,8 +78,8 @@ $mixBackground = false;
                   :key="o"
                 >
                   <p
-                    class="text-md"
-                    x-text="`${option.label}: ${option.value}`"
+                    class="text-md mb-1 [&_.price]:text-primary-500 [&_.price]:block"
+                    x-html="`${option.label}: ${option.value}`"
                   ></p>
                 </template>
               </template>

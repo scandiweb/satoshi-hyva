@@ -60,8 +60,14 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     <?php endforeach; ?>
   </dl>
 
-  <?= $block->getChildHtml('product.info.form') ?>
-  <?= $block->getChildHtml('product_options_wrapper_bottom') ?>
+  <template
+    x-if="!$store.main.isMobile || <?= (int) in_array($productType, ['simple', 'virtual']) ?>"
+  >
+    <div class="animate-on-transition md:mb-5 max-md:hidden">
+      <?= $block->getChildHtml('product.info.form') ?>
+      <?= $block->getChildHtml('product_options_wrapper_bottom') ?>
+    </div>
+  </template>
 
 
   <div class="flex flex-col sm:flex-row items-end my-4">
@@ -128,22 +134,33 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
       <!-- Product actions popup -->
       <?php
       $popup_id = 'product_actions-' . $product->getId();
-      $optionsBlock = $block->getLayout()->getBlock('product.info.form');
-      $options = $optionsBlock ? $optionsBlock->setData(['is_popup' => true])->toHtml() : '';
-      $productActions = <<<HTML
-                    <div class="contents" id="product-options">
-                        {$options}
-                    </div>
+      // $optionsBlock = $block->getLayout()->getBlock('product.info.form');
+      // $options = $optionsBlock ? $optionsBlock->setData(['is_popup' => true])->toHtml() : '';
 
-                    <div class="min-h-20 md:hidden"></div>
-                    <template x-portal="document.getElementById('popup-fixed-content-portal')">
-                        <div x-show="\$store.popup.currentPopup === productActionsPopup">
-                            <div class="mb-2 flex flex-grow justify-stretch gap-3 bg-bg-500 px-4">
-                                {$block->getChildBlock('product.actions')->setData(['is_popup' => true, 'is_small' => false])->toHtml()}
-                            </div>
-                        </div>
-                    </template>
-                HTML;
+      $options = $block->getChildHtml('product.info.form');
+      $options .= $block->getChildHtml('product_options_wrapper_bottom');
+
+      $productActions = <<<HTML
+          <template x-if="\$store.main.isMobile">
+            <div class="contents">
+              <div class="max-md:mx-2" id="product-options">
+                {$options}
+              </div>
+
+              <div class="min-h-20 md:hidden"></div>
+                <template x-portal="document.getElementById('popup-fixed-content-portal')">
+                  <div x-show="\$store.popup.currentPopup === productActionsPopup">
+                    <div class="mb-2 flex flex-grow justify-stretch gap-3 bg-bg-500 px-4">
+                      {$block->getChildBlock('product.actions')->setData([
+        'is_popup' => true, 'is_small' => false
+      ])->toHtml()}
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+      HTML;
       ?>
       <?= $popup
         ->setData([
