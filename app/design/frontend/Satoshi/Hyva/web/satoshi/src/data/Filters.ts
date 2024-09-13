@@ -29,7 +29,7 @@ type RemovedAttributesType = {
 
 export type FiltersType = {
     [key: string | symbol]: any;
-
+    defaultSort: unknown | string,
     currentName: string;
     searchQuery: string;
     isTopLevel: boolean;
@@ -38,13 +38,15 @@ export type FiltersType = {
     sortOptions: SortOptionType[] | [];
     sortBy: string | boolean;
     sortDir: string;
-    minPrice: string;
-    maxPrice: string;
-    currency: string;
 
-
-    initOption(): void;
     init(): void;
+    initOption(
+        sortOptions: SortOptionType[],
+        defaultSort: string | unknown,
+        defaultSortDir: string,
+        currentSort: string,
+        currentSortDir: string,
+    ): void;
     onResetButtonClick(): void;
     showFilters(isTopLevel?: boolean, currentName?: string): void;
     hideFilters(): void;
@@ -80,7 +82,8 @@ export const FILTER_PRICE_PARAM_NAME = "filter.v.price";
 export const FILTER_PRICE_MIN = "filter.v.price.gte";
 export const FILTER_PRICE_MAX = "filter.v.price.lte";
 
-export const Filters = () =>
+export const Filters = (
+) =>
     <FiltersType>{
         currentName: "",
         searchQuery: "",
@@ -88,37 +91,15 @@ export const Filters = () =>
         isTopFilterVisible: null,
         filters: [],
         sortOptions: [],
-        sortBy: false as string | boolean,
-        sortDir: "",
-        minPrice: "",
-        maxPrice: "",
-        currency: "",
+        sortBy: false,
+        defaultSort: false,
+        sortDir: '',
 
-        initOption({
-                       sortOptions,
-                       defaultSort,
-                       defaultSortDir,
-                       currentSort,
-                       currentSortDir,
-                       minPrice,
-                       maxPrice,
-                       currency,
-                   }: {
-            sortOptions: SortOptionType[];
-            defaultSort: string | unknown;
-            defaultSortDir: string;
-            currentSort: string;
-            currentSortDir: string;
-            minPrice: string | unknown;
-            maxPrice: string | unknown;
-            currency: string;
-        }) {
+        initOption(sortOptions, defaultSort, defaultSortDir, currentSort, currentSortDir) {
+            this.defaultSort = defaultSort;
             this.sortOptions = sortOptions;
-            this.sortBy = (currentSort || defaultSort || false) as string | boolean;
             this.sortDir = currentSortDir || defaultSortDir;
-            this.minPrice = (minPrice || "") as string;
-            this.maxPrice = (maxPrice || "") as string;
-            this.currency = currency;
+            this.sortBy = currentSort || defaultSort || false;
 
             this.updateFilters = this.updateFilters.bind(this);
             this.onResetButtonClick = this.onResetButtonClick.bind(this);
@@ -150,6 +131,7 @@ export const Filters = () =>
                     this.$store.popup.hidePopup(POPUP_BOTTOM_FILTERS);
                 }
             });
+
         },
 
         onResetButtonClick() {

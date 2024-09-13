@@ -41,14 +41,6 @@ $sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($s
 $currentOrder = $block->getCurrentOrder();
 $currentDirection = $block->getCurrentDirection();
 
-foreach ($sortOptions as $option) {
-    if ($option['value'] === $currentOrder && $option['dir'] === $currentDirection) {
-        $selectedSortName = $option['name'];
-    }
-}
-
-var_dump($selectedSortName);
-
 ?>
 
 <form

@@ -14,7 +14,12 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var HeroiconsOutline $heroicons */
 /** @var SvgIcons $hyvaicons */
 
+$defaultSortDir = 'asc';
+$sortByLabel = 'Sort By';
+$sortByLabelForFilter = str_replace(' ', '-', strtolower($escaper->escapeHtml($sortByLabel)));
+
 $hyvaicons = $viewModels->require(SvgIcons::class); ?>
+
 
 <?php $filters = $block->getActiveFilters() ?>
 <div class="overflow-x-scroll overscroll-x-contain">
@@ -40,38 +45,53 @@ $hyvaicons = $viewModels->require(SvgIcons::class); ?>
                     </p>
                 </div>
             <?php endif; ?>
-            <?php if (!empty($filters)): ?>
-                <div class="flex flex-row md:flex-col gap-3 md:pb-7 md:pt-2">
+            <div x-show="<?= !empty($filters) ? 'true' : 'false' ?> || !getIsFilterValueSelected('product_list_order', defaultSort) || !getIsFilterValueSelected('product_list_dir', '<?= $defaultSortDir ?>')" class="flex flex-row md:flex-col gap-3 md:pb-7 md:pt-2">
+                <button
+                    type="button"
+                    aria-label="<?= __('Clear all') ?>"
+                    class="md:hidden button min-w-[44px] px-0 text-xl button--filled-primary opacity-100"
+                    :tabindex="getIsDefault() ? -1 : 0"
+                    @click="_fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
+                >
+                    <span><?= $hyvaicons->renderHtml('remove'); ?></span>
+                </button>
+                <div>
                     <button
                         type="button"
-                        aria-label="<?= __('Clear all') ?>"
-                        class="md:hidden button min-w-[44px] px-0 text-xl button--filled-primary opacity-100"
-                        :tabindex="getIsDefault() ? -1 : 0"
-                        @click="_fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
+                        :class="$store.main.isMobile ? 'button duration-300 button--outline-primary' : 'button button--outline-secondary button--size-sm mr-3 shrink-0 md:mr-0'"
+                        @click="setSortDir('<?= $defaultSortDir ?>'); resetCurrent('filter-<?= $sortByLabelForFilter ?>')"
                     >
-                        <span><?= $hyvaicons->renderHtml('remove'); ?></span>
+                            <span x-text="() => {
+                                selectedPos = getSelectedSortOption();
+                                return selectedPos.name;
+                            }" class="mr-2">
+
+                            </span>
+                        <span class="ml-3 text-lg">
+                                <?= $hyvaicons->renderHtml('close'); ?>
+                            </span>
                     </button>
-                    <?php foreach ($filters as $filter): ?>
-                        <div>
-                            <button
-                                type="button"
-                                :class="$store.main.isMobile ? 'button duration-300 button--outline-primary' : 'button button--outline-secondary button--size-sm mr-3 shrink-0 md:mr-0'"
-                                @click="_fetchPage('<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>')"
-                            >
+                </div>
+                <?php foreach ($filters as $filter): ?>
+                    <div>
+                        <button
+                            type="button"
+                            :class="$store.main.isMobile ? 'button duration-300 button--outline-primary' : 'button button--outline-secondary button--size-sm mr-3 shrink-0 md:mr-0'"
+                            @click="_fetchPage('<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>')"
+                        >
                             <span class="mr-2">
                                 <?= $escaper->escapeHtml(__($filter->getName())) ?>:
                             </span>
-                                <span>
+                            <span>
                                 <?= $escaper->escapeHtml($block->stripTags($filter->getLabel())) ?>
                             </span>
-                                <span class="ml-3 text-lg">
+                            <span class="ml-3 text-lg">
                                 <?= $hyvaicons->renderHtml('close'); ?>
                             </span>
-                            </button>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+                        </button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
 </div>
