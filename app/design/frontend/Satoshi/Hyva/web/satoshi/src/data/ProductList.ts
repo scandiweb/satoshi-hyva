@@ -55,7 +55,7 @@ export const ProductList = (...args: unknown[]) => {
             })
                 .then(result => result.text())
                 .then(body => {
-                    hyva.replaceDomElement('#ProductGridContainer', body);
+                    window.hyva.replaceDomElement('#ProductGridContainer', body);
                     history.replaceState(
                         history.state,
                         "",
