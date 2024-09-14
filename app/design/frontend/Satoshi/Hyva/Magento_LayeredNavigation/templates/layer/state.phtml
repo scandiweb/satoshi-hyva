@@ -24,7 +24,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class); ?>
             <div class="mb-5 hidden items-center justify-between md:flex">
                 <h2 class="text-text-500"><?= __('Selected filters') ?></h2>
                 <button
-                    x-show="<?= !empty($filters) ? 'true' : 'false' ?> || <?= $block->getLayer()->getState()->getFilters() ? 'true' : 'false' ?> || !getIsFilterValueSelected('product_list_order', defaultSort) || !getIsFilterValueSelected('product_list_dir', 'asc')"
+                    x-show="<?= !empty($filters) ? 'true' : 'false' ?> || <?= $block->getLayer()->getState()->getFilters() ? 'true' : 'false' ?> || !getIsFilterValueSelected('product_list_order', 'position') || !getIsFilterValueSelected('product_list_dir', 'asc')"
                     class="link link--primary"
                     @click="() => {
                         _fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>');
@@ -36,14 +36,14 @@ $hyvaicons = $viewModels->require(SvgIcons::class); ?>
                 </button>
             </div>
             <div
-                x-show="<?= !empty($filters) ? 'true' : 'false' ?> || (getIsFilterValueSelected('product_list_order', defaultSort) && getIsFilterValueSelected('product_list_dir', 'asc'))"
+                x-show="<?= empty($filters) ? 'true' : 'false' ?> && getIsFilterValueSelected('product_list_order', 'position') && getIsFilterValueSelected('product_list_dir', 'asc')"
                 class="hidden md:block">
                 <p class="pr-3 text-center md:pr-0 md:text-left">
                     <?= __('The selected filters will appear here.') ?>
                 </p>
             </div>
             <div
-                x-show="<?= !empty($filters) ? 'true' : 'false' ?> || !getIsFilterValueSelected('product_list_order', defaultSort) || !getIsFilterValueSelected('product_list_dir', 'asc')"
+                x-show="<?= !empty($filters) ? 'true' : 'false' ?> || (!getIsFilterValueSelected('product_list_order', 'position') || !getIsFilterValueSelected('product_list_dir', 'asc'))"
                 class="flex flex-row md:flex-col gap-3 md:pb-7 md:pt-2">
                 <button
                     type="button"
@@ -59,7 +59,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class); ?>
                     <span><?= $hyvaicons->renderHtml('remove'); ?></span>
                 </button>
                 <div
-                    x-show="!getIsFilterValueSelected('product_list_order', defaultSort) || !getIsFilterValueSelected('product_list_dir', 'asc')">
+                    x-show="!getIsFilterValueSelected('product_list_order', 'position') || !getIsFilterValueSelected('product_list_dir', 'asc')">
                     <button
                         type="button"
                         :class="$store.main.isMobile ? 'button duration-300 button--outline-primary' : 'button button--outline-secondary button--size-sm mr-3 shrink-0 md:mr-0'"

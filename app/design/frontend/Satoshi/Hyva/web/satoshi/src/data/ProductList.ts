@@ -1,78 +1,73 @@
-import type { Magics } from "alpinejs";
-import { replaceElement } from "../utils/morph";
+import type {Magics} from "alpinejs";
 
 export type ProductListType = {
-  [key: string | symbol]: any;
+    [key: string | symbol]: any;
 
-  isLoadingProducts: boolean;
+    isLoadingProducts: boolean;
 
-  init(): void;
-  resetAll(): void;
-  _getSearchQuery(): string;
-  _getSearchQueryString(): string;
-  _fetchPage(queryString: string, isReset?: boolean): void;
+    init(): void;
+    resetAll(): void;
+    _getSearchQuery(): string;
+    _getSearchQueryString(): string;
+    _fetchPage(queryString: string, isReset?: boolean): void;
 } & Magics<{}>;
 
 const SEARCH_QUERY_NAME = "q";
 
 export const ProductList = (...args: unknown[]) => {
-  const [path] = args;
+    const [path] = args;
 
-  return <ProductListType>{
-    isLoadingProducts: false,
+    return <ProductListType>{
+        isLoadingProducts: false,
 
-    init() {
-      this._fetchPage = this._fetchPage.bind(this);
-    },
+        init() {
+            this._fetchPage = this._fetchPage.bind(this);
+        },
 
-    resetAll() {
-      this._fetchPage(this._getSearchQueryString(), true);
-      this.$dispatch("reset-filters");
-    },
+        resetAll() {
+            this._fetchPage(this._getSearchQueryString(), true);
+            this.$dispatch("reset-filters");
+        },
 
-    _getSearchQuery() {
-      return (
-        new URLSearchParams(window.location.search).get(SEARCH_QUERY_NAME) || ""
-      );
-    },
+        _getSearchQuery() {
+            return (
+                new URLSearchParams(window.location.search).get(SEARCH_QUERY_NAME) || ""
+            );
+        },
 
-    _getSearchQueryString() {
-      const searchValue = this._getSearchQuery();
+        _getSearchQueryString() {
+            const searchValue = this._getSearchQuery();
 
-      return searchValue ? `?${SEARCH_QUERY_NAME}=${searchValue}` : "";
-    },
+            return searchValue ? `?${SEARCH_QUERY_NAME}=${searchValue}` : "";
+        },
 
-    _fetchPage(queryString, isReset = false) {
-      this.isLoadingProducts = true;
+        _fetchPage(queryString) {
+            this.isLoadingProducts = true;
 
-        // If queryString is empty, set it to "?" to avoid browser caching of old query parameters.
-        // This ensures that the fetch request is recognized as a new request.
-        if (queryString === "") {
-        queryString = "?";
-      }
+            // If queryString is empty, set it to "?" to avoid browser caching of old query parameters.
+            // This ensures that the fetch request is recognized as a new request.
+            if (queryString === "") {
+                queryString = "?";
+            }
 
-      fetch(`${path}${queryString}`)
-        .then((response) => response.text())
-        .then((data) => {
-          const resultHtml = document.createElement("div");
-          resultHtml.innerHTML = data;
+            fetch(`${path}${queryString}`, {
+                method: 'GET',
+            })
+                .then(result => result.text())
+                .then(body => {
+                    hyva.replaceDomElement('#ProductGridContainer', body);
+                    history.replaceState(
+                        history.state,
+                        "",
+                        queryString || location.pathname,
+                    );
 
-          const productGridHtml = resultHtml.querySelector(
-            "#ProductGridContainer",
-          );
-          const productGridElem = this.$refs.ProductGridContainer;
+                })
+                .catch(error => {
+                    console.error(error);
+                    window.location.reload()
+                })
 
-          replaceElement(productGridElem, productGridHtml, isReset);
-
-          // update url without refreshing the page
-          history.replaceState(
-            history.state,
-            "",
-            queryString || location.pathname,
-          );
-        })
-        .catch((error) => console.error("Error:", error))
-        .finally(() => (this.isLoadingProducts = false));
-    },
-  };
+        },
+    };
 };
