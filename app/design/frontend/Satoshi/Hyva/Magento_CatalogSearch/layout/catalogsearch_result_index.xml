@@ -3,7 +3,7 @@
     <update handle="catalog_list_item" />
     <body>
         <referenceContainer name="main.content">
-            <block class="Magento\Framework\View\Element\Template" name="search.banner" template="Magento_Catalog::search/banner.phtml" before="-" />
+            <block class="Magento\Catalog\Block\Product\ListProduct" name="search.banner" template="Magento_Catalog::search/banner.phtml" before="-" />
             <block class="Magento\Framework\View\Element\Template" name="product-grid-container" template="Magento_Catalog::category/grid-container.phtml" after="search.banner" />
         </referenceContainer>
 

@@ -16,29 +16,32 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 $title = $block->getLayout()->getBlock('page.main.title')->getPageHeading();
 
+$productCollection = $block->getLayer()->getProductCollection();
+
 ?>
 <article
-  class="content-wrapper mx-auto flex flex-col items-start gap-3 py-5 pb-6 pt-3"
-  aria-label="<?= __('Search details') ?>"
+    class="content-wrapper mx-auto flex flex-col items-start gap-3 py-5 pb-6 pt-3"
+    aria-label="<?= __('Search details') ?>"
 >
-  <div class="flex w-full items-end justify-between">
-    <h2 class="text-lg"><?= $escaper->escapeHtml((string)$title) ?></h2>
-
-    <div class="ml-8 md:pl-2">
-      <button
-        type="button"
-        class="button button--filled-primary hidden w-[275px] min-w-[275px] md:inline-flex"
-        @click="$store.productList.toggleFiltersSidebar()"
-      >
+    <div class="flex w-full items-end justify-between">
+        <h2 class="text-lg"><?= $escaper->escapeHtml((string)$title) ?></h2>
+        <?php if ($productCollection->getSize() > 0): ?>
+            <div class="ml-8 md:pl-2">
+                <button
+                    type="button"
+                    class="button button--filled-primary hidden w-[275px] min-w-[275px] md:inline-flex"
+                    @click="$store.productList.toggleFiltersSidebar()"
+                >
         <span
-          x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
+            x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
         >
           <?= __('Hide filter') ?>
         </span>
-        <span class="button__icon ml-3 text-xl">
+                    <span class="button__icon ml-3 text-xl">
           <?= $hyvaicons->renderHtml('filter'); ?>
         </span>
-      </button>
+                </button>
+            </div>
+        <?php endif; ?>
     </div>
-  </div>
 </article>

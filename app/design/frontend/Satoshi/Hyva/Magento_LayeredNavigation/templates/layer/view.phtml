@@ -28,10 +28,11 @@ $filteredFilters = array_filter($filters, function ($filter) {
 
 $sortVariable = $block->getSortVariable();
 
+$productCollection = $block->getLayer()->getProductCollection();
 
 ?>
 <div x-data="Filters()">
-    <?php if ($block->canShowBlock()): ?>
+    <?php if ($productCollection->getSize() > 0): ?>
         <template x-portal="document.getElementById('toolbar-filters')">
             <nav
                 class="overflow-x-scroll pb-4 pt-2 md:hidden" aria-label="<?= __('Available filters') ?>">

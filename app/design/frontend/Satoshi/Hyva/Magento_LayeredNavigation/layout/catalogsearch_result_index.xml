@@ -3,10 +3,10 @@
     <body>
         <attribute name="class" value="page-with-filter"/>
         <referenceContainer name="sidebar.main">
-            <block class="Magento\LayeredNavigation\Block\Navigation\Category" name="catalog.leftnav" before="-" template="Magento_LayeredNavigation::layer/view.phtml">
+            <block class="Magento\LayeredNavigation\Block\Navigation\Search" name="catalogsearch.leftnav" before="-" template="Magento_LayeredNavigation::layer/view.phtml">
                 <block class="Magento\Catalog\Block\Product\ProductList\Toolbar" name="product.filter.sort" as="sort" template="Magento_Catalog::product/html/filter-sort.phtml"/>
-                <block class="Magento\LayeredNavigation\Block\Navigation\State" name="catalog.navigation.state" as="state" />
-                <block class="Magento\LayeredNavigation\Block\Navigation\FilterRenderer" name="catalog.navigation.renderer" as="renderer" template="Magento_LayeredNavigation::layer/filter.phtml">
+                <block class="Magento\LayeredNavigation\Block\Navigation\State" name="catalogsearch.navigation.state" as="state" />
+                <block class="Magento\LayeredNavigation\Block\Navigation\FilterRenderer" name="catalogsearch.navigation.renderer" as="renderer" template="Magento_LayeredNavigation::layer/filter.phtml">
                     <arguments>
                         <argument name="product_layer_view_model" xsi:type="object">Magento\LayeredNavigation\ViewModel\Layer\Filter</argument>
                     </arguments>
