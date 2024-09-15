@@ -94,7 +94,12 @@ $activeSelectOptions = [];
           <?php if (!$selection->isSaleable()): ?>
             disabled
           <?php endif; ?>
-               value="<?= (int) $selectionId ?>"
+          value="<?= (int) $selectionId ?>"
+          data-option-id="<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>"
+          x-on:change="
+            activeSelectOptions['<?= (int)$optionId ?>'] = [$event.target.value];
+            $nextTick(() => {calculateTotalPrice()});
+          "
         />
         <span class="radio__control h-5 w-5" aria-hidden="true"></span>
         <span class="radio__label ml-3"><?= /* @noEscape */
@@ -127,8 +132,8 @@ $activeSelectOptions = [];
     value="<?= $escaper->escapeHtmlAttr($defaultQty) ?>"
     :value="getQtyValue(<?= (int) $optionId ?>)"
     x-on:change="
-            setQtyValue(<?= (int) $optionId ?>, $event.target.value);
-            calculateTotalPrice($dispatch)"
+      setQtyValue(<?= (int) $optionId ?>, $event.target.value);
+      calculateTotalPrice($dispatch)"
     <?php if (!$canChangeQty): ?> disabled <?php endif; ?>
     :disabled="getQtyDisabled(<?= (int) $optionId ?>)"
   />
