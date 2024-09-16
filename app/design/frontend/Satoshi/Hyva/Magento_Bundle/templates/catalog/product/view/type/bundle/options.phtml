@@ -223,7 +223,7 @@ if ($productPriceViewModel->displayPriceInclAndExclTax()) {
          class="w-full mb-6">
 
       <!-- Title & close button -->
-      <div class="flex justify-between items-center pb-3 max-md:sticky max-md:top-0 max-md:bg-bg-500">
+      <div class="flex justify-between items-center pb-3 max-md:sticky max-md:top-0 max-md:bg-bg-500 z-10">
         <h2 class="font-semibold text-text-500">
           <?= $escaper->escapeHtml(__('Customize %1', $product->getName())) ?>
         </h2>
@@ -253,7 +253,7 @@ if ($productPriceViewModel->displayPriceInclAndExclTax()) {
             >
               <?= $escaper->escapeHtml($option->getTitle()) ?>
             </label>
-            <div class="flex justify-between items-center mt-2">
+            <div class="mt-2">
               <?= $block->getOptionHtml($option); ?>
             </div>
           </div>
