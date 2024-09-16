@@ -148,7 +148,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
               <div class="min-h-20 md:hidden"></div>
                 <template x-portal="document.getElementById('popup-fixed-content-portal')">
                   <div x-show="\$store.popup.currentPopup === productActionsPopup">
-                    <div class="mb-2 flex flex-grow justify-stretch gap-3 bg-bg-500 px-4">
+                    <div class="bg-bg-500 relative z-10">
                       {$block->getChildBlock('product.actions')->setData(['is_popup' => true, 'is_small' => false])->toHtml()}
                     </div>
                   </div>
@@ -161,7 +161,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
       <?= $popup
         ->setData([
           'id' => $popup_id,
-          'isFocused' => true
+          'isFocused' => true,
+          'isFullScreen' => true
         ])
         ->setChildHtml($productActions)
         ->render() ?>
