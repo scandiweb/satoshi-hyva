@@ -1,10 +1,4 @@
 <?php
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
 
 declare(strict_types=1);
 
@@ -78,7 +72,7 @@ $hasSamples               = $block->getProduct()->getTypeInstance()->hasSamples(
                                 x-model="selectedValues"
                                 @change="linkSelectionChange($event.target, '<?= $link['title'] ?>')"
                             >
-                            <span class="checkbox__control" aria-hidden="true">
+                            <span class="checkbox__control h-5 w-5" aria-hidden="true">
                                 <?= $hyvaicons->renderHtml('checkmark') ?>
                             </span>
                             <span class="checkbox__label ml-0 ">
