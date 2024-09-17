@@ -46,30 +46,35 @@ $customOptionPrices = [];
 
 <?php if ($isAlpineTemplate): ?>
     <div class="price__element z-10 flex items-center gap-2 text-text-500 <?= $class ?>">
-        <template x-if="product.price_range.minimum_price.final_price.value < product.price_range.minimum_price.regular_price.value">
+        <template
+            x-if="product.price_range.minimum_price.final_price.value < product.price_range.minimum_price.regular_price.value">
             <div>
                 <span class="sr-only"><?= __('Sale Price') ?></span>
-                <span class="text-primary-500" x-text="parseFloat(product.price_range.minimum_price.final_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.final_price.currency"></span>
+                <span class="text-primary-500"
+                      x-text="parseFloat(product.price_range.minimum_price.final_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.final_price.currency"></span>
                 <s x-text="parseFloat(product.price_range.minimum_price.regular_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.regular_price.currency"></s>
             </div>
         </template>
-        <template x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value != product.price_range.maximum_price.value">
+        <template
+            x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value != product.price_range.maximum_price.value">
             <div>
                 <span><?= __('From') ?></span>
-                <span class="text-primary-500" x-text="parseFloat(product.price_range.minimum_price.final_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.final_price.currency"></span>
+                <span class="text-primary-500"
+                      x-text="parseFloat(product.price_range.minimum_price.final_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.final_price.currency"></span>
             </div>
         </template>
-        <template x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value === product.price_range.maximum_price.value">
+        <template
+            x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value === product.price_range.maximum_price.value">
             <div>
                 <span class="sr-only"><?= __('Regular Price') ?></span>
-                <span class="text-primary-500" x-text="parseFloat(product.price_range.minimum_price.final_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.final_price.currency"></span>
+                <span class="text-primary-500"
+                      x-text="parseFloat(product.price_range.minimum_price.final_price.value).toFixed(2) + ' ' + product.price_range.minimum_price.final_price.currency"></span>
             </div>
         </template>
     </div>
 <?php else: ?>
     <div class="<?= $isInline ? 'flex items-end flex-grow gap-3 mt-3 [&>div]:mt-0' : 'contents' ?>">
-        <div
-            class="price__element z-10 flex items-center gap-2 text-text-500 <?= $class ?>">
+        <div class="price__element z-10 flex items-center gap-2 text-text-500 <?= $class ?>">
             <?php if ($isSpecialPriceValid): ?>
                 <span class="sr-only"><?= __('Sale Price') ?></span>
                 <span class="text-primary-500">
@@ -104,16 +109,9 @@ $customOptionPrices = [];
 
             <?php if ($msrpPrice && $msrpPrice->canApplyMsrp($product) && $msrpPrice->isMinimalPriceLessMsrp($product)): ?>
                 <span class="sr-only"><?= __('MSRP') ?></span>
-                <span class="text-gray-500">
-                <?= /** @noEscape */
-                $productViewModel->format($msrpPrice->getAmount()->getValue()) ?>
-            </span>
-            <?php endif; ?>
-
-            <?php if ($productPriceViewModel->displayPriceIncludingTax()): ?>
-                <div class="text-nowrap text-[14px] w-full"><?= __('Tax included.') ?></div>
-            <?php elseif ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
-                <div class="text-nowrap text-[14px] w-full"><?= __('Tax excluded.') ?></div>
+                <span class="text-gray-500"><?= /** @noEscape */
+                    $productViewModel->format($msrpPrice->getAmount()->getValue()) ?>
+                </span>
             <?php endif; ?>
 
             <?php if (!empty($customOptionPrices)): ?>
@@ -140,5 +138,11 @@ $customOptionPrices = [];
                 <span class="unavailable"><?= __('Out of Stock') ?></span>
             <?php endif; ?>
         </div>
+
+        <?php if ($productPriceViewModel->displayPriceIncludingTax()): ?>
+            <div class="text-nowrap text-[14px] w-full"><?= __('Tax included.') ?></div>
+        <?php elseif ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+            <div class="text-nowrap text-[14px] w-full"><?= __('Tax excluded.') ?></div>
+        <?php endif; ?>
     </div>
 <?php endif; ?>

@@ -52,15 +52,16 @@ if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPr
 ?>
 
 <?php if ($product) : ?>
-    <?=
-    $template
-        ->setData([
-            'isAlpineTemplate' => true,
-            'class' => 'text-md mt-3 contrast-more:px-3 contrast-more:pb-3',
-            'isInline' => true,
-        ])
-        ->render('Magento_Catalog::product/element/_price-element.phtml');
-    ?>
+    <div class="no-js-hidden" role="status">
+        <?=
+        $template
+            ->setData([
+                'product' => $product,
+                'class' => 'text-md mt-3 contrast-more:px-3 contrast-more:pb-3',
+            ])
+            ->render('Magento_Catalog::product/element/_price-element.phtml');
+        ?>
+    </div>
 <?php endif; ?>
 <?php
 return;
