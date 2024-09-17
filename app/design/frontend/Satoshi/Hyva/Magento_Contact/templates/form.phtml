@@ -190,7 +190,9 @@ $emailErrorMessage = $block->getContactEmailErrorMessage();
             <?php endif; ?>
           </div>
 
-          <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT) : '' ?>
+          <div class="max-md:origin-top-left max-md:scale-90">
+            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT) : '' ?>
+          </div>
           <?= $block->getBlockHtml('formkey') ?>
 
           <button
