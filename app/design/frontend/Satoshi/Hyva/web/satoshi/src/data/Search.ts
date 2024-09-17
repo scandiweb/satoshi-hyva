@@ -1,6 +1,7 @@
 import type { Magics } from "alpinejs";
 import { navigateWithTransition } from "../plugins/Transition";
 import { searchQuery } from "../graphql/searchQuery";
+import {formatPrice} from "../utils/price.ts";
 
 export type SearchType = {
   [key: string | symbol]: any;
@@ -21,6 +22,7 @@ export type SearchType = {
   search(): void;
   getSearchUrl(path: string): string;
   goToSearchPage(path: string): void;
+  getFormattedPrice(value: number, currency: string): string;
 } & Magics<{}>;
 
 const initialSearch = new URLSearchParams(window.location.search).get("q");
@@ -110,5 +112,9 @@ export const Search = () =>
       return this.searchTermInput
         ? `${path}?q=${encodeURIComponent(this.searchTermInput.trim())}`
         : path;
+    },
+
+    getFormattedPrice(value: number, currency: string): string {
+      return formatPrice(value, currency);
     },
   };
