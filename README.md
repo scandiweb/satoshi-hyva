@@ -69,3 +69,7 @@ $popup
 3. Quick buy on desktop?
 4. Ratings results
 5. Add a setting to allow merchant to choose object-fit between cover and contain?
+
+### PLP
+
+1. Add an option to switch between grid and list layout
