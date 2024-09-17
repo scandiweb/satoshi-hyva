@@ -162,11 +162,12 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
                     $productListItemViewModel->getProductPriceHtml($product) ?>
                 <?php else: ?>
                     <?=
-                        $template
-                            ->setData([
-                                'isAlpineTemplate' => true,
-                            ])
-                            ->render('Magento_Catalog::product/element/_price-element.phtml');
+                    $template
+                        ->setData([
+                            'isAlpineTemplate' => true,
+                            'class' => 'text-md mt-3 contrast-more:px-3 contrast-more:pb-3',
+                        ])
+                        ->render('Magento_Catalog::product/element/_price-element.phtml');
                     ?>
                 <?php endif; ?>
             </div>
