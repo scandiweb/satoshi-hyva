@@ -21,7 +21,8 @@ $schema = ($block->getZone() == 'item_view') ? true : false;
                 'price_id'          => $block->getPriceId('product-price-' . $idSuffix),
                 'price_type'        => 'finalPrice',
                 'include_container' => true,
-                'schema' => $schema
+                'schema' => $schema,
+                'css_classes' => 'price__element z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3'
             ]); ?>
         </span>
         <s class="old-price">
@@ -39,7 +40,8 @@ $schema = ($block->getZone() == 'item_view') ? true : false;
                 'price_id'          => $block->getPriceId('product-price-' . $idSuffix),
                 'price_type'        => 'finalPrice',
                 'include_container' => true,
-                'schema' => $schema
+                'schema' => $schema,
+                'css_classes' => 'price__element z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3',
             ]); ?>
         </span>
     <?php endif; ?>
