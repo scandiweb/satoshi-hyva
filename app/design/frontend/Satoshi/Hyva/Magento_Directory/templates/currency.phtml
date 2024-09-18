@@ -32,7 +32,19 @@ foreach ($currencies as $code => $currency) {
     $options[] = [
         'value' => $escaper->escapeHtml($code),
         'label' => $label,
-        'on_click' => $isCurrent ? "'return false;'" : $escaper->escapeHtml($switchUrl),
+        // Clear all cached GraphQL search queries before executing the currency switch.
+        // This ensures that outdated search results are not displayed after switching currencies.
+        'on_click' => $isCurrent ? "'return false;'" : "
+            caches.open('graphql').then(function(cache) {
+                cache.keys().then(function(keys) {
+                    keys.forEach(function(request) {
+                        if (request.url.includes('/graphql?query=')) {
+                            cache.delete(request);
+                        }
+                    });
+                });
+            });
+            {$escaper->escapeHtml($switchUrl)}",
         'is_active' => $isCurrent,
     ];
 }
