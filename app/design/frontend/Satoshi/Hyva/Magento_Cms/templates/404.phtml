@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\Escaper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$title = $block->getChildBlock('page.main.title')? $block->getChildBlock('page.main.title')->getPageHeading() : __('404');
+$content = $block->getChildHtml('cms_page') ?? $block->getChildHtml('cms_noroute');
+?>
+
+<div class="flex h-full flex-col items-center justify-center gap-5">
+    <p class="text-[80px] leading-none">
+        <?= $title ?>
+    </p>
+
+    <div class="rte">
+        <?= $content ?>
+    </div>
+</div>

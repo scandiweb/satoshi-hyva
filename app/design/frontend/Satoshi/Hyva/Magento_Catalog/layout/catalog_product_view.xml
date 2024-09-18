@@ -4,12 +4,12 @@
     <body>
         <referenceBlock name="product.detail.page">
             <block class="Magento\Catalog\Block\Product\View" name="product.details" template="Magento_Catalog::product/view/product-details.phtml">
-                <block class="Magento\Catalog\Block\Product\View" name="product.details.info" template="Magento_Catalog::product/view/product-details-info.phtml" />
+                <block class="Magento\Catalog\Block\Product\View" name="product.details.info" template="Magento_Catalog::product/view/product-details-info.phtml"/>
             </block>
         </referenceBlock>
 
+        <move element="page.main.title" destination="product.info" />
         <move element="product.media" destination="product.details" />
-        <move element="page.main.title" destination="product.details.info" as="product.title" />
         <move element="product.info" destination="product.details.info" />
         <move element="product_options_wrapper_bottom" destination="product.details.info" />
         <move element="product.info.details" destination="product.details.info" />
