@@ -1,16 +1,37 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-  <type name="Magento\Framework\View\TemplateEngine\Php">
-    <plugin name="utilities_template_engine_plugin" type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"/>
-  </type>
+    <type name="Magento\Framework\View\TemplateEngine\Php">
+        <plugin name="utilities_template_engine_plugin"
+                type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"/>
+    </type>
 
-  <preference
-    for="Magento\Checkout\Controller\Cart\CouponPost"
-    type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
-  />
-  <preference
-    for="Magento\Checkout\Block\Cart\Coupon"
-    type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
-  />
+    <preference
+        for="Magento\Checkout\Controller\Cart\CouponPost"
+        type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
+    />
+    <preference
+        for="Magento\Checkout\Block\Cart\Coupon"
+        type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
+    />
+    <preference
+        for="Hyva\Theme\ViewModel\Currency"
+        type="Satoshi\Theme\ViewModel\Currency"
+    />
+    <preference
+        for="Hyva\Theme\Service\Navigation"
+        type="Satoshi\Theme\Service\Navigation"
+    />
+    <preference
+        for="Hyva\Theme\ViewModel\ReCaptcha"
+        type="Satoshi\Theme\ViewModel\ReCaptcha"
+    />
+    <preference
+        for="Magento\Newsletter\Controller\Subscriber\NewAction"
+        type="Satoshi\Theme\Newsletter\Controller\Subscriber\NewAction"
+    />
+    <preference
+        for="Hyva\Theme\ViewModel\ProductListItem"
+        type="Satoshi\Theme\ViewModel\ProductListItem"
+    />
 </config>
