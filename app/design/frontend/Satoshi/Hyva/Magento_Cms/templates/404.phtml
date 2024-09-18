@@ -8,7 +8,7 @@ use Magento\Framework\Escaper;
 /** @var Template $block */
 /** @var Escaper $escaper */
 
-$title = $block->getLayout()->getBlock('page.main.title')?->getPageHeading() ?? __('404');
+$title = $block->getChildBlock('page.main.title')? $block->getChildBlock('page.main.title')->getPageHeading() : __('404');
 $content = $block->getChildHtml('cms_page') ?? $block->getChildHtml('cms_noroute');
 ?>
 
@@ -17,7 +17,7 @@ $content = $block->getChildHtml('cms_page') ?? $block->getChildHtml('cms_noroute
         <?= $title ?>
     </p>
 
-    <div>
+    <div class="rte">
         <?= $content ?>
     </div>
 </div>
