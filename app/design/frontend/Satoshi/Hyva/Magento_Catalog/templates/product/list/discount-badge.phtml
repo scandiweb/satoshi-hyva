@@ -7,19 +7,20 @@ use Satoshi\Theme\Block\Template;
 /** @var AbstractProduct $block */
 $product = $block->getData('product');
 
-$price = $product->getPrice();
-$finalPrice = $product->getData('final_price');
+$price = $product?->getPrice();
+$finalPrice = $product?->getData('final_price');
 if ($price && $finalPrice) {
     $difference = $price - $finalPrice;
     $discountPercentage = round(($difference * 100.0) / $price);
 }
 
 ?>
-
-<?php if (isset($discountPercentage) && $discountPercentage > 0) : ?>
+<?php if ($product && isset($discountPercentage) && $discountPercentage > 0) : ?>
     <div class="absolute bottom-4 left-0 rounded-full">
         <span class="card-product__badge bg-white px-3 py-2 text-sm font-bold rounded-r-full">
             -<?php echo $discountPercentage; ?>% OFF
         </span>
     </div>
+<?php elseif(!$product): ?>
+    <?php // TODO: Implement discount badge for alpine template in search  ?>
 <?php endif; ?>
