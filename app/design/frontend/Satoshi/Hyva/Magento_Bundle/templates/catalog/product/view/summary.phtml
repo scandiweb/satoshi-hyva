@@ -76,7 +76,6 @@ $product = $block->getProduct();
               </div>
             </div>
             <script>
-              // TODO: Move to alpine files
               function initBundleSummary() {
                 return {
                   selectedOptions: [],
@@ -97,7 +96,7 @@ $product = $block->getProduct();
       >
         <div
           class="flex items-center justify-between overflow-x-hidden bg-bg-500 pb-2 px-2 pt-4 text-text-500 max-md:px-3">
-          <h2>Bundle total</h2>
+          <h2><?= __('Bundle total') ?></h2>
           <div
             class="flex translate-x-0 items-center gap-5 transition-transform delay-200 duration-300 motion-reduce:transition-none"
             :class="

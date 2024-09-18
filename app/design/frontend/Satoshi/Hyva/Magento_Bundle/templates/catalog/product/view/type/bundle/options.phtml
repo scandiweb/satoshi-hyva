@@ -50,7 +50,6 @@ if ($productPriceViewModel->displayPriceInclAndExclTax()) {
           <?php endif; ?>
           productFinalPrice: false,
           activeSelectOptions: {},
-          selectedOptions: [],
           getMultiOptionQty(option, optionSelection) {
             if (option.isMulti) {
               return optionSelection.qty;
@@ -149,7 +148,7 @@ if ($productPriceViewModel->displayPriceInclAndExclTax()) {
                 }
               );
 
-            this.selectedOptions = Object.keys(selectedProductsPerOption).map((optionId) => {
+            this.selectedBundleOptions = Object.keys(selectedProductsPerOption).map((optionId) => {
               return {
                 label: this.optionConfig.options[optionId].title,
                 products: Object.values(selectedProductsPerOption[optionId]).map(product => {
@@ -163,12 +162,13 @@ if ($productPriceViewModel->displayPriceInclAndExclTax()) {
 
             this.dispatchFinalPrice();
             this.dispatchOptionSelection();
+            this._updateSelectedVariantCartState();
           },
           dispatchFinalPrice() {
             window.dispatchEvent(new CustomEvent("update-bundle-option-prices", {detail: this.productFinalPrice}));
           },
           dispatchOptionSelection() {
-            window.dispatchEvent(new CustomEvent("update-bundle-option-selection", {detail: this.selectedOptions}));
+            window.dispatchEvent(new CustomEvent("update-bundle-option-selection", {detail: this.selectedBundleOptions}));
           },
           getQtyValue(optionId) {
             const selectionConfig = this.getSelectionOptionConfig(optionId);
