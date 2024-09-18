@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-/** @var Template $block */
-
 use Magento\Framework\View\Element\Template;
 
-?>
+/** @var Template $block */
 
+?>
 <article class="content-wrapper mx-auto">
-  <h1
-    class="mb-7 text-center text-4xl text-text-500"
-    itemprop="headline"
-  >
-    <?= $block->getLayout()->getBlock('page.main.title')->getPageTitle() ?>
-  </h1>
+  <?php if($block->getLayout()->getBlock('page.main.title')): ?>
+    <h1
+      class="mb-7 text-center text-4xl text-text-500"
+      itemprop="headline"
+    >
+      <?= $block->getLayout()->getBlock('page.main.title')->getPageTitle() ?>
+    </h1>
+  <?php endif; ?>
 
   <div
     class="rte animate-on-transition"
