@@ -6,7 +6,7 @@ namespace Satoshi\Theme\Service;
 
 use Hyva\Theme\Service\Navigation as HyvaNavigation;
 use Magento\Catalog\Model\Category;
-use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryColleciton;
+use Magento\Catalog\Model\ResourceModel\Category\Collection as CategoryCollection;
 use Magento\Framework\Data\Collection;
 use Magento\Framework\Exception\LocalizedException;
 
@@ -21,12 +21,12 @@ class Navigation extends HyvaNavigation
      * @param  int  $storeId
      * @param  int  $rootId
      * @param  int  $maxLevel
-     * @return CategoryColleciton
+     * @return CategoryCollection
      * @throws LocalizedException
      */
     public function getCategoryTree($storeId, $rootId, $maxLevel = 0)
     {
-        /** @var CategoryColleciton $collection */
+        /** @var CategoryCollection $collection */
         $collection = $this->collectionFactory->create();
         $collection->setStoreId($storeId);
         $collection->addAttributeToSelect(['name', 'image', 'description']);
