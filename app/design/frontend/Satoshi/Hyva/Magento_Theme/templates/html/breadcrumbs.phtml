@@ -5,6 +5,7 @@ use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Theme\Block\Html\Breadcrumbs;
 
+/** @var array[] $crumbs */
 /** @var Breadcrumbs $block */
 /** @var ViewModelRegistry $viewModels */
 /** @var Escaper $escaper */
@@ -24,19 +25,19 @@ $hideOnMobile = in_array($pageType, $mobilePageTypes, true);
     aria-label="<?= __('Breadcrumbs') ?>"
   >
     <div role="list" class="truncate px-2">
-      <div role="listitem" class="inline font-bold">
-        <a class="inline-flex hover:underline" x-element-transition-trigger
-           href="<?= $escaper->escapeUrl($block->getUrl('/')) ?>">
-          <?= __('Home') ?>
-        </a>
-      </div>
-
-      <div role="listitem" class="mx-4 inline-block" aria-hidden="true">
-        <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
-      </div>
-
       <template x-if="$store['transition'].pageType === 'category'">
         <div class="contents">
+          <div role="listitem" class="inline font-bold">
+            <a class="inline-flex hover:underline" x-element-transition-trigger
+               href="<?= $escaper->escapeUrl($block->getUrl('/')) ?>">
+              <?= __('Home') ?>
+            </a>
+          </div>
+
+          <div role="listitem" class="mx-4 inline-block" aria-hidden="true">
+            <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
+          </div>
+
           <template x-for="breadcrumb in $store['transition'].pageData?.breadcrumbs">
             <div class="contents">
               <div role="listitem" class="breadcrumb">
@@ -63,7 +64,44 @@ $hideOnMobile = in_array($pageType, $mobilePageTypes, true);
       </template>
 
       <template x-if="$store['transition'].pageType === 'product'">
-        <div class="contents">
+        <div :class="
+          {
+            'block opacity-0': !$store['transition'].pageData?.breadcrumbs,
+            'contents': !!$store['transition'].pageData?.breadcrumbs
+          }
+        ">
+          <div role="listitem" class="inline font-bold">
+            <a class="inline-flex hover:underline" x-element-transition-trigger
+               href="<?= $escaper->escapeUrl($block->getUrl('/')) ?>">
+              <?= __('Home') ?>
+            </a>
+          </div>
+
+          <div role="listitem" class="mx-4 inline-block" aria-hidden="true">
+            <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
+          </div>
+
+          <template x-for="breadcrumb in $store['transition'].pageData?.breadcrumbs">
+            <div class="contents">
+              <div role="listitem" class="breadcrumb">
+                <a
+                  class="inline-flex hover:underline"
+                  x-element-transition-trigger
+                  aria-current="page"
+                  :href="breadcrumb?.link"
+                  x-text="breadcrumb?.label"
+                >
+                </a>
+              </div>
+              <div
+                role="listitem"
+                class="mx-4 inline-block"
+                aria-hidden="true"
+              >
+                <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
+              </div>
+            </div>
+          </template>
           <div role="listitem" class="breadcrumb text-text-500" x-text="$store['transition'].pageData?.title"></div>
         </div>
       </template>

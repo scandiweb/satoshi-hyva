@@ -48,12 +48,27 @@
             <!-- <block class="Magento\Framework\View\Element\Template" name="search.fallback"-->
             <!--        template="Magento_Theme::html/layout/transition/search_fallback.phtml"-->
             <!--        after="element.transition.wrapper"/>-->
-            <!--<block class="Magento\Framework\View\Element\Template" name="pdp.fallback"-->
-            <!--        template="Magento_Theme::html/layout/transition/pdp_fallback.phtml"-->
-            <!--        after="search.fallback"/>-->
+            <block class="Magento\Framework\View\Element\Template" name="pdp.fallback"
+                   template="Magento_Theme::html/layout/transition/pdp_fallback.phtml"
+                   after="element.transition.wrapper">
+                <block class="Magento\Theme\Block\Html\Breadcrumbs" template="Magento_Theme::html/breadcrumbs.phtml"
+                       name="product.breadcrumbs.placeholder">
+                    <arguments>
+                        <argument name="isAlpineTemplate" xsi:type="boolean">true</argument>
+                    </arguments>
+                </block>
+            </block>
+
             <block class="Magento\Framework\View\Element\Template" name="clp.fallback"
                    template="Magento_Theme::html/layout/transition/clp_fallback.phtml"
-                   after="element.transition.wrapper"/>
+                   after="pdp.fallback">
+                <block class="Magento\Theme\Block\Html\Breadcrumbs" template="Magento_Theme::html/breadcrumbs.phtml"
+                       name="category.breadcrumbs.placeholder">
+                    <arguments>
+                        <argument name="isAlpineTemplate" xsi:type="boolean">true</argument>
+                    </arguments>
+                </block>
+            </block>
         </referenceContainer>
 
         <!-- TODO: Remove global alerts (uncomment this) -->

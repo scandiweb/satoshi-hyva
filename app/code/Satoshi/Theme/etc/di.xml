@@ -30,4 +30,8 @@
         for="Magento\Newsletter\Controller\Subscriber\NewAction"
         type="Satoshi\Theme\Newsletter\Controller\Subscriber\NewAction"
     />
+    <preference
+        for="Hyva\Theme\ViewModel\ProductListItem"
+        type="Satoshi\Theme\ViewModel\ProductListItem"
+    />
 </config>
