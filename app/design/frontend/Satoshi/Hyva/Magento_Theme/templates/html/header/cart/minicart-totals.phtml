@@ -1,11 +1,13 @@
 <?php
 
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
-use Magento\Framework\View\Element\Template;
 use Magento\Framework\Escaper;
-
+use Magento\Framework\View\Element\Template;
 
 /** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var \Satoshi\Theme\Block\Template $template */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
@@ -22,13 +24,18 @@ $isCartPage = $block->getData('isCartPage');
   }"
 >
   <div
-    class="absolute left-0 right-0 top-0 origin-bottom -translate-y-[2.5rem] transition-transform duration-700 motion-reduce:transition-none md:mb-0 md:w-full <?= $isCartPage ? 'md:relative md:translate-y-0 md:pointer-events-auto' : '' ?>"
+    class="absolute left-0 right-0 top-0 origin-bottom -translate-y-[2.5rem] transition-all duration-700 motion-reduce:transition-none md:mb-0 md:w-full <?= $isCartPage ? 'md:relative md:translate-y-0 md:pointer-events-auto' : '' ?>"
     :class="
       {
         '-translate-y-full': isTotalsExpanded,
         '-translate-y-[2.5rem] pointer-events-none': !isTotalsExpanded
       }
     "
+    <?php if (!$isCartPage): ?>
+      :style="{
+        'clip-path': isTotalsExpanded ? 'inset(0 0 0 0)' : 'inset(0 0 50% 0)'
+      }"
+    <?php endif; ?>
   >
     <div
       class="pointer-events-none <?= $isCartPage ? 'md:hidden' : '' ?> relative top-0 h-10 bg-gradient-to-t from-[#00000010] via-transparent to-transparent"
@@ -110,7 +117,7 @@ $isCartPage = $block->getData('isCartPage');
         :class="
           {
             'translate-x-11': isTotalsExpanded,
-            'translate-x-0 delay-200': !isTotalsExpanded,
+            'translate-x-0 delay-200': !isTotalsExpanded
           }
         "
       >
