@@ -28,32 +28,31 @@ if (!$product->getDescription()) {
 $cssClasses = $block->getData('css_classes') ?? 'prose';
 
 ?>
-<div x-data="Accordion('true', 300)">
-    <div
-        class="align-start animate-on-transition flex flex-col"
+<div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion('true', 300)">
+    <button
+        class="group flex items-center justify-between"
+        x-ref="AccordionButton"
+        type="button"
+        :aria-expanded="isExpanded"
+        aria-controls="attributes_panel"
+        aria-labelledby="attributes_label"
     >
-        <button class="flex items-center justify-between"
-                type="button"
-                x-ref="AccordionButton"
-                :aria-expanded="isExpanded"
-                aria-controls="attributes_panel"
-                aria-labelledby="attributes_label">
         <p class="text-base font-semibold leading-tight text-text-500">
             <?= $escaper->escapeHtml(__('Description')) ?> /
             <?= $escaper->escapeHtml($product->getName()) ?>
         </p>
-        <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs">
-        <?= $hyvaicons->renderHtml('chevron-up', 'rotate-180'); ?>
-    </span>
-        </button>
-    </div>
-    <div x-ref="AccordionPanel"
-         :inert="!isExpanded"
-         class="overflow-hidden"
-         x-cloak
-         id="description_panel"
-         role="region"
-         aria-labelledby="description_label"
+        <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
+            <?= $hyvaicons->renderHtml('chevron-up', 'rotate-180'); ?>
+        </span>
+    </button>
+    <div
+        x-ref="AccordionPanel"
+        :inert="!isExpanded"
+        role="region"
+        class="overflow-hidden"
+        id="description_panel"
+        aria-labelledby="description_label"
+        x-cloak
     >
         <div class="rte mt-3 overflow-hidden">
             <?= $productViewModel->productAttributeHtml($product, $product->getDescription(), 'description') ?>
