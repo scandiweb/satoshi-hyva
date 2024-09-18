@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 use Magento\Framework\Escaper;
-use Satoshi\Theme\Block\Template;
+use Magento\Framework\View\Element\Template;
 
 /** @var Escaper $escaper */
-/** @var Template $template */
+/** @var Template $block */
 ?>
 
 <template x-fallback-template-type="category">
@@ -14,11 +14,7 @@ use Satoshi\Theme\Block\Template;
   <div class="mt-[72px] md:mt-[89px]"></div>
 
   <div class="max-md:hidden">
-    <?= $template
-      ->setData([
-        'isAlpineTemplate' => true
-      ])
-      ->render('Magento_Theme::html/breadcrumbs.phtml') ?>
+    <?= $block->getChildHtml('category.breadcrumbs.placeholder') ?>
   </div>
 
   <article
