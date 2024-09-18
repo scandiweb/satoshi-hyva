@@ -8,8 +8,8 @@
             </block>
         </referenceBlock>
 
+        <move element="page.main.title" destination="product.info" />
         <move element="product.media" destination="product.details" />
-        <move element="page.main.title" destination="product.details.info" as="product.title" />
         <move element="product.info" destination="product.details.info" />
         <move element="product_options_wrapper_bottom" destination="product.details.info" />
         <move element="product.info.details" destination="product.details.info" />
