@@ -9,6 +9,7 @@ export type ProductPageType = {
   variantQty: number;
   selectedValues: string[];
   selectedDownloadableLinks: string[];
+  selectedBundleOptions: Record<string, any>[];
   linksPurchasedSeparately: boolean;
   productId: string;
   groupedIds: string[];
@@ -128,6 +129,7 @@ export const ProductPage = () =>
     selectedValues: [],
     selectedDownloadableLinks: [],
     linksPurchasedSeparately: false,
+    selectedBundleOptions: [],
     productId: "",
     groupedIds: [],
     contentId: "product-page",
@@ -198,23 +200,42 @@ export const ProductPage = () =>
 
       // Match options of downloadable product
       if (item.product_type === "downloadable") {
-        if (this.linksPurchasedSeparately) {
-          if (
-            item.options.length &&
-            Array.isArray(item.options[0].value) &&
-            item.options[0].value.length ===
-              this.selectedDownloadableLinks.length
-          ) {
-            const links = item.options[0].value as string[];
-            return this.selectedDownloadableLinks.every((title) =>
-              links.some((link) => link === title),
-            );
-          }
-          return false;
+        if (!this.linksPurchasedSeparately) {
+          return true;
         }
 
-        // downloadable product has no options + same id => match
-        return true;
+        if (
+          item.options.length &&
+          Array.isArray(item.options[0].value) &&
+          item.options[0].value.length === this.selectedDownloadableLinks.length
+        ) {
+          const links = item.options[0].value as string[];
+          return this.selectedDownloadableLinks.every((title) =>
+            links.some((link) => link === title),
+          );
+        }
+        return false;
+      }
+
+      // Bundle products
+      if (item.product_type === "bundle") {
+        return (
+          item.options.length === this.selectedBundleOptions.length &&
+          item.options.every((option: Record<string, any>) => {
+            const selectedProds = this.selectedBundleOptions.find(
+              (selection) => selection.label === option.label,
+            )?.products;
+            return (
+              selectedProds?.length &&
+              option.value.length === selectedProds?.length &&
+              option.value.every((one: string, i: number) =>
+                one.startsWith(
+                  `${selectedProds[i].qty} x ${selectedProds[i].name}`,
+                ),
+              )
+            );
+          })
+        );
       }
 
       // Match options / configurable product
@@ -281,9 +302,7 @@ export const ProductPage = () =>
 
       if (!this.isGroupValid) {
         // this triggers an immediate display of the form errors
-        document
-          .querySelector('#product_addtocart_form')!
-          .reportValidity();
+        document.querySelector("#product_addtocart_form")!.reportValidity();
         return false;
       }
       return true;
@@ -309,6 +328,7 @@ export const ProductPage = () =>
         (event: any) => {
           const { cart: { items = [] } = {} } = event.detail.data || {};
 
+          // Grouped products
           if (this.groupedIds.length) {
             const itemIds = this.groupedIds
               .map(
@@ -319,18 +339,18 @@ export const ProductPage = () =>
               .filter((id) => !!id);
 
             if (itemIds.length) {
-              console.log("itemIds", itemIds);
-
               Alpine.store("cart").focusInCart(itemIds);
             }
-          } else {
-            const item = items.find((item: CartItem) =>
-              this.checkIsItemInCart(item),
-            );
+            return;
+          }
 
-            if (item) {
-              Alpine.store("cart").focusInCart(item.item_id);
-            }
+          // Non grouped products
+          const item = items.find((item: CartItem) =>
+            this.checkIsItemInCart(item),
+          );
+
+          if (item) {
+            Alpine.store("cart").focusInCart(item.item_id);
           }
         },
         { once: true },
@@ -346,6 +366,7 @@ export const ProductPage = () =>
         })
         .then((content) => {
           window.hyva.replaceDomElement("#cart-button", content);
+          window.hyva.replaceDomElement("#product-actions", content);
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => {
@@ -353,13 +374,6 @@ export const ProductPage = () =>
             "cart",
           ).addingItemIds.filter((itemId) => itemId !== this.productId);
         });
-
-      // console.log("adding to cart", this.productId, this.selectedValues);
-      // this.hideProductActions();
-      // this.$store.cart.addToCart({
-      //   id: this.productId,
-      //   quantity: this.variantQty,
-      // });
     },
 
     showProductActions() {

@@ -9,9 +9,9 @@ use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Model\Product;
 use Magento\Checkout\Helper\Cart;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
+use Satoshi\Theme\Block\ProductActions;
 
-/** @var Template $block */
+/** @var ProductActions $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
@@ -46,6 +46,7 @@ if (!$inStock) {
   $hideOnMobile = $isGroup ?? $hasVariants;
 }
 
+$cartMessage = $block->getCartMessage();
 ?>
 <div class="relative md:rounded-b-md max-md:px-3 w-full">
   <?php if ($isPopup && $productType === 'bundle'): ?>
@@ -330,3 +331,8 @@ if (!$inStock) {
     </a>
   </div>
 </div>
+<?php if (!$isPopup && is_array($cartMessage)): ?>
+  <span class="basis-full <?= $cartMessage['status'] === 'error' ? 'text-error' : '' ?>">
+    <?= $cartMessage['message'] ?>
+  </span>
+<?php endif; ?>
