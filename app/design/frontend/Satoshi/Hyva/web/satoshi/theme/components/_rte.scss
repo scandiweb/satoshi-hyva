@@ -11,7 +11,7 @@
    * Doctor, or Tim Murtaugh's HTML5 Reset.
    */
 
-  @apply [&_*]:text-base [&_*]:leading-6 [&_a:link]:underline [&_img]:rounded-md [&_strong]:text-text-500;
+  @apply [&_a:link]:underline [&_img]:rounded-md;
 
   html {
     box-sizing: content-box;
