@@ -12,33 +12,76 @@ use Satoshi\Theme\Block\Template;
 /** @var Template $template */
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
+$title = $block->getData('title');
+$url = $block->getData('url');
+$id = $block->getData('id');
+$desktop_id = "$id-desktop";
 ?>
-<div x-data="{ open: false }" class="mb-8 px-4 md:p-0 mt-12">
-    <button @click="() => {
-            if(open === false && $store.main.isMobile) {
-                $store.popup.showPopup('share');
-            }
-            open = !open;
-        }"
-            class="button button--ghost-primary animate-on-transition w-full">
-        <?= __('Share') ?>
-        <span class="ms-3 leading-none">
-            <?= $hyvaicons->renderHtml('share'); ?>
-        </span>
-    </button>
+<div
+  x-data="{
+    isVisible: false,
+    keyDown: null,
+    showPopup: () => {},
+    hidePopup: () => {},
+    copied: false
+  }"
+  x-init="
+    const container = document.getElementById('<?= $desktop_id ?>');
+    const btn = document.getElementById('<?= $id ?>-btn');
 
-    <div x-show="open" class="hidden md:block mt-2 rounded-md border bg-bg-500 p-5 shadow-sm">
-        <?= $template->render('Magento_Theme::html/components/share-content.phtml') ?>
-    </div>
+    hidePopup = () => {
+      isVisible = false;
+      document.removeEventListener('click', keyDown)
+    }
 
-    <?=
+    keyDown = (e) => {
+      if (!container.contains(e.target) && !btn.contains(e.target)) {
+        hidePopup();
+      }
+    };
+
+    showPopup = () => {
+        copied = false;
+        if ($store.main.isMobile) {
+          $store.popup.showPopup('<?= $id ?>', true)
+        } else {
+          isVisible = true;
+          $nextTick(() => {
+            document.addEventListener('click', keyDown);
+          })
+        }
+    }
+  "
+>
+  <button
+    id="<?= $id ?>-btn"
+    class="button button--ghost-primary animate-on-transition w-full"
+    @click.prevent="showPopup()"
+    type="button"
+  >
+    <?= $title ?>
+  </button>
+
+  <div
+    id="<?= $desktop_id ?>"
+    class="absolute right-0 z-20 mt-3 w-[400px] max-w-full rounded-md border bg-bg-500 p-5 shadow-sm  max-md:hidden"
+    :class="{'md:hidden': !isVisible}"
+    x-a11y-trap="isVisible"
+    x-cloak
+  ></div>
+
+  <?=
     $popup
-        ->setData([
-            'id' => 'share',
-            'isFocused' => true,
-            'desktopTarget' => 'menu-desktop',
-        ])
-        ->setChildTemplate('Magento_Theme::html/components/share-content.phtml')
-        ->render()
-    ?>
+      ->setData([
+        'id' => $id,
+        'isFocused' => true,
+        'desktopTarget' => $desktop_id,
+      ])
+      ->setChildHtml($template->setData(
+        [
+          'id' => $id,
+          'url' => $url
+        ])->render('Magento_Theme::html/components/share-content.phtml'))
+      ->render()
+  ?>
 </div>
