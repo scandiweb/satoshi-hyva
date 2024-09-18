@@ -1,1 +1,23 @@
-<!-- TODO: Implement fallback for search page -->
+<template x-fallback-template-type="search">
+  <div class="mt-[72px] md:mt-[89px]"></div>
+
+  <div class="max-md:hidden">
+    <?= $block->getChildHtml('search.breadcrumbs.placeholder') ?>
+  </div>
+
+  <article
+    aria-label="<?= __('Search details') ?>"
+    class="content-wrapper mx-auto flex flex-col items-start gap-3 py-5 pb-6 pt-3"
+  >
+    <div class="flex w-full items-end justify-between">
+      <div class="flex flex-col gap-3">
+        <h2
+          class="text-lg"
+          x-text="hyva.strf('<?= __("Search results for: %0") ?>', `'${$store['transition'].pageData?.search}'`)"
+        ></h2>
+      </div>
+      <div class="button button--filled-primary invisible max-md:hidden"></div>
+    </div>
+    <div class="min-h-screen"></div>
+  </article>
+</template>
