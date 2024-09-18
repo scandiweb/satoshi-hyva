@@ -45,25 +45,23 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
 >
     <a
         <?php if ($product): ?>
-            x-element-transition-trigger:product.preview.animate="
-                {
-                    <?php if ($product->getImage()): ?>
-                        'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
-                    <?php endif ?>
-                    'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>'
-                }
-            "
-            href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
+          x-element-transition-trigger:product.preview.animate="
+            {
+                <?php if ($product->getImage()): ?>
+                    'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
+                <?php endif ?>
+                'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>'
+            }
+        "
+          href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
         <?php else: ?>
-            :href="`/${product.url_rewrites?.[0].url}`"
-            x-element-transition-trigger:product
-            <?= !$isSearch ? '.preview' : '' ?>
-            .animate="
-              {
-                'productImg': product.image?.url,
-                'title': product.name
-              }
-            "
+          :href="`/${product.url_rewrites?.[0].url}`"
+          x-element-transition-trigger:product<?= !$isSearch ? '.preview' : '' ?>.animate="
+            {
+              'productImg': product.image?.url,
+              'title': product.name
+            }
+          "
         <?php endif ?>
         class="card-hover group relative flex h-full min-w-0 rounded-md"
     >

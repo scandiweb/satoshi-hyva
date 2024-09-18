@@ -1,10 +1,4 @@
 <?php
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\CurrentCategory;
@@ -41,7 +35,7 @@ $productCollection = $block->getLoadedProductCollection();
         <?= $block->getToolbarHtml() ?>
         <?= $block->getAdditionalHtml() ?>
         <?php
-        if ($block->getMode() == 'grid') {
+        if ($block->getMode() === 'grid') {
             $viewMode = 'grid';
             $imageDisplayArea = 'category_page_grid';
             $showDescription = false;
