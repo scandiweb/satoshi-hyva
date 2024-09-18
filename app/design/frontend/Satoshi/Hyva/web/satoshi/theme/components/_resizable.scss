@@ -69,7 +69,7 @@
       /* @apply bg-red-500; */
 
       transition-property: transform, border-radius;
-      @apply absolute bg-fg motion-reduce:transition-none;
+      @apply absolute bg-bg-500 motion-reduce:transition-none;
       width: var(--corner-size);
       height: var(--corner-size);
 
@@ -126,7 +126,7 @@
     }
 
     &__side {
-      @apply absolute bg-fg;
+      @apply absolute bg-bg-500;
 
       /* @apply bg-blue-500; */
 
@@ -181,7 +181,7 @@
     }
 
     &__bg {
-      @apply absolute z-10 bg-fg;
+      @apply absolute z-10 bg-bg-500;
 
       /* @apply bg-green-500; */
 
@@ -192,19 +192,17 @@
     &__content {
       @apply absolute top-0 z-20 -mx-[1px] rounded-md transition-opacity delay-450 duration-300 motion-reduce:transition-none;
 
-      .resizable--visible & {
-        @apply contrast-more:border contrast-more:border-secondary-700;
-      }
-
       .resizable--right & {
-        @apply right-0;
+        right: 1px;
       }
 
       &:not(.resizable--right &) {
-        @apply left-0;
+        left: 1px;
       }
 
       &--trigger {
+        @apply flex h-full w-full items-center justify-center;
+
         .resizable--visible & {
           @apply pointer-events-none opacity-0 delay-0;
         }
@@ -228,8 +226,36 @@
     }
 
     &__fixed {
-      transform: translateY(calc(var(--target-height) * 1px - 100%));
-      @apply pointer-events-none absolute left-0 top-0 w-full motion-reduce:transition-none;
+      @apply pointer-events-none absolute top-0 z-30 opacity-0 motion-reduce:transition-none;
+
+      transition: width 0ms 600ms ease-in-out,
+      opacity 300ms ease-in-out,
+      transform 300ms var(--t-delay) ease-in-out,
+      border-radius 300ms var(--b-delay) ease-in-out;
+
+      width: calc(var(--target-width) * 1px);
+      transform: translateY(
+          calc(
+            -100% + min(calc(var(--target-height) * 1px), calc(100dvh - 16px * 2 -
+            34px))
+          )
+      );
+
+      .resizable--right & {
+        @apply right-0;
+      }
+
+      .resizable--left & {
+        @apply left-0;
+      }
+
+      .resizable--visible & {
+        @apply opacity-100;
+
+        transition: opacity 300ms calc(var(--t-delay) * 2) ease-in-out,
+        transform 300ms var(--t-delay) ease-in-out,
+        border-radius 300ms var(--b-delay) ease-in-out;
+      }
 
       > * {
         @apply pointer-events-none;

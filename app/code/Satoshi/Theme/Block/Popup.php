@@ -4,6 +4,7 @@ namespace Satoshi\Theme\Block;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\View\Element\Text;
 
 class Popup extends Template
 {
@@ -21,6 +22,15 @@ class Popup extends Template
     $this->setChild(
       'popup-content',
       $this->getLayout()->createBlock(Template::class)->setTemplate($childTemplate)
+    );
+    return $this;
+  }
+
+  public function setChildHtml(string $childHtml)
+  {
+    $this->setChild(
+      'popup-content',
+      $this->getLayout()->createBlock(Text::class)->setText($childHtml)
     );
     return $this;
   }
