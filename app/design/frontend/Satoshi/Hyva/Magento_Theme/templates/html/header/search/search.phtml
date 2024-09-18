@@ -16,7 +16,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 <div>
   <form
-    class="fixed left-0 z-20 w-full bg-bg-500 px-5 md:sticky md:w-[--search-width] md:rounded-t-md md:border-b-1 md:border-transparent md:bg-transparent md:px-2 md:pt-0 md:transition-all md:delay-150 md:duration-300 max-md:top-0 max-md:pb-3 max-md:pt-[18px]"
+    class="fixed left-0 z-20 w-full rounded-t-md bg-bg-500 px-5 md:sticky md:w-[--search-width] md:border-b-1 md:border-transparent md:bg-transparent md:px-2 md:pt-0 md:transition-all md:delay-150 md:duration-300 max-md:top-0 max-md:pb-3 max-md:pt-[18px]"
     role="search"
     :class="
       {
@@ -25,10 +25,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         'md:max-w-24': !$store.resizable.isVisible('search-desktop')
       }
     "
-    <?php // TODO: Replace with magento search url ?>
-    action="/"
+    action="/catalogsearch/result"
     method="GET"
-    @submit.prevent="goToSearchPage('/')"
+    @submit.prevent="goToSearchPage('/catalogsearch/result')"
   >
     <div class="relative isolate flex w-full md:min-h-[56px] md:items-center">
       <label
@@ -47,10 +46,20 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         id="searchInput"
         x-ref="searchInput"
         :tabindex="$store.main.isMobile && $store.popup.currentPopup === 'menu' ? 0 : -1"
+        :class="
+          {
+            'md:hidden': !$store.resizable.isVisible('search-desktop')
+          }
+        "
       >
       <div
         class="max-md:icon-button--size-md md:button md:icon-button md:icon-button--size-lg  md:order-1 md:text-primary-500 max-md:pointer-events-none max-md:absolute max-md:right-0 max-md:top-0 max-md:z-10 max-md:flex max-md:items-center max-md:justify-center max-md:px-0 max-md:text-lg max-md:text-text-500"
         x-show="!$store.main.isMobile || !searchTerm"
+        :class="
+          {
+            'md:hidden': !$store.resizable.isVisible('search-desktop')
+          }
+        "
       >
         <?= $hyvaicons->renderHtml('search'); ?>
       </div>
@@ -61,6 +70,11 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         x-show="!!searchTerm"
         @click="resetSearchTerm"
         :tabindex="$store.resizable.isVisible('search-desktop') ? 0 : -1"
+        :class="
+          {
+            'md:hidden': !$store.resizable.isVisible('search-desktop')
+          }
+        "
       >
         <?= $hyvaicons->renderHtml('close'); ?>
       </button>
@@ -76,6 +90,11 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     x-transition:leave="md:duration-0"
     x-transition:leave-start="md:opacity-100"
     x-transition:leave-end="md:opacity-0"
+    :class="
+      {
+        'md:hidden': !$store.resizable.isVisible('search-desktop')
+      }
+    "
   >
     <?= $template->render('Magento_Theme::html/header/search/search-suggestions.phtml') ?>
     <?= $template->render('Magento_Theme::html/header/search/search-categories.phtml') ?>
