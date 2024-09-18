@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 use Magento\Customer\Block\Address\Book;
@@ -24,35 +23,41 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         class="border-text-text-500 rounded-sm border p-3 md:hidden"
         @click="$store.popup.hidePopup('add-new-address')"
     >
-        <?= $hyvaicons->renderHtml('close'); ?>
+        <?= $hyvaicons->renderHtml('close') ?>
     </button>
 </div>
 
 <form action="<?= $block->getUrl('customer/address/formPost') ?>" method="post">
     <div class="md:contrast-border rounded-md bg-bg-500 px-2 pb-3 pt-5 md:px-5 md:py-5">
         <div class="mb-3 flex flex-col gap-3 md:flex-row">
-            <label for="first_name" class="sr-only tracking-widest"><?= __('First Name') ?></label>
-            <input
-                type="text"
-                name="firstname"
-                placeholder="<?= __('First Name') ?>"
-                value="<?= $block->escapeHtml($block->getFirstname()) ?>"
-                id="first_name"
-                required
-                class="input__field input__field--outline h-auto px-5 py-4"
-                autofocus
-            />
+            <?= $template
+                ->setData([
+                    'type' => 'text',
+                    'name' => 'firstname',
+                    'id' => 'first_name',
+                    'label' => 'First Name',
+                    'value' => $block->getFirstname(),
+                    'placeholder' => 'Enter your first name',
+                    'required' => true,
+                    'classes' => 'input__field input__field--outline h-auto px-5 py-4',
+                    'autofocus' => true
+                ])
+                ->render('Magento_Customer::html/form/input.phtml');
+            ?>
 
-            <label for="last_name" class="sr-only tracking-widest"><?= __('Last Name') ?></label>
-            <input
-                type="text"
-                name="lastname"
-                placeholder="<?= __('Last Name') ?>"
-                value="<?= $block->escapeHtml($block->getLastname()) ?>"
-                id="last_name"
-                required
-                class="input__field input__field--outline h-auto px-5 py-4"
-            />
+            <?= $template
+                ->setData([
+                    'type' => 'text',
+                    'name' => 'lastname',
+                    'id' => 'last_name',
+                    'label' => 'Last Name',
+                    'value' => $block->getLastname(),
+                    'placeholder' => 'Enter your last name',
+                    'required' => true,
+                    'classes' => 'input__field input__field--outline h-auto px-5 py-4'
+                ])
+                ->render('Magento_Customer::html/form/input.phtml');
+            ?>
         </div>
 
         <!-- Additional input fields go here similar to above fields -->
