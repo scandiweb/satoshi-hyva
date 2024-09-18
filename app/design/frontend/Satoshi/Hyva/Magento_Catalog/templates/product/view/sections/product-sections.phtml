@@ -1,0 +1,28 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\View\Details;
+use Magento\Framework\Escaper;
+
+/** @var Details $block */
+/** @var Escaper $escaper */
+
+$titleRenderer = $block->getChildBlock('product.section.title.renderer');
+$defaultTitleTemplate = $titleRenderer->getTemplate();
+
+?>
+<?php
+foreach ($block->getGroupSortedChildNames('detailed_info', '') as $sectionName) {
+    $sectionBlock = $block->getLayout()->getBlock($sectionName);
+    $sectionHtml = (string) $sectionBlock->toHtml();
+
+    if (empty(trim($sectionHtml))) {
+        continue;
+    }
+    ?>
+    <section id="<?= $escaper->escapeHtmlAttr($sectionBlock->getNameInLayout()) ?>">
+        <?= /** @noEscape */
+        $sectionHtml ?>
+    </section>
+<?php } ?>

@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductAttributes;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+/** @var ProductAttributes $attributesViewModel */
+$attributesViewModel = $viewModels->require(ProductAttributes::class);
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+$productType = $product->getTypeId();
+
+?>
+<h1 class="heading mb-1 ps-4 text-md leading-tight text-text-500 md:px-0 md:text-4xl max-md:pe-[--price-width]">
+    <?= $block->getChildBlock('page.main.title')->getPageHeading() ?>
+</h1>
+<div class="md:max-w-full md:w-full">
+    <div class="md:my-2">
+        <?= $block->getChildHtml('product.info.review') ?>
+    </div>
+    <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
+        <?= $block->getChildHtml("product.info.price") ?>
+    </div>
+    <div class="flex my-4">
+        <!-- TODO: What is this  -->
+        <?= $block->getChildHtml("alert.urls") ?>
+    </div>
+</div>
+<div class="w-full">
+    <?= $block->getChildHtml('product.info.form') ?>
+</div>
+
+
+<?php if ($productType === 'bundle'): ?>
+    <span class="sr-only">
+                <?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?>
+            </span>
+<?php endif; ?>
+
+<div class="flex gap-3 mt-4 sm:mt-0 h-12">
+    <?php if ($product->isSaleable()): ?>
+        <?= $block->getChildHtml("product.info.quantity") ?>
+        <?= $block->getChildHtml("product.info.addtocart") ?>
+    <?php endif; ?>
+</div>
+
+<?php if ($product->isSaleable()): ?>
+    <div class="flex mt-4 justify-end">
+        <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
+    </div>
+<?php endif; ?>
+
+<div class="flex mt-4 justify-end">
+    <?= $block->getChildHtml('product.info.addtowishlist'); ?>
+    <?= $block->getChildHtml('product.info.addtocompare'); ?>
+    <?= $block->getChildHtml('product.info.emailtofriend'); ?>
+    <?= $block->getChildHtml('product.info.additional.actions'); ?>
+</div>
+
+<?php if ($tierPriceBlock = $block->getChildHtml("product.price.tier")): ?>
+    <div class="py-4 my-2 tier-price-container">
+        <?= /** @noEscape */
+        $tierPriceBlock ?>
+    </div>
+<?php endif; ?>
+
+<?= $block->getChildHtml("product.info.additional") ?>

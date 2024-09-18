@@ -1,0 +1,32 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Escaper\EscapeHtmlAllowingAnchorAttributes;
+use Magento\Framework\Escaper;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var ViewModelRegistry $viewModels */
+/** @var Escaper $escaper */
+/** @var EscapeHtmlAllowingAnchorAttributes $specialEscaper */
+
+$specialEscaper = $viewModels->require(EscapeHtmlAllowingAnchorAttributes::class)
+?>
+<p data-spam-detection-disclaimer class="[&>a]:underline">
+<?= $specialEscaper->escapeHtml(
+    __(
+        'This site is protected by reCAPTCHA and the Google <a href="%1">Privacy Policy</a> and <a href="%2">Terms of Service</a> apply.',
+        'https://policies.google.com/privacy',
+        'https://policies.google.com/terms'
+    ),
+    ['a']
+) ?>
+</p>
