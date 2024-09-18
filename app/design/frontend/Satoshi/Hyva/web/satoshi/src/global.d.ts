@@ -17,6 +17,8 @@ declare global {
       strf: function;
       getBrowserStorage: function;
     };
+    grecaptchaInstanceNewsletter?: number;
+    googleRecaptchaCallbackNewsletter?: (response: string) => void;
 
     // TODO: Remove
     Shopify: {
