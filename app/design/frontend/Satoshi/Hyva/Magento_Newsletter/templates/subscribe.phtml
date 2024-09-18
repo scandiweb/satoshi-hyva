@@ -1,0 +1,121 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\ReCaptcha;
+use Magento\Framework\Escaper;
+use Magento\Newsletter\Block\Subscribe;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Subscribe $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var ReCaptcha $recaptcha */
+/** @var HeroiconsOutline $heroicons */
+/** @var SvgIcons $hyvaicons */
+
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+// Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
+// on the Magento_ReCaptchaNewsletter module
+$recaptcha = $block->getData('viewModelRecaptcha');
+
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<div class="flex flex-col items-stretch gap-5 rounded-md border-1 border-transparent bg-secondary-500 px-5 py-6 md:min-w-[35%] md:gap-4 md:bg-bg-500 md:p-7">
+    <h2 class="text-lg"><?= $escaper->escapeHtml(__('Join Our Newsletter.')) ?></h2>
+    <form
+        class="flex flex-col gap-3 items-stretch md:gap-4"
+        action="<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>"
+        method="post"
+        x-data="Newsletter({
+            recaptchaValidationCode: '<?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '') ?>',
+            isCaptchaEnabled: Boolean(<?= $recaptcha ? $recaptcha->isCaptchaEnabledFor(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>),
+            recaptchaSiteKey: '<?= $recaptcha ? $recaptcha->getSiteKey(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>',
+            recaptchaFormIdNewsletter: '<?= ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER ?>',
+            recaptchaType: '<?= $recaptcha ? $recaptcha->getSelectedTypeForForm(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>',
+            recaptchaV2InvisibleBadgePosition: '<?= $recaptcha ? $recaptcha->getRecaptchaV2InvisibleBadgePosition() : '' ?>',
+            defaultErrorMessage: '<?= __('Something went wrong with the subscription.') ?>'
+        })"
+        @submit.prevent="submitForm()"
+        id="newsletter-validate-detail"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('Subscribe to Newsletter')) ?>"
+    >
+        <div>
+            <label for="newsletter-subscribe" class="sr-only tracking-widest"><?= $escaper->escapeHtml(__('Email address')) ?></label>
+            <input
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                id="newsletter-subscribe"
+                type="email"
+                name="email"
+                class="input__field input__field--outline bg-bg-500 md:px-5 md:py-4"
+                :class="{
+                    'border-error': formSubmissionErrorMessages.email
+                }"
+                placeholder="<?= $escaper->escapeHtmlAttr(__('Email address')) ?>"
+                aria-required="true"
+                required
+                :autofocus="!!formSubmissionErrorMessages.email"
+                :aria-invalid="!!formSubmissionErrorMessages.email"
+                :aria-describedby="formSubmissionErrorMessages.email ? 'error_newsletter' : formSubmissionSuccessMessage ? 'success_newsletter' : undefined"
+            >
+            <span
+                id="error_newsletter"
+                class="text-error"
+                x-show="formSubmissionErrorMessages.email"
+                x-cloak
+            >
+                <?= $hyvaicons->renderHtml('error'); ?>
+                <span x-html="formSubmissionErrorMessages.email"></span>
+            </span>
+            <span
+                class="block text-error"
+                x-show="displayErrorMessage"
+                x-cloak
+            >
+                <?= $hyvaicons->renderHtml('error'); ?>
+                <template x-for="errorMessage in errorMessages">
+                    <span x-html="errorMessage"></span>
+                </template>
+            </span>
+        </div>
+
+        <?= $block->getBlockHtml('formkey') ?>
+        <div id="newsletter-recaptcha-container">
+            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
+        </div>
+        <button
+            type="submit"
+            class="button button--filled-primary w-full"
+            :class="{
+                'button--disabled': isLoading
+            }"
+            :disabled="isLoading"
+        >
+            <?= $escaper->escapeHtml(__('Subscribe')) ?>
+        </button>
+        <span
+            class="newsletter-form__message newsletter-form__message--success form__message"
+            id="success_newsletter"
+            tabindex="-1"
+            autofocus
+            x-show="formSubmissionSuccessMessage"
+            x-cloak
+        >
+            <?= $hyvaicons->renderHtml('success', 'inline'); ?>
+            <span x-html="formSubmissionSuccessMessage"></span>
+        </span>
+        <div class="mt-3 text-sm">
+            <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
+        </div>
+    </form>
+</div>

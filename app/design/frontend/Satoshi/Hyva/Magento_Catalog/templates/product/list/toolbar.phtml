@@ -1,0 +1,91 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\ProductList\Toolbar;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Toolbar $block */
+
+$uniqueId = '_' . uniqid();
+$additionalOptions = ['page' => 'p'];
+?>
+<script>
+    function initToolbar<?= /** @noEscape */  $uniqueId ?>() {
+        return {
+            options: <?= /* @noEscape */ $block->getWidgetOptionsJson($additionalOptions) ?>.productListToolbarForm || {},
+            getUrlParams: function () {
+                let decode = window.decodeURIComponent,
+                    urlPaths = this.options.url.split('?'),
+                    urlParams = urlPaths[1] ? urlPaths[1].split('&') : [],
+                    params = {},
+                    parameters, i;
+
+                for (i = 0; i < urlParams.length; i++) {
+                    parameters = urlParams[i].split('=');
+                    params[decode(parameters[0])] = parameters[1] !== undefined ?
+                        decode(parameters[1].replace(/\+/g, '%20')) :
+                        '';
+                }
+
+                return params;
+            },
+            getCurrentLimit: function () {
+                return this.getUrlParams()[this.options.limit] || this.options.limitDefault;
+            },
+            getCurrentPage: function () {
+                return this.getUrlParams()[this.options.page] || 1;
+            },
+            changeUrl(paramName, paramValue, defaultValue) {
+                let urlPaths = this.options.url.split('?'),
+                    baseUrl = urlPaths[0],
+                    paramData = this.getUrlParams(),
+                    currentPage = this.getCurrentPage(),
+                    newPage;
+
+                /**
+                 * calculates the page on which the first item of the current page will
+                 * be with the new limit and sets that number as the new page
+                 */
+                if (currentPage > 1 && paramName === this.options.limit) {
+                    newPage = Math.floor(this.getCurrentLimit() * (currentPage - 1) / paramValue) + 1;
+
+                    if (newPage > 1) {
+                        paramData[this.options.page] = newPage;
+                    } else {
+                        delete paramData[this.options.page];
+                    }
+                }
+
+                paramData[paramName] = paramValue;
+
+                if (this.options.post) {
+                    hyva.postForm({action: baseUrl, data: paramData, skipUenc: true});
+                } else {
+                    if (paramValue === defaultValue.toString()) {
+                        delete paramData[paramName];
+                    }
+                    paramData = Object.keys(paramData).length === 0
+                        ? ''
+                        : '?' + (new URLSearchParams(paramData));
+                    location.href = baseUrl + paramData
+                }
+            }
+        }
+    }
+</script>
+<?php if ($block->getCollection()->getSize()): ?>
+    <?php if ($block->getIsBottom()): ?>
+        <?= $block->getPagerHtml() ?>
+    <?php else: ?>
+        <div x-data="initToolbar<?= /** @noEscape */ $uniqueId ?>()"
+            class="toolbar toolbar-products grid grid-cols-4 sm:grid-cols-8 md:grid-cols-4
+                lg:grid-cols-8  grid-flow-row gap-2 items-center">
+            <?php if ($block->isExpanded()): ?>
+                <?= /** @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Catalog::product/list/toolbar/viewmode.phtml')) ?>
+                <?= /** @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Catalog::product/list/toolbar/sorter.phtml')) ?>
+            <?php endif ?>
+        </div>
+    <?php endif ?>
+<?php endif ?>
