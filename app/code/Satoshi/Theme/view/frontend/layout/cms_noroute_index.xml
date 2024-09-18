@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <move element="page.main.title" destination="page_404"/>
+        <move element="cms_noroute" destination="page_404"/>
+        <move element="cms_page" destination="page_404"/>
+
+        <referenceContainer name="content">
+            <block name="page_404" template="Satoshi_Theme::404.phtml"/>
+        </referenceContainer>
+    </body>
+</page>
