@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
 use Hyva\Theme\ViewModel\ProductListItem;
 use Hyva\Theme\ViewModel\ProductPage;
 use Hyva\Theme\ViewModel\Store;
-use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
 
 /** @var Template $template */
 /** @var Template $block */
@@ -73,27 +73,26 @@ if ($isSharedItemRenderer && $block->getChildBlock('slider.item.template')) {
 <div
     class="slider slider--full-width"
     x-init="
-    configureAndStart({
-      slidesAmountInView: '{xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6}',
-      gap: 16,
-      isAutoplay: false,
-      autoplaySpeed: 0
-    })
-  "
+      configureAndStart({
+        slidesAmountInView: '{xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6}',
+        gap: 16,
+        isAutoplay: false,
+        autoplaySpeed: 0
+      })
+    "
     x-data="Slider()"
     id="related-products-slider"
     style="
-    --slide-gap: 16px;
-    --slide-count-xs: 2.2;
-    --slide-count-sm: 2.5;
-    --slide-count-md: 3;
-    --slide-count-lg: 4;
-    --slide-count-xl: 5;
-    --slide-count-xxl: 5
-  "
+      --slide-gap: 16px;
+      --slide-count-xs: 2.2;
+      --slide-count-sm: 2.5;
+      --slide-count-md: 3;
+      --slide-count-lg: 4;
+      --slide-count-xl: 5;
+      --slide-count-xxl: 5
+    "
 >
     <div class="slider__header">
-
         <?php if ($title): ?>
             <h1 class="slider__title">
                 <?= $escaper->escapeHtml($title); ?>
@@ -102,14 +101,14 @@ if ($isSharedItemRenderer && $block->getChildBlock('slider.item.template')) {
 
         <div class="slider__actions">
             <button
-                class="button button--outline-primary icon-button icon-button--size-sm"
-                @click.prevent="showPrevSlide()"
+                class="button button--outline-primary icon-button icon-button--size-sm rotate-180"
                 :class="isPrevBtnDisabled && 'button--disabled'"
+                @click.prevent="showPrevSlide()"
                 :disabled="isPrevBtnDisabled"
                 aria-label="<?=__('Slide right')?>"
                 role="button"
             >
-                <?= $hyvaicons->renderHtml('chevron-left'); ?>
+                <?= $hyvaicons->renderHtml('chevron'); ?>
             </button>
 
             <button
@@ -120,7 +119,7 @@ if ($isSharedItemRenderer && $block->getChildBlock('slider.item.template')) {
                 aria-label="<?=__('Slide right')?>"
                 role="button"
             >
-                <?= $hyvaicons->renderHtml('chevron-right'); ?>
+                <?= $hyvaicons->renderHtml('chevron'); ?>
             </button>
         </div>
     </div>
