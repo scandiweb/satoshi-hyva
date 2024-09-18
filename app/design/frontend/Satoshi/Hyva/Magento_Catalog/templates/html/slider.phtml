@@ -10,7 +10,14 @@ use Satoshi\Theme\Block\Template;
 
 $slides = $block->getData('slides') ?? '';
 $gap = (int)$block->getData('gap') ?? 16;
-$slidesAmountInView = $block->getData('slides_amount_in_view') ?? '{xs: 1, sm: 2, md: 3, lg: 4, xl: 5, xxl: 6}';
+$slidesAmountInViewArray = $block->getData('slides_amount_in_view') ?? [
+    'xs' => 1,
+    'sm' => 2,
+    'md' => 3,
+    'lg' => 4,
+    'xl' => 5,
+    'xxl' => 6
+];
 $class = $block->getData('class') ?? '';
 $title = $block->getData('title') ?? '';
 $id = $block->getData('id') ? $block->getData('id') . '-slider' : '';
@@ -23,33 +30,21 @@ $isScrollbarHidden = (bool)$block->getData('is_scrollbar_hidden');
 $isAutoPlay = (bool)$block->getData('is_auto_play');
 $autoplaySpeed = (int)$block->getData('autoplay_speed') ?? 0;
 
-$slidesAmountInViewConfig = str_replace(['{', '}', ' '], '', $slidesAmountInView);
-$slidesAmountInViewArray = explode(',', $slidesAmountInViewConfig);
-
-$convertedSlidesAmountInView = '';
-foreach ($slidesAmountInViewArray as $index => $config) {
-    [$breakpoint, $value] = explode(':', $config);
-    $key = '--slide-count-' . $breakpoint;
-    $entry = $key . ': ' . $value;
-    if ($index > 0) {
-        $convertedSlidesAmountInView .= ';';
-    }
-    $convertedSlidesAmountInView .= $entry;
-}
+$convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray), fn ($carry, $key) => $carry . " --slide-count-$key: {$slidesAmountInViewArray[$key]};", '');
 ?>
 
 <div
     class="slider <?= $isFullPage ? 'slider--full-width' : '' ?>"
     x-init="
         configureAndStart({
-            slidesAmountInView: <?= $slidesAmountInView ?>,
+            slidesAmountInView: <?= json_encode($slidesAmountInViewArray) ?>,
             gap: <?= $gap ?>,
             isAutoplay: '<?= $isAutoPlay ?>',
             autoplaySpeed: <?= $autoplaySpeed ?>
         })
     "
     <?= $isCustomSliderXData ? '' : 'x-data="Slider()"' ?>
-    <?= $id ? 'id="' . $id . '"' : '' ?>
+    <?= $id ? "id='$id'" : '' ?>
     :class="'<?= $class ?>'"
     style="--slide-gap: <?= $gap ?>px; <?= $convertedSlidesAmountInView ?>"
 >
@@ -65,11 +60,7 @@ foreach ($slidesAmountInViewArray as $index => $config) {
                     </template>
                 <?php endif; ?>
                 <?php if (!$isActionsDisabled): ?>
-                    <?=
-                    $template
-                        ->setData([])
-                        ->render('Magento_Catalog::html/slider-buttons.phtml');
-                    ?>
+                    <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
                 <?php endif; ?>
             </div>
         </div>
