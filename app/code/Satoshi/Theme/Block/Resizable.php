@@ -4,6 +4,7 @@ namespace Satoshi\Theme\Block;
 
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use Magento\Framework\View\Element\Text;
 
 class Resizable extends Template
 {
@@ -21,6 +22,15 @@ class Resizable extends Template
     $this->setChild(
       'resizable-content',
       $this->getLayout()->createBlock(Template::class)->setTemplate($childTemplate)
+    );
+    return $this;
+  }
+
+  public function setChildHtml(string $childHtml)
+  {
+    $this->setChild(
+      'resizable-content',
+      $this->getLayout()->createBlock(Text::class)->setText($childHtml)
     );
     return $this;
   }
