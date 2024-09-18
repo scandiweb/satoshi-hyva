@@ -9,6 +9,7 @@ use Satoshi\Theme\Block\Template;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 /** @var Template $template */
+/** @var Template $block */
 
 /** @var Navigation $viewModelNavigation */
 $viewModelNavigation = $viewModels->require(Navigation::class, $block);
@@ -157,7 +158,7 @@ if (!$menuItems) {
             'url': '<?= $menuItem['url'] ?>',
             'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
             'img': '<?= $menuItem['image'] ?>',
-            'description': `<?= $escaper->escapeUrl($menuItem['description']) ?>`,
+            'description': `<?= $escaper->escapeUrl($menuItem['description'] ?? '') ?>`,
           }
         "
         class="focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1"
