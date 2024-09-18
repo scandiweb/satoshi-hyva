@@ -24,7 +24,7 @@
         <!-- Start: Wrap content within preview-content comment -->
         <referenceContainer name="main.content">
             <block class="Magento\Framework\View\Element\Template" name="preview.content"
-                   template="Magento_Theme::html/layout/preview-content.phtml" before="columns"/>
+                   template="Magento_Theme::html/layout/transition/preview-content.phtml" before="columns"/>
         </referenceContainer>
         <move element="columns" destination="preview.content" before="-"/>
         <!-- END: Wrap content within preview-content comment -->
@@ -41,7 +41,19 @@
 
             <!-- Transition components -->
             <block class="Magento\Framework\View\Element\Template" name="transition.preview"
-                   template="Magento_Theme::html/layout/transition-preview.phtml" after="header.container"/>
+                   template="Magento_Theme::html/layout/transition/transition-preview.phtml" after="header.container"/>
+            <block class="Magento\Framework\View\Element\Template" name="element.transition.wrapper"
+                   template="Magento_Theme::html/layout/transition/element-transition-wrapper.phtml"
+                   after="transition.preview"/>
+            <!-- <block class="Magento\Framework\View\Element\Template" name="search.fallback"-->
+            <!--        template="Magento_Theme::html/layout/transition/search_fallback.phtml"-->
+            <!--        after="element.transition.wrapper"/>-->
+            <!--<block class="Magento\Framework\View\Element\Template" name="pdp.fallback"-->
+            <!--        template="Magento_Theme::html/layout/transition/pdp_fallback.phtml"-->
+            <!--        after="search.fallback"/>-->
+            <block class="Magento\Framework\View\Element\Template" name="clp.fallback"
+                   template="Magento_Theme::html/layout/transition/clp_fallback.phtml"
+                   after="element.transition.wrapper"/>
         </referenceContainer>
 
         <!-- TODO: Remove global alerts (uncomment this) -->

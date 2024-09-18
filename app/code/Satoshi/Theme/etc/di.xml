@@ -18,4 +18,9 @@
         for="Hyva\Theme\ViewModel\Currency"
         type="Satoshi\Theme\ViewModel\Currency"
     />
+
+    <preference
+        for="Hyva\Theme\Service\Navigation"
+        type="Satoshi\Theme\Service\Navigation"
+    />
 </config>
