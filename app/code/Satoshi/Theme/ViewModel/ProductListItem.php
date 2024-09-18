@@ -174,7 +174,7 @@ class ProductListItem extends CoreProductListItem
 
         $itemRendererBlock->setData('product', $product)
                           ->setData('index', $index)
-            ->setData('breadcrumbs', $breadcrumbs)
+                          ->setData('breadcrumbs', $breadcrumbs)
                           ->setData('view_mode', $viewMode)
                           ->setData('item_relation_type', $parentBlock->getData('item_relation_type'))
                           ->setData('image_display_area', $imageDisplayArea)

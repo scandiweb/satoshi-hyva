@@ -31,6 +31,7 @@ $fitType = 'cover';
 $isContain = $fitType === 'contain';
 
 $isSearch = $block->getData('is_search_card');
+$isAlpineTemplate = $block->getData('is_alpine_template');
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
@@ -47,27 +48,25 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
     <a
         <?php if ($product): ?>
           x-element-transition-trigger:product.preview.animate="
-                {
-                    <?php if ($product->getImage()): ?>
-                        'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
-                    <?php endif ?>
-                    'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>',
-                    'mediaCount': <?= $product?->getMediaGalleryImages()->count() ?? 3 ?>,
-                    'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>
-                }
-            "
-            href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
+            {
+                <?php if ($product->getImage()): ?>
+                    'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
+                <?php endif ?>
+                'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>',
+                'mediaCount': <?= $product?->getMediaGalleryImages()->count() ?? 3 ?>,
+                'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>
+            }
+        "
+          href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
         <?php else: ?>
-            :href="`/${product.url_rewrites?.[0].url}`"
-            x-element-transition-trigger:product
-            <?= !$isSearch ? '.preview' : '' ?>
-            .animate="
-              {
-                'productImg': product.image?.url,
-                'title': product.name,
-                'mediaCount': product.media_gallery?.length || 3
-              }
-            "
+          :href="`/${product.url_rewrites?.[0].url}`"
+          x-element-transition-trigger:product<?= !$isSearch ? '.preview' : '' ?>.animate="
+            {
+              'productImg': product.image?.url,
+              'title': product.name,
+              'mediaCount': product.media_gallery?.length || 3
+            }
+          "
         <?php endif ?>
         class="card-hover group relative flex h-full min-w-0 rounded-md"
     >
