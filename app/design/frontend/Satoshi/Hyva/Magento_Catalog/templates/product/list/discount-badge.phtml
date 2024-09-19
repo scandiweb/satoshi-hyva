@@ -21,6 +21,13 @@ if ($price && $finalPrice) {
             -<?php echo $discountPercentage; ?>% OFF
         </span>
     </div>
-<?php elseif(!$product): ?>
-    <?php // TODO: Implement discount badge for alpine template in search  ?>
+<?php elseif (!$product): ?>
+    <div x-data="{
+         finalPrice: product.price_range.minimum_price.final_price.value,
+         regularPrice: product.price_range.minimum_price.regular_price.value}"
+         class="absolute bottom-4 left-0 rounded-full" x-init="() => {console.log(finalPrice, regularPrice)}">
+            <span x-show="regularPrice>finalPrice && regularPrice" x-text="Math.round(((regularPrice - finalPrice) * 100.0) / regularPrice) + '%'"
+                  class="card-product__badge bg-white px-3 py-2 text-sm font-bold rounded-r-full">
+            </span>
+    </div>
 <?php endif; ?>
