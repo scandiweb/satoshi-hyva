@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$fieldType = $escaper->escapeHtmlAttr($block->getData('type')) ?? 'text';
+$fieldName = $escaper->escapeHtmlAttr($block->getData('name') ?? 'input_name');
+$fieldId = $escaper->escapeHtmlAttr($block->getData('id') ?? $fieldName);
+$fieldLabel = $escaper->escapeHtml($block->getData('label') ?? ucfirst($fieldName));
+$fieldValue = $escaper->escapeHtmlAttr($block->getData('value') ?? '');
+$placeholder = $escaper->escapeHtmlAttr($block->getData('placeholder') ?? $fieldLabel);
+$isRequired = (bool)$block->getData('required');
+$additionalClasses = 'input__field input__field--outline h-auto px-5 py-4 ' . $escaper->escapeHtmlAttr($block->getData('class') ?? '');
+$options = $block->getData('options') ?? [];
+$additionalAttributes = $block->getData('additional_attributes') ?? '';
+
+$attributes = [
+    'type' => $fieldType,
+    'name' => $fieldName,
+    'id' => $fieldId,
+    'placeholder' => $placeholder,
+    'value' => $fieldValue,
+    'class' => $additionalClasses,
+    'required' => $isRequired ? 'required' : '',
+];
+
+$attributesString = '';
+foreach ($attributes as $attrKey => $attrValue) {
+    if ($attrValue !== '') {
+        $attributesString .= sprintf(' %s="%s"', $attrKey, $attrValue);
+    }
+}
+
+$attributesString = trim($attributesString . ' ' . $additionalAttributes);
+
+?>
+
+<div class="field field-reserved w-full field-name-<?= $fieldName ?><?= $isRequired ? ' required' : '' ?>">
+    <label class="sr-only tracking-widest" for="<?= $fieldId ?>">
+        <span><?= $escaper->escapeHtml($fieldLabel) ?></span>
+    </label>
+
+    <div class="control">
+        <?php if ($fieldType === 'select' && !empty($options)): ?>
+            <select <?= $attributesString ?>>
+                <?php foreach ($options as $option): ?>
+                    <option
+                        value="<?= $escaper->escapeHtmlAttr($option) ?>" <?= $option === $fieldValue ? 'selected' : '' ?>>
+                        <?= $escaper->escapeHtml(__($option)) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        <?php else: ?>
+            <input type="<?= $escaper->escapeHtml($fieldType) ?>" <?= $attributesString ?> />
+        <?php endif; ?>
+    </div>
+</div>

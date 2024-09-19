@@ -39,10 +39,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     'value' => $block->getFirstname(),
                     'placeholder' => 'Enter your first name',
                     'required' => true,
-                    'classes' => 'input__field input__field--outline h-auto px-5 py-4',
-                    'autofocus' => true
+                    'additional_attributes' => 'autofocus',
                 ])
-                ->render('Magento_Customer::html/form/input.phtml');
+                ->render('Magento_Customer::html/_form-field.phtml');
             ?>
 
             <?= $template
@@ -54,9 +53,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     'value' => $block->getLastname(),
                     'placeholder' => 'Enter your last name',
                     'required' => true,
-                    'classes' => 'input__field input__field--outline h-auto px-5 py-4'
                 ])
-                ->render('Magento_Customer::html/form/input.phtml');
+                ->render('Magento_Customer::html/_form-field.phtml');
             ?>
         </div>
 
