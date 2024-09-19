@@ -1,0 +1,172 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Customer;
+use Magento\Framework\Escaper;
+use Magento\Sales\Block\Reorder\Sidebar;
+
+/** @var Escaper $escaper */
+/** @var Sidebar $block */
+/** @var ViewModelRegistry $viewModels  */
+/** @var Customer $customer */
+
+$customer = $viewModels->require(Customer::class);
+
+if (! $customer->customerLoggedIn()) {
+    return '';
+}
+
+?>
+
+<script>
+    function initReorderSidebar() {
+        function reorderSidebarFetchHandler(body, postUrl) {
+            const postHeaders = {
+                "headers": {
+                    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                },
+                body: body,
+                "method": "POST",
+                "mode": "cors",
+                "credentials": "include"
+            };
+
+            return fetch(postUrl, postHeaders).then(response => {
+                if (response.redirected) {
+                    <?php // This is the regular path, regardless if the items could be reordered or not ?>
+                    window.location.href = response.url;
+                } else if (response.ok) {
+                    return response.json();
+                } else {
+                    const messageText = "<?= $escaper->escapeJs(__("Cannot add product to cart")) ?>";
+                    window.dispatchMessages && window.dispatchMessages([{type: "warning", text: messageText}], 5000);
+                }
+            }).then(result => {
+                if (!result) return;
+                if (result.error_message) {
+                    const message = {type: "error", text: result.error_message};
+                    window.dispatchMessages && window.dispatchMessages([message], 5000);
+                }
+                window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+            }).catch(error => {
+                const message = { type: "error", text: error };
+                window.dispatchMessages && window.dispatchMessages([message], 5000);
+            });
+        }
+
+
+        return {
+            reorderProducts: null,
+            itemCount: 0,
+            reorderItems: {},
+            isShowAddToCart: false,
+            checkboxId: 'reorder-item-',
+            receiveReorderData: function (data) {
+                if (data['last-ordered-items']) {
+                    this.reorderProducts = data['last-ordered-items'];
+                    this.itemCount = this.reorderProducts.items.length;
+                    this.reorderItems = this.reorderProducts.items;
+                    this.isShowAddToCart = this.reorderItems.some(product => product.is_saleable === true);
+                }
+            },
+            addToCart(postUrl) {
+                let params = '';
+                const checkboxes = document.getElementsByName('order_items[]');
+                for (let i=0; i<checkboxes.length; i++) {
+                    if (checkboxes[i].checked) {
+                        params += '&order_items[]=' + checkboxes[i].value;
+                    }
+                }
+                params = "form_key="+ hyva.getFormKey() + params;
+                reorderSidebarFetchHandler(params, postUrl);
+            }
+        }
+    }
+
+</script>
+
+<div x-data="initReorderSidebar()"
+     @private-content-loaded.window="receiveReorderData($event.detail.data)"
+     class="block-reorder mt-8 hidden"
+     :class="{ 'hidden': !itemCount }"
+     :aria-hidden="!itemCount"
+>
+    <h2 class="border-t border-container mb-6 pt-5">
+        <strong id="block-reorder-heading"
+                class="block title text-primary font-semibold text-lg"
+        >
+            <?= $escaper->escapeHtml(__('Recently Ordered')) ?>
+        </strong>
+    </h2>
+    <div class="block-content">
+        <form method="post"
+              class="form reorder"
+              action="<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>"
+              id="reorder-validate-detail"
+              aria-labelledby="block-reorder-heading"
+        >
+            <strong class="subtitle hidden">
+                <?= $escaper->escapeHtml(__('Last Ordered Items')) ?>
+            </strong>
+            <template x-if="itemCount">
+                <div>
+                    <ol id="cart-sidebar-reorder" class="product-items product-items-names">
+                        <template x-for="product in reorderItems">
+                            <li class="flex items-start mb-4">
+                                <div class="shrink-0 mr-2">
+                                    <div class="control">
+                                        <input type="checkbox"
+                                               name="order_items[]"
+                                               :id="checkboxId + product.id"
+                                               :value="product.id"
+                                               :aria-label="product.is_saleable
+                                                   ? hyva.str('<?= $escaper->escapeJs(__('Select product "%1" to reorder')) ?>', product.name)
+                                                   : hyva.str('<?= $escaper->escapeJs(__('Product "%1" is not salable')) ?>', product.name)
+                                               "
+                                               :disabled="!product.is_saleable"
+                                        />
+                                    </div>
+                                </div>
+                                <strong class="text-sm leading-6 font-normal hover:underline">
+                                    <a
+                                        :href="product.url"
+                                        :title="product.name"
+                                        :aria-describedby="!product.is_saleable || checkboxId + product.id"
+                                        x-text="product.name"
+                                    ></a>
+                                </strong>
+                            </li>
+                        </template>
+                    </ol>
+                    <div id="cart-sidebar-reorder-advice-container"></div>
+                    <div class="flex flex-wrap gap-y-2 items-center md:mt-5 text-sm">
+                        <template x-if="isShowAddToCart">
+                            <button
+                                type="button"
+                                @click.prevent="addToCart('<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>')"
+                                class="action tocart btn btn-primary text-sm"
+                                aria-label="<?= $escaper->escapeHtmlAttr(__('Add to cart selected products from list')) ?>"
+                                data-addto="cart"
+                            >
+                                <?= $escaper->escapeHtml(__('Add to Cart')) ?>
+                            </button>
+                        </template>
+                        <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>#recentOrders"
+                           class="px-4 text-sm text-gray-500 hover:text-primary"
+                           aria-label="<?= $escaper->escapeHtmlAttr(__('View all recent orders')) ?>"
+                        >
+                            <?= $escaper->escapeHtml(__('View All')); ?>
+                        </a>
+                    </div>
+                </div>
+            </template>
+        </form>
+    </div>
+</div>
+
