@@ -90,7 +90,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </div>
 
         <?= $block->getBlockHtml('formkey') ?>
-        <div id="newsletter-recaptcha-container">
+        <div
+            id="newsletter-recaptcha-container"
+            class="origin-top-left scale-[0.8] max-w-[245px] sm:scale-100 sm:max-w-none md:scale-[0.65] lg:scale-90 xl:scale-100"
+        >
             <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
         </div>
         <button
