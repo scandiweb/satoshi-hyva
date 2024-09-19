@@ -25,8 +25,10 @@ if ($price && $finalPrice) {
     <div x-data="{
          finalPrice: product.price_range.minimum_price.final_price.value,
          regularPrice: product.price_range.minimum_price.regular_price.value}"
-         class="absolute bottom-4 left-0 rounded-full" x-init="() => {console.log(finalPrice, regularPrice)}">
-            <span x-show="regularPrice>finalPrice && regularPrice" x-text="Math.round(((regularPrice - finalPrice) * 100.0) / regularPrice) + '%'"
+         class="absolute bottom-4 left-0 rounded-full"
+         x-show="regularPrice>finalPrice && regularPrice"
+    >
+            <span x-text="Math.round(((regularPrice - finalPrice) * 100.0) / regularPrice) + '%'"
                   class="card-product__badge bg-white px-3 py-2 text-sm font-bold rounded-r-full">
             </span>
     </div>
