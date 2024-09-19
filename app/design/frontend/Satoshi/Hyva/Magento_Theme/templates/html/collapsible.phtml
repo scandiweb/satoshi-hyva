@@ -1,0 +1,78 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+?>
+
+<div class="block <?= $escaper->escapeHtmlAttr($block->getBlockCss()) ?> card filter-option p-3 mb-6 bg-white rounded-xl"
+     x-data="initAccountNavigation()"
+     x-init="checkIsMobileResolution()"
+     @resize.window.debounce="checkIsMobileResolution()"
+     @visibilitychange.window.debounce="checkIsMobileResolution()"
+
+>
+    <button
+        type="button"
+        class="
+            title <?= $escaper->escapeHtmlAttr($block->getBlockCss()) ?>-title
+            flex justify-between
+            items-center hover:text-secondary-darker w-full
+        "
+        @click="blockOpen = !blockOpen"
+        :aria-expanded="blockOpen"
+        :aria-disabled="!isMobile"
+        :disabled="!isMobile ? '' : null"
+    >
+        <span
+            class="px-1 py-1 border rounded border-container md:hidden"
+            x-ref="AccountNavigationMobileToggleIcon"
+        >
+            <?= $heroicons->chevronDownHtml(
+                'transition-transform duration-300 ease-in-out transform rotate-180',
+                24,
+                24,
+                [
+                    ':class'      => "{ 'rotate-180': blockOpen }",
+                    'aria-hidden' => 'true',
+                    'focusable' => 'false'
+                ]
+            ); ?>
+        </span>
+    </button>
+    <div class="content <?= $escaper->escapeHtmlAttr($block->getBlockCss()) ?>-content hidden md:block"
+         :class="{ 'hidden': !blockOpen }"
+         id="<?= $escaper->escapeHtmlAttr($block->getBlockCss()) ?>"
+    >
+        <?= $block->getChildHtml() ?>
+    </div>
+</div>
+<script>
+    function initAccountNavigation() {
+        return {
+            isMobile: false,
+            blockOpen: false,
+            checkIsMobileResolution() {
+                const mobileElement = this.$refs.AccountNavigationMobileToggleIcon;
+                this.isMobile = mobileElement
+                    ? getComputedStyle(mobileElement).display !== 'none'
+                    : window.matchMedia('(max-width: 767px)').matches; // Fallback to `md` breakpoint
+            }
+        }
+    }
+</script>
