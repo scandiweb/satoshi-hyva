@@ -6,11 +6,13 @@ use Magento\Customer\Block\Address\Edit;
 use Magento\Customer\ViewModel\Address as AddressViewModel;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Edit $block */
 /** @var Escaper $escaper */
 /** @var SecureHtmlRenderer $secureRenderer */
 /** @var ViewModelRegistry $viewModels */
+$hyvaicons = $viewModels->require(SvgIcons::class);
 
 /** @var AddressViewModel $addressViewModel */
 $addressViewModel = $block->getViewModel();
@@ -280,28 +282,44 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                 </div>
             <?php endif; ?>
             <?php if (!$block->isDefaultBilling() && $block->canSetAsDefaultBilling()): ?>
-                <div class="field choice set billing">
-                    <input type="checkbox" id="primary_billing" name="default_billing" value="1" class="checkbox">
-                    <label class="label sr-only tracking-widest" for="primary_billing">
-                        <span><?= $escaper->escapeHtml(__('Use as my default billing address')) ?></span>
-                    </label>
-                </div>
+                <label class="flex items-center gap-x-3 mt-5 mb-3 mx-4" for="primary_billing">
+                    <input
+                        type="checkbox"
+                        class="checkbox__input"
+                        id="primary_billing"
+                        name="default_billing"
+                        value="1">
+                    <span class="checkbox__control w-5 h-5" aria-hidden="true">
+                        <?= $hyvaicons->renderHtml('check') ?>
+                    </span>
+                    <span class="checkbox__label text-[14px] ml-0">
+                        <?= $escaper->escapeHtml(__('Use as my default billing address')) ?>
+                    </span>
+                </label>
             <?php else: ?>
                 <input type="hidden" name="default_billing" value="1"/>
             <?php endif; ?>
 
             <?php if (!$block->isDefaultShipping() && $block->canSetAsDefaultShipping()): ?>
-                <div class="field choice set shipping">
-                    <input type="checkbox" id="primary_shipping" name="default_shipping" value="1" class="checkbox">
-                    <label class="label sr-only tracking-widest" for="primary_shipping">
-                        <span><?= $escaper->escapeHtml(__('Use as my default shipping address')) ?></span>
-                    </label>
-                </div>
+                <label class="flex items-center gap-x-3 mx-4" for="primary_shipping">
+                    <input
+                        type="checkbox"
+                        class="checkbox__input"
+                        id="primary_shipping"
+                        name="default_shipping"
+                        value="1">
+                    <span class="checkbox__control w-5 h-5" aria-hidden="true">
+                        <?= $hyvaicons->renderHtml('check') ?>
+                    </span>
+                    <span class="checkbox__label text-[14px] ml-0">
+                        <?= $escaper->escapeHtml(__('Use as my default shipping address')) ?>
+                    </span>
+                </label>
             <?php else: ?>
                 <input type="hidden" name="default_shipping" value="1">
             <?php endif; ?>
         </div>
-        <div class="actions-toolbar flex gap-x-4">
+        <div class="flex gap-x-4">
             <div class="primary">
                 <button type="submit"
                         class="button button--filled-primary"
