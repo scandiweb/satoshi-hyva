@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Customer\Block\Widget\Fax;
+use Magento\Customer\Helper\Address as AddressHelper;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $template */
+/** @var Escaper $escaper */
+/** @var Fax $block */
+
+$validationClass = $escaper->escapeHtmlAttr($this->helper(AddressHelper::class)->getAttributeValidationClass('fax')) ?: '';
+
+?>
+
+<?= $template
+    ->setData([
+        'type' => 'text',
+        'name' => 'fax',
+        'id' => 'fax',
+        'label' => __('Fax'),
+        'value' => $block->getFax(),
+        'placeholder' => 'Enter your fax number',
+        'attributes' => $block->isRequired() ? 'required' : '',
+        'class' => $validationClass,
+    ])
+    ->render('Magento_Customer::html/_form-field.phtml');
+?>
+

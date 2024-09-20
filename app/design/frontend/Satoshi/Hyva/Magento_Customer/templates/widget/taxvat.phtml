@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Customer\Block\Widget\Taxvat;
+use Magento\Customer\Helper\Address as AddressHelper;
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $template */
+/** @var Taxvat $block */
+?>
+
+<?= $template
+    ->setData([
+        'type' => 'text',
+        'name' => $block->getFieldName('taxvat'),
+        'id' => $block->getFieldId('taxvat'),
+        'label' => $block->getStoreLabel('taxvat'),
+        'value' => $block->getTaxvat(),
+        'placeholder' => 'Enter your VAT number',
+        'attributes' => $block->isRequired() ? 'required' : '',
+        'class' => $this->helper(AddressHelper::class)->getAttributeValidationClass('taxvat') ?: '',
+    ])
+    ->render('Magento_Customer::html/_form-field.phtml');
+?>
