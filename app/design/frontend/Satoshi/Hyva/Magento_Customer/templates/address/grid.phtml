@@ -2,82 +2,85 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Magento\Customer\Block\Address\Grid;
 use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Grid $block */
 /** @var Escaper $escaper */
-/** @var ViewModelRegistry $viewModels */
 
-/** @var HeroiconsOutline $heroicons */
-$heroicons = $viewModels->require(HeroiconsOutline::class);
+/** @var ViewModelRegistry $viewModels */
+$hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
 <div class="container mx-auto">
-    <h2 class="text-lg font-bold mb-5">
+    <h2 class="text-text-500 text-lg font-bold">
         <?= $escaper->escapeHtml(__('Address Book')) ?>
     </h2>
     <div class="block-content" x-data="initAddresses()">
         <?php if ($additionalAddresses = $block->getAdditionalAddresses()): ?>
-            <div class="card grid grid-cols-3 lg:grid-cols-6 my-6">
-                <div class="text-sm text-secondary p-2">
-                    <?= $escaper->escapeHtml(
-                        __('Company')
-                    ) ?></div>
-                <div class="hidden lg:block text-sm text-secondary p-2">
-                    <?= $escaper->escapeHtml(__('Name')) ?>
-                </div>
-                <div class="hidden lg:block text-sm text-secondary p-2">
-                    <?= $escaper->escapeHtml(__('Street Address')) ?>
-                </div>
-                <div class="text-sm text-secondary p-2">
-                    <?= $escaper->escapeHtml(__('City')) ?>
-                </div>
-                <div class="hidden lg:block text-sm text-secondary p-2">
-                    <?= $escaper->escapeHtml(__('Country')) ?>
-                </div>
-                <div class="text-sm text-secondary p-2"></div>
-                <?php $i = 0; ?>
-                <?php foreach ($additionalAddresses as $address): ?>
-                    <?php $i++ ?>
-                    <div class="p-2 <?= $i % 2 === 0 ? '' : ' bg-container-darker' ?>">
+            <?php $i = 0; ?>
+            <?php foreach ($additionalAddresses as $address): ?>
+                <?php $i++ ?>
+                <div class="card grid grid-cols-3 lg:grid-cols-6 my-5 bg-white p-5 rounded-xl">
+                    <div class="text-text-500 text-[14px] font-bold">
+                        <?= $escaper->escapeHtml(
+                            __('Company')
+                        ) ?></div>
+                    <div class="hidden lg:block text-text-500 text-[14px] font-bold">
+                        <?= $escaper->escapeHtml(__('Name')) ?>
+                    </div>
+                    <div class="hidden lg:block text-text-500 text-[14px] font-bold">
+                        <?= $escaper->escapeHtml(__('Street Address')) ?>
+                    </div>
+                    <div class="text-text-500 text-[14px] font-bold">
+                        <?= $escaper->escapeHtml(__('City')) ?>
+                    </div>
+                    <div class="hidden lg:block text-text-500 text-[14px] font-bold">
+                        <?= $escaper->escapeHtml(__('Country')) ?>
+                    </div>
+                    <div class="text-text-500 text-[14px] font-bold text-right">
+                        <?= $escaper->escapeHtml(__('Edit / Remove')) ?>
+                    </div>
+
+                    <div class="mt-2">
                         <?= $escaper->escapeHtml($address->getCompany()) ?></div>
-                    <div class="hidden lg:block p-2 <?= $i % 2 === 0 ? '' : ' bg-container-darker' ?>">
+                    <div class="hidden lg:block mt-2">
                         <?= $escaper->escapeHtml($address->getLastname()) ?>,
                         <?= $escaper->escapeHtml($address->getFirstname()) ?>
                     </div>
-                    <div class="hidden lg:block p-2 <?= $i % 2 === 0 ? '' : ' bg-container-darker' ?>">
+                    <div class="hidden lg:block mt-2">
                         <?= $escaper->escapeHtml($block->getStreetAddress($address)) ?>
                     </div>
-                    <div class=" p-2 <?= $i % 2 === 0 ? '' : ' bg-container-darker' ?>">
+                    <div class="mt-2">
                         <?= $escaper->escapeHtml($address->getCity()) ?>
                     </div>
-                    <div class="hidden lg:block p-2 <?= $i % 2 === 0 ? '' : ' bg-container-darker' ?>">
+                    <div class="hidden lg:block mt-2">
                         <?= $escaper->escapeHtml($block->getCountryByCode($address->getCountryId())) ?>
                     </div>
-                    <div class="p-2 <?= $i % 2 === 0 ? '' : ' bg-container-darker' ?>">
-                        <a class="action edit inline-block text-sm underline text-secondary-darker"
-                           title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
-                           href="<?= $escaper->escapeUrl($block->getUrl(
-                               'customer/address/edit',
-                               ['id' => $address->getId()]
-                           )) ?>">
-                            <?= $heroicons->pencilAltHtml(); ?>
+                    <div class="mt-2 flex gap-5 justify-end">
+                        <a
+                            class="text-[14px] text-primary-500"
+                            title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
+                            href="<?= $escaper->escapeUrl($block->getUrl(
+                                'customer/address/edit',
+                                ['id' => $address->getId()]
+                            )) ?>">
+                            <?= $hyvaicons->renderHtml('edit') ?>
                             <span></span>
                         </a>
-                        <a class="action delete ml-2 inline-block text-sm underline text-secondary-darker"
-                           title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
-                           @click.prevent="deleteAddressById(<?= $escaper->escapeJs($address->getId()) ?>)" href="#">
-                            <?= $heroicons->trashHtml(); ?>
+                        <a
+                            class="text-[14px] text-primary-500"
+                            title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
+                            @click.prevent="deleteAddressById(<?= $escaper->escapeJs($address->getId()) ?>)" href="#">
+                            <?= $hyvaicons->renderHtml('remove') ?>
                         </a>
                     </div>
-                <?php endforeach; ?>
-            </div>
-            <?php if ($block->getChildHtml('pager')): ?>
-                <div class="customer-addresses-toolbar toolbar bottom">
-                    <?= $block->getChildHtml('pager') ?>
                 </div>
+            <?php endforeach; ?>
+            <?php if ($block->getChildHtml('pager')): ?>
+                <!--TODO: check pager styles-->
+                <?= $block->getChildHtml('pager') ?>
             <?php endif; ?>
 
         <?php else: ?>
@@ -110,16 +113,16 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
 </div>
 
 <div class="container mx-auto mt-5 pb-16 flex gap-x-4">
-        <a href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
-           class="button button--filled-primary">
+    <a href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
+       class="button button--filled-primary">
             <span>
                 <?= $escaper->escapeHtml(__('Add new address')) ?>
             </span>
-        </a>
-        <a class="button button--primary"
-           href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>">
+    </a>
+    <a class="button button--primary"
+       href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>">
             <span>
                 <?= $escaper->escapeHtml(__('Go back')) ?>
             </span>
-        </a>
+    </a>
 </div>
