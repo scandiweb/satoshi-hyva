@@ -320,19 +320,15 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
             <?php endif; ?>
         </div>
         <div class="flex gap-x-4">
-            <div class="primary">
-                <button type="submit"
-                        class="button button--filled-primary"
-                        data-action="save-address"
-                        title="<?= $escaper->escapeHtmlAttr(__('Save Address')) ?>">
-                    <span><?= $escaper->escapeHtml(__('Save Address')) ?></span>
-                </button>
-            </div>
-            <div class="secondary">
-                <a class="button button--primary" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
-                    <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
-                </a>
-            </div>
+            <button type="submit"
+                    class="button button--filled-primary"
+                    data-action="save-address"
+                    title="<?= $escaper->escapeHtmlAttr(__('Save Address')) ?>">
+                <span><?= $escaper->escapeHtml(__('Save Address')) ?></span>
+            </button>
+            <a class="button button--primary" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
+                <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
+            </a>
         </div>
     </form>
 
