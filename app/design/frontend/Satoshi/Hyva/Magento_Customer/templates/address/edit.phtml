@@ -11,6 +11,7 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var Edit $block */
 /** @var Escaper $escaper */
 /** @var SecureHtmlRenderer $secureRenderer */
+
 /** @var ViewModelRegistry $viewModels */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
@@ -27,21 +28,21 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
 
 ?>
 <div class="container mx-auto pb-16">
-    <h2 class="text-lg font-bold mb-5">
+    <h2 class="text-text-500 text-lg font-bold mb-5">
         <?= $escaper->escapeHtml(__('Customer Address')) ?>
     </h2>
-    <form class="form-address-edit"
-          x-data="Object.assign(initCustomerAddressEdit(), hyva.formValidation($root))"
-          @private-content-loaded.window="onPrivateContentLoaded($event.detail.data)"
-          @submit="onSubmit"
-          action="<?= $escaper->escapeUrl($block->getSaveUrl()) ?>"
-          method="post"
-          id="form-validate"
-          enctype="multipart/form-data"
-          data-hasrequired="<?= $escaper->escapeHtmlAttr(__('* Required Fields')) ?>"
+    <form
+        x-data="Object.assign(initCustomerAddressEdit(), hyva.formValidation($root))"
+        @private-content-loaded.window="onPrivateContentLoaded($event.detail.data)"
+        @submit="onSubmit"
+        action="<?= $escaper->escapeUrl($block->getSaveUrl()) ?>"
+        method="post"
+        id="form-validate"
+        enctype="multipart/form-data"
+        data-hasrequired="<?= $escaper->escapeHtmlAttr(__('* Required Fields')) ?>"
     >
         <div class="bg-white p-5 rounded-xl mb-8">
-            <h2 class="text-lg font-bold mb-5">
+            <h2 class="text-text-500 text-lg font-bold mb-5">
                 <?= $escaper->escapeHtml(__('Contact Information')) ?>
             </h2>
             <?= $block->getBlockHtml('formkey') ?>
@@ -52,30 +53,24 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                 <?= $block->getNameBlockHtml() ?>
 
                 <?php if ($companyBlock->isEnabled()): ?>
-                    <div class="w-full">
-                        <?= $companyBlock->setCompany($block->getAddress()->getCompany())->toHtml() ?>
-                    </div>
+                    <?= $companyBlock->setCompany($block->getAddress()->getCompany())->toHtml() ?>
                 <?php endif ?>
 
                 <?php if ($phoneBlock->isEnabled()): ?>
-                    <div class="w-full">
-                        <?= $phoneBlock->setTelephone($block->getAddress()->getTelephone())->toHtml() ?>
-                    </div>
+                    <?= $phoneBlock->setTelephone($block->getAddress()->getTelephone())->toHtml() ?>
                 <?php endif ?>
 
                 <?php if ($faxBlock->isEnabled()): ?>
-                    <div class="field field-reserved w-full">
-                        <?= $faxBlock->setFax($block->getAddress()->getFax())->toHtml() ?>
-                    </div>
+                    <?= $faxBlock->setFax($block->getAddress()->getFax())->toHtml() ?>
                 <?php endif ?>
             </div>
         </div>
 
-        <h2 class="text-lg font-bold mb-5">
+        <h2 class="text-text-500 text-lg font-bold mb-5">
             <?= $escaper->escapeHtml(__('Customer Address')) ?>
         </h2>
         <div class="bg-white p-5 rounded-xl mb-8">
-            <h2 class="text-lg font-bold mb-5">
+            <h2 class="text-text-500 text-lg font-bold mb-5">
                 <?= $escaper->escapeHtml(__('Address')) ?>
             </h2>
             <div class="md:grid grid-cols-2 gap-3">
@@ -180,17 +175,17 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                     </div>
                 </div>
 
-                <div class="field field-reserved required country w-full">
-                    <label class="label sr-only tracking-widest" for="country">
+                <div>
+                    <label class="sr-only tracking-widest" for="country">
                     <span><?= /* @noEscape */
                         $block->getAttributeData()->getFrontendLabel('country_id') ?></span>
                     </label>
-                    <div>
-                        <?php $countries = $block
-                            ->getCountryCollection()
-                            ->setForegroundCountries($directoryViewModel->getTopCountryCodes())
-                            ->toOptionArray();
-                        ?>
+                    <?php $countries = $block
+                        ->getCountryCollection()
+                        ->setForegroundCountries($directoryViewModel->getTopCountryCodes())
+                        ->toOptionArray();
+                    ?>
+                    <div class="relative">
                         <select name="country_id"
                                 id="country"
                                 title="Country"
@@ -213,43 +208,49 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                                 </option>
                             <?php endforeach; ?>
                         </select>
+                        <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
+                            <?= $hyvaicons->renderHtml('chevron', 'rotate-90') ?>
+                        </div>
                     </div>
                 </div>
 
                 <div
-                    class="field field-reserved region w-full"
                     x-cloak
                     x-show="(hasAvailableRegions() && isRegionRequired) || showOptionalRegions"
-                    :class="{ 'required': isRegionRequired }"
                 >
-                    <label class="label sr-only tracking-widest" for="region_id">
+                    <label class="sr-only tracking-widest" for="region_id">
                     <span><?= /* @noEscape */
                         $regionLabel ?></span>
                     </label>
                     <div>
                         <template x-if="hasAvailableRegions() && (isRegionRequired || showOptionalRegions)">
-                            <select id="region_id" name="region_id"
-                                    title="<?= /* @noEscape */
-                                    $regionLabel ?>"
-                                    class="input__field input__field--outline h-auto px-5 py-[10px]"
-                                    x-ref="region_id"
-                                    x-model="selectedRegion"
-                                    :required="isRegionRequired"
-                                    @input.debounce="onRegionIdChange"
-                            >
-                                <option
-                                    value=""><?= $escaper->escapeHtml(__('Please select a region, state or province.')) ?></option>
-                                <template x-for="regionId in Object.keys(availableRegions)">
-                                    <?php /* in alpine v3, if the bound props update, the template body gets evaluated before the template condition */ ?>
-                                    <?php /* because of this it is required to check if availableRegions[regionId] is set */ ?>
-                                    <option :value="regionId"
-                                            :name="availableRegions[regionId] && availableRegions[regionId].name"
-                                            x-text="availableRegions[regionId] && availableRegions[regionId].name"
-                                            :selected="selectedRegion === regionId"
-                                    >
-                                    </option>
-                                </template>
-                            </select>
+                            <div class="relative">
+                                <select id="region_id" name="region_id"
+                                        title="<?= /* @noEscape */
+                                        $regionLabel ?>"
+                                        class="input__field input__field--outline h-auto px-5 py-[10px]"
+                                        x-ref="region_id"
+                                        x-model="selectedRegion"
+                                        :required="isRegionRequired"
+                                        @input.debounce="onRegionIdChange"
+                                >
+                                    <option
+                                        value=""><?= $escaper->escapeHtml(__('Please select a region, state or province.')) ?></option>
+                                    <template x-for="regionId in Object.keys(availableRegions)">
+                                        <?php /* in alpine v3, if the bound props update, the template body gets evaluated before the template condition */ ?>
+                                        <?php /* because of this it is required to check if availableRegions[regionId] is set */ ?>
+                                        <option :value="regionId"
+                                                :name="availableRegions[regionId] && availableRegions[regionId].name"
+                                                x-text="availableRegions[regionId] && availableRegions[regionId].name"
+                                                :selected="selectedRegion === regionId"
+                                        >
+                                        </option>
+                                    </template>
+                                </select>
+                                <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
+                                    <?= $hyvaicons->renderHtml('chevron', 'rotate-90') ?>
+                                </div>
+                            </div>
                         </template>
                         <input
                             :type="hasAvailableRegions() && (isRegionRequired || showOptionalRegions) ? 'hidden' : 'text'"

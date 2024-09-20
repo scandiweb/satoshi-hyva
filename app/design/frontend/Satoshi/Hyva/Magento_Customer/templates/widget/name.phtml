@@ -32,7 +32,6 @@ $suffix = $block->showSuffix();
                         name="<?= $escaper->escapeHtmlAttr($block->getFieldName('prefix')) ?>"
                     <?= $block->isPrefixRequired() ? ' required' : '' ?>
                         title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('prefix')) ?>"
-                        class="<?= $escaper->escapeHtmlAttr($block->getAttributeValidationClass('prefix')) ?>"
                     <?= $block->isPrefixRequired() ? ' required' : '' ?> >
                     <?php foreach ($block->getPrefixOptions() as $option): ?>
                         <option value="<?= $escaper->escapeHtmlAttr($option) ?>"
@@ -127,7 +126,6 @@ $suffix = $block->showSuffix();
                 <select id="<?= $escaper->escapeHtmlAttr($block->getFieldId('suffix')) ?>"
                         name="<?= $escaper->escapeHtmlAttr($block->getFieldName('suffix')) ?>"
                         title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('suffix')) ?>"
-                        class="<?= $escaper->escapeHtmlAttr($block->getAttributeValidationClass('suffix')) ?>"
                     <?= $block->isSuffixRequired() ? ' required' : '' ?>
                 >
                     <?php foreach ($block->getSuffixOptions() as $option): ?>
