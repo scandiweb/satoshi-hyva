@@ -2,23 +2,27 @@
 declare(strict_types=1);
 
 use Magento\Customer\Block\Widget\Telephone;
-use Satoshi\Theme\Block\Template;
+use Magento\Framework\Escaper;
 
-/** @var Template $template */
+/** @var Escaper $escaper */
 /** @var Telephone $block */
-
 ?>
 
-<?= $template
-    ->setData([
-        'type' => 'tel',
-        'name' => 'telephone',
-        'id' => 'telephone',
-        'label' => __('Phone Number'),
-        'value' => $block->getTelephone(),
-        'placeholder' => __('Enter your phone number'),
-        'class' => $block->getAttributeValidationClass('telephone') ?: '',
-        'attributes' => ($block->isRequired() ? 'required ' : '') . 'data-validate=\'{"telephone": true}\' @input.debounce="onChange"',
-    ])
-    ->render('Magento_Customer::html/_form-field.phtml');
-?>
+<div>
+    <label for="telephone" class="sr-only tracking-widest">
+        <span><?= $escaper->escapeHtml(__('Phone Number')) ?></span>
+    </label>
+    <div>
+        <input type="tel"
+               name="telephone"
+               id="telephone"
+               <?php if ($block->isRequired()): ?>required<?php endif; ?>
+               @input.debounce="onChange"
+               data-validate='{"telephone": true}'
+               value="<?= $escaper->escapeHtmlAttr($block->getTelephone()) ?>"
+               title="<?= $escaper->escapeHtmlAttr(__('Phone Number')) ?>"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your phone number')) ?>"
+               class="input__field input__field--outline h-auto px-5 py-[10px]"
+        >
+    </div>
+</div>
