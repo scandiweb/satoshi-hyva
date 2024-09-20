@@ -3,24 +3,29 @@ declare(strict_types=1);
 
 use Magento\Customer\Block\Widget\Company;
 use Magento\Customer\Helper\Address as AddressHelper;
-use Satoshi\Theme\Block\Template;
+use Magento\Framework\Escaper;
 
-/** @var Template $template */
+/** @var Escaper $escaper */
 /** @var Company $block */
 
-$validationClass = $this->helper(AddressHelper::class)->getAttributeValidationClass('company') ?: '';
-?>
+$validationClass = $this->helper(AddressHelper::class)->getAttributeValidationClass('company');
 
-<?= $template
-    ->setData([
-        'type' => 'text',
-        'name' => 'company',
-        'id' => 'company',
-        'label' => 'Company',
-        'value' => $block->getCompany(),
-        'placeholder' => 'Enter your company name',
-        'class' => $validationClass,
-        'attributes' => $block->isRequired() ? 'required' : '',
-    ])
-    ->render('Magento_Customer::html/_form-field.phtml');
 ?>
+<div>
+    <label for="company" class="sr-only tracking-widest">
+        <span><?= $escaper->escapeHtml(__('Company')) ?></span>
+    </label>
+    <div>
+        <input type="text"
+               name="company"
+               id="company"
+            <?php if ($block->isRequired()): ?>
+                required
+            <?php endif; ?>
+               value="<?= $escaper->escapeHtmlAttr($block->getCompany()) ?>"
+               title="<?= $escaper->escapeHtmlAttr(__('Company')) ?>"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your company name')) ?>"
+               class="input__field input__field--outline h-auto px-5 py-[10px]"
+        >
+    </div>
+</div>

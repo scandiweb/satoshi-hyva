@@ -1,92 +1,146 @@
 <?php
-
 declare(strict_types=1);
 
 use Magento\Customer\Block\Widget\Name;
-use Satoshi\Theme\Block\Template;
+use Magento\Framework\Escaper;
 
-/** @var Template $template */
 /** @var Name $block */
+/** @var Escaper $escaper */
 
 $prefix = $block->showPrefix();
 $middle = $block->showMiddlename();
 $suffix = $block->showSuffix();
 ?>
-
 <?php if ($prefix): ?>
-    <?= $template
-        ->setData([
-            'type' => $block->getPrefixOptions() === false ? 'text' : 'select',
-            'name' => $block->getFieldName('prefix'),
-            'id' => $block->getFieldId('prefix'),
-            'label' => $block->getStoreLabel('prefix'),
-            'value' => $block->getObject()->getPrefix(),
-            'placeholder' => $block->getStoreLabel('prefix'),
-            'class' => $block->getAttributeValidationClass('prefix') ?: '',
-            'attributes' => $block->isPrefixRequired() ? 'required' : '',
-            'options' => $block->getPrefixOptions(),
-        ])
-        ->render('Magento_Customer::html/_form-field.phtml');
-    ?>
+    <div>
+        <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('prefix')) ?>">
+            <span><?= $escaper->escapeHtml($block->getStoreLabel('prefix')) ?></span>
+        </label>
+        <div>
+            <?php if ($block->getPrefixOptions() === false): ?>
+                <input type="text" id="<?= $escaper->escapeHtmlAttr($block->getFieldId('prefix')) ?>"
+                       name="<?= $escaper->escapeHtmlAttr($block->getFieldName('prefix')) ?>"
+                    <?= $block->isPrefixRequired() ? ' required' : '' ?>
+                       value="<?= $escaper->escapeHtmlAttr($block->getObject()->getPrefix()) ?>"
+                       title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('prefix')) ?>"
+                       placeholder="<?= $block->getStoreLabel('prefix') ?>"
+                       class="input__field input__field--outline h-auto px-5 py-[10px]"
+                    <?= $block->isPrefixRequired() ? ' required' : '' ?>
+                >
+            <?php else: ?>
+                <select id="<?= $escaper->escapeHtmlAttr($block->getFieldId('prefix')) ?>"
+                        name="<?= $escaper->escapeHtmlAttr($block->getFieldName('prefix')) ?>"
+                    <?= $block->isPrefixRequired() ? ' required' : '' ?>
+                        title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('prefix')) ?>"
+                        class="<?= $escaper->escapeHtmlAttr($block->getAttributeValidationClass('prefix')) ?>"
+                    <?= $block->isPrefixRequired() ? ' required' : '' ?> >
+                    <?php foreach ($block->getPrefixOptions() as $option): ?>
+                        <option value="<?= $escaper->escapeHtmlAttr($option) ?>"
+                            <?php if ($block->getObject()->getPrefix() == $option): ?>
+                                selected="selected"
+                            <?php endif; ?>>
+                            <?= $escaper->escapeHtml(__($option)) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
+        </div>
+    </div>
 <?php endif; ?>
-
-<?= $template
-    ->setData([
-        'type' => 'text',
-        'name' => $block->getFieldName('firstname'),
-        'id' => $block->getFieldId('firstname'),
-        'label' => $block->getStoreLabel('firstname'),
-        'value' => $block->getObject()->getFirstname(),
-        'placeholder' => $block->getStoreLabel('firstname'),
-        'class' => $block->getAttributeValidationClass('firstname') ?: '',
-        'attributes' => 'required @input.debounce="onChange"',
-    ])
-    ->render('Magento_Customer::html/_form-field.phtml');
-?>
-
+<div>
+    <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('firstname')) ?>">
+            <span>
+                <?= $escaper->escapeHtml($block->getStoreLabel('firstname')) ?>
+            </span>
+    </label>
+    <div>
+        <input type="text" id="<?= $escaper->escapeHtmlAttr($block->getFieldId('firstname')) ?>"
+               name="<?= $escaper->escapeHtmlAttr($block->getFieldName('firstname')) ?>"
+               value="<?= $escaper->escapeHtmlAttr($block->getObject()->getFirstname()) ?>"
+               required
+               title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('firstname')) ?>"
+               placeholder="<?= $block->getStoreLabel('firstname') ?>"
+               class="input__field input__field--outline h-auto px-5 py-[10px]"
+               @input.debounce="onChange"
+            <?= ($block->getAttributeValidationClass('firstname') == 'required-entry') ? ' required' : '' ?>
+        >
+    </div>
+</div>
 <?php if ($middle): ?>
-    <?= $template
-        ->setData([
-            'type' => 'text',
-            'name' => $block->getFieldName('middlename'),
-            'id' => $block->getFieldId('middlename'),
-            'label' => $block->getStoreLabel('middlename'),
-            'value' => $block->getObject()->getMiddlename(),
-            'placeholder' => $block->getStoreLabel('middlename'),
-            'class' => $block->getAttributeValidationClass('middlename') ?: '',
-            'attributes' => '@input.debounce="onChange"' . ($block->isMiddlenameRequired() ? ' required' : ''),
-        ])
-        ->render('Magento_Customer::html/_form-field.phtml');
-    ?>
+    <?php $isMiddlenameRequired = $block->isMiddlenameRequired(); ?>
+    <div>
+        <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('middlename')) ?>">
+            <span>
+                <?= $escaper->escapeHtml($block->getStoreLabel('middlename')) ?>
+            </span>
+        </label>
+        <div>
+            <input type="text" id="<?= $escaper->escapeHtmlAttr($block->getFieldId('middlename')) ?>"
+                   name="<?= $escaper->escapeHtmlAttr($block->getFieldName('middlename')) ?>"
+                   value="<?= $escaper->escapeHtmlAttr($block->getObject()->getMiddlename()) ?>"
+                   title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('middlename')) ?>"
+                   placeholder="<?= $block->getStoreLabel('middlename') ?>"
+                   class="input__field input__field--outline h-auto px-5 py-[10px]"
+                   @input.debounce="onChange"
+                <?= $isMiddlenameRequired ? ' required' : '' ?>
+            >
+        </div>
+    </div>
 <?php endif; ?>
-
-<?= $template
-    ->setData([
-        'type' => 'text',
-        'name' => $block->getFieldName('lastname'),
-        'id' => $block->getFieldId('lastname'),
-        'label' => $block->getStoreLabel('lastname'),
-        'value' => $block->getObject()->getLastname(),
-        'placeholder' => $block->getStoreLabel('lastname'),
-        'class' => $block->getAttributeValidationClass('lastname') ?: '',
-        'attributes' => 'required @input.debounce="onChange"',
-    ])
-    ->render('Magento_Customer::html/_form-field.phtml');
-?>
-
+<div>
+    <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('lastname')) ?>">
+            <span>
+                <?= $escaper->escapeHtml($block->getStoreLabel('lastname')) ?>
+            </span>
+    </label>
+    <div>
+        <input type="text" id="<?= $escaper->escapeHtmlAttr($block->getFieldId('lastname')) ?>"
+               name="<?= $escaper->escapeHtmlAttr($block->getFieldName('lastname')) ?>"
+               required
+               value="<?= $escaper->escapeHtmlAttr($block->getObject()->getLastname()) ?>"
+               title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('lastname')) ?>"
+               placeholder="<?= $block->getStoreLabel('lastname') ?>"
+               class="input__field input__field--outline h-auto px-5 py-[10px]"
+               @input.debounce="onChange"
+            <?= ($block->getAttributeValidationClass('lastname') == 'required-entry') ? ' required' : '' ?>
+        >
+    </div>
+</div>
 <?php if ($suffix): ?>
-    <?= $template
-        ->setData([
-            'type' => $block->getSuffixOptions() === false ? 'text' : 'select',
-            'name' => $block->getFieldName('suffix'),
-            'id' => $block->getFieldId('suffix'),
-            'label' => $block->getStoreLabel('suffix'),
-            'value' => $block->getObject()->getSuffix(),
-            'placeholder' => $block->getStoreLabel('suffix'),
-            'class' => $block->getAttributeValidationClass('suffix') ?: '',
-            'options' => $block->getSuffixOptions() ?: [],
-            'attributes' => $block->isSuffixRequired() ? 'required' : '',
-        ])
-        ->render('Magento_Customer::html/_form-field.phtml');
-    ?>
+    <div>
+        <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('suffix')) ?>">
+            <span>
+                <?= $escaper->escapeHtml($block->getStoreLabel('suffix')) ?>
+            </span>
+        </label>
+        <div>
+            <?php if ($block->getSuffixOptions() === false): ?>
+                <input type="text" id="<?= $escaper->escapeHtmlAttr($block->getFieldId('suffix')) ?>"
+                       name="<?= $escaper->escapeHtmlAttr($block->getFieldName('suffix')) ?>"
+                       value="<?= $escaper->escapeHtmlAttr($block->getObject()->getSuffix()) ?>"
+                       title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('suffix')) ?>"
+                       placeholder="<?= $block->getStoreLabel('suffix') ?>"
+                       class="input__field input__field--outline h-auto px-5 py-[10px]"
+                    <?= $block->isSuffixRequired() ? ' required' : '' ?>
+                >
+            <?php else: ?>
+                <select id="<?= $escaper->escapeHtmlAttr($block->getFieldId('suffix')) ?>"
+                        name="<?= $escaper->escapeHtmlAttr($block->getFieldName('suffix')) ?>"
+                        title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('suffix')) ?>"
+                        class="<?= $escaper->escapeHtmlAttr($block->getAttributeValidationClass('suffix')) ?>"
+                    <?= $block->isSuffixRequired() ? ' required' : '' ?>
+                >
+                    <?php foreach ($block->getSuffixOptions() as $option): ?>
+                        <option value="<?= $escaper->escapeHtmlAttr($option) ?>"
+                            <?php if ($block->getObject()->getSuffix() == $option): ?>
+                                selected="selected"
+                            <?php endif; ?>
+                        >
+                            <?= $escaper->escapeHtml(__($option)) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            <?php endif; ?>
+        </div>
+    </div>
 <?php endif; ?>
