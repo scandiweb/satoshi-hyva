@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 use Magento\Customer\Block\Widget\Company;
 use Magento\Customer\Helper\Address as AddressHelper;
-use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
-/** @var Escaper $escaper */
 /** @var Company $block */
 
-$validationClass = $this->helper(AddressHelper::class)->getAttributeValidationClass('company');
+$validationClass = $this->helper(AddressHelper::class)->getAttributeValidationClass('company') ?: '';
 ?>
 
 <?= $template
@@ -21,8 +19,8 @@ $validationClass = $this->helper(AddressHelper::class)->getAttributeValidationCl
         'label' => 'Company',
         'value' => $block->getCompany(),
         'placeholder' => 'Enter your company name',
-        'required' => $block->isRequired(),
-        'class' => 'form-input ' . $validationClass,
+        'class' => $validationClass,
+        'attributes' => $block->isRequired() ? 'required' : '',
     ])
     ->render('Magento_Customer::html/_form-field.phtml');
 ?>

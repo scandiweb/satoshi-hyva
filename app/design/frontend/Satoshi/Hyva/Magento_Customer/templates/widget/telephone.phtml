@@ -2,11 +2,9 @@
 declare(strict_types=1);
 
 use Magento\Customer\Block\Widget\Telephone;
-use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
-/** @var Escaper $escaper */
 /** @var Telephone $block */
 
 ?>
@@ -19,9 +17,8 @@ use Satoshi\Theme\Block\Template;
         'label' => __('Phone Number'),
         'value' => $block->getTelephone(),
         'placeholder' => __('Enter your phone number'),
-        'required' => $block->isRequired(),
-        'class' => 'form-input ' . $block->getAttributeValidationClass('telephone'),
-        'additional_attributes' => 'data-validate=\'{"telephone": true}\' @input.debounce="onChange"',
+        'class' => $block->getAttributeValidationClass('telephone') ?: '',
+        'attributes' => ($block->isRequired() ? 'required ' : '') . 'data-validate=\'{"telephone": true}\' @input.debounce="onChange"',
     ])
     ->render('Magento_Customer::html/_form-field.phtml');
 ?>

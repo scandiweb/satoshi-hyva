@@ -3,12 +3,10 @@
 declare(strict_types=1);
 
 use Magento\Customer\Block\Widget\Name;
-use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
 /** @var Name $block */
-/** @var Escaper $escaper */
 
 $prefix = $block->showPrefix();
 $middle = $block->showMiddlename();
@@ -24,9 +22,8 @@ $suffix = $block->showSuffix();
             'label' => $block->getStoreLabel('prefix'),
             'value' => $block->getObject()->getPrefix(),
             'placeholder' => $block->getStoreLabel('prefix'),
-            'required' => $block->isPrefixRequired(),
-            'class' => 'form-input ' . $block->getAttributeValidationClass('prefix'),
-            'additional_attributes' => $block->isPrefixRequired() ? 'required' : '',
+            'class' => $block->getAttributeValidationClass('prefix') ?: '',
+            'attributes' => $block->isPrefixRequired() ? 'required' : '',
             'options' => $block->getPrefixOptions(),
         ])
         ->render('Magento_Customer::html/_form-field.phtml');
@@ -41,9 +38,8 @@ $suffix = $block->showSuffix();
         'label' => $block->getStoreLabel('firstname'),
         'value' => $block->getObject()->getFirstname(),
         'placeholder' => $block->getStoreLabel('firstname'),
-        'required' => true,
-        'class' => 'form-input ' . $block->getAttributeValidationClass('firstname'),
-        'additional_attributes' => '@input.debounce="onChange"',
+        'class' => $block->getAttributeValidationClass('firstname') ?: '',
+        'attributes' => 'required @input.debounce="onChange"',
     ])
     ->render('Magento_Customer::html/_form-field.phtml');
 ?>
@@ -57,9 +53,8 @@ $suffix = $block->showSuffix();
             'label' => $block->getStoreLabel('middlename'),
             'value' => $block->getObject()->getMiddlename(),
             'placeholder' => $block->getStoreLabel('middlename'),
-            'required' => $block->isMiddlenameRequired(),
-            'class' => 'form-input ' . $block->getAttributeValidationClass('middlename'),
-            'additional_attributes' => '@input.debounce="onChange"',
+            'class' => $block->getAttributeValidationClass('middlename') ?: '',
+            'attributes' => '@input.debounce="onChange"' . ($block->isMiddlenameRequired() ? ' required' : ''),
         ])
         ->render('Magento_Customer::html/_form-field.phtml');
     ?>
@@ -73,9 +68,8 @@ $suffix = $block->showSuffix();
         'label' => $block->getStoreLabel('lastname'),
         'value' => $block->getObject()->getLastname(),
         'placeholder' => $block->getStoreLabel('lastname'),
-        'required' => true,
-        'class' => 'form-input ' . $block->getAttributeValidationClass('lastname'),
-        'additional_attributes' => '@input.debounce="onChange"',
+        'class' => $block->getAttributeValidationClass('lastname') ?: '',
+        'attributes' => 'required @input.debounce="onChange"',
     ])
     ->render('Magento_Customer::html/_form-field.phtml');
 ?>
@@ -89,9 +83,9 @@ $suffix = $block->showSuffix();
             'label' => $block->getStoreLabel('suffix'),
             'value' => $block->getObject()->getSuffix(),
             'placeholder' => $block->getStoreLabel('suffix'),
-            'required' => $block->isSuffixRequired(),
-            'class' => 'form-input ' . $block->getAttributeValidationClass('suffix'),
+            'class' => $block->getAttributeValidationClass('suffix') ?: '',
             'options' => $block->getSuffixOptions() ?: [],
+            'attributes' => $block->isSuffixRequired() ? 'required' : '',
         ])
         ->render('Magento_Customer::html/_form-field.phtml');
     ?>

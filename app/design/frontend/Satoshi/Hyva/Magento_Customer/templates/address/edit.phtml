@@ -1,0 +1,398 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Customer\Block\Address\Edit;
+use Magento\Customer\ViewModel\Address as AddressViewModel;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $template */
+/** @var Edit $block */
+/** @var Escaper $escaper */
+/** @var SecureHtmlRenderer $secureRenderer */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var AddressViewModel $addressViewModel */
+$addressViewModel = $block->getViewModel();
+$directoryViewModel = $viewModels->require(\Hyva\Theme\ViewModel\Directory::class);
+
+$companyBlock = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Company::class);
+$phoneBlock = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Telephone::class);
+$faxBlock = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Fax::class);
+$streetLabel = $block->getAttributeData()->getFrontendLabel('street');
+$regionLabel = $block->getAttributeData()->getFrontendLabel('region');
+$showOptionalRegions = $block->getConfig('general/region/display_all');
+?>
+<div class="container mx-auto">
+    <h2 class="text-lg font-bold mb-4">
+        <?= $escaper->escapeHtml(__('Customer Address')) ?>
+    </h2>
+</div>
+
+<form class="form-address-edit container mx-auto"
+      x-data="Object.assign(initCustomerAddressEdit(), hyva.formValidation($root))"
+      @private-content-loaded.window="onPrivateContentLoaded($event.detail.data)"
+      @submit="onSubmit"
+      action="<?= $escaper->escapeUrl($block->getSaveUrl()) ?>"
+      method="post"
+      id="form-validate"
+      enctype="multipart/form-data"
+      data-hasrequired="<?= $escaper->escapeHtmlAttr(__('* Required Fields')) ?>"
+>
+    <fieldset class="bg-white p-4 rounded-xl mb-8">
+        <h2 class="text-lg font-bold mb-4">
+            <?= $escaper->escapeHtml(__('Contact Information')) ?>
+        </h2>
+        <?= $block->getBlockHtml('formkey') ?>
+        <input type="hidden" name="success_url" value="<?= $escaper->escapeUrl($block->getSuccessUrl()) ?>">
+        <input type="hidden" name="error_url" value="<?= $escaper->escapeUrl($block->getErrorUrl()) ?>">
+
+        <div class="md:grid grid-cols-2 gap-4">
+            <?= $block->getNameBlockHtml() ?>
+
+            <?php if ($companyBlock->isEnabled()): ?>
+                <div class="w-full">
+                    <?= $companyBlock->setCompany($block->getAddress()->getCompany())->toHtml() ?>
+                </div>
+            <?php endif ?>
+
+            <?php if ($phoneBlock->isEnabled()): ?>
+                <div class="w-full">
+                    <?= $phoneBlock->setTelephone($block->getAddress()->getTelephone())->toHtml() ?>
+                </div>
+            <?php endif ?>
+
+            <?php if ($faxBlock->isEnabled()): ?>
+                <div class="field field-reserved w-full">
+                    <?= $faxBlock->setFax($block->getAddress()->getFax())->toHtml() ?>
+                </div>
+            <?php endif ?>
+        </div>
+    </fieldset>
+    <fieldset class="bg-white p-4 rounded-xl mb-6">
+        <h2 class="text-lg font-bold mb-4">
+            <?= $escaper->escapeHtml(__('Address')) ?>
+        </h2>
+        <div class="md:grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-4">
+
+                <?= $template
+                    ->setData([
+                        'type' => 'text',
+                        'name' => 'street[]',
+                        'id' => 'street_1',
+                        'label' => $streetLabel,
+                        'value' => $block->getStreetLine(1),
+                        'placeholder' => 'Enter your street address',
+                        'attributes' => 'required @input.debounce="onChange"'
+                    ])
+                    ->render('Magento_Customer::html/_form-field.phtml');
+                ?>
+
+                <?php for ($i = 1, $n = $addressViewModel->addressGetStreetLines(); $i < $n; $i++): ?>
+                    <?= $template
+                        ->setData([
+                            'type' => 'text',
+                            'name' => 'street[]',
+                            'id' => 'street_' . ($i + 1),
+                            'label' => $escaper->escapeHtml(__('Street Address %1', $i + 1)),
+                            'value' => $block->getStreetLine($i + 1),
+                            'placeholder' => __('Enter your street address %1', $i + 1),
+                            'attributes' => '@input.debounce="onChange"'
+                        ])
+                        ->render('Magento_Customer::html/_form-field.phtml');
+                    ?>
+                <?php endfor; ?>
+            </div>
+
+            <?php if ($addressViewModel->addressIsVatAttributeVisible()): ?>
+                <?= $template
+                    ->setData([
+                        'type' => 'text',
+                        'name' => 'vat_id',
+                        'id' => 'vat_id',
+                        'label' => $block->getAttributeData()->getFrontendLabel('vat_id'),
+                        'value' => $block->getAddress()->getVatId(),
+                        'placeholder' => 'Enter your VAT ID',
+                        'attributes' => '@input.debounce="onChange"'
+                    ])
+                    ->render('Magento_Customer::html/_form-field.phtml');
+                ?>
+            <?php endif; ?>
+
+            <?= $template
+                ->setData([
+                    'type' => 'text',
+                    'name' => 'postcode',
+                    'id' => 'zip',
+                    'label' => $block->getAttributeData()->getFrontendLabel('postcode'),
+                    'value' => $block->getAddress()->getPostcode(),
+                    'placeholder' => 'Enter your postcode',
+                    'attributes' => '@input.debounce="onChange" data-validate=\'{"postcode": true}\' :required="isZipRequired"'
+                ])
+                ->render('Magento_Customer::html/_form-field.phtml');
+            ?>
+
+            <?= $template
+                ->setData([
+                    'type' => 'text',
+                    'name' => 'city',
+                    'id' => 'city',
+                    'label' => $block->getAttributeData()->getFrontendLabel('city'),
+                    'value' => $block->getAddress()->getCity(),
+                    'placeholder' => 'Enter your city',
+                    'attributes' => 'required @input.debounce="onChange"'
+                ])
+                ->render('Magento_Customer::html/_form-field.phtml');
+            ?>
+
+            <?php $countries = $block
+                ->getCountryCollection()
+                ->setForegroundCountries($directoryViewModel->getTopCountryCodes())
+                ->toOptionArray();
+            ?>
+            <?= $template
+                ->setData([
+                    'type' => 'select',
+                    'name' => 'country_id',
+                    'id' => 'country',
+                    'label' => $block->getAttributeData()->getFrontendLabel('country_id'),
+                    'value' => $block->getCountryId(),
+                    'options' => array_column($countries, 'label', 'value'),
+                    'additional_attributes' => 'required title="Country" x-ref="country_id" @input.debounce="changeCountry"',
+                ])
+                ->render('Magento_Customer::html/_form-field.phtml');
+            ?>
+
+<!--            TODO: fix this-->
+            <div
+                class="w-full"
+                x-cloak
+                x-show="(hasAvailableRegions() && isRegionRequired) || showOptionalRegions"
+            >
+                <div x-init="console.log((hasAvailableRegions() && (isRegionRequired || showOptionalRegions)) ? 'true' : 'false')" onclick="console.log('boo')">boooo</div>
+                <?= $template
+                    ->setData([
+                        'type' => 'select',
+                        'name' => 'region_id',
+                        'id' => 'region_id',
+                        'label' => $regionLabel,
+                        'value' => '',
+                        'attributes' => "
+                                title='{$regionLabel}'
+                                x-ref='region_id'
+                                x-model='selectedRegion'
+                                :required='isRegionRequired'
+                                @input.debounce='onRegionIdChange'
+                                x-data='{ options: availableRegions }'
+                            ",
+                        'default_option' => __('Please select a region, state or province.'),
+                        'alpine_data_source' => 'options',
+                        'option_value_field' => 'id',
+                        'option_label_field' => 'name',
+                        'render_container' => false,
+                    ])
+                    ->render('Magento_Customer::html/_form-field.phtml');
+                ?>
+
+                <?= $template
+                    ->setData([
+                        'type' => "hasAvailableRegions() && (isRegionRequired || showOptionalRegions) ? 'hidden' : 'text'",
+                        'name' => 'region',
+                        'id' => 'region',
+                        'label' => $regionLabel,
+                        'value' => $block->getRegion(),
+                        'additional_attributes' => "
+                            x-ref='region'
+                            aria-label='{$regionLabel}'
+                            @input.debounce='onChange'
+                            :required='!hasAvailableRegions() && !showOptionalRegions ? isRegionRequired : false'
+                        ",
+                        'render_container' => false,
+                    ])
+                    ->render('Magento_Customer::html/_form-field.phtml');
+                ?>
+            </div>
+        </div>
+
+        <?= $block->getChildHtml('fieldset_address_info_additional') ?>
+
+        <?php $isDefaultMessages = array_filter([
+            $block->isDefaultBilling() ? __("It's a default billing address.") : null,
+            $block->isDefaultShipping() ? __("It's a default shipping address.") : null,
+        ]) ?>
+        <?php if ($isDefaultMessages): ?>
+            <div class="message">
+                <?= $escaper->escapeHtml(implode("<br>\n", $isDefaultMessages), ['br']) ?>
+            </div>
+        <?php endif; ?>
+        <?php if (!$block->isDefaultBilling() && $block->canSetAsDefaultBilling()): ?>
+            <?= $template
+                ->setData([
+                    'type' => 'checkbox',
+                    'name' => 'default_billing',
+                    'id' => 'primary_billing',
+                    'label' => __('Use as my default billing address'),
+                    'value' => '1',
+                ])
+                ->render('Magento_Customer::html/_form-field.phtml');
+            ?>
+        <?php else: ?>
+            <input type="hidden" name="default_billing" value="1"/>
+        <?php endif; ?>
+
+        <?php if (!$block->isDefaultShipping() && $block->canSetAsDefaultShipping()): ?>
+            <?= $template
+                ->setData([
+                    'type' => 'checkbox',
+                    'name' => 'default_shipping',
+                    'id' => 'primary_shipping',
+                    'label' => __('Use as my default shipping address'),
+                    'value' => '1',
+                ])
+                ->render('Magento_Customer::html/_form-field.phtml');
+            ?>
+        <?php else: ?>
+            <input type="hidden" name="default_shipping" value="1">
+        <?php endif; ?>
+    </fieldset>
+    <div class="flex gap-x-2">
+        <div class="primary">
+            <button type="submit"
+                    class="button button--filled-primary"
+                    data-action="save-address"
+                    title="<?= $escaper->escapeHtmlAttr(__('Save Address')) ?>">
+                <span><?= $escaper->escapeHtml(__('Save Address')) ?></span>
+            </button>
+        </div>
+        <div class="secondary">
+            <a class="button button--primary" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
+                <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
+            </a>
+        </div>
+    </div>
+</form>
+
+<script>
+    function initCustomerAddressEdit() {
+        return {
+            directoryData: {},
+            availableRegions: {},
+            messageTime: 5000,
+            fieldsNames: [],
+            selectedRegion: '<?= $escaper->escapeJs($block->getRegion() ?: 0) ?>',
+            isZipRequired: true,
+            isRegionRequired: true,
+            showOptionalRegions: <?= $showOptionalRegions ? 'true' : 'false' ?>,
+            onPrivateContentLoaded(data) {
+                this.directoryData = data['directory-data'] || {};
+
+                <?php if ($block->getCountryId()): ?>
+                this.setCountry(this.$refs['country_id'], '<?= $escaper->escapeJs($block->getRegion()) ?>');
+                <?php endif; ?>
+
+            },
+            setRegionInputValue(regionName) {
+                this.$nextTick(() => {
+                    const regionInputElement = this.$refs['region'];
+                    if (regionInputElement) {
+                        regionInputElement.value = regionName;
+                    }
+                })
+            },
+            setCountry(countrySelectElement, initialRegion) {
+                const selectedOption = countrySelectElement.options[countrySelectElement.selectedIndex];
+                const countryCode = countrySelectElement.value;
+                const countryData = this.directoryData[countryCode] || false;
+
+                if (!countryData) {
+                    this.setRegionInputValue('');
+                    return;
+                }
+
+                this.isZipRequired = selectedOption.dataset.isZipRequired === '1';
+                this.isRegionRequired = selectedOption.dataset.isRegionRequired === '1';
+
+                this.availableRegions = countryData.regions || {};
+
+                const initialRegionId = Object.keys(this.availableRegions).filter(regionId => this.availableRegions[regionId].name === initialRegion)[0];
+                this.selectedRegion = initialRegionId || '0';
+                this.setRegionInputValue(initialRegionId && this.availableRegions[initialRegionId].name || '');
+
+            },
+            changeCountry(event, initialRegion) {
+                this.setCountry(event.target, initialRegion);
+                this.validateCountryDependentFields();
+                this.onChange(event);
+            },
+            validateCountryDependentFields() {
+                this.$nextTick(() => {
+                    <?php /* Reinitialize validation rules for fields that depend on the country */ ?>
+                    this.fields['postcode'] && this.removeMessages(this.fields['postcode'])
+                    this.fields['region'] && this.removeMessages(this.fields['region'])
+                    delete this.fields['postcode'];
+                    delete this.fields['region'];
+                    <?php /* Initialize country_id, too, because the postcode validation depends on it */ ?>
+                    this.setupField(this.$refs['country_id']);
+                    this.setupField(this.$refs['postcode']);
+                    this.setupField(this.$refs['region']);
+                    this.setupField(this.$refs['region_id']);
+
+                    this.fields['postcode'] && this.validateField(this.fields['postcode']);
+                    this.fields['region'] && this.validateField(this.fields['region']);
+                    this.fields['region_id'] && this.validateField(this.fields['region_id']);
+                })
+            },
+            hasAvailableRegions() {
+                return Object.keys(this.availableRegions).length > 0;
+            },
+            onRegionIdChange(event) {
+                this.$refs.region.value = this.selectedRegion.length > 0 ?
+                    this.availableRegions[this.selectedRegion].name :
+                    ''
+                this.onChange(event)
+                this.validateField(this.fields['region'])
+            }
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+
+        hyva.formValidation.addRule('telephone', (value, options) => {
+            const phoneNumber = value.trim().replace(' ', '');
+            if (phoneNumber && phoneNumber.length < (options.minlength || 3)) {
+                return '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>';
+            }
+
+            return true;
+        });
+
+        const postCodeSpecs = <?= /* @noEscape */ $block->getPostCodeConfig()->getSerializedPostCodes() ?>;
+
+        hyva.formValidation.addRule('postcode', (postCode, options, field, context) => {
+            context.removeMessages(field, 'postcode-warning')
+            const countryId = (context.fields['country_id'] && context.fields['country_id'].element.value),
+                validatedPostCodeExamples = [],
+                countryPostCodeSpecs = countryId && postCodeSpecs ? postCodeSpecs[countryId] : false;
+
+            if (!postCode || !countryPostCodeSpecs) return true;
+
+            for (const postCodeSpec of Object.values(countryPostCodeSpecs)) {
+                if (new RegExp(postCodeSpec.pattern).test(postCode)) return true;
+                validatedPostCodeExamples.push(postCodeSpec.example);
+            }
+            if (validatedPostCodeExamples) {
+                context.addMessages(field, 'postcode-warning', [
+                    '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
+                    '<?= $escaper->escapeJs(__(' Example: ')) ?>' + validatedPostCodeExamples.join('; ') + '. ',
+                    '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
+                ]);
+            }
+
+            return true;
+        });
+    })
+</script>
