@@ -358,7 +358,9 @@ return [
         'ReadyMage_Logger' => 1,
         'ReadyMage_Maintenance' => 1,
         'Satoshi_CatalogGraphQl' => 1,
+        'Satoshi_SatoshiUi' => 1,
         'Satoshi_Theme' => 1,
+        'Scandiweb_HyvaUi' => 1,
         'Temando_ShippingRemover' => 1
     ],
     'scopes' => [
