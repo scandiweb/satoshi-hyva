@@ -1,0 +1,113 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Checkout\Block\Cart\Coupon;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var Escaper $escaper */
+/** @var Template $template */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$isCartPage = $block->getData('isCartPage');
+$mixBackground = false;
+?>
+
+<div
+  class="flex flex-col gap-5 <?= $isCartPage ? 'flex-1 md:pr-5' : 'md:overflow-auto md:max-h-[calc(100dvh-225px)] md:px-4' ?>"
+>
+  <div
+    class="flex flex-col gap-5 md:gap-5 md:pb-3 <?= $isCartPage ? 'md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4' : 'md:pt-4 md:pb-10' ?>"
+  >
+    <template
+      x-for="item in cartItems"
+      :key="item.item_id"
+    >
+      <div
+        :key="item.item_id"
+        class="card-hover group max-h-80 <?= $isCartPage ? 'md:max-h-none' : '' ?> transition-all duration-300"
+        :class="
+          {
+            'opacity-0 -mt-5 md:-mt-4 max-h-0 overflow-hidden': item.isDeleted,
+            'max-h-80': !item.isDeleted,
+            'md:animate-[pop_300ms_1000ms_ease-in-out_forwards] animate-[pop_300ms_400ms_ease-in-out_forwards]': Date.now() < item.focusedUntil
+          }
+        "
+      >
+        <a
+          x-element-transition-trigger:product.animate="
+            {
+              'variantImg': item.product_image.src,
+              'title': item.product_name
+            }
+          "
+          :href="item.product_url"
+          class="grid grid-cols-[94px_1fr] content-center gap-5 rounded-md <?= $isCartPage ? 'md:flex md:flex-col' : '' ?>"
+        >
+          <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg]">
+            <template x-if="item.product_image.src">
+              <img
+                :src="item.product_image.src"
+                class="aspect-product h-full w-full object-cover object-center transition-transform md:group-hover:scale-105 <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
+                loading="lazy"
+                width=""
+                height=""
+                alt=""
+              >
+            </template>
+
+            <div
+              class="absolute bottom-5 left-1/2 hidden max-w-min -translate-x-1/2 items-center gap-3 <?= $isCartPage ? 'md:flex' : '' ?>"
+            >
+              <?= $template->render('Magento_Theme::html/header/cart/minicart-quantity-controls.phtml') ?>
+            </div>
+          </div>
+          <div class="flex min-w-0 flex-col items-stretch justify-center gap-5 <?= $isCartPage ? 'md:gap-0' : '' ?>">
+            <div class="w-full">
+              <h2 class="text-md text-text-500">
+                <span x-text="item.product_name"></span>
+              </h2>
+              <template x-if="item.options.length">
+                <template
+                  x-for="(option, o) in item.options"
+                  :key="o"
+                >
+                  <p
+                    class="text-md"
+                    x-text="`${option.label}: ${option.value}`"
+                  ></p>
+                </template>
+              </template>
+            </div>
+            <div class="flex flex-wrap items-center justify-between">
+              <div class="flex max-w-min items-center gap-3 <?= $isCartPage ? 'md:hidden' : '' ?>">
+                <?= $template->render('Magento_Theme::html/header/cart/minicart-quantity-controls.phtml') ?>
+              </div>
+              <div
+                class="flex flex-col items-center justify-between text-md <?= $isCartPage ? 'md:items-start' : '' ?>">
+                <span x-text="hyva.formatPrice(item.product_price_value)"></span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </template>
+
+    <?php if ($isCartPage): ?>
+    <!-- Apply coupon block -->
+    <?=
+      $block
+        ->getLayout()
+        ->createBlock(Coupon::class)
+        ->setTemplate('Magento_Theme::html/header/cart/coupon.phtml')
+        ->toHtml()
+    ?>
+    <?php endif; ?>
+
+  </div>
+</div>

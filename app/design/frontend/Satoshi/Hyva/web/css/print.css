@@ -1,0 +1,42 @@
+@media print {
+    .page-main {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .order-items .lg\:grid {
+        display: grid !important;
+    }
+
+    .order-items .hidden.lg\:grid > div {
+        border-bottom: 1px solid rgb(231, 231, 231);
+    }
+
+    .order-items .lg\:grid-cols-5 {
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    }
+
+    .order-details-items .grid-cols-1 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .order-items .lg\:hidden {
+        display: none !important;
+    }
+
+    .order-items div.flex.lg\:block {
+        display: block !important;
+    }
+
+    .order-items div.text-right.lg\:text-left {
+        text-align: left !important;
+    }
+
+    .actions-toolbar {
+        display: none !important;
+    }
+
+    .order-title a {
+        display: none !important;
+    }
+}

@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Satoshi\Theme\ViewModel\Currency;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $template */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var Currency $currencyViewModel */
+$currencyViewModel = $viewModels->require(Currency::class);
+$currencies = $currencyViewModel->getCurrencies();
+$currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode();
+
+$options = [];
+foreach ($currencies as $code => $currency) {
+    $name = __($currency['name']);
+    $symbol = $currency['symbol'] ? "({$currency['symbol']})" : '';
+    $label = "
+        <span>{$escaper->escapeHtml($name)}</span>
+        <span>{$escaper->escapeHtml("$code $symbol")}</span>
+    ";
+
+    $options[] = [
+        'value' => $escaper->escapeHtml($code),
+        'label' => $label,
+        'on_click' => "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})",
+        'is_active' => $code === $currentCurrencyCode,
+    ];
+}
+
+
+$currency = $currencies[$currentCurrencyCode];
+if ($currency) {
+    $currentSymbol = !empty($currency['symbol']) ? " ({$currency['symbol']})" : '';
+    $currentLabel = __($currency['name']) . " | {$currentCurrencyCode}{$currentSymbol}";
+} else {
+    $currentLabel = $currentCurrencyCode;
+}
+?>
+
+<?php if ($currencyViewModel->getCurrencyCount() > 1): ?>
+    <?=
+    $template
+        ->setData([
+            'id' => 'currency-selector',
+            'label' => $escaper->escapeHtml($currentLabel),
+            'options' => $options,
+            'withSearch' => true,
+            'placement' => 'top',
+        ])
+        ->render('Magento_Theme::html/components/dropdown.phtml');
+    ?>
+<?php endif; ?>

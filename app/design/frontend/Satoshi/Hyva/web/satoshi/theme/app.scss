@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-body-family: "Satoshi", sans-serif;
+  --font-body-style: "normal";
+  --font-body-weight: 500;
+
+  --font-heading-family: "Satoshi", sans-serif;
+  --font-heading-style: "normal";
+  --font-heading-weight: 700;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+img {
+  @apply text-transparent;
+}
+
+body {
+  @apply overflow-x-hidden text-md text-text-700;
+}
+
+svg {
+  @apply icon;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading-family);
+  font-style: var(--font-heading-style);
+  font-weight: var(--font-heading-weight);
+}
+
+.main-wrapper {
+  @apply -mt-[72px] flex-1 md:-mt-[89px] max-md:overflow-hidden;
+}
+
+.breadcrumb {
+  @apply inline font-bold;
+}
+
+.order-cell {
+  @apply whitespace-nowrap before:mb-2 before:flex-1 before:text-text-500 before:content-[attr(data-label)]  md:before:block max-md:mb-2 max-md:flex;
+}
+
+@screen md {
+  ::-webkit-scrollbar {
+    @apply h-1 w-1;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-sm bg-bg-700;
+  }
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+@layer utilities {
+  .focus-ring {
+    @apply shadow-outline outline outline-2 outline-offset-2 outline-transparent;
+  }
+
+  .icon {
+    @apply fill-current stroke-current stroke-0;
+
+    height: 1em;
+    width: 1em;
+  }
+
+  .contrast-border {
+    @apply contrast-more:border contrast-more:border-current;
+  }
+}
+
+@screen sm {
+  body {
+    --product-aspect-ratio: calc(3 / 4);
+  }
+}
+
+:root {
+  // https://tailwindcss.com/docs/using-with-preprocessors#using-sass-less-or-stylus
+  // can not use strip-unit with theme function
+
+  --content-wrapper-width: 640;
+
+  @screen md {
+    --content-wrapper-width: 780;
+  }
+
+  @screen lg {
+    --content-wrapper-width: 1024;
+  }
+
+  @screen xl {
+    --content-wrapper-width: 1280;
+  }
+
+  @screen 2xl {
+    --content-wrapper-width: 1536;
+  }
+}
+
+.skip-to-content-link:focus-visible {
+  @apply not-sr-only fixed left-6 top-6 z-40 h-auto w-auto bg-bg-500 p-4 text-base font-semibold shadow-outline;
+  clip: auto;
+}
+
+:focus-visible {
+  @apply shadow-outline outline-none;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    /* Chrome, Safari and Opera */
+    display: none;
+  }
+}
+
+.disable-fade .faded-img {
+  @apply opacity-100 #{!important};
+}
+
+.page-wrapper {
+  @apply -mt-[88px] flex-1 max-md:overflow-hidden;
+}
+
+.product-page {
+  @apply max-md:pb-10;
+}
+
+@layer components {
+  @import "components/content-wrapper";
+  @import "components/checkbox";
+  @import "components/radio";
+  @import "components/input";
+  @import "components/divider";
+  @import "components/range-slider";
+  @import "components/header";
+  @import "components/popup";
+  @import "components/menu";
+  @import "components/resizable";
+  @import "components/transition";
+  @import "components/slider";
+  @import "components/button";
+  @import "components/icon-button";
+  @import "components/rte";
+  @import "components/card-product";
+  @import "components/card";
+  @import "components/link";
+}
+@import "components/progress-bar";
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    @apply border-bg-600;
+  }
+}
+
+.sidebar-main {
+  // TODO: Remove from here when applied in side bar template
+  @apply flex-shrink-0 w-[275px] ml-[2rem];
+}

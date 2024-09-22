@@ -1,0 +1,35 @@
+
+.price-including-tax + .price-excluding-tax
+{
+    @apply text-sm;
+
+    &:before {
+        content: attr(data-label) ': ';
+    }
+}
+
+.price-excluding-tax,
+.price-including-tax {
+    @apply whitespace-nowrap;
+
+    .price {
+        @apply font-semibold leading-relaxed;
+    }
+}
+
+.price-excluding-tax {
+    @apply block;
+}
+
+.price-container.price-tier_price {
+    @apply flex gap-1;
+}
+
+.price-container.price-tier_price > .price-including-tax + .price-excluding-tax {
+    &:before {
+        content: '(' attr(data-label) ': ';
+    }
+    &:after {
+        content: ')';
+    }
+}
