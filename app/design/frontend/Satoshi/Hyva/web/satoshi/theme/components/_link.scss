@@ -1,0 +1,11 @@
+.link {
+  @apply border-b-1 transition-all duration-200;
+
+  &--primary {
+    @apply border-current text-text-500 md:hover:text-primary-600;
+  }
+
+  &--ghost {
+    @apply border-transparent md:hover:border-b-1 md:hover:border-current md:hover:text-primary-600;
+  }
+}

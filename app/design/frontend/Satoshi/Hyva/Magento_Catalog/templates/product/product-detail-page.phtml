@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\View;
+
+/** @var View $block */
+
+$product = $block->getProduct();
+?>
+
+<section
+  class="product-page"
+  x-data="ProductPage()"
+>
+  <div
+    x-init="
+    () => {
+      $data.setProductPageProps({
+        productId: <?= $product['entity_id'] ?>,
+        isScrollingToTop: true,
+      })
+    }
+  "
+    class="contents"
+  >
+    <div id="product-page">
+      <!-- product-page-content -->
+      <?= $block->getChildHtml('product.details') ?>
+      <!-- end-product-page-content -->
+    </div>
+  </div>
+</section>
+
+<section>
+  <?= $block->getChildHtml('related') ?>
+  <?= $block->getChildHtml('upsell') ?>
+  <?= $block->getChildHtml('review_list') ?>
+  <?= $block->getChildHtml('review_form') ?>
+</section>

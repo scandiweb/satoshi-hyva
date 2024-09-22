@@ -1,0 +1,33 @@
+.page.messages {
+    @apply sticky top-0 z-20;
+
+    .messages
+    section#messages {
+        @apply container mx-auto py-3;
+    }
+}
+
+.message {
+    @apply flex items-center justify-between w-full p-2 pl-5 bg-gray-100 shadow rounded text-black font-semibold mb-2;
+
+    &.error {
+        @apply border-2 border-red-500 bg-red-50;
+    }
+
+    &.success {
+        @apply border-2 border-green-500 bg-green-50;
+    }
+
+    &.info,
+    &.notice {
+        @apply border-2 border-blue-500 bg-blue-50;
+    }
+
+    &.warning {
+        @apply border-2 border-yellow-500 bg-yellow-50;
+    }
+
+    a {
+        @apply underline
+    }
+}

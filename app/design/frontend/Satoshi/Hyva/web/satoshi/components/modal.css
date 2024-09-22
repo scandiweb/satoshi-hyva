@@ -1,0 +1,10 @@
+.modal {
+  /*
+   * TODO: add tailwind classes used for the cart and modal styles.
+   * This will make the modal and off-canvas styles theme specific and more adjustable.
+   */
+}
+
+.backdrop {
+    @apply fixed inset-0 flex bg-black bg-opacity-25;
+}

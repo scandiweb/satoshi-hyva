@@ -1,0 +1,216 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Navigation;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var Template $template */
+/** @var Template $block */
+
+/** @var Navigation $viewModelNavigation */
+$viewModelNavigation = $viewModels->require(Navigation::class, $block);
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$id = $block->getData('id');
+$title = $block->getData('title');
+$path = $block->getData('path');
+$menuItems = $block->getData('menuItems');
+$breadcrumbs = $block->getData('breadcrumbs') ?? [];
+$url = $block->getData('url');
+$level = $block->getData('level') ?? 1;
+
+if (!$menuItems) {
+  $menuItems = $viewModelNavigation->getNavigation(4);
+  $block->setData('cache_tags', $viewModelNavigation->getIdentities());
+}
+
+?>
+<div
+  class="menu__level"
+  :class="
+    {
+      'menu__level--current': history[history.length - 1] === '<?= $id ?>',
+      'menu__level--visible': history.includes('<?= $id ?>'),
+      'menu__level--same-depth': <?= $level ?> <= delayedLevel
+    }
+  "
+>
+  <div class="menu__header">
+    <div class="menu__header-container">
+
+      <?php if($id === 'all'): ?>
+      <template x-if="!$store.main.isMobile">
+        <button
+          @click="$store.resizable.hideAll();"
+          type="button"
+          class="button icon-button icon-button--size-lg h-auto w-auto gap-3 px-2 py-3 text-primary-500 hover:bg-bg-600"
+        >
+          <div class="contents">
+            <?= $hyvaicons->renderHtml('close'); ?>
+          </div>
+          <span class="text-md font-bold"><?= __('Close') ?></span>
+        </button>
+      </template>
+      <?php endif; ?>
+
+      <button
+        @click="history.pop()"
+        aria-label="<?= __('Go to back to previous menu page') ?>"
+        class="menu__back-button py-3 motion-reduce:max-md:animate-none"
+        :class="
+            {
+              'menu__back-button--visible max-md:animate-slideIconIn motion-reduce:translate-x-0': history.length !== 1,
+              'max-md:animate-slideIconOut motion-reduce:-translate-x-full': history.length == 1
+            }
+          "
+        :tab-index="history.length === 1 ? -1 : 0"
+        :aria-hidden="history.length === 1"
+      >
+        <?= $hyvaicons->renderHtml('chevron-left'); ?>
+      </button>
+
+      <h2
+        class="menu__heading py-3 motion-reduce:max-md:animate-none"
+        style="--translate-width: 52px;"
+        :class="
+            {
+              'menu__heading--root': '{{ id }}' === 'all',
+              'max-md:animate-slideTitleIn motion-reduce:translate-x-[--translate-width]': history.length !== 1,
+              'max-md:animate-slideTitleOut motion-reduce:translate-x-0': history.length == 1
+            }
+          "
+        x-show="$store.main.isMobile || '<?= $id ?>' !== 'all'"
+      >
+        <?= $title ?>
+      </h2>
+
+      <div
+        id="menu-actions-<?= $id ?>"
+        class="md:flex-none md:flex-row"
+      ></div>
+    </div>
+    <hr class="divider -mx-5 md:hidden">
+  </div>
+
+  <ul
+    role="list"
+    class="menu__links"
+  >
+    <?php foreach($menuItems as $k => $menuItem): ?>
+    <li>
+      <?php if(count($menuItem['childData'])): ?>
+      <button
+        <?php if ($k === 0): ?>
+        x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $menuItem['id'] ?>'"
+        <?php endif; ?>
+        class="menu__link group"
+        :class="{ 'menu__link--active': history.includes('<?= $menuItem['id'] ?>') }"
+        @click="setHistory([...'<?= $path ?>'.split(','), '<?= $menuItem['id'] ?>'])"
+        role="button"
+        :aria-expanded="history.includes('{{ link.handle }}')"
+      >
+        <span
+          class="link max-w-full truncate border-transparent transition-colors md:group-hover:border-b-1 md:group-hover:border-current md:group-hover:text-primary-600"
+        >
+          <?= $menuItem['name'] ?>
+        </span>
+        <span
+          class="text-xl transition-[color,transform] md:group-hover:-translate-x-3 md:group-hover:text-primary-600">
+          <?= $hyvaicons->renderHtml('chevron-right'); ?>
+        </span>
+      </button>
+      <template x-portal="document.getElementById('menu-sections')">
+        <?=
+          $template
+            ->setData([
+              'menuItems' => $menuItem['childData'],
+              'level' => $level + 1,
+              'title' => $menuItem['name'],
+              'path' => $path . ',' . $menuItem['id'],
+              'id' => $menuItem['id'],
+              'url' => $menuItem['url'],
+              'breadcrumbs' => [
+                ...$breadcrumbs, [
+                  'title' => $menuItem['name'],
+                  'url' => $menuItem['url']
+                ]
+              ]
+            ])
+            ->render('Magento_Theme::html/header/menu/menu-items.phtml');
+        ?>
+      </template>
+      <?php else: ?>
+      <a
+        <?php if ($k === 0): ?>
+        x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $menuItem['id'] ?>'"
+        <?php endif; ?>
+        href="<?= $menuItem['url'] ?>"
+        role="link"
+        x-element-transition-trigger:category="
+          {
+            'title': '<?= $menuItem['name'] ?>',
+            'url': '<?= $menuItem['url'] ?>',
+            'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
+            'img': '<?= $menuItem['image'] ?>',
+            'description': `<?= $escaper->escapeUrl($menuItem['description'] ?? '') ?>`,
+          }
+        "
+        class="focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1"
+        :class="
+          {
+            'text-primary-500 font-bold': history.includes('<?= $menuItem['id'] ?>')
+          }
+        "
+      >
+        <span
+          class="link max-w-full truncate border-transparent transition-colors md:group-hover:border-b-1 md:group-hover:border-current md:group-hover:text-primary-600"
+        >
+          <?= $menuItem['name'] ?>
+        </span>
+      </a>
+      <?php endif; ?>
+    </li>
+    <?php endforeach; ?>
+  </ul>
+  <?php if ($url && $id !== 'all'): ?>
+  <template
+    x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('menu-actions-<?= $id ?>')"
+  >
+    <div
+      class="bg-bg-500 px-4 pb-2 md:bg-transparent md:hover:text-primary-600"
+      x-transition.opacity
+      x-show="$store.main.isMobile ? history[history.length - 1] === '<?= $id ?>' && !getIsSearchActive() : history.includes('<?= $id ?>')"
+      role="link"
+    >
+      <a
+        x-element-transition-trigger
+        :class="$store.main.isMobile ? 'button button--filled-primary w-full': 'flex items-center'"
+        href="<?= $url ?>"
+        x-a11y-trap-target.end="$store.popup.currentPopup === 'menu' && history.length !== 1 && history[history.length - 1] === '<?= $id ?>'"
+      >
+        <template x-if="$store.main.isMobile">
+          <span>
+            <?= __('View All') ?> <span class="lowercase"><?= $title ?></span>
+          </span>
+        </template>
+        <template x-if="!$store.main.isMobile">
+          <span class="flex items-center">
+            <span class='border-b-1 border-current'>
+              <?= __('View all') ?>
+            </span>
+            <span class='ps-2'>
+              <?= $hyvaicons->renderHtml('menu-view-all'); ?>
+            </span>
+          </span>
+        </template>
+      </a>
+    </div>
+  </template>
+  <?php endif; ?>
+</div>

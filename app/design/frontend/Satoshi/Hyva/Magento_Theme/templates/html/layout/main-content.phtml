@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+
+$page_type = $this->getRequest()->getFullActionName();
+$class = match($page_type) {
+  'catalog_product_view' => 'md:mt-[89px]',
+  'cms_index_index', 'checkout_cart_index' => '',
+  default => 'mt-[72px] md:mt-[89px]',
+};
+
+/** @var Template $block */
+
+?>
+
+<!-- main-content -->
+<main
+  id="MainContent"
+  class="content-for-layout focus-none flex h-full origin-top flex-col transition-transform duration-500 will-change-transform motion-reduce:transition-none"
+  :class="
+      {
+        'is-transition': $store['transition'].isAnimating
+      }
+    "
+  role="main"
+  tabindex="-1"
+  :style="
+      {
+        transform: ($store.popup.isCurrentPopupFocused && !$store.main.isReducedMotion)
+          ? `scale(${$store.main.scaleFactor}) translateY(${$store.main.yOffset}px)`
+          : 'scale(1)'
+      }
+    "
+  @scroll.window="$store.main.setTransformValues"
+>
+  <!-- TODO: Remove in my account pages -->
+  <div class="<?= $class ?>"></div>
+  <?= $block->getChildHtml() ?>
+</main>
+<!-- end-main-content -->
