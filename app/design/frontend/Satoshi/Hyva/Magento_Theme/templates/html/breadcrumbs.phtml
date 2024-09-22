@@ -108,15 +108,21 @@ $hideOnMobile = in_array($pageType, $mobilePageTypes, true);
 
       <template x-if="$store['transition'].pageType === 'search'">
         <div class="contents">
+          <div role="listitem" class="inline font-bold">
+            <a class="inline-flex hover:underline" x-element-transition-trigger
+               href="<?= $escaper->escapeUrl($block->getUrl('/')) ?>">
+              <?= __('Home') ?>
+            </a>
+          </div>
+
+          <div role="listitem" class="mx-4 inline-block" aria-hidden="true">
+            <?= $hyvaicons->renderHtml('breadcrumb-chevron'); ?>
+          </div>
+
           <div
-            x-data="{
-                searchTerm: $store['transition'].pageData?.search,
-                resultCount: $store['transition'].pageData?.resultCount,
-                text: '<?= __('%1 result found for "%2"') ?>',
-            }"
             role="listitem"
             class="breadcrumb text-text-500"
-            x-text="hyva.strf(text, resultCount, searchTerm)"
+            x-text="hyva.strf('<?= __("Search results for: %0") ?>', `'${$store['transition'].pageData?.search}'`)"
           ></div>
         </div>
       </template>
