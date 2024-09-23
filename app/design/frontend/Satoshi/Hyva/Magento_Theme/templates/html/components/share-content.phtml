@@ -1,0 +1,62 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\Block\Template;
+
+/** @var ViewModelRegistry $viewModels */
+/** @var Template $block */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$id = $block->getData('id');
+$url = $block->getData('url');
+?>
+
+<div class="flex flex-col gap-4 max-md:mb-3">
+  <div class="flex items-center justify-between px-2 md:hidden">
+    <span class="mb-2 block md:mb-3 max-md:font-semibold"><?= __('Share') ?></span>
+
+    <button
+      class="border-text-text-500 rounded-sm border p-3 md:hidden"
+      @click.prevent="$store.popup.hidePopup('<?= $id ?>')" type="button"
+    >
+      <?= $hyvaicons->renderHtml('close') ?>
+    </button>
+  </div>
+
+  <div class="flex gap-2">
+    <label for="url_<?= $id ?>" class="sr-only tracking-widest"><?= __('Share') ?></label>
+    <input
+      type="text"
+      class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+      id="url_<?= $id ?>"
+      value="<?= $url ?>"
+      placeholder="<?= __('Share') ?>"
+      onclick="this.select();"
+      readonly
+    >
+    <button class="hidden rounded-md border p-4" type="button">
+      <?= $hyvaicons->renderHtml('clipboard') ?>
+    </button>
+  </div>
+
+  <div class="flex gap-3">
+    <button
+      type="button"
+      class="button button--outline button--outline-primary max-md:hidden"
+      @click.prevent="hidePopup()"
+    >
+      <?= __('Close') ?>
+    </button>
+
+    <button
+      @click.prevent="navigator.clipboard.writeText('<?= $url ?>'); copied = true;"
+      class="button button--filled button--filled-primary flex-1" type="button"
+    >
+      <span
+        x-text="copied ? '<?= __('Link copied to clipboard') ?>' : '<?= __('Copy link') ?>'"></span>
+    </button>
+  </div>
+</div>
