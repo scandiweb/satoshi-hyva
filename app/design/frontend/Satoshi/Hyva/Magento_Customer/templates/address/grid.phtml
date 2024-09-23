@@ -100,7 +100,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <?php if ($block->getChildHtml('pager')): ?>
                 <?= $block->getChildHtml('pager') ?>
             <?php endif; ?>
-
         <?php else: ?>
             <p>
                 <?= $escaper->escapeHtml(__('You have no other address entries in your address book.')) ?>
