@@ -23,8 +23,10 @@ use Magento\Framework\Escaper;
                     <?= $block->getAddressHtml($block->getAddressById($customerDefaultBillingAddress)) ?>
                 </div>
                 <div>
-                    <a href="<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>"
-                       class="button button--outline-primary w-full md:w-auto"
+                    <a
+                        href="<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>"
+                        @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>')"
+                        class="button button--outline-primary w-full md:w-auto"
                     >
                         <span>
                             <?= $escaper->escapeHtml(__('Change billing address')) ?>
@@ -52,8 +54,10 @@ use Magento\Framework\Escaper;
                     <?= $block->getAddressHtml($block->getAddressById($customerDefaultBillingAddress)) ?>
                 </div>
                 <div>
-                    <a href="<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>"
-                       class="button button--outline-primary w-full md:w-auto"
+                    <a
+                        href="<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>"
+                        @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>')"
+                        class="button button--outline-primary w-full md:w-auto"
                     >
                         <span><?= $escaper->escapeHtml(__('Change shipping address')) ?></span>
                     </a>

@@ -13,7 +13,7 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div>
+<div x-data="Dropdown()" >
     <h2 class="text-text-500 text-lg font-bold">
         <?= $escaper->escapeHtml(__('Address Book')) ?>
     </h2>
@@ -78,18 +78,17 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             <a
                                 class="text-[14px] text-primary-500"
                                 title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
-                                href="<?= $escaper->escapeUrl($block->getUrl(
-                                    'customer/address/edit',
-                                    ['id' => $address->getId()]
-                                )) ?>">
+                                href="<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>"
+                                @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>')"
+                            >
                                 <?= $hyvaicons->renderHtml('edit') ?>
-                                <span></span>
                             </a>
                             <a
                                 class="text-[14px] text-primary-500"
                                 title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
                                 @click.prevent="deleteAddressById(<?= $escaper->escapeJs($address->getId()) ?>)"
-                                href="#">
+                                href="#"
+                            >
                                 <?= $hyvaicons->renderHtml('remove') ?>
                             </a>
                         </div>
@@ -130,14 +129,20 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 </div>
 
 <div class="mt-5 flex flex-col md:flex-row gap-4">
-    <a href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
-       class="button button--filled-primary">
+    <a
+        class="button button--filled-primary"
+        href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
+        @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>')"
+    >
         <span>
             <?= $escaper->escapeHtml(__('Add new address')) ?>
         </span>
     </a>
-    <a class="button button--ghost-primary"
-       href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>">
+    <a
+        class="button button--ghost-primary"
+        href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+        @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>')"
+    >
         <span>
             <?= $escaper->escapeHtml(__('Go back')) ?>
         </span>
