@@ -21,7 +21,7 @@ if (trim((string)$block->getPageHeading())) {
 }
 ?>
 <?php if ($titleHtml): ?>
-    <div class="container mx-auto <?= $escaper->escapeHtmlAttr($titleContainerClasses . $textSizeCssClass) ?>">
+    <div class="hidden md:block container mx-auto <?= $escaper->escapeHtmlAttr($titleContainerClasses . $textSizeCssClass) ?>">
         <h1 class="text-gray-900 page-title title-font"
             <?php if ($block->getId()): ?> id="<?= $escaper->escapeHtmlAttr($block->getId()) ?>" <?php endif; ?>>
             <?= /* @noEscape */ $titleHtml ?>
