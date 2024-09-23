@@ -164,6 +164,9 @@ module.exports = hyvaModules.mergeTailwindConfig({
         slideTitleOut: "slideTitleOut 300ms forwards",
         pop: "pop 300ms ease-in-out forwards",
       },
+      gridTemplateColumns: {
+        'auto-1fr': 'auto 1fr',
+      },
     },
   },
   // Examples for excluding patterns from purge
