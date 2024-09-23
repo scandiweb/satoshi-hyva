@@ -19,16 +19,16 @@ $currentPage = $block->getCurrentPage();
 ?>
 
 <?php if ($lastPage > 1 && $currentPage < $lastPage): ?>
-    <div class="my-7 flex flex-col items-center">
+    <div class="my-5 flex flex-col items-center">
         <a
             href="#"
             x-pagination-trigger="{ 'lastPage': <?= $lastPage ?> }"
             class="button btn--size-md button--ghost-primary w-full cursor-pointer text-center md:w-auto"
         >
-            <?= __('Load more products') ?>
-            <span class="button__icon button__icon--right top-[1px] text-lg rotate-90">
-            <?= $hyvaicons->renderHtml('chevron'); ?>
-        </span>
+            <?= __('Load more') ?>
+            <span class="button__icon button__icon--right top-[1px] text-lg">
+                <?= $hyvaicons->renderHtml('chevron', 'rotate-90') ?>
+            </span>
         </a>
     </div>
 <?php endif ?>
