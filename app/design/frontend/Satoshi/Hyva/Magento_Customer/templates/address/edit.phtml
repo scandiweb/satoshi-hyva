@@ -25,9 +25,9 @@ $faxBlock = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Fax:
 $streetLabel = $block->getAttributeData()->getFrontendLabel('street');
 $regionLabel = $block->getAttributeData()->getFrontendLabel('region');
 $showOptionalRegions = $block->getConfig('general/region/display_all');
-
 ?>
-<div class="container mx-auto pb-16">
+
+<div>
     <h2 class="text-text-500 text-lg font-bold mb-5">
         <?= $escaper->escapeHtml(__('Customer Address')) ?>
     </h2>
@@ -327,7 +327,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                     title="<?= $escaper->escapeHtmlAttr(__('Save Address')) ?>">
                 <span><?= $escaper->escapeHtml(__('Save Address')) ?></span>
             </button>
-            <a class="button button--primary" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
+            <a class="button button--ghost-primary" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
                 <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
             </a>
         </div>
