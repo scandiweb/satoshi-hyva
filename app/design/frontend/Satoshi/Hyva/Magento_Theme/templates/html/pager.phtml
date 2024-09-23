@@ -15,15 +15,14 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $lastPage = $block->getLastPageNum();
 $currentPage = $block->getCurrentPage();
-
 ?>
 
 <?php if ($lastPage > 1 && $currentPage < $lastPage): ?>
-    <div class="my-5 flex flex-col items-center">
+    <div class="flex justify-center [&>*]:mt-5">
         <a
             href="#"
             x-pagination-trigger="{ 'lastPage': <?= $lastPage ?> }"
-            class="button btn--size-md button--ghost-primary w-full cursor-pointer text-center md:w-auto"
+            class="button button--ghost-primary"
         >
             <?= __('Load more') ?>
             <span class="button__icon button__icon--right top-[1px] text-lg">

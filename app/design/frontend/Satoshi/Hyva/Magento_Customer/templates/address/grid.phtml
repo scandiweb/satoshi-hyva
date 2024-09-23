@@ -13,16 +13,17 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div class="container mx-auto">
+<div>
     <h2 class="text-text-500 text-lg font-bold">
         <?= $escaper->escapeHtml(__('Address Book')) ?>
     </h2>
-    <div class="block-content" x-data="initAddresses()">
+    <div x-data="initAddresses()" data-content-wrapper>
         <?php if ($additionalAddresses = $block->getAdditionalAddresses()): ?>
             <?php $i = 0; ?>
+            <!-- pagination-content -->
             <?php foreach ($additionalAddresses as $address): ?>
                 <?php $i++ ?>
-                <div class="card grid md:grid-cols-6 gap-4 my-5 bg-white p-5 rounded-xl">
+                <div class="bg-white grid md:grid-cols-6 gap-4 mt-5 p-5 rounded-xl">
                     <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
                         <div class="text-text-500 text-[14px] font-bold">
                             <?= $escaper->escapeHtml(__('Company')) ?>
@@ -87,13 +88,15 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             <a
                                 class="text-[14px] text-primary-500"
                                 title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
-                                @click.prevent="deleteAddressById(<?= $escaper->escapeJs($address->getId()) ?>)" href="#">
+                                @click.prevent="deleteAddressById(<?= $escaper->escapeJs($address->getId()) ?>)"
+                                href="#">
                                 <?= $hyvaicons->renderHtml('remove') ?>
                             </a>
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
+            <!-- end-pagination-content -->
             <?php if ($block->getChildHtml('pager')): ?>
                 <?= $block->getChildHtml('pager') ?>
             <?php endif; ?>
@@ -127,17 +130,17 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     </div>
 </div>
 
-<div class="container mx-auto mt-5 pb-16 flex flex-col md:flex-row gap-4">
+<div class="mt-5 flex flex-col md:flex-row gap-4">
     <a href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
        class="button button--filled-primary">
-            <span>
-                <?= $escaper->escapeHtml(__('Add new address')) ?>
-            </span>
+        <span>
+            <?= $escaper->escapeHtml(__('Add new address')) ?>
+        </span>
     </a>
-    <a class="button button--primary"
+    <a class="button button--ghost-primary"
        href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>">
-            <span>
-                <?= $escaper->escapeHtml(__('Go back')) ?>
-            </span>
+        <span>
+            <?= $escaper->escapeHtml(__('Go back')) ?>
+        </span>
     </a>
 </div>
