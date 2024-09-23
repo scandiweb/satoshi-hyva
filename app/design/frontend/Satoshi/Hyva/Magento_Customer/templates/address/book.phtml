@@ -24,7 +24,7 @@ use Magento\Framework\Escaper;
                 </div>
                 <div>
                     <a href="<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>"
-                       class="button button--outline-primary"
+                       class="button button--outline-primary w-full md:w-auto"
                     >
                         <span>
                             <?= $escaper->escapeHtml(__('Change billing address')) ?>
@@ -53,7 +53,7 @@ use Magento\Framework\Escaper;
                 </div>
                 <div>
                     <a href="<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>"
-                       class="button button--outline-primary"
+                       class="button button--outline-primary w-full md:w-auto"
                     >
                         <span><?= $escaper->escapeHtml(__('Change shipping address')) ?></span>
                     </a>

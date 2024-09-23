@@ -22,64 +22,79 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <?php $i = 0; ?>
             <?php foreach ($additionalAddresses as $address): ?>
                 <?php $i++ ?>
-                <div class="card grid grid-cols-3 lg:grid-cols-6 my-5 bg-white p-5 rounded-xl">
-                    <div class="text-text-500 text-[14px] font-bold">
-                        <?= $escaper->escapeHtml(
-                            __('Company')
-                        ) ?></div>
-                    <div class="hidden lg:block text-text-500 text-[14px] font-bold">
-                        <?= $escaper->escapeHtml(__('Name')) ?>
-                    </div>
-                    <div class="hidden lg:block text-text-500 text-[14px] font-bold">
-                        <?= $escaper->escapeHtml(__('Street Address')) ?>
-                    </div>
-                    <div class="text-text-500 text-[14px] font-bold">
-                        <?= $escaper->escapeHtml(__('City')) ?>
-                    </div>
-                    <div class="hidden lg:block text-text-500 text-[14px] font-bold">
-                        <?= $escaper->escapeHtml(__('Country')) ?>
-                    </div>
-                    <div class="text-text-500 text-[14px] font-bold text-right">
-                        <?= $escaper->escapeHtml(__('Edit / Remove')) ?>
+                <div class="card grid md:grid-cols-6 gap-4 my-5 bg-white p-5 rounded-xl">
+                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                        <div class="text-text-500 text-[14px] font-bold">
+                            <?= $escaper->escapeHtml(__('Company')) ?>
+                        </div>
+                        <div>
+                            <?= $escaper->escapeHtml($address->getCompany()) ?>
+                        </div>
                     </div>
 
-                    <div class="mt-2">
-                        <?= $escaper->escapeHtml($address->getCompany()) ?></div>
-                    <div class="hidden lg:block mt-2">
-                        <?= $escaper->escapeHtml($address->getLastname()) ?>,
-                        <?= $escaper->escapeHtml($address->getFirstname()) ?>
+                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                        <div class="text-text-500 text-[14px] font-bold">
+                            <?= $escaper->escapeHtml(__('Name')) ?>
+                        </div>
+                        <div>
+                            <?= $escaper->escapeHtml($address->getLastname()) ?>,
+                            <?= $escaper->escapeHtml($address->getFirstname()) ?>
+                        </div>
                     </div>
-                    <div class="hidden lg:block mt-2">
-                        <?= $escaper->escapeHtml($block->getStreetAddress($address)) ?>
+
+                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                        <div class="text-text-500 text-[14px] font-bold">
+                            <?= $escaper->escapeHtml(__('Street Address')) ?>
+                        </div>
+                        <div>
+                            <?= $escaper->escapeHtml($block->getStreetAddress($address)) ?>
+                        </div>
                     </div>
-                    <div class="mt-2">
-                        <?= $escaper->escapeHtml($address->getCity()) ?>
+
+                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                        <div class="text-text-500 text-[14px] font-bold">
+                            <?= $escaper->escapeHtml(__('City')) ?>
+                        </div>
+                        <div>
+                            <?= $escaper->escapeHtml($address->getCity()) ?>
+                        </div>
                     </div>
-                    <div class="hidden lg:block mt-2">
-                        <?= $escaper->escapeHtml($block->getCountryByCode($address->getCountryId())) ?>
+
+                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                        <div class="text-text-500 text-[14px] font-bold">
+                            <?= $escaper->escapeHtml(__('Country')) ?>
+                        </div>
+                        <div>
+                            <?= $escaper->escapeHtml($block->getCountryByCode($address->getCountryId())) ?>
+                        </div>
                     </div>
-                    <div class="mt-2 flex gap-5 justify-end">
-                        <a
-                            class="text-[14px] text-primary-500"
-                            title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
-                            href="<?= $escaper->escapeUrl($block->getUrl(
-                                'customer/address/edit',
-                                ['id' => $address->getId()]
-                            )) ?>">
-                            <?= $hyvaicons->renderHtml('edit') ?>
-                            <span></span>
-                        </a>
-                        <a
-                            class="text-[14px] text-primary-500"
-                            title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
-                            @click.prevent="deleteAddressById(<?= $escaper->escapeJs($address->getId()) ?>)" href="#">
-                            <?= $hyvaicons->renderHtml('remove') ?>
-                        </a>
+
+                    <div class="grid grid-cols-2 md:flex md:flex-col md:items-end gap-2">
+                        <div class="text-text-500 text-[14px] font-bold">
+                            <?= $escaper->escapeHtml(__('Edit / Remove')) ?>
+                        </div>
+                        <div class="flex gap-5">
+                            <a
+                                class="text-[14px] text-primary-500"
+                                title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
+                                href="<?= $escaper->escapeUrl($block->getUrl(
+                                    'customer/address/edit',
+                                    ['id' => $address->getId()]
+                                )) ?>">
+                                <?= $hyvaicons->renderHtml('edit') ?>
+                                <span></span>
+                            </a>
+                            <a
+                                class="text-[14px] text-primary-500"
+                                title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
+                                @click.prevent="deleteAddressById(<?= $escaper->escapeJs($address->getId()) ?>)" href="#">
+                                <?= $hyvaicons->renderHtml('remove') ?>
+                            </a>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
             <?php if ($block->getChildHtml('pager')): ?>
-                <!--TODO: check pager styles-->
                 <?= $block->getChildHtml('pager') ?>
             <?php endif; ?>
 
@@ -112,7 +127,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     </div>
 </div>
 
-<div class="container mx-auto mt-5 pb-16 flex gap-x-4">
+<div class="container mx-auto mt-5 pb-16 flex flex-col md:flex-row gap-4">
     <a href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
        class="button button--filled-primary">
             <span>
