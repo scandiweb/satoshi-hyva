@@ -12,7 +12,7 @@ $middle = $block->showMiddlename();
 $suffix = $block->showSuffix();
 ?>
 <?php if ($prefix): ?>
-    <div>
+    <div class="field field-reserved">
         <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('prefix')) ?>">
             <span><?= $escaper->escapeHtml($block->getStoreLabel('prefix')) ?></span>
         </label>
@@ -46,7 +46,7 @@ $suffix = $block->showSuffix();
         </div>
     </div>
 <?php endif; ?>
-<div>
+<div class="field field-reserved">
     <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('firstname')) ?>">
             <span>
                 <?= $escaper->escapeHtml($block->getStoreLabel('firstname')) ?>
@@ -67,7 +67,7 @@ $suffix = $block->showSuffix();
 </div>
 <?php if ($middle): ?>
     <?php $isMiddlenameRequired = $block->isMiddlenameRequired(); ?>
-    <div>
+    <div class="field field-reserved">
         <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('middlename')) ?>">
             <span>
                 <?= $escaper->escapeHtml($block->getStoreLabel('middlename')) ?>
@@ -86,7 +86,7 @@ $suffix = $block->showSuffix();
         </div>
     </div>
 <?php endif; ?>
-<div>
+<div class="field field-reserved">
     <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('lastname')) ?>">
             <span>
                 <?= $escaper->escapeHtml($block->getStoreLabel('lastname')) ?>
@@ -106,7 +106,7 @@ $suffix = $block->showSuffix();
     </div>
 </div>
 <?php if ($suffix): ?>
-    <div>
+    <div class="field field-reserved">
         <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('suffix')) ?>">
             <span>
                 <?= $escaper->escapeHtml($block->getStoreLabel('suffix')) ?>
