@@ -11,7 +11,7 @@ use Magento\Framework\Escaper;
 $validationClass = $this->helper(AddressHelper::class)->getAttributeValidationClass('company');
 
 ?>
-<div>
+<div class="field field-reserved">
     <label for="company" class="sr-only tracking-widest">
         <span><?= $escaper->escapeHtml(__('Company')) ?></span>
     </label>

@@ -76,7 +76,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
             <div class="grid md:grid-cols-2 gap-3">
                 <div class="flex flex-col gap-3">
 
-                    <div>
+                    <div class="field field-reserved">
                         <label for="street_1" class="sr-only tracking-widest">
                         <span><?= /* @noEscape */
                             $streetLabel ?></span>
@@ -97,7 +97,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                     </div>
 
                     <?php for ($i = 1, $n = $addressViewModel->addressGetStreetLines(); $i < $n; $i++): ?>
-                        <div>
+                        <div class="field field-reserved">
                             <label class="sr-only tracking-widest" for="street_<?= /* @noEscape */
                             $i + 1 ?>">
                                 <span><?= $escaper->escapeHtml(__('Street Address %1', $i + 1)) ?></span>
@@ -118,7 +118,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                 </div>
 
                 <?php if ($addressViewModel->addressIsVatAttributeVisible()): ?>
-                    <div>
+                    <div class="field field-reserved">
                         <label class="sr-only tracking-widest" for="vat_id">
                         <span><?= /* @noEscape */
                             $block->getAttributeData()->getFrontendLabel('vat_id') ?></span>
@@ -136,7 +136,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                         </div>
                     </div>
                 <?php endif; ?>
-                <div>
+                <div class="field field-reserved">
                     <label class="sr-only tracking-widest" for="zip">
                     <span><?= /* @noEscape */
                         $block->getAttributeData()->getFrontendLabel('postcode') ?></span>
@@ -157,7 +157,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                     </div>
                 </div>
 
-                <div>
+                <div class="field field-reserved">
                     <label class="sr-only tracking-widest" for="city">
                     <span><?= /* @noEscape */
                         $block->getAttributeData()->getFrontendLabel('city') ?></span>
@@ -175,7 +175,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                     </div>
                 </div>
 
-                <div>
+                <div class="field field-reserved">
                     <label class="sr-only tracking-widest" for="country">
                     <span><?= /* @noEscape */
                         $block->getAttributeData()->getFrontendLabel('country_id') ?></span>
@@ -222,7 +222,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                     <span><?= /* @noEscape */
                         $regionLabel ?></span>
                     </label>
-                    <div>
+                    <div class="field field-reserved">
                         <template x-if="hasAvailableRegions() && (isRegionRequired || showOptionalRegions)">
                             <div class="relative">
                                 <select id="region_id" name="region_id"
