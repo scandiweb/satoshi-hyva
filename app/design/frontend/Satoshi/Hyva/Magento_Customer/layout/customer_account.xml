@@ -14,7 +14,7 @@
                 </arguments>
                 <block class="Magento\Customer\Block\Account\Navigation" name="customer_account_navigation" before="-">
                     <arguments>
-                        <argument name="css_class" xsi:type="string">nav items</argument>
+                        <argument name="css_class" xsi:type="string">nav items flex flex-col gap-3</argument>
                     </arguments>
 
                     <!-- Default navigation links -->

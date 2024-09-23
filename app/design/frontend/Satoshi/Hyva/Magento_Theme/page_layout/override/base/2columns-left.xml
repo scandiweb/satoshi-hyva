@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_layout.xsd">
+    <update handle="1column"/>
+
+    <referenceContainer name="main"/>
+    <referenceContainer name="columns">
+        <container name="div.sidebar.main" htmlTag="aside" htmlClass="sidebar md:sidebar-main" before="main">
+            <container name="sidebar.main" as="sidebar_main" label="Sidebar Main"/>
+        </container>
+        <container name="div.sidebar.additional" htmlTag="aside" htmlClass="sidebar sidebar-additional" after="main">
+            <container name="sidebar.additional" as="sidebar_additional" label="Sidebar Additional"/>
+        </container>
+    </referenceContainer>
+    <referenceContainer name="footer">
+        <block name="aside-a11y-label" template="Magento_Theme::html/footer/aside-a11y-label.phtml">
+            <arguments>
+                <argument name="label_targets" xsi:type="array">
+                    <!-- Name: DOM selector for an element to add the aria-label to -->
+                    <!-- Value: name of the layout container with the label attribute to use -->
+                    <item name="aside.sidebar-main" xsi:type="string">sidebar.main</item>
+                    <item name="aside.sidebar-additional" xsi:type="string">sidebar.additional</item>
+                    <item name="aside.sidebar-test" xsi:type="string">sidebar.foo</item>
+                </argument>
+            </arguments>
+        </block>
+    </referenceContainer>
+</layout>

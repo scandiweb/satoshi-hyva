@@ -1,0 +1,22 @@
+<?php
+/**
+ * @var \Magento\Customer\Block\Account\AuthorizationLink $block
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+if ($block->isLoggedIn()): ?>
+    <?php $dataPostParam = $block->getPostParams(); ?>
+    <li class="nav item pt-4 border-t">
+        <a <?= /* @noEscape */ $block->getLinkAttributes() ?>
+            @click.prevent='hyva.postForm(<?= /* @noEscape */ $dataPostParam ?>)'
+        >
+            <?= $escaper->escapeHtml($block->getLabel()) ?>
+        </a>
+    </li>
+<?php else: ?>
+    <li class="nav item pt-3 border-top">
+        <a <?= /* @noEscape */ $block->getLinkAttributes() ?>>
+            <?= $escaper->escapeHtml($block->getLabel()) ?>
+        </a>
+    </li>
+<?php endif; ?>
