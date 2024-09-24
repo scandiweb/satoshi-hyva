@@ -34,4 +34,5 @@
         for="Hyva\Theme\ViewModel\ProductListItem"
         type="Satoshi\Theme\ViewModel\ProductListItem"
     />
+    <preference for="Magento\Sales\Block\Order\Info" type="Satoshi\Theme\Block\Order\Info" />
 </config>
