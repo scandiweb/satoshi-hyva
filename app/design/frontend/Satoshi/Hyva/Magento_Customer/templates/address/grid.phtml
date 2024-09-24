@@ -18,7 +18,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <h2 class="text-text-500 text-lg font-bold">
             <?= $escaper->escapeHtml(__('Address Book')) ?>
         </h2>
-        <div data-content-wrapper>
+        <div data-content-wrapper id="address-list-wrapper">
             <?php if ($additionalAddresses = $block->getAdditionalAddresses()): ?>
                 <?php $i = 0; ?>
                 <!-- pagination-content -->
@@ -87,12 +87,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                 <a
                                     class="text-[14px] text-primary-500"
                                     title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
-                                    @click.prevent="if (window.confirm('<?= $escaper->escapeJs(__('Are you sure you want to delete this address?')) ?>')) {
-                                        hyva.postForm({
-                                            action: '<?= $escaper->escapeJs($block->getDeleteUrl()) ?>',
-                                            data: { id: <?= $escaper->escapeJs($address->getId()) ?> }
-                                        });
-                                    }"
+                                    @click.prevent="deleteAddress('<?= $address->getId() ?>',
+                                    '<?= $escaper->escapeJs(__('Are you sure you want to delete this address?')) ?>')"
                                     href="#"
                                 >
                                     <?= $hyvaicons->renderHtml('remove') ?>

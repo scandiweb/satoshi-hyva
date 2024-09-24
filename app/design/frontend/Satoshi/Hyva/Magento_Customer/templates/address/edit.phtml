@@ -34,7 +34,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
     <form
         x-data="initCustomerAddressEdit()"
         @private-content-loaded.window="onPrivateContentLoaded($event.detail.data)"
-        @submit="onSubmit"
+        @submit.prevent="createOrUpdateAddress('<?= $block->getAddress()->getId() ?>')"
         action="<?= $escaper->escapeUrl($block->getSaveUrl()) ?>"
         method="post"
         id="form-validate"

@@ -18,6 +18,8 @@ export type AddressType = {
   _onKeyDown(e: KeyboardEvent): void;
   _focusOnForm(popup_id: string): void;
   fetchAndReplaceContent(url: string): void;
+  deleteAddress(address_id: string, confirm_message: string): void;
+  createOrUpdateAddress(address_id?: string): void;
 } & Magics<{}>;
 
 export const Address = () =>
@@ -92,4 +94,48 @@ export const Address = () =>
 
       navigateWithTransition(url);
     },
+
+    deleteAddress(address_id, confirm_message) {
+        if (window.confirm(confirm_message)) {
+            const formData = new FormData();
+            formData.append("form_key", window.hyva.getFormKey());
+            formData.append("uenc", window.hyva.getUenc());
+            formData.append("id", address_id);
+
+            fetch('/customer/address/delete', {
+                method: "POST",
+                body: formData,
+            }).then((result) => {
+                return result.text();
+            }) .then((content) => {
+                window.hyva.replaceDomElement("#address-list-wrapper", content);
+            }).catch((error) => {
+                console.error("Error while deleting address:", error);
+                location.reload();
+            });
+        }
+    },
+
+    createOrUpdateAddress(address_id) {
+        const form = document.getElementById('form-validate') as HTMLFormElement;
+        if (!form) return;
+        const formData = new FormData(form);
+
+        let fetchUrl = "/customer/address/formPost/";
+        if(address_id) {
+            fetchUrl += address_id;
+        }
+
+        fetch(fetchUrl, {
+            method: "POST",
+            body: formData,
+        }).then((res) => {
+            if (res.ok) {
+                this.fetchAndReplaceContent('/customer/address/');
+            }
+        }).catch((error) => {
+            console.error("Error while creating or updating address:", error);
+            location.reload();
+        });
+    }
   };
