@@ -137,5 +137,5 @@ export const Address = () =>
             console.error("Error while creating or updating address:", error);
             location.reload();
         });
-    }
+    },
   };

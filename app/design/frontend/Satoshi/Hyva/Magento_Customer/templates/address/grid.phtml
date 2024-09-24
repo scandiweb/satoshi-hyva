@@ -13,7 +13,7 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div x-data="Address()">
+<section x-data="Address()">
     <div>
         <h2 class="text-text-500 text-lg font-bold">
             <?= $escaper->escapeHtml(__('Address Book')) ?>
@@ -129,4 +129,4 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </span>
         </a>
     </div>
-</div>
+</section>
