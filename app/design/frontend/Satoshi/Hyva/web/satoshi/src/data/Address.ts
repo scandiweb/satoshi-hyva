@@ -1,5 +1,6 @@
 import { Magics } from "alpinejs";
 import { ESC_KEY } from "../utils/keyboard-keys";
+import { navigateWithTransition } from "../plugins/Transition";
 
 export type AddressType = {
   renderedPage: string;
@@ -16,6 +17,7 @@ export type AddressType = {
   _updateProvince(country: HTMLSelectElement): void;
   _onKeyDown(e: KeyboardEvent): void;
   _focusOnForm(popup_id: string): void;
+  fetchAndReplaceContent(url: string): void;
 } & Magics<{}>;
 
 export const Address = () =>
@@ -83,5 +85,11 @@ export const Address = () =>
           country?.selectedOptions[0].dataset.provinces || "[]",
         );
       });
+    },
+
+    fetchAndReplaceContent(url: string) {
+      if (!url) return;
+
+      navigateWithTransition(url);
     },
   };

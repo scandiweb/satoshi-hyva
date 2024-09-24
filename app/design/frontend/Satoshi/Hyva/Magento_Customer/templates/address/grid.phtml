@@ -13,138 +13,124 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div x-data="Dropdown()" >
-    <h2 class="text-text-500 text-lg font-bold">
-        <?= $escaper->escapeHtml(__('Address Book')) ?>
-    </h2>
-    <div x-data="initAddresses()" data-content-wrapper>
-        <?php if ($additionalAddresses = $block->getAdditionalAddresses()): ?>
-            <?php $i = 0; ?>
-            <!-- pagination-content -->
-            <?php foreach ($additionalAddresses as $address): ?>
-                <?php $i++ ?>
-                <div class="bg-white grid md:grid-cols-6 gap-4 mt-5 p-5 rounded-xl">
-                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
-                        <div class="text-text-500 text-[14px] font-bold">
-                            <?= $escaper->escapeHtml(__('Company')) ?>
+<div x-data="Address()">
+    <div>
+        <h2 class="text-text-500 text-lg font-bold">
+            <?= $escaper->escapeHtml(__('Address Book')) ?>
+        </h2>
+        <div data-content-wrapper>
+            <?php if ($additionalAddresses = $block->getAdditionalAddresses()): ?>
+                <?php $i = 0; ?>
+                <!-- pagination-content -->
+                <?php foreach ($additionalAddresses as $address): ?>
+                    <?php $i++ ?>
+                    <div class="bg-white grid md:grid-cols-6 gap-4 mt-5 p-5 rounded-xl">
+                        <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                            <div class="text-text-500 text-[14px] font-bold">
+                                <?= $escaper->escapeHtml(__('Company')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($address->getCompany()) ?>
+                            </div>
                         </div>
-                        <div>
-                            <?= $escaper->escapeHtml($address->getCompany()) ?>
+
+                        <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                            <div class="text-text-500 text-[14px] font-bold">
+                                <?= $escaper->escapeHtml(__('Name')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($address->getLastname()) ?>,
+                                <?= $escaper->escapeHtml($address->getFirstname()) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                            <div class="text-text-500 text-[14px] font-bold">
+                                <?= $escaper->escapeHtml(__('Street Address')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($block->getStreetAddress($address)) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                            <div class="text-text-500 text-[14px] font-bold">
+                                <?= $escaper->escapeHtml(__('City')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($address->getCity()) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
+                            <div class="text-text-500 text-[14px] font-bold">
+                                <?= $escaper->escapeHtml(__('Country')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($block->getCountryByCode($address->getCountryId())) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:flex md:flex-col md:items-end gap-2">
+                            <div class="text-text-500 text-[14px] font-bold">
+                                <?= $escaper->escapeHtml(__('Edit / Remove')) ?>
+                            </div>
+                            <div class="flex gap-5">
+                                <a
+                                    class="text-[14px] text-primary-500"
+                                    title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
+                                    href="<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>"
+                                    @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>')"
+                                >
+                                    <?= $hyvaicons->renderHtml('edit') ?>
+                                </a>
+                                <a
+                                    class="text-[14px] text-primary-500"
+                                    title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
+                                    @click.prevent="if (window.confirm('<?= $escaper->escapeJs(__('Are you sure you want to delete this address?')) ?>')) {
+                                        hyva.postForm({
+                                            action: '<?= $escaper->escapeJs($block->getDeleteUrl()) ?>',
+                                            data: { id: <?= $escaper->escapeJs($address->getId()) ?> }
+                                        });
+                                    }"
+                                    href="#"
+                                >
+                                    <?= $hyvaicons->renderHtml('remove') ?>
+                                </a>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
-                        <div class="text-text-500 text-[14px] font-bold">
-                            <?= $escaper->escapeHtml(__('Name')) ?>
-                        </div>
-                        <div>
-                            <?= $escaper->escapeHtml($address->getLastname()) ?>,
-                            <?= $escaper->escapeHtml($address->getFirstname()) ?>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
-                        <div class="text-text-500 text-[14px] font-bold">
-                            <?= $escaper->escapeHtml(__('Street Address')) ?>
-                        </div>
-                        <div>
-                            <?= $escaper->escapeHtml($block->getStreetAddress($address)) ?>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
-                        <div class="text-text-500 text-[14px] font-bold">
-                            <?= $escaper->escapeHtml(__('City')) ?>
-                        </div>
-                        <div>
-                            <?= $escaper->escapeHtml($address->getCity()) ?>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
-                        <div class="text-text-500 text-[14px] font-bold">
-                            <?= $escaper->escapeHtml(__('Country')) ?>
-                        </div>
-                        <div>
-                            <?= $escaper->escapeHtml($block->getCountryByCode($address->getCountryId())) ?>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:flex md:flex-col md:items-end gap-2">
-                        <div class="text-text-500 text-[14px] font-bold">
-                            <?= $escaper->escapeHtml(__('Edit / Remove')) ?>
-                        </div>
-                        <div class="flex gap-5">
-                            <a
-                                class="text-[14px] text-primary-500"
-                                title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
-                                href="<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>"
-                                @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>')"
-                            >
-                                <?= $hyvaicons->renderHtml('edit') ?>
-                            </a>
-                            <a
-                                class="text-[14px] text-primary-500"
-                                title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
-                                @click.prevent="deleteAddressById(<?= $escaper->escapeJs($address->getId()) ?>)"
-                                href="#"
-                            >
-                                <?= $hyvaicons->renderHtml('remove') ?>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-            <!-- end-pagination-content -->
-            <?php if ($block->getChildHtml('pager')): ?>
-                <?= $block->getChildHtml('pager') ?>
-            <?php endif; ?>
-        <?php else: ?>
-            <p>
-                <?= $escaper->escapeHtml(__('You have no other address entries in your address book.')) ?>
-            </p>
-        <?php endif ?>
-
-        <script>
-            function initAddresses() {
-                return {
-                    deleteAddressById(id) {
-                        if (window.confirm(
-                            '<?= $escaper->escapeJs(__('Are you sure you want to delete this address?')) ?>'
-                        )) {
-                            hyva.postForm(
-                                {
-                                    "action": '<?= $escaper->escapeJs($block->getDeleteUrl()) ?>',
-                                    "data": {
-                                        "id": id
-                                    }
-                                }
-                            );
-                        }
-                    }
-                }
-            }
-        </script>
+                <?php endforeach; ?>
+                <!-- end-pagination-content -->
+                <?php if ($block->getChildHtml('pager')): ?>
+                    <?= $block->getChildHtml('pager') ?>
+                <?php endif; ?>
+            <?php else: ?>
+                <p>
+                    <?= $escaper->escapeHtml(__('You have no other address entries in your address book.')) ?>
+                </p>
+            <?php endif ?>
+        </div>
     </div>
-</div>
 
-<div class="mt-5 flex flex-col md:flex-row gap-4">
-    <a
-        class="button button--filled-primary"
-        href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
-        @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>')"
-    >
+    <div class="mt-5 flex flex-col md:flex-row gap-4">
+        <a
+            class="button button--filled-primary"
+            href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
+            @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>')"
+        >
         <span>
             <?= $escaper->escapeHtml(__('Add new address')) ?>
         </span>
-    </a>
-    <a
-        class="button button--ghost-primary"
-        href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
-        @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>')"
-    >
+        </a>
+        <a
+            class="button button--ghost-primary"
+            href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+            @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>')"
+        >
         <span>
             <?= $escaper->escapeHtml(__('Go back')) ?>
         </span>
-    </a>
+        </a>
+    </div>
 </div>
