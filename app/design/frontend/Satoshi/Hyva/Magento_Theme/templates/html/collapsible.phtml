@@ -16,8 +16,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
 <div class="block <?= $escaper->escapeHtmlAttr($block->getBlockCss()) ?> card filter-option p-3 bg-white rounded-xl"
-     x-data="Accordion(!(!!$store.main.isMobile), 300)"
-     x-effect="isMobile = !!$store.main.isMobile; isExpanded = !isMobile"
+     x-data="Accordion(!$store.main.isMobile, 300)"
+     x-effect="isMobile = $store.main.isMobile; isExpanded = !isMobile"
 >
     <button
         x-ref="AccordionButton"
@@ -34,7 +34,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
         <span x-ref="AccordionIcon"
               class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
-                <?= $hyvaicons->renderHtml('chevron-up', 'rotate-180'); ?>
+                <?= $hyvaicons->renderHtml('chevron', 'rotate-90'); ?>
             </span>
 
     </button>

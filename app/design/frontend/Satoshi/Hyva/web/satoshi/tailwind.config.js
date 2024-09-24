@@ -117,7 +117,7 @@ module.exports = hyvaModules.mergeTailwindConfig({
       fontSize: {
         "2xs": "0.625rem",
         xs: "0.75rem",
-        sm: "14px",
+        sm: "12px",
         md: "16px",
         lg: "18px",
         xl: "20px",
@@ -130,6 +130,7 @@ module.exports = hyvaModules.mergeTailwindConfig({
       gridTemplateColumns: {
         header: "40px 40px 1fr 40px 40px",
         addressForms: "repeat(auto-fit, 400px)",
+        customerCols: 'auto 1fr',
       },
       keyframes: {
         fadeIn: {
@@ -163,9 +164,6 @@ module.exports = hyvaModules.mergeTailwindConfig({
         slideTitleIn: "slideTitleIn 300ms forwards",
         slideTitleOut: "slideTitleOut 300ms forwards",
         pop: "pop 300ms ease-in-out forwards",
-      },
-      gridTemplateColumns: {
-        'auto-1fr': 'auto 1fr',
       },
     },
   },
