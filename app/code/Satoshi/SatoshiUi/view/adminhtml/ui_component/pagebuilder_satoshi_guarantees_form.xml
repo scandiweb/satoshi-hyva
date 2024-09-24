@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd" extends="pagebuilder_base_form_with_background_attributes">
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd" extends="pagebuilder_base_form">
     <argument name="data" xsi:type="array">
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">pagebuilder_satoshi_guarantees_form.pagebuilder_satoshi_guarantees_form_data_source</item>
@@ -7,10 +7,10 @@
         <item name="label" xsi:type="string" translate="true">Guarantees</item>
     </argument>
     <settings>
-        <namespace>pagebuilder_satoshi_guarantees_form</namespace>
         <deps>
             <dep>pagebuilder_satoshi_guarantees_form.pagebuilder_satoshi_guarantees_form_data_source</dep>
         </deps>
+        <namespace>pagebuilder_satoshi_guarantees_form</namespace>
     </settings>
     <dataSource name="pagebuilder_satoshi_guarantees_form_data_source">
         <argument name="data" xsi:type="array">
@@ -66,7 +66,7 @@
         </field>
     </fieldset>
 
-    <fieldset name="columns" sortOrder="20">
+    <fieldset name="slides_data" sortOrder="20">
         <settings>
             <label translate="true">Columns</label>
             <collapsible>true</collapsible>
@@ -79,6 +79,9 @@
                 <additionalClasses>
                     <class name="admin__field-wide">true</class>
                 </additionalClasses>
+                <dndConfig>
+                    <param name="enabled" xsi:type="boolean">false</param>
+                </dndConfig>
                 <componentType>dynamicRows</componentType>
             </settings>
             <container name="record" component="Magento_Ui/js/dynamic-rows/record">

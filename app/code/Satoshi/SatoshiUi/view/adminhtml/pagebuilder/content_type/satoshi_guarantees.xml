@@ -13,7 +13,7 @@
     <children default_policy="deny"/>
     <parents default_policy="deny">
         <parent name="column" policy="allow"/>
-  			<parent name="row" policy="allow" />
+        <parent name="row" policy="allow" />
     </parents>
     <appearances>
         <appearance name="default"
@@ -38,7 +38,7 @@
                     <css name="css_classes"/>
                 </element>
                 <element name="guarantees_columns">
-                    <attribute name="guarantees_columns" source="columns" converter="Satoshi_SatoshiUi/js/content-type/map/converter/attribute/array" />
+                    <attribute name="guarantees_columns" source="guarantees" converter="Satoshi_SatoshiUi/js/content-type/map/converter/attribute/array" />
                 </element>
                 <element name="block_directive">
                     <html name="block_directive" converter="Magento_PageBuilder/js/converter/html/tag-escaper" />

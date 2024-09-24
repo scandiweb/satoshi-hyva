@@ -11,18 +11,18 @@ use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
 
 /** @var DecodeHelper $decodeHelper */
 $decodeHelper = $this->helper(DecodeHelper::class);
-$cards = $block->getData('cards');
-$usp_sections = $decodeHelper->decodeJSONHTMLEntity($cards);
+$guarantees = $block->getData('guarantees');
+$guarantees = $decodeHelper->decodeJSONHTMLEntity($guarantees);
 ?>
-<?php if ($usp_sections): ?>
+<?php if ($guarantees): ?>
     <div class="relative flex gap-8 md:grid md:grid-cols-4 md:gap-14 max-md:overflow-x-auto ">
-        <?php foreach ($usp_sections as $column): ?>
+        <?php foreach ($guarantees as $guarantee): ?>
             <div class="flex flex-shrink-0 flex-col items-center justify-start gap-7 max-md:w-[160px]">
                 <div class="w-fit rounded-xl border border-primary-50 p-3">
-                    <?php if ($column['column_icon']): ?>
+                    <?php if ($guarantee['column_icon']): ?>
                         <img
-                            src="<?= $escaper->escapeHtmlAttr($column['column_icon'][0]['url']) ?>"
-                            alt="<?= $escaper->escapeHtmlAttr(__($column['column_title'])) ?>"
+                            src="<?= $escaper->escapeHtmlAttr($guarantee['column_icon'][0]['url']) ?>"
+                            alt="<?= $escaper->escapeHtmlAttr(__($guarantee['column_title'])) ?>"
                             width="20px"
                             height="20px"
                             loading="lazy"
@@ -31,10 +31,10 @@ $usp_sections = $decodeHelper->decodeJSONHTMLEntity($cards);
                 </div>
                 <div class="flex flex-col gap-4 text-center">
                     <h3 class="whitespace-nowrap text-lg text-text-500 m-0">
-                        <?= $escaper->escapeHtml(__($column['column_title'])) ?>
+                        <?= $escaper->escapeHtml(__($guarantee['column_title'])) ?>
                     </h3>
                     <p class="m-0">
-                        <?= $escaper->escapeHtml(__($column['column_description'])) ?>
+                        <?= $escaper->escapeHtml(__($guarantee['column_description'])) ?>
                     </p>
                 </div>
             </div>

@@ -17,7 +17,7 @@ define(["Satoshi_SatoshiUi/js/content-type/block-directive"], function (
   ) {
     return data.guarantees_columns && data.guarantees_columns.length > 0
       ? {
-          columns: JSON.stringify(data.guarantees_columns),
+          guarantees: JSON.stringify(data.guarantees_columns),
         }
       : {};
   };
