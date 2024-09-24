@@ -1,51 +1,43 @@
 <?php
 
-/**
- * @category Scandiweb
- * @author   Scandiweb <info@scandiweb.com>
- */
-
 declare(strict_types=1);
 
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
-use Scandiweb\HyvaUi\Helper\Decode as DecodeHelper;
+use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
 
 /** @var DecodeHelper $decodeHelper */
 $decodeHelper = $this->helper(DecodeHelper::class);
-$cols = $block->getData('columns');
-$columns = $decodeHelper->decodeJSONHTMLEntity($cols);
+$cards = $block->getData('cards');
+$usp_sections = $decodeHelper->decodeJSONHTMLEntity($cards);
 ?>
-<div class="p-6 leading-6">
-    <?php if ($columns): ?>
-        <div class="mt-8 grid gap-6 md:grid-cols-2">
-        <?php foreach ($columns as $column): ?>
-            <div class="flex gap-4">
-                <div>
-                    <div class="w-16 h-16 rounded-full flex justify-center items-center">
+<?php if ($usp_sections): ?>
+    <div class="relative flex gap-8 md:grid md:grid-cols-4 md:gap-14 max-md:overflow-x-auto ">
+        <?php foreach ($usp_sections as $column): ?>
+            <div class="flex flex-shrink-0 flex-col items-center justify-start gap-7 max-md:w-[160px]">
+                <div class="w-fit rounded-xl border border-primary-50 p-3">
+                    <?php if ($column['column_icon']): ?>
                         <img
                             src="<?= $escaper->escapeHtmlAttr($column['column_icon'][0]['url']) ?>"
-                            class="rounded-full w-12 h-12"
-                            alt=""
-                            width="48"
-                            height="48"
+                            alt="<?= $escaper->escapeHtmlAttr(__($column['column_title'])) ?>"
+                            width="20px"
+                            height="20px"
                             loading="lazy"
                         />
-                    </div>
+                    <?php endif; ?>
                 </div>
-                <div>
-                    <div class="text-lg text-gray-800 font-medium leading-7 mb-2">
+                <div class="flex flex-col gap-4 text-center">
+                    <h3 class="whitespace-nowrap text-lg text-text-500 m-0">
                         <?= $escaper->escapeHtml(__($column['column_title'])) ?>
-                    </div>
-                    <div>
+                    </h3>
+                    <p class="m-0">
                         <?= $escaper->escapeHtml(__($column['column_description'])) ?>
-                    </div>
+                    </p>
                 </div>
             </div>
         <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-</div>
+    </div>
+<?php endif; ?>
