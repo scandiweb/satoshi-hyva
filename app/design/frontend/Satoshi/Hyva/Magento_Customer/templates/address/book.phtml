@@ -9,7 +9,8 @@ use Magento\Framework\Escaper;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 ?>
-<div class="mb-8">
+
+<div class="mb-8" x-data="Address()">
     <h2 class="text-text-500 text-lg font-bold mb-5">
         <?= $escaper->escapeHtml(__('Default Addresses')) ?>
     </h2>
