@@ -5,6 +5,6 @@
         <title>My Account</title>
     </head>
     <body>
-        <referenceContainer name="columns" htmlClass="container px-4 md:px-0 mx-auto h-auto grid grid-cols-1 md:grid-cols-auto-1fr gap-6 md:gap-8"/>
+        <referenceContainer name="columns" htmlClass="container px-4 md:px-0 mx-auto h-auto grid grid-cols-1 md:grid-cols-customerCols gap-6 md:gap-8"/>
     </body>
 </page>

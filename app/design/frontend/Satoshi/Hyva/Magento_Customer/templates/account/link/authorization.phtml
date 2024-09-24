@@ -6,7 +6,7 @@
 
 if ($block->isLoggedIn()): ?>
     <?php $dataPostParam = $block->getPostParams(); ?>
-    <li class="nav item pt-4 border-t">
+    <li class="pt-3">
         <a <?= /* @noEscape */ $block->getLinkAttributes() ?>
             @click.prevent='hyva.postForm(<?= /* @noEscape */ $dataPostParam ?>)'
         >
@@ -14,7 +14,7 @@ if ($block->isLoggedIn()): ?>
         </a>
     </li>
 <?php else: ?>
-    <li class="nav item pt-3 border-top">
+    <li class="pt-3">
         <a <?= /* @noEscape */ $block->getLinkAttributes() ?>>
             <?= $escaper->escapeHtml($block->getLabel()) ?>
         </a>
