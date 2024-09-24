@@ -89,7 +89,7 @@
                         <item name="componentType" xsi:type="string">container</item>
                     </item>
                 </argument>
-                <field name="column_icon" sortOrder="10"  formElement="imageUploader">
+                <field name="column_icon" sortOrder="10" formElement="imageUploader">
                     <settings>
                         <label translate="true">Column icon</label>
                         <componentType>imageUploader</componentType>
@@ -102,8 +102,6 @@
                                 <uploaderConfig>
                                     <param xsi:type="string" name="url">pagebuilder/contenttype/image_upload</param>
                                 </uploaderConfig>
-                                <!-- <elementTmpl>Scandiweb_HyvaUi/form/element/uploader/image</elementTmpl> -->
-                                <!-- <previewTmpl>Scandiweb_HyvaUi/form/element/uploader/preview</previewTmpl> -->
                             </settings>
                         </imageUploader>
                     </formElements>

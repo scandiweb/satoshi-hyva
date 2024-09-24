@@ -8,7 +8,9 @@
   <if
     args="!data.guarantees_columns.attributes().columns.length > 0 || data.guarantees_columns.attributes().columns === '[]'"
   >
-    <div class="empty-guarantees"></div>
+    <div class="empty-guarantees">
+      Guarantees
+    </div>
   </if>
 
   <if
@@ -21,27 +23,25 @@
       css="data.guarantees_columns.css"
       class="guarantees"
     >
-      <div class="guarantees">
-        <!-- ko foreach: data.guarantees_columns.attributes().columns -->
-        <div class="guarantee">
-          <if args="column_icon[0]">
-            <div class="guarantee-icon">
-              <img data-bind="attr: {src: column_icon[0].url}" />
-            </div>
-          </if>
-
-          <div class="guarantee-content">
-            <h3
-              data-bind="text: column_title"
-              class="guarantee-title"
-            >
-            </h3>
-            <p data-bind="text: column_description">
-            </p>
+      <!-- ko foreach: data.guarantees_columns.attributes().columns -->
+      <div class="guarantee">
+        <if args="column_icon[0]">
+          <div class="guarantee-icon">
+            <img data-bind="attr: {src: column_icon[0].url}" />
           </div>
+        </if>
+
+        <div class="guarantee-content">
+          <h3
+            data-bind="text: column_title"
+            class="guarantee-title"
+          >
+          </h3>
+          <p data-bind="text: column_description">
+          </p>
         </div>
-        <!-- /ko -->
       </div>
+      <!-- /ko -->
     </div>
   </if>
   <render args="getOptions().template" />
