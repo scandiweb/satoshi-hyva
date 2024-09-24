@@ -6,7 +6,7 @@
   event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
 >
   <if
-    args="!data.guarantees_columns.attributes().columns.length > 0 || data.guarantees_columns.attributes().columns === '[]'"
+    args="!data.guarantees_columns.attributes().guarantees.length > 0 || data.guarantees_columns.attributes().guarantees === '[]'"
   >
     <div class="empty-guarantees">
       Guarantees
@@ -14,16 +14,16 @@
   </if>
 
   <if
-    args="data.guarantees_columns.attributes().columns.length > 0 && data.guarantees_columns.attributes().columns !== '[]'"
+    args="data.guarantees_columns.attributes().guarantees.length > 0 && data.guarantees_columns.attributes().guarantees !== '[]'"
   >
     <div
-      data-bind="attr: { columns: JSON.stringify(data.guarantees_columns.attributes().columns) }"
+      data-bind="attr: { columns: JSON.stringify(data.guarantees_columns.attributes().guarantees) }"
       ko-style="data.guarantees_columns.style"
       data-element="guarantees_columns"
       css="data.guarantees_columns.css"
       class="guarantees"
     >
-      <!-- ko foreach: data.guarantees_columns.attributes().columns -->
+      <!-- ko foreach: data.guarantees_columns.attributes().guarantees -->
       <div class="guarantee">
         <if args="column_icon[0]">
           <div class="guarantee-icon">
