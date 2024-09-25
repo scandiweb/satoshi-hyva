@@ -37,7 +37,6 @@ $order = $block->getOrder();
         </div>
 
 
-
         <?= $block->getChildHtml('order.comments') ?>
 
         <?= $block->getChildHtml('order_items') ?>
@@ -65,18 +64,17 @@ $order = $block->getOrder();
                             <?= $escaper->escapeHtml($giftMessage->getRecipient()) ?>
                         </dt>
                         <dd class="item-message">
-                            <?= /* @noEscape */ $giftMessageHelper->getEscapedGiftMessage($order) ?>
+                            <?= /* @noEscape */
+                            $giftMessageHelper->getEscapedGiftMessage($order) ?>
                         </dd>
                     </dl>
                 </div>
             </div>
         <?php endif; ?>
-        <div class="actions-toolbar">
-            <div class="secondary">
-                <a class="action back" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
-                    <span><?= $escaper->escapeHtml($block->getBackTitle()) ?></span>
-                </a>
-            </div>
-        </div>
     </div>
+</div>
+<div class="ml-4 mt-7 text-sm">
+    <a class="text-primary-700" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
+        <span><?= $escaper->escapeHtml($block->getBackTitle()) ?></span>
+    </a>
 </div>
