@@ -14,7 +14,7 @@ use Magento\Sales\Block\Order\Info;
 $order = $block->getOrder();
 $paymentInfo = $viewModels->require(PaymentInfo::class);
 ?>
-<div class="mb-4 pb-4 border-b border-container">
+<div class="pb-4 md:pb-7 border-b border-container">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="w-full ">
             <p class="font-bold text-lg mb-3"><?= $escaper->escapeHtml(__('Billing Address')) ?></p>

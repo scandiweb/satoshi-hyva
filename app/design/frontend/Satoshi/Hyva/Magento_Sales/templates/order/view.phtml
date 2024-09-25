@@ -32,20 +32,13 @@ $order = $block->getOrder();
 </div>
 <div class="order-details-items ordered bg-white rounded-xl p-4 md:p-6">
     <div class="card">
-        <div class="mb-4">
+        <div>
             <?= $block->getChildHtml('sales.order.info') ?>
         </div>
 
-        <?= $block->getChildHtml('order.comments') ?>
 
-        <?php if (!$block->getData('is_context_shipment')): ?>
-            <div class="order-title">
-                <p class="text-lg mt-8 mb-2"><?= $escaper->escapeHtml(__('Items Ordered')) ?></p>
-                <?php if (!empty($order->getTracksCollection()->getItems())): ?>
-                    <?= $block->getChildHtml('tracking-info-link') ?>
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
+
+        <?= $block->getChildHtml('order.comments') ?>
 
         <?= $block->getChildHtml('order_items') ?>
 
