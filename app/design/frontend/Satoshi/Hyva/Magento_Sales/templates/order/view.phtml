@@ -14,13 +14,13 @@ $giftMessageHelper = $this->helper(Message::class);
 
 $order = $block->getOrder();
 ?>
-<div class="md:flex md:justify-between md:flex-wrap md:gap-4 items-center mb-3">
-    <div class="lg:flex items-center text-center md:text-left">
+<div class="md:flex md:justify-between md:flex-wrap md:gap-4 items-center mb-4">
+    <div class="lg:flex items-center md:text-left">
         <div class="lg:inline-block">
-            <div class="text-2xl"><?= $escaper->escapeHtml(__('Order # %1', $order->getRealOrderId())) ?></div>
+            <div class="text-lg font-bold"><?= $escaper->escapeHtml(__('Order # %1', $order->getRealOrderId())) ?></div>
             <?= $block->getChildHtml('order.date') ?>
         </div>
-        <div class="mt-3 md:mt-0 lg:inline-block lg:ml-5">
+        <div class="mt-6 md:mt-0 lg:inline-block lg:ml-6">
             <?= $block->getChildHtml('order.status') ?>
         </div>
     </div>
