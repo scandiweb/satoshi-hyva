@@ -17,7 +17,7 @@
     args="data.guarantees_columns.attributes().guarantees.length > 0 && data.guarantees_columns.attributes().guarantees !== '[]'"
   >
     <div
-      data-bind="attr: { columns: JSON.stringify(data.guarantees_columns.attributes().guarantees) }"
+      data-bind="attr: { guarantees: JSON.stringify(data.guarantees_columns.attributes().guarantees) }"
       ko-style="data.guarantees_columns.style"
       data-element="guarantees_columns"
       css="data.guarantees_columns.css"
