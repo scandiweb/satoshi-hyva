@@ -98,9 +98,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     </div>
                 <?php endforeach; ?>
                 <!-- end-pagination-content -->
-                <?php if ($block->getChildHtml('pager')): ?>
-                    <?= $block->getChildHtml('pager') ?>
-                <?php endif; ?>
             <?php else: ?>
                 <p>
                     <?= $escaper->escapeHtml(__('You have no other address entries in your address book.')) ?>
@@ -108,6 +105,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <?php endif ?>
         </div>
     </div>
+
+    <?php if ($block->getChildHtml('pager')): ?>
+        <?= $block->getChildHtml('pager') ?>
+    <?php endif; ?>
 
     <div class="mt-5 flex flex-col md:flex-row gap-4">
         <a
