@@ -117,7 +117,7 @@ module.exports = hyvaModules.mergeTailwindConfig({
       fontSize: {
         "2xs": "0.625rem",
         xs: "0.75rem",
-        sm: "14px",
+        sm: "12px",
         md: "16px",
         lg: "18px",
         xl: "20px",
