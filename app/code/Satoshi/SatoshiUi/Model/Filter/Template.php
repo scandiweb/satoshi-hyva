@@ -20,7 +20,6 @@ use Magento\Framework\View\LayoutInterface;
 
 class Template extends SourceTemplate
 {
-    const IMAGE_SRC_PATTERN = '/\ssrc="/si';
     const PAGE_BUILDER_IGNORED_TEMPLATE_PATTERN = '/\sdata-is-page-builder-ignored-element/si';
     const DEFAULT_LAZY_LOAD_FIRST_IMAGE = true;
     const DEFAULT_IMAGE_EXPAND = '-20';
@@ -123,15 +122,6 @@ class Template extends SourceTemplate
             }
 
             $this->generateBackgroundImageStyles($document);
-        }
-
-        // Change image src attribute to data-src attribute for lazy loading
-        if (preg_match(self::IMAGE_SRC_PATTERN, $result)) {
-            if (!$document) {
-                $document = $this->getDomDocument($result);
-            }
-
-            $this->changeImageSrc($document);
         }
 
         // Process any HTML content types, they need to be decoded on the front-end
@@ -408,34 +398,6 @@ class Template extends SourceTemplate
 
             if ($pageBuilderIgnoredElementAttributeData->nodeValue !== 'false') {
                 $pageBuilderIgnoredElement->remove();
-            }
-        }
-    }
-
-    /**
-     * New method to add lazy load feature.
-     * View (#lazy-load-comment).
-     */
-    protected function changeImageSrc(DOMDocument $document) : void
-    {
-        $xpath = new DOMXPath($document);
-        $nodes = $xpath->query('//*[@src]');
-
-        foreach ($nodes as $node) {
-            /* @var DOMElement $node */
-            $src = $node->attributes->getNamedItem('src');
-
-            if ($src->nodeValue !== '') {
-                $classes = '';
-
-                if ($node->attributes->getNamedItem('class')) {
-                    $classes = $node->attributes->getNamedItem('class')->nodeValue . ' ';
-                }
-
-                $node->setAttribute('class', $classes . 'lazyload');
-                $node->setAttribute('data-src', $src->nodeValue);
-                $node->setAttribute('data-expand', $this->imageLazyLoadExpand);
-                $node->removeAttribute('src');
             }
         }
     }
