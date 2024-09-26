@@ -106,7 +106,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                            value="<?= $escaper->escapeHtmlAttr($block->getCustomer()->getEmail()) ?>"
                            title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
                            placeholder="<?= $escaper->escapeHtmlAttr(__('Your email')) ?>"
-                           class="input__field input__field--outline placeholder:text-primary-700 h-auto px-5 py-[10px]"
+                           class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                     />
                 </div>
             </div>
@@ -114,7 +114,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
 
         <template x-if="showEmailField || showPasswordFields">
             <div
-                class="field field-reserved mt-3 mb-5" :class="{'mt-7': !showEmailField, 'mb-0': showPasswordFields}"
+                class="field field-reserved mt-3 mb-5" :class="{'!mt-7': !showEmailField, '!mb-0': showPasswordFields}"
                 id="password-fields"
             >
                 <label class="sr-only tracking-widest" for="current-password">
@@ -122,7 +122,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                 </label>
                 <div>
                     <input type="password"
-                           class="input__field input__field--outline placeholder:text-primary-700 h-auto px-5 py-[10px]"
+                           class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                            name="current_password" id="current-password"
                            data-input="current-password"
                            placeholder="<?= $escaper->escapeHtmlAttr(__('Your current password')) ?>"
@@ -143,7 +143,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                     <div>
                         <input
                             type="password"
-                            class="input__field input__field--outline placeholder:text-primary-700 h-auto px-5 py-[10px]"
+                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                             name="password"
                             id="password"
                             placeholder="<?= $escaper->escapeHtmlAttr(__('New password')) ?>"
@@ -174,7 +174,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                     <div>
                         <input
                             type="password"
-                            class="input__field input__field--outline placeholder:text-primary-700 h-auto px-5 py-[10px]"
+                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                             name="password_confirmation" id="password-confirmation"
                             placeholder="<?= $escaper->escapeHtml(__('Confirm new password')) ?>"
                             data-validate='{"equalTo": "password"}'
