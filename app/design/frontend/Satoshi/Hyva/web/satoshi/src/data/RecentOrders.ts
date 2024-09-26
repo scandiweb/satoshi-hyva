@@ -24,8 +24,6 @@ export const RecentOrders = (messageText: string) =>
     checkboxId: "reorder-item-",
 
     receiveReorderData(data) {
-      console.log("xxx data", data);
-
       if (data["last-ordered-items"]) {
         this.reorderProducts = data["last-ordered-items"];
         this.itemCount = this.reorderProducts!.items.length;
