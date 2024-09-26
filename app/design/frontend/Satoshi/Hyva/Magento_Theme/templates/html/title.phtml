@@ -10,7 +10,7 @@ use Magento\Theme\Block\Html\Title;
 ?>
 
 <?php if (trim((string)$block->getPageHeading())): ?>
-  <div class="content-wrapper mx-auto my-8">
+  <div class="<?= $block->getCssClass() ?>">
       <h1 class="heading text-xxl text-text-500" <?= $block->getAddBaseAttribute() ?>>
           <?= $escaper->escapeHtml($block->getPageHeading()) ?>
       </h1>
