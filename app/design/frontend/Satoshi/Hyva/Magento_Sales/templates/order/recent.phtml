@@ -52,7 +52,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
             ><?= $escaper->escapeHtml(__('View all orders')) ?></a>
         </div>
 
-        <div class="space-y-5">
+        <div class="space-y-5 break-words">
             <?= $block->getChildHtml() ?>
             <?php foreach ($orders as $order): ?>
                 <div class="bg-white grid md:grid-cols-6 gap-4 p-5 rounded-xl">
@@ -90,7 +90,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
 
                     <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
                         <div class="text-text-500 text-[14px] font-bold">
-                            <?= $escaper->escapeHtml(__('Ship To')) ?>
+                            <?= $escaper->escapeHtml(__('Ship to')) ?>
                         </div>
                         <div>
                             <?= $order->getShippingAddress() ? $escaper->escapeHtml($order->getShippingAddress()->getName()) : '&nbsp;' ?>
@@ -99,7 +99,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
 
                     <div class="grid grid-cols-2 md:flex md:flex-col gap-2">
                         <div class="text-text-500 text-[14px] font-bold">
-                            <?= $escaper->escapeHtml(__('Order Total')) ?>
+                            <?= $escaper->escapeHtml(__('Order total')) ?>
                         </div>
                         <div>
                             <?= /* @noEscape */
