@@ -143,6 +143,10 @@ h3 {
   @apply max-md:pb-10;
 }
 
+.grid-columns {
+  @apply h-full flex flex-col md:grid grid-cols-4 grid-rows-[auto_minmax(0,1fr)] gap-x-8 gap-y-5;
+}
+
 @layer components {
   @import "components/content-wrapper";
   @import "components/checkbox";
@@ -171,9 +175,4 @@ h3 {
   ::after {
     @apply border-bg-600;
   }
-}
-
-.sidebar-main {
-  // TODO: Remove from here when applied in side bar template
-  @apply flex-shrink-0 w-[275px] ml-[2rem];
 }
