@@ -24,7 +24,7 @@ $suffix = $block->showSuffix();
                        value="<?= $escaper->escapeHtmlAttr($block->getObject()->getPrefix()) ?>"
                        title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('prefix')) ?>"
                        placeholder="<?= $block->getStoreLabel('prefix') ?>"
-                       class="input__field input__field--outline h-auto px-5 py-[10px]"
+                       class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                     <?= $block->isPrefixRequired() ? ' required' : '' ?>
                 >
             <?php else: ?>
@@ -59,7 +59,7 @@ $suffix = $block->showSuffix();
                required
                title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('firstname')) ?>"
                placeholder="<?= $block->getStoreLabel('firstname') ?>"
-               class="input__field input__field--outline h-auto px-5 py-[10px]"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                @input.debounce="onChange"
             <?= ($block->getAttributeValidationClass('firstname') == 'required-entry') ? ' required' : '' ?>
         >
@@ -79,7 +79,7 @@ $suffix = $block->showSuffix();
                    value="<?= $escaper->escapeHtmlAttr($block->getObject()->getMiddlename()) ?>"
                    title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('middlename')) ?>"
                    placeholder="<?= $block->getStoreLabel('middlename') ?>"
-                   class="input__field input__field--outline h-auto px-5 py-[10px]"
+                   class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                    @input.debounce="onChange"
                 <?= $isMiddlenameRequired ? ' required' : '' ?>
             >
@@ -99,7 +99,7 @@ $suffix = $block->showSuffix();
                value="<?= $escaper->escapeHtmlAttr($block->getObject()->getLastname()) ?>"
                title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('lastname')) ?>"
                placeholder="<?= $block->getStoreLabel('lastname') ?>"
-               class="input__field input__field--outline h-auto px-5 py-[10px]"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                @input.debounce="onChange"
             <?= ($block->getAttributeValidationClass('lastname') == 'required-entry') ? ' required' : '' ?>
         >
@@ -119,7 +119,7 @@ $suffix = $block->showSuffix();
                        value="<?= $escaper->escapeHtmlAttr($block->getObject()->getSuffix()) ?>"
                        title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('suffix')) ?>"
                        placeholder="<?= $block->getStoreLabel('suffix') ?>"
-                       class="input__field input__field--outline h-auto px-5 py-[10px]"
+                       class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                     <?= $block->isSuffixRequired() ? ' required' : '' ?>
                 >
             <?php else: ?>
