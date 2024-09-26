@@ -20,7 +20,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         x-ref="AccordionButton"
         type="button"
         :aria-expanded="isExpanded"
-        :disabled="!isMobile"
+        :disabled="!$store.main.isMobile"
     >
         <span class="font-bold">
             <?= $escaper->escapeHtml(__($block->getData('block_title'))) ?>
