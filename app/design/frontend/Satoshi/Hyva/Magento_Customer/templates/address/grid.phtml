@@ -77,21 +77,21 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             </div>
                             <div class="flex gap-5">
                                 <a
-                                    class="text-[14px] text-primary-500"
+                                    class="text-[14px] text-primary-500 w-5 h-5"
                                     title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
                                     href="<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>"
                                     @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>')"
                                 >
-                                    <?= $hyvaicons->renderHtml('pencil', attributes: ['title' => 'Edit']) ?>
+                                    <?= $hyvaicons->renderHtml('pencil', 'w-full h-full', attributes: ['title' => 'Edit']) ?>
                                 </a>
                                 <a
-                                    class="text-[14px] text-primary-500"
+                                    class="text-[14px] text-primary-500 w-5 h-5"
                                     title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
                                     @click.prevent="deleteAddress('<?= $address->getId() ?>',
                                     '<?= $escaper->escapeJs(__('Are you sure you want to delete this address?')) ?>')"
                                     href="#"
                                 >
-                                    <?= $hyvaicons->renderHtml('remove') ?>
+                                    <?= $hyvaicons->renderHtml('remove', 'w-full h-full') ?>
                                 </a>
                             </div>
                         </div>
