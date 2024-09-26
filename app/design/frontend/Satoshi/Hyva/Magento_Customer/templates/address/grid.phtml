@@ -18,7 +18,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <h2 class="text-text-500 text-lg font-bold">
             <?= $escaper->escapeHtml(__('Address Book')) ?>
         </h2>
-        <div data-content-wrapper id="address-list-wrapper">
+        <div data-content-wrapper id="address-list-wrapper" class="break-words">
             <?php if ($additionalAddresses = $block->getAdditionalAddresses()): ?>
                 <?php $i = 0; ?>
                 <!-- pagination-content -->
