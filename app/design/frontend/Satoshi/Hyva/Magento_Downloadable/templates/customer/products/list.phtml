@@ -66,7 +66,7 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
                         <?php if ($item->getStatus() == Item::LINK_STATUS_AVAILABLE): ?>
                             <a
                                 href="<?= $escaper->escapeUrl($block->getDownloadUrl($item)) ?>"
-                                class="inline-block md:mt-2 text-sm underline text-secondary-darker"
+                                class="inline-block md:mt-2 text-sm underline text-secondary-darker max-md:flex max-md:items-center"
                                 id="download_<?= /* @noEscape */ $item->getPurchased()->getProductId() ?>"
                                 title="<?= $escaper->escapeHtmlAttr(__('Start Download')) ?>"
                                 aria-label="<?= $escaper->escapeHtmlAttr(__('Start Download')) ?>"
