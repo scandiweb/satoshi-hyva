@@ -1,0 +1,65 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Customer\Block\Newsletter;
+use Magento\Framework\Escaper;
+
+/** @var Newsletter $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<?= $block->getChildHtml('form_before') ?>
+<form class="form form-newsletter-manage"
+      action="<?= $escaper->escapeUrl($block->getAction()) ?>"
+      method="post"
+      id="form-validate">
+    <h2 class="text-text-500 text-lg font-bold mb-5">
+        <?= $escaper->escapeHtml(__('Subscription Option')) ?>
+    </h2>
+    <div class="mb-5">
+        <?= $block->getBlockHtml('formkey') ?>
+        <label class="flex items-center gap-x-3 mt-5 mb-3 mx-4" for="subscription">
+            <input
+                type="checkbox"
+                name="is_subscribed"
+                id="subscription"
+                value="1"
+                class="checkbox__input"
+                title="<?= $escaper->escapeHtmlAttr(__('General Subscription')) ?>"
+                <?php if ($block->getIsSubscribed()): ?> checked<?php endif; ?>
+            />
+            <span class="checkbox__control w-5 h-5" aria-hidden="true">
+                <?= $hyvaicons->renderHtml('check') ?>
+            </span>
+            <span class="checkbox__label text-[14px] ml-0">
+                <?= $escaper->escapeHtml(__('General Subscription')) ?>
+            </span>
+        </label>
+        <?php /* Extensions placeholder */ ?>
+        <?= $block->getChildHtml('customer.form.newsletter.extra') ?>
+    </div>
+    <div class="flex gap-x-4 flex-col md:flex-row">
+        <button type="submit"
+                title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
+                class="button button--filled-primary"
+        >
+            <span>
+                <?= $escaper->escapeHtml(__('Save')) ?>
+            </span>
+        </button>
+        <a class="button button--ghost-primary"
+           href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+        >
+            <span>
+                <?= $escaper->escapeHtml(__('Go back')) ?>
+            </span>
+        </a>
+    </div>
+</form>
+<?php /* Extensions placeholder */ ?>
+<?= $block->getChildHtml('customer.form.newsletter.extra2') ?>
