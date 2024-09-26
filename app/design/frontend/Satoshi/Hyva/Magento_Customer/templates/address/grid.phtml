@@ -82,7 +82,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                     href="<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>"
                                     @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>')"
                                 >
-                                    <?= $hyvaicons->renderHtml('edit') ?>
+                                    <?= $hyvaicons->renderHtml('pencil', attributes: ['title' => 'Edit']) ?>
                                 </a>
                                 <a
                                     class="text-[14px] text-primary-500"
