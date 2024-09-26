@@ -37,7 +37,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         x-ref="AccordionPanel"
         :inert="!isExpanded"
         role="region"
-        class="text-text-700 [&_.current]:text-text-500"
+        class="text-text-700 [&_.current]:text-text-500 [&_a:hover]:underline"
     >
         <?= $block->getChildHtml() ?>
     </div>
