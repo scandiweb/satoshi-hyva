@@ -46,6 +46,7 @@ export const RecentOrders = (messageText: string) =>
       this.reorderSidebarFetchHandler(params, postUrl);
     },
 
+    // TODO: Make this without page reload, after merging product actions
     reorderSidebarFetchHandler(body, postUrl) {
       const postHeaders: Record<string, any> = {
         headers: {
