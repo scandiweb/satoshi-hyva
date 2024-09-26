@@ -90,7 +90,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                                    $streetLabel ?>"
                                    id="street_1"
                                    placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your street address')) ?>"
-                                   class="input__field input__field--outline h-auto px-5 py-[10px]"
+                                   class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                    @input.debounce="onChange"
                             />
                         </div>
@@ -109,7 +109,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                                        id="street_<?= /* @noEscape */
                                        $i + 1 ?>"
                                        placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your street address %1', $i + 1)) ?>"
-                                       class="input__field input__field--outline h-auto px-5 py-[10px]"
+                                       class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                        @input.debounce="onChange"
                                 />
                             </div>
@@ -130,7 +130,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                                    title="<?= /* @noEscape */
                                    $block->getAttributeData()->getFrontendLabel('vat_id') ?>"
                                    placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your VAT ID')) ?>"
-                                   class="input__field input__field--outline h-auto px-5 py-[10px]"
+                                   class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                    id="vat_id"
                                    @input.debounce="onChange">
                         </div>
@@ -152,7 +152,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                                :required="isZipRequired"
                                @input.debounce="onChange"
                                data-validate='{"postcode": true}'
-                               class="input__field input__field--outline h-auto px-5 py-[10px]"
+                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your postcode')) ?>">
                     </div>
                 </div>
@@ -169,7 +169,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                                value="<?= $escaper->escapeHtmlAttr($block->getAddress()->getCity()) ?>"
                                title="<?= $escaper->escapeHtmlAttr(__('City')) ?>"
                                placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your city')) ?>"
-                               class="input__field input__field--outline h-auto px-5 py-[10px]"
+                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                id="city"
                                @input.debounce="onChange">
                     </div>
@@ -190,7 +190,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                                 id="country"
                                 title="Country"
                                 required
-                                class="input__field input__field--outline h-auto px-5 py-[10px]"
+                                class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                 x-ref="country_id"
                                 @input.debounce="changeCountry"
                         >
@@ -228,7 +228,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                                 <select id="region_id" name="region_id"
                                         title="<?= /* @noEscape */
                                         $regionLabel ?>"
-                                        class="input__field input__field--outline h-auto px-5 py-[10px]"
+                                        class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                         x-ref="region_id"
                                         x-model="selectedRegion"
                                         :required="isRegionRequired"
@@ -261,7 +261,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                             title="<?= /* @noEscape */
                             $regionLabel ?>"
                             placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your region')) ?>"
-                            class="input__field input__field--outline h-auto px-5 py-[10px]"
+                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                             aria-label="<?= /* @noEscape */
                             $regionLabel ?>"
                             :required="!hasAvailableRegions() && !showOptionalRegions ? isRegionRequired : false"
