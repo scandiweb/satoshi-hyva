@@ -144,7 +144,8 @@ h3 {
 }
 
 .grid-columns {
-  @apply h-full flex flex-col md:grid grid-cols-4 grid-rows-[auto_minmax(0,1fr)] gap-x-8 gap-y-5;
+  @apply h-full flex flex-col md:grid grid-rows-[auto_minmax(0,1fr)] gap-x-8 gap-y-5;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 275px;
 }
 
 @layer components {
