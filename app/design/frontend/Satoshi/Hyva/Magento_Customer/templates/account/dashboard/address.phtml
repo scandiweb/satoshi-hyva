@@ -15,7 +15,7 @@ use Magento\Framework\Escaper;
         <h2 class="text-text-500 text-lg font-bold">
             <?= $escaper->escapeHtml(__('Address Book')) ?>
         </h2>
-        <a class="button button--ghost-primary"
+        <a class="text-primary-500 hover:text-primary-700 transition-colors"
            href="<?= $escaper->escapeUrl($block->getAddressBookUrl()) ?>"
         >
             <span><?= $escaper->escapeHtml(__('Manage Addresses')) ?></span>
