@@ -1,0 +1,62 @@
+<?php
+use Magento\Framework\View\Element\Template;
+use Magento\Vault\Api\Data\PaymentTokenInterface;
+use Magento\Vault\Block\CardRendererInterface;
+
+/** @var CardRendererInterface|Template $block */
+
+$ccNumberView = $block->escapeHtml($block->getNumberLast4Digits());
+?>
+<div class="grid md:grid-cols-4">
+    <div class="grid grid-cols-2 md:grid-cols-1 mb-4 md:mb-0">
+        <div class="md:hidden font-bold">
+            <?= $escaper->escapeHtml(__('Card Number')) ?>
+        </div>
+        <span><?= /* @noEscape */ $ccNumberView ?></span>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-1 mb-4 md:mb-0">
+        <div class="md:hidden font-bold">
+            <?= $block->escapeHtml(__('Expiration Date')) ?>
+        </div>
+        <?= $block->escapeHtml($block->getExpDate()) ?>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-1 mb-4 md:mb-0">
+        <div class="md:hidden font-bold">
+            <?= $block->escapeHtml(__('Type')) ?>
+        </div>
+        <img src="<?= /* @noEscape */ $block->getIconUrl() ?>"
+             width="<?= /* @noEscape */ $block->getIconWidth() ?>"
+             height="<?= /* @noEscape */ $block->getIconHeight() ?>"
+             alt="card-icon"
+        >
+    </div>
+    <div class="grid grid-cols-2 md:flex justify-end mb-4 md:mb-0">
+        <div class="md:hidden font-bold">
+            <?= $block->escapeHtml(__('Actions')) ?>
+        </div>
+        <form
+            class="form"
+            action="<?= $block->escapeUrl($block->getUrl('vault/cards/deleteaction')) ?>"
+            method="post"
+        >
+            <?= $block->getBlockHtml('formkey') ?>
+            <input
+                name="<?= /* @noEscape */ PaymentTokenInterface::PUBLIC_HASH ?>"
+                value="<?= /* @noEscape */ $block->getToken()->getPublicHash() ?>"
+                type="hidden"/>
+            <button type="submit"
+                    class="action delete"
+                    data-mage-init='{
+                                    "Magento_Vault/js/customer_account/deleteWidget":{
+                                        "type": "popup",
+                                        "modalClass": "my-credit-cards-popup",
+                                        "toggleEvent": "click",
+                                        "title": "<?= $block->escapeHtml(__('Delete')) ?>",
+                                        "content": "<?= $block->escapeHtml(__('Are you sure you want to delete this card: %1?', $ccNumberView)) ?>"
+                                    }
+                                }'>
+                <span><?= $block->escapeHtml(__('Delete')) ?></span>
+            </button>
+        </form>
+    </div>
+</div>
