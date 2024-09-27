@@ -31,11 +31,13 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
 
 <form
       action="<?= $escaper->escapeUrl($block->getUrl('customer/account/editPost')) ?>"
-      method="post" id="form-validate"
+      method="post"
+      id="form-validate"
       enctype="multipart/form-data"
-      x-data="Object.assign(hyva.formValidation($el), initForm())"
-      @submit.prevent="submitForm"
-      autocomplete="off">
+      x-data="Object.assign({}, AccountInformation(), hyva.formValidation($el), initForm())"
+      @submit.prevent="submitForm(updateAccount)"
+      autocomplete="off"
+>
     <div class="bg-white p-5 rounded-xl">
         <?= $block->getBlockHtml('formkey') ?>
         <div class="space-y-3">
@@ -191,10 +193,18 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
     </div>
     <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>
     <div class="flex gap-x-4 flex-col md:flex-row mt-5">
-        <button type="submit" class="button button--filled-primary" title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>">
+        <button
+            type="submit"
+            class="button button--filled-primary"
+            title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
+        >
             <span><?= $escaper->escapeHtml(__('Save')) ?></span>
         </button>
-        <a class="button button--ghost-primary" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
+        <a
+            class="button button--ghost-primary"
+            href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+            @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getBackUrl()) ?>')"
+        >
             <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
         </a>
     </div>
@@ -215,7 +225,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                 this.errorMessages = [messages]
                 this.displayErrorMessage = this.errorMessages.length
             },
-            submitForm() {
+            submitForm(cb) {
                 this.validate()
                     .then(() => {
                         // Do not rename $form, the variable is expected to be declared in the recaptcha output
@@ -223,7 +233,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                         <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>
 
                         if (this.errors === 0) {
-                            $form.submit();
+                            cb();
                         }
                     })
                     .catch((invalid) => {
