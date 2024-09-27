@@ -2,28 +2,28 @@ import { Magics } from "alpinejs";
 import { navigateWithTransition } from "../plugins/Transition";
 
 export type AccountInformationType = {
-    isSaving: boolean;
+    isLoading: boolean;
     fetchAndReplaceContent(url: string): void;
-    updateAccount(): void;
+    handleFormSubmit(): void;
 } & Magics<{}>;
 
 export const AccountInformation = () =>
     <AccountInformationType>{
-    isSaving: false,
+    isLoading: false,
 
     fetchAndReplaceContent(url: string) {
         if (!url) return;
         navigateWithTransition(url);
     },
 
-    updateAccount() {
-        const form = document.getElementById('form-validate') as HTMLFormElement;
-        if (!form) return;
+    handleFormSubmit() {
+        const $form = document.getElementById('form-validate') as HTMLFormElement;
+        if (!$form) return;
 
-        const formData = new FormData(form);
-        this.isSaving = true;
+        const formData = new FormData($form);
+        this.isLoading = true;
 
-        fetch("/customer/account/editPost", {
+        fetch($form.action, {
             method: "POST",
             body: formData,
         }).then((res) => {
@@ -34,8 +34,7 @@ export const AccountInformation = () =>
             console.error("Error while updating account information:", error);
             location.reload();
         }).finally(() => {
-            this.isSaving = false;
+            this.isLoading = false;
         });
-
     },
 };

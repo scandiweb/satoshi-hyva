@@ -35,7 +35,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
     id="form-validate"
     enctype="multipart/form-data"
     x-data="Object.assign(AccountInformation(), hyva.formValidation($el), initForm())"
-    @submit.prevent="submitForm(() => updateAccount())"
+    @submit.prevent="submitForm(() => handleFormSubmit())"
     autocomplete="off"
 >
     <div class="bg-white p-5 rounded-xl">
@@ -196,11 +196,11 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
         <button
             type="submit"
             class="button button--filled-primary"
-            :class="isSaving && 'button--disabled'"
+            :class="isLoading && 'button--disabled'"
             title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
-            :disabled="isSaving"
+            :disabled="isLoading"
         >
-            <span x-text="isSaving ?
+            <span x-text="isLoading ?
                 '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
                 '<?= $escaper->escapeHtml(__('Save')) ?>'">Save</span>
         </button>
