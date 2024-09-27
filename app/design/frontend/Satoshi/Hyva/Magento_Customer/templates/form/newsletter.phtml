@@ -34,7 +34,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     <?php if ($block->getIsSubscribed()): ?> checked<?php endif; ?>
                 />
                 <span class="checkbox__control w-5 h-5" aria-hidden="true">
-                <?= $hyvaicons->renderHtml('check') ?>
+                <?= $hyvaicons->renderHtml('checkmark') ?>
             </span>
                 <span class="checkbox__label text-[14px] ml-0">
                 <?= $escaper->escapeHtml(__('General Subscription')) ?>
