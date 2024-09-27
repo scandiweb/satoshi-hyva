@@ -19,6 +19,7 @@ declare global {
     };
     grecaptchaInstanceNewsletter?: number;
     googleRecaptchaCallbackNewsletter?: (response: string) => void;
+    dispatchMessages: function;
 
     // TODO: Remove
     Shopify: {
