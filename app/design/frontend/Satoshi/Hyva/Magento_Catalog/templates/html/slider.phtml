@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 use Magento\Framework\View\Element\Template as Block;
 use Satoshi\Theme\Block\Template;
+use Magento\Framework\Escaper;
 
 /** @var Block $block */
 /** @var Template $template */
+/** @var Escaper $escaper */
 
 $slides = $block->getData('slides') ?? '';
 $gap = (int)$block->getData('gap') ?? 16;
@@ -37,7 +39,7 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
     class="slider <?= $isFullPage ? 'slider--full-width' : '' ?>"
     x-init="
         configureAndStart({
-            slidesAmountInView: <?= json_encode($slidesAmountInViewArray) ?>,
+            slidesAmountInView: <?= $escaper->escapeUrl(json_encode($slidesAmountInViewArray)) ?>,
             gap: <?= $gap ?>,
             isAutoplay: '<?= $isAutoPlay ?>',
             autoplaySpeed: <?= $autoplaySpeed ?>

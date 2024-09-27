@@ -274,7 +274,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
             <?= $block->getChildHtml('fieldset_address_info_additional') ?>
 
             <?php if (!$block->isDefaultBilling() && $block->canSetAsDefaultBilling()): ?>
-                <label class="flex items-center gap-x-3 mt-5 mb-3 mx-4" for="primary_billing">
+                <label class="flex items-center gap-x-3 mt-5 mx-4" for="primary_billing">
                     <input
                         type="checkbox"
                         class="checkbox__input"
@@ -293,7 +293,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
             <?php endif; ?>
 
             <?php if (!$block->isDefaultShipping() && $block->canSetAsDefaultShipping()): ?>
-                <label class="flex items-center gap-x-3 mt-5 mb-3 mx-4" for="primary_shipping">
+                <label class="flex items-center gap-x-3 mt-3 mx-4" for="primary_shipping">
                     <input
                         type="checkbox"
                         class="checkbox__input"
