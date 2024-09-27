@@ -6,6 +6,7 @@ use Magento\Catalog\Block\Product\ListProduct;
 use Magento\Catalog\Block\Product\ReviewRendererInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
+use Magento\Catalog\Helper\Data;
 
 /** @var ListProduct $block */
 /** @var Escaper $escaper */
@@ -16,6 +17,8 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
 $eagerLoadImagesCount = (int)($block->getData('eager_load_images_count') ?? 3);
 $productCollection = $block->getLoadedProductCollection();
 
+$catalogData = $this->helper(Data::class);
+$breadcrumbs = $catalogData->getBreadcrumbPath();
 ?>
 <?php if (!$productCollection->count()): ?>
     <div class="flex w-full flex-col gap-5 py-5 md:items-start">
@@ -28,49 +31,43 @@ $productCollection = $block->getLoadedProductCollection();
         </button>
     </div>
 <?php else: ?>
-    <section tabindex="-1"
-             id="ProductGridContainer"
-             class="content-wrapper animate-on-transition mx-auto"
-             x-ref="ProductGridContainer"
-             x-data="ProductList('')"
-             key="ProductList-all"
-    >
-        <?= $block->getToolbarHtml() ?>
-        <?= $block->getAdditionalHtml() ?>
+    <?= $block->getToolbarHtml() ?>
+    <?= $block->getAdditionalHtml() ?>
 
-        <div class="flex md:items-start">
-            <div class="flex-grow">
-                <div
-                    data-content-wrapper
-                    id="product-grid"
-                    class="mb-5 grid gap-6 transition-opacity duration-100 ease-linear md:mb-16 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
-                    :class="
-                        {
-                            'opacity-0': isLoadingProducts,
-                        }
-                    "
-                >
-                    <!-- pagination-content -->
-                    <?php
-                    /** @var Product $product */
-                    foreach (array_values($productCollection->getItems()) as $i => $product):
-                        if ($i < $eagerLoadImagesCount) {
-                            $product->setData('image_custom_attributes', ['loading' => 'eager', 'fetchpriority' => 'high']);
-                        }
-                        ?>
-                        <?= $productListItemViewModel->getItemHtml(
-                        $product,
-                        $block,
-                        'grid',
-                        ReviewRendererInterface::SHORT_VIEW,
-                        'category_page_grid',
-                        false
-                    ); ?>
-                    <?php endforeach; ?>
-                    <!-- end-pagination-content -->
-                </div>
+    <div class="flex md:items-start">
+        <div class="flex-grow">
+            <div
+                data-content-wrapper
+                id="product-grid"
+                class="mb-5 grid gap-6 transition-opacity duration-100 ease-linear md:mb-16 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+                :class="
+                    {
+                        'opacity-0': isLoadingProducts,
+                    }
+                "
+            >
+                <!-- pagination-content -->
+                <?php
+                /** @var Product $product */
+                foreach (array_values($productCollection->getItems()) as $index => $product):
+                    if ($index < $eagerLoadImagesCount) {
+                        $product->setData('image_custom_attributes', ['loading' => 'eager', 'fetchpriority' => 'high']);
+                    }
+                    ?>
+                    <?= $productListItemViewModel->getItemHtml(
+                    $product,
+                    $block,
+                    'grid',
+                    ReviewRendererInterface::SHORT_VIEW,
+                    'category_page_grid',
+                    false,
+                    $index,
+                    $breadcrumbs
+                ); ?>
+                <?php endforeach; ?>
+                <!-- end-pagination-content -->
             </div>
         </div>
-        <?= $block->getChildBlock('toolbar')->setIsBottom(true)->toHtml() ?>
-    </section>
+    </div>
+    <?= $block->getChildBlock('toolbar')->setIsBottom(true)->toHtml() ?>
 <?php endif; ?>
