@@ -69,7 +69,13 @@ $height = $block->getVar('category_page_category_image/height');
       </div>
       <?php endif; ?>
     </div>
-    <div class="ml-8 md:pl-2" x-data">
+
+    <!-- Uncomment when hide filters button moved inside sidebar -->
+    <!-- <div
+      class="button button--filled-primary invisible ml-8 hidden w-[275px] min-w-[275px] md:inline-flex md:pl-2"
+    ></div> -->
+    <!-- TODO: Move inside filters sidebar -->
+    <div class="ml-8 md:pl-2">
       <button
         type="button"
         class="button button--filled-primary hidden w-[275px] min-w-[275px] md:inline-flex"
