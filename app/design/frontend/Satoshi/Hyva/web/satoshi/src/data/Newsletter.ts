@@ -1,3 +1,5 @@
+import { navigateWithTransition } from "../plugins/Transition";
+
 export type NewsletterPropsType = {
     recaptchaValidationCode: string;
     isCaptchaEnabled: boolean;
@@ -19,8 +21,9 @@ export type NewsletterType = {
 
     setErrorMessages(messages: string): void;
     clearFormSubmissionMessages(): void;
-    submitForm(): void;
-    subscribe(formData: FormData): void;
+    submitForm(navigatedUrl? :string): void;
+    subscribe(formData: FormData, navigatedUrl? :string): void;
+    fetchAndReplaceContent(url: string): void;
 };
 
 export const Newsletter = ({
@@ -48,7 +51,7 @@ export const Newsletter = ({
             this.formSubmissionErrorMessages = {};
             this.formSubmissionSuccessMessage = '';
         },
-        submitForm() {
+        submitForm(navigatedUrl) {
             // Do not rename $form, the variable is expected to be declared in the recaptcha output
             const $form = document.querySelector('#newsletter-validate-detail') as HTMLFormElement;
             eval(recaptchaValidationCode);
@@ -66,7 +69,7 @@ export const Newsletter = ({
                                         formData.delete('g-recaptcha-response');
                                     }
                                     formData.append('g-recaptcha-response', token);
-                                    this.subscribe(formData);
+                                    this.subscribe(formData, navigatedUrl);
                                 });
                         });
                     }
@@ -77,7 +80,7 @@ export const Newsletter = ({
                             formData.delete('g-recaptcha-response');
                         }
                         formData.append('g-recaptcha-response', token);
-                        this.subscribe(formData);
+                        this.subscribe(formData, navigatedUrl);
                         grecaptcha.reset(window.grecaptchaInstanceNewsletter);
                     }
                     // Recaptcha v2 invisible
@@ -90,7 +93,7 @@ export const Newsletter = ({
                             }
 
                             formData.set('g-recaptcha-response', token);
-                            this.subscribe(formData);
+                            this.subscribe(formData, navigatedUrl);
 
                             const recaptchaElement = document.createElement('div');
                             const recaptchaElementId = 'grecaptcha-container-Newsletter';
@@ -110,11 +113,11 @@ export const Newsletter = ({
                         });
                     }
                 } else {
-                    this.subscribe(formData);
+                    this.subscribe(formData, navigatedUrl);
                 }
             }
         },
-        subscribe(formData) {
+        subscribe(formData, navigatedUrl) {
             const $form = document.querySelector('#newsletter-validate-detail') as HTMLFormElement;
             this.isLoading = true;
             this.clearFormSubmissionMessages();
@@ -126,7 +129,13 @@ export const Newsletter = ({
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                if (navigatedUrl && response.ok && response.redirected) {
+                    navigateWithTransition(navigatedUrl);
+                    return;
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     this.formSubmissionSuccessMessage = data.message;
@@ -140,6 +149,11 @@ export const Newsletter = ({
             .finally(() => {
                 this.isLoading = false;
             });
-        }
+        },
+
+        fetchAndReplaceContent(url: string) {
+            if (!url) return;
+            navigateWithTransition(url);
+        },
     }
 }
