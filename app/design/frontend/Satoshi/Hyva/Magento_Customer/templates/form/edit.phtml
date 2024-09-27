@@ -30,13 +30,13 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
 </h2>
 
 <form
-      action="<?= $escaper->escapeUrl($block->getUrl('customer/account/editPost')) ?>"
-      method="post"
-      id="form-validate"
-      enctype="multipart/form-data"
-      x-data="Object.assign({}, AccountInformation(), hyva.formValidation($el), initForm())"
-      @submit.prevent="submitForm(updateAccount)"
-      autocomplete="off"
+    action="<?= $escaper->escapeUrl($block->getUrl('customer/account/editPost')) ?>"
+    method="post"
+    id="form-validate"
+    enctype="multipart/form-data"
+    x-data="Object.assign(AccountInformation(), hyva.formValidation($el), initForm())"
+    @submit.prevent="submitForm(() => updateAccount())"
+    autocomplete="off"
 >
     <div class="bg-white p-5 rounded-xl">
         <?= $block->getBlockHtml('formkey') ?>
@@ -196,9 +196,13 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
         <button
             type="submit"
             class="button button--filled-primary"
+            :class="isSaving && 'button--disabled'"
             title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
+            :disabled="isSaving"
         >
-            <span><?= $escaper->escapeHtml(__('Save')) ?></span>
+            <span x-text="isSaving ?
+                '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
+                '<?= $escaper->escapeHtml(__('Save')) ?>'">Save</span>
         </button>
         <a
             class="button button--ghost-primary"
