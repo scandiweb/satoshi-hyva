@@ -33,6 +33,7 @@ import { Slider } from "./data/Slider";
 import { CountdownTimer } from "./data/CountdownTimer";
 import { TransitionImage } from "./data/TransitionImage";
 import { Newsletter } from "./data/Newsletter";
+import { AccountInformation } from "./data/AccountInformation";
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -66,4 +67,5 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("CountdownTimer", CountdownTimer);
   Alpine.data("TransitionImage", TransitionImage);
   Alpine.data("Newsletter", Newsletter);
+  Alpine.data("AccountInformation", AccountInformation);
 });
