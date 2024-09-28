@@ -3,6 +3,7 @@ import { ESC_KEY } from "../utils/keyboard-keys";
 import { navigateWithTransition } from "../plugins/Transition";
 
 export type AddressType = {
+  isLoading: boolean;
   renderedPage: string;
   address: Record<string, any>;
   province: string | null;
@@ -19,11 +20,12 @@ export type AddressType = {
   _focusOnForm(popup_id: string): void;
   fetchAndReplaceContent(url: string): void;
   deleteAddress(address_id: string, confirm_message: string): void;
-  createOrUpdateAddress(address_id?: string): void;
+  createOrUpdateAddress(): void;
 } & Magics<{}>;
 
 export const Address = () =>
   <AddressType>{
+    isLoading: false,
     renderedPage: "",
     address: {},
     province: null,
@@ -97,6 +99,7 @@ export const Address = () =>
 
     deleteAddress(address_id, confirm_message) {
         if (window.confirm(confirm_message)) {
+            this.isLoading = true;
             const formData = new FormData();
             formData.append("form_key", window.hyva.getFormKey());
             formData.append("uenc", window.hyva.getUenc());
@@ -112,21 +115,20 @@ export const Address = () =>
             }).catch((error) => {
                 console.error("Error while deleting address:", error);
                 location.reload();
+            }).finally(() => {
+                this.isLoading = false
             });
         }
     },
 
-    createOrUpdateAddress(address_id) {
-        const form = document.getElementById('form-validate') as HTMLFormElement;
-        if (!form) return;
-        const formData = new FormData(form);
+    createOrUpdateAddress() {
+        const $form = document.getElementById('form-validate') as HTMLFormElement;
+        if (!$form) return;
 
-        let fetchUrl = "/customer/address/formPost/";
-        if(address_id) {
-            fetchUrl += address_id;
-        }
+        this.isLoading = true;
+        const formData = new FormData($form);
 
-        fetch(fetchUrl, {
+        fetch($form.action, {
             method: "POST",
             body: formData,
         }).then((res) => {
@@ -136,6 +138,8 @@ export const Address = () =>
         }).catch((error) => {
             console.error("Error while creating or updating address:", error);
             location.reload();
+        }).finally(() => {
+            this.isLoading = false
         });
     },
   };
