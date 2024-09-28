@@ -31,10 +31,11 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
     <h2 class="text-text-500 text-lg font-bold mb-5">
         <?= $escaper->escapeHtml(__('Customer Address')) ?>
     </h2>
+    <!--TODO: @submit="onSubmit(() => createOrUpdateAddress())", but where to find onSubmit method-->
     <form
         x-data="Object.assign(Address(), initCustomerAddressEdit(), hyva.formValidation($root))"
         @private-content-loaded.window="onPrivateContentLoaded($event.detail.data)"
-        @submit.prevent="createOrUpdateAddress('<?= $block->getAddress()->getId() ?>')"
+        @submit="onSubmit"
         action="<?= $escaper->escapeUrl($block->getSaveUrl()) ?>"
         method="post"
         id="form-validate"
@@ -49,7 +50,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
             <input type="hidden" name="success_url" value="<?= $escaper->escapeUrl($block->getSuccessUrl()) ?>">
             <input type="hidden" name="error_url" value="<?= $escaper->escapeUrl($block->getErrorUrl()) ?>">
 
-            <div class="grid md:grid-cols-2 gap-3">
+            <div class="grid lg:grid-cols-2 gap-3">
                 <?= $block->getNameBlockHtml() ?>
 
                 <?php if ($companyBlock->isEnabled()): ?>
@@ -73,7 +74,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
             <h2 class="text-text-500 text-lg font-bold mb-5">
                 <?= $escaper->escapeHtml(__('Address')) ?>
             </h2>
-            <div class="grid md:grid-cols-2 gap-3">
+            <div class="grid lg:grid-cols-2 gap-3">
                 <div class="flex flex-col gap-3">
 
                     <div class="field field-reserved">
@@ -314,9 +315,14 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
         <div class="flex gap-x-4 flex-col md:flex-row">
             <button type="submit"
                     class="button button--filled-primary"
+                    :class="isLoading && 'button--disabled'"
+                    :disabled="isLoading"
                     data-action="save-address"
-                    title="<?= $escaper->escapeHtmlAttr(__('Save Address')) ?>">
-                <span><?= $escaper->escapeHtml(__('Save Address')) ?></span>
+                    title="<?= $escaper->escapeHtmlAttr(__('Save Address')) ?>"
+            >
+                <span x-text="isLoading ?
+                '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
+                '<?= $escaper->escapeHtml(__('Save Address')) ?>'">Save</span>
             </button>
             <a
                 class="button button--ghost-primary"
