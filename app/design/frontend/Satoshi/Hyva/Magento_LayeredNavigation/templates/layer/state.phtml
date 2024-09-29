@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Magento\Framework\Escaper;
 use Magento\LayeredNavigation\Block\Navigation\State;
 use Hyva\Theme\ViewModel\SvgIcons;
@@ -11,67 +10,70 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var State $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-/** @var HeroiconsOutline $heroicons */
 /** @var SvgIcons $hyvaicons */
 
 $hyvaicons = $viewModels->require(SvgIcons::class); ?>
 
+
 <?php $filters = $block->getActiveFilters() ?>
-<div class="overflow-x-scroll overscroll-x-contain">
-    <div>
-        <div>
-            <div class="mb-5 hidden items-center justify-between md:flex">
-                <h2 class="text-text-500"><?= __('Selected filters') ?></h2>
-                <?php if (!empty($filters)): ?>
-                    <?php if ($block->getLayer()->getState()->getFilters()): ?>
-                        <button
-                            class="link link--primary"
-                            @click="_fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
-                        >
-                            <?= $escaper->escapeHtml(__('Reset All')) ?>
-                        </button>
-                    <?php endif; ?>
-                <?php endif; ?>
-            </div>
-            <?php if (empty($filters)): ?>
-                <div class="hidden md:block">
-                    <p class="pr-3 text-center md:pr-0 md:text-left">
-                        <?= __('The selected filters will appear here.') ?>
-                    </p>
-                </div>
-            <?php endif; ?>
+<div class="<?= empty($filters) ? 'max-md:hidden' : '' ?>">
+    <div class="md:px-2 md:pb-7 md:pt-2">
+
+        <!-- Reset all button, desktop -->
+        <div class="mb-5 hidden items-center justify-between md:flex">
+            <h2 class="text-text-500"><?= __('Selected filters') ?></h2>
             <?php if (!empty($filters)): ?>
-                <div class="flex flex-row md:flex-col gap-3 md:pb-7 md:pt-2">
+                <?php if ($block->getLayer()->getState()->getFilters()): ?>
                     <button
-                        type="button"
-                        aria-label="<?= __('Clear all') ?>"
-                        class="md:hidden button min-w-[44px] px-0 text-xl button--filled-primary opacity-100"
-                        :tabindex="getIsDefault() ? -1 : 0"
+                        class="link link--primary"
                         @click="_fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
                     >
-                        <span><?= $hyvaicons->renderHtml('remove'); ?></span>
+                        <?= $escaper->escapeHtml(__('Reset All')) ?>
                     </button>
-                    <?php foreach ($filters as $filter): ?>
-                        <div>
-                            <button
-                                type="button"
-                                :class="$store.main.isMobile ? 'button duration-300 button--outline-primary' : 'button button--outline-secondary button--size-sm mr-3 shrink-0 md:mr-0'"
-                                @click="_fetchPage('<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>')"
-                            >
-                            <span class="mr-2">
-                                <?= $escaper->escapeHtml(__($filter->getName())) ?>:
-                            </span>
-                                <span>
-                                <?= $escaper->escapeHtml($block->stripTags($filter->getLabel())) ?>
-                            </span>
-                                <span class="ml-3 text-lg">
-                                <?= $hyvaicons->renderHtml('close'); ?>
-                            </span>
-                            </button>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
+
+        <!-- state area, desktop -->
+        <?php if (empty($filters)): ?>
+            <div class="hidden md:block">
+                <p class="pr-3 text-center md:pr-0 md:text-left">
+                    <?= __('The selected filters will appear here.') ?>
+                </p>
+            </div>
+        <?php endif; ?>
+
+        <!-- reset all button & state area, mobile -->
+        <?php if (!empty($filters)): ?>
+            <div class="flex flex-row md:flex-col gap-3">
+                <button
+                    type="button"
+                    aria-label="<?= __('Clear all') ?>"
+                    class="md:hidden button min-w-[44px] px-0 text-xl button--filled-primary opacity-100"
+                    @click="_fetchPage('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
+                >
+                    <span><?= $hyvaicons->renderHtml('remove'); ?></span>
+                </button>
+                <?php foreach ($filters as $filter): ?>
+                    <div>
+                        <button
+                            type="button"
+                            class="button duration-300 button--outline-primary"
+                            @click="_fetchPage('<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>')"
+                        >
+                        <span class="mr-2">
+                            <?= $escaper->escapeHtml(__($filter->getName())) ?>:
+                        </span>
+                            <span>
+                            <?= $escaper->escapeHtml($block->stripTags($filter->getLabel())) ?>
+                        </span>
+                            <span class="ml-3 text-lg">
+                            <?= $hyvaicons->renderHtml('close'); ?>
+                        </span>
+                        </button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>

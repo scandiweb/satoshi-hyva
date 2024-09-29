@@ -36,6 +36,7 @@ export type FiltersType = {
   filters: FilterType[] | [];
   sortOptions: SortOptionType[] | [];
   sortBy: string | boolean;
+  selectedFiltersUrl: string;
 
   init(): void;
   onResetButtonClick(): void;
@@ -53,6 +54,7 @@ export type FiltersType = {
   updateFilters(removedAttr?: RemovedAttributesType): void;
   removeFilter(name: string, value?: string): void;
   resetCurrent(): void;
+  updateSelectedFilters(url: string): void;
 
   _isFilterEmptyOrDefault(key: string, value: string): boolean;
   _isFilterRemoved(
@@ -87,6 +89,7 @@ export const Filters = (
     // If the default sort option is selected, then this.sortBy will be false.
     // otherwise, this.sortBy will have the string value of the selected sort option.
     sortBy: false,
+    selectedFiltersUrl: "",
 
     init() {
       this.updateFilters = this.updateFilters.bind(this);
@@ -315,6 +318,21 @@ export const Filters = (
           behavior: "smooth",
         });
       }, 300);
+    },
+
+    updateSelectedFilters(url) {
+      const { href } = window.location;
+      this.selectedFiltersUrl = url;
+
+      if (Alpine.store("main").isMobile || url === href) {
+        return;
+      }
+
+      this._fetchPage(this.selectedFiltersUrl);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     },
 
     removeFilter(name: string, value: string = "") {

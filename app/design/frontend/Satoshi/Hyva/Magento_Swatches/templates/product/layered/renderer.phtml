@@ -84,7 +84,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         }
     }
 </script>
-<div x-show="$store.main.isMobile" class="sticky start-0 top-0 z-10 flex flex-col gap-3 bg-bg-500 px-3 md:pt-2">
+<div x-show="$store.main.isMobile" class="sticky start-0 top-0 z-10 flex flex-col gap-3 bg-bg-500 px-2 md:pt-2">
     <div class="flex justify-between">
         <div class="flex gap-3 items-center">
             <button
@@ -98,24 +98,22 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <h2
                 class="text-md text-text-500 transition-transform duration-300 motion-reduce:transition-none"
             >
-                <?= __('Sort by') ?>
+                <?= $swatchData['attribute_label'] ?>
             </h2>
         </div>
         <button
             type="button"
             class="button button--outline-secondary icon-button icon-button--size-xs"
             aria-label="<?= __('Close') ?>"
-            @click="$store.popup.hidePopup('<?= $block->getFilterTitle() ?>')"
+            @click="$store.popup.hidePopup('<?= $swatchData['attribute_code'] ?>')"
         >
             <?= $hyvaicons->renderHtml('close'); ?>
         </button>
     </div>
-    <hr class="divider -mx-5">
+    <hr class="divider -mx-3">
 </div>
-<div class="mt-2 swatch-attribute swatch-layered <?= $escaper->escapeHtmlAttr($swatchData['attribute_code']) ?>"
-     x-data="initLayeredSwatch_<?= $escaper->escapeJs($swatchData['attribute_code']) ?>()"
->
-    <div class="swatch-attribute-options clearfix flex gap-4 flex-wrap">
+<article class="relative px-2" :aria-label="isTopLevel ? 'All filters' : 'Filter by ' + currentName?.toLowerCase()" x-data="initLayeredSwatch_<?= $escaper->escapeJs($swatchData['attribute_code']) ?>()">
+    <div class="flex gap-4 pt-4 md:pb-5 flex-wrap">
         <?php foreach ($swatchData['options'] as $option => $label):
             // check required if attribute property "is_filterable" is set to "Filterable (no results)"
             if (!isset($swatchData['swatches'][$option])):
@@ -123,17 +121,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             endif; ?>
             <?php $isImageSwatch = (int)$swatchData['swatches'][$option]['type'] === Swatch::SWATCH_TYPE_VISUAL_IMAGE; ?>
             <button
-                    @click="() => {
-                    $store.popup.hidePopup('<?= $block->getFilterTitle() ?>');
-                    _fetchPage('<?= $escaper->escapeUrl($label['link']) ?>');
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
-                }"
+                    @click="updateSelectedFilters('<?= $label['link'] ?>')"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Filter %1 %2', $swatchData['attribute_label'], $label['label'])) ?>"
-                    class="swatch-option-link-layered swatch-option cursor-pointer bg-container-lighter shadow-sm relative select-none border-container-darker"
-                    :class="{ 'w-6 h-6' : getSwatchType('<?= (string)$swatchData['swatches'][$option]['type'] ?>') !== 'text' }"
+                    class="button button--size-sm select-none transition-all ease-in-out button--outline-secondary "
+                    :class="{
+                        'w-8 h-8' : getSwatchType('<?= (string)$swatchData['swatches'][$option]['type'] ?>') !== 'text',
+                        'border-2': selectedFiltersUrl === '<?= $label['link'] ?>'
+                    }"
                 <?php if ((int)$swatchData['swatches'][$option]['type'] !== Swatch::SWATCH_TYPE_TEXTUAL): ?>
                     :style="getSwatchBackgroundStyle(
                         '<?= (string)$swatchData['swatches'][$option]['type'] ?>',
@@ -145,7 +139,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     <?php if ((int)$swatchData['swatches'][$option]['type'] !== Swatch::SWATCH_TYPE_TEXTUAL): ?>
                         <?php $swatchThumbPath = $isImageSwatch ? $block->getSwatchPath('swatch_thumb', $swatchData['swatches'][$option]['value']) : ''; ?>
                     <?php endif; ?>
-
                     @mouseenter.self="activeTooltipItem = {
                             attribute: '<?= $escaper->escapeJs($swatchData['swatches'][$option]['value']) ?>',
                             type: '<?= $escaper->escapeJs($swatchData['swatches'][$option]['type']) ?>',
@@ -167,21 +160,29 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <?= /* @noEscape */
         $block->getBlockHtml('product.swatch.tooltip'); ?>
     <?php endif; ?>
-</div>
+</article>
 
 <div x-show="$store.main.isMobile" class="mb-3">
     <div class="-top-10 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>
-    <div class="flex items-center gap-3 bg-bg-500 px-4 pb-2">
+    <div class="flex items-center gap-3 bg-bg-500 px-2 pb-2">
         <button
             type="button"
             class="button button--outline-secondary"
-            @click="$store.popup.hidePopup('<?= $block->getFilterTitle() ?>')"
+            @click="$store.popup.hidePopup('<?= $swatchData['attribute_code'] ?>')"
         >
             <?= __('Reset') ?>
         </button>
         <button
             type="button"
             class="button button--filled-primary grow"
+            @click="() => {
+                _fetchPage(selectedFiltersUrl);
+                $store.popup.hidePopup('<?= $swatchData['attribute_code'] ?>');
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }"
         >
             <?= __('Apply') ?>
         </button>
