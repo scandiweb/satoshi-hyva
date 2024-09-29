@@ -24,7 +24,24 @@ $filteredFilters = array_filter($filters, function ($filter) {
 });
 ?>
 <?php if ($block->canShowBlock()): ?>
-    <div id="filters-sidebar" x-data="Filters">
+    <div id="filters-sidebar" class="relative" x-data="Filters">
+        <div class="absolute right-0 top-[-68px] ml-8 md:pl-2">
+            <button
+                type="button"
+                class="button button--filled-primary hidden w-[275px] min-w-[275px] md:inline-flex"
+                @click="$store.productList.toggleFiltersSidebar()"
+            >
+                <span
+                    x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
+                >
+                    <?= __('Hide filter') ?>
+                </span>
+                <span class="button__icon ml-3 text-xl">
+                    <?= $hyvaicons->renderHtml('filter'); ?>
+                </span>
+            </button>
+        </div>
+
         <template x-portal="document.getElementById($store.main.isMobile ? 'toolbar-filters' : 'filters-sidebar')">
             <div
                 role="region"
