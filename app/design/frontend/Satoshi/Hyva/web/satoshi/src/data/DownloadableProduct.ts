@@ -1,5 +1,3 @@
-import { Magics } from "alpinejs";
-
 export type DownloadableProductType = {
   [key: string | symbol]: any;
   selectedValues: string[];
