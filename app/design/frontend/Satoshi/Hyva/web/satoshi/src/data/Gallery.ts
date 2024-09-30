@@ -45,8 +45,6 @@ export const Gallery = (
     vimeoPlayer: null,
     eventListeners: {
       ["@update-gallery.window"](event: CustomEvent) {
-        console.log("event, ", event);
-
         this.receiveImages(event.detail);
       },
       ["@reset-gallery.window"](event: CustomEvent) {
@@ -169,8 +167,6 @@ export const Gallery = (
         `vimeo-player-${position}`,
       );
       const videoId = videoData.id;
-
-      console.log("vimeoContainer || !videoId", vimeoContainer, videoId);
 
       if (!vimeoContainer || !videoId) return;
 
