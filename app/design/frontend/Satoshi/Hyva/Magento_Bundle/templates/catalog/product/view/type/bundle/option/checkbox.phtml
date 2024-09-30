@@ -1,0 +1,66 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Bundle\Block\Catalog\Product\View\Type\Bundle\Option\Checkbox;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Checkbox $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$option = $block->getOption();
+$selections = $option->getSelections();
+$default = $option->getDefaultSelection();
+
+$optionId = $option->getId();
+?>
+<?php if ($block->showSingle()): ?>
+    <?= /* @noEscape */ $block->getSelectionQtyTitlePrice($selections[0]) ?>
+    <?= /* @noEscape */ $block->getTierPriceRenderer()->renderTierPrice($selections[0]) ?>
+    <input type="hidden"
+           class="bundle-option-<?= (int)$optionId ?>  product bundle option"
+           name="bundle_option[<?= (int)$optionId ?>]"
+           form="product_addtocart_form"
+           value="<?= (int)$selections[0]->getSelectionId() ?>"
+           id="bundle-option-<?= (int)$optionId ?>-<?= (int)$selections[0]->getSelectionId() ?>"
+           checked
+           data-option-id="<?= (int)$optionId ?>"
+           data-selection-id="<?= (int)$selections[0]->getSelectionId() ?>"
+    />
+<?php else: ?>
+    <?php foreach ($selections as $selection): ?>
+        <?php $selectionId = $selection->getSelectionId(); ?>
+        <?php $optionSelectionId = $optionId . '-' . $selectionId ?>
+
+        <label class="flex items-center gap-3 mb-3" for="bundle-option-<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>">
+            <input
+                  class="checkbox__input"
+                  id="bundle-option-<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>"
+                   name="bundle_option[<?= (int)$optionId ?>][<?= (int)$selectionId ?>]"
+                   form="product_addtocart_form"
+                   type="checkbox"
+                   <?php if ($block->isSelected($selection)) { echo ' checked'; } ?>
+                   <?php if (!$selection->isSaleable()): ?>
+                       disabled
+                   <?php endif; ?>
+                   value="<?= (int)$selectionId ?>"
+                   data-option-id="<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>"
+                   x-on:change="calculateTotalPrice()"
+            />
+
+            <span class="checkbox__control h-5 w-5" aria-hidden="true">
+                <?= $hyvaicons->renderHtml('checkmark') ?>
+            </span>
+            <span class="checkbox__label ml-0 ">
+              <?= /* @noEscape */ $block->getSelectionQtyTitlePrice($selection) ?>
+            </span>
+        </label>
+
+        <?= /* @noEscape */ $block->getTierPriceRenderer()->renderTierPrice($selection) ?>
+    <?php endforeach; ?>
+    <div id="bundle-option-<?= (int)$optionId ?>-container"></div>
+<?php endif; ?>
