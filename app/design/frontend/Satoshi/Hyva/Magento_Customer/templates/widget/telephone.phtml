@@ -1,0 +1,28 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Customer\Block\Widget\Telephone;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Telephone $block */
+?>
+
+<div class="field field-reserved">
+    <label for="telephone" class="sr-only tracking-widest">
+        <span><?= $escaper->escapeHtml(__('Phone Number')) ?></span>
+    </label>
+    <div>
+        <input type="tel"
+               name="telephone"
+               id="telephone"
+               <?php if ($block->isRequired()): ?>required<?php endif; ?>
+               @input.debounce="onChange"
+               data-validate='{"telephone": true}'
+               value="<?= $escaper->escapeHtmlAttr($block->getTelephone()) ?>"
+               title="<?= $escaper->escapeHtmlAttr(__('Phone Number')) ?>"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your phone number')) ?>"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+        >
+    </div>
+</div>
