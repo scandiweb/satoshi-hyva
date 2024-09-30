@@ -1,9 +1,11 @@
 <?php
-/**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
- */
+
 ?>
-<div class="">
-    <div><a class="bg-primary-500 py-2.5 px-5 secondary rounded-lg text-white" href="<?= $block->escapeUrl($block->getBackUrl()) ?>"><span><?= $block->escapeHtml(__('Go back')) ?></span></a></div>
+<div>
+    <a class="bg-primary-500 py-2.5 px-5 secondary rounded-lg text-white"
+       href="<?= $block->escapeUrl($block->getBackUrl()) ?>">
+        <span>
+            <?= $block->escapeHtml(__('Go back')) ?>
+        </span>
+    </a>
 </div>
