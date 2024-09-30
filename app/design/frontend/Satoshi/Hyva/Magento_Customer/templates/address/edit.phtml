@@ -27,6 +27,132 @@ $regionLabel = $block->getAttributeData()->getFrontendLabel('region');
 $showOptionalRegions = $block->getConfig('general/region/display_all');
 ?>
 
+<!--
+Moved the script to the top to ensure all JavaScript functions and variables are initialized before Alpine.js starts.
+This prevents errors caused by undefined functions or bindings like initCustomerAddressEdit during component initialization.
+Using document.addEventListener('DOMContentLoaded') did not fully resolve the issue due to timing conflicts with Alpine.js initialization.
+-->
+<script>
+    function initCustomerAddressEdit() {
+        return {
+            directoryData: {},
+            availableRegions: {},
+            messageTime: 5000,
+            fieldsNames: [],
+            selectedRegion: '<?= $escaper->escapeJs($block->getRegion() ?: 0) ?>',
+            isZipRequired: true,
+            isRegionRequired: true,
+            showOptionalRegions: <?= $showOptionalRegions ? 'true' : 'false' ?>,
+            onPrivateContentLoaded(data) {
+                this.directoryData = data['directory-data'] || {};
+
+                <?php if ($block->getCountryId()): ?>
+                this.setCountry(this.$refs['country_id'], '<?= $escaper->escapeJs($block->getRegion()) ?>');
+                <?php endif; ?>
+
+            },
+            setRegionInputValue(regionName) {
+                this.$nextTick(() => {
+                    const regionInputElement = this.$refs['region'];
+                    if (regionInputElement) {
+                        regionInputElement.value = regionName;
+                    }
+                })
+            },
+            setCountry(countrySelectElement, initialRegion) {
+                const selectedOption = countrySelectElement.options[countrySelectElement.selectedIndex];
+                const countryCode = countrySelectElement.value;
+                const countryData = this.directoryData[countryCode] || false;
+
+                if (!countryData) {
+                    this.setRegionInputValue('');
+                    return;
+                }
+
+                this.isZipRequired = selectedOption.dataset.isZipRequired === '1';
+                this.isRegionRequired = selectedOption.dataset.isRegionRequired === '1';
+
+                this.availableRegions = countryData.regions || {};
+
+                const initialRegionId = Object.keys(this.availableRegions).filter(regionId => this.availableRegions[regionId].name === initialRegion)[0];
+                this.selectedRegion = initialRegionId || '0';
+                this.setRegionInputValue(initialRegionId && this.availableRegions[initialRegionId].name || '');
+
+            },
+            changeCountry(event, initialRegion) {
+                this.setCountry(event.target, initialRegion);
+                this.validateCountryDependentFields();
+                this.onChange(event);
+            },
+            validateCountryDependentFields() {
+                this.$nextTick(() => {
+                    <?php /* Reinitialize validation rules for fields that depend on the country */ ?>
+                    this.fields['postcode'] && this.removeMessages(this.fields['postcode'])
+                    this.fields['region'] && this.removeMessages(this.fields['region'])
+                    delete this.fields['postcode'];
+                    delete this.fields['region'];
+                    <?php /* Initialize country_id, too, because the postcode validation depends on it */ ?>
+                    this.setupField(this.$refs['country_id']);
+                    this.setupField(this.$refs['postcode']);
+                    this.setupField(this.$refs['region']);
+                    this.setupField(this.$refs['region_id']);
+
+                    this.fields['postcode'] && this.validateField(this.fields['postcode']);
+                    this.fields['region'] && this.validateField(this.fields['region']);
+                    this.fields['region_id'] && this.validateField(this.fields['region_id']);
+                })
+            },
+            hasAvailableRegions() {
+                return Object.keys(this.availableRegions).length > 0;
+            },
+            onRegionIdChange(event) {
+                this.$refs.region.value = this.selectedRegion.length > 0 ?
+                    this.availableRegions[this.selectedRegion].name :
+                    ''
+                this.onChange(event)
+                this.validateField(this.fields['region'])
+            }
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+
+        hyva.formValidation.addRule('telephone', (value, options) => {
+            const phoneNumber = value.trim().replace(' ', '');
+            if (phoneNumber && phoneNumber.length < (options.minlength || 3)) {
+                return '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>';
+            }
+
+            return true;
+        });
+
+        const postCodeSpecs = <?= /* @noEscape */ $block->getPostCodeConfig()->getSerializedPostCodes() ?>;
+
+        hyva.formValidation.addRule('postcode', (postCode, options, field, context) => {
+            context.removeMessages(field, 'postcode-warning')
+            const countryId = (context.fields['country_id'] && context.fields['country_id'].element.value),
+                validatedPostCodeExamples = [],
+                countryPostCodeSpecs = countryId && postCodeSpecs ? postCodeSpecs[countryId] : false;
+
+            if (! postCode || ! countryPostCodeSpecs) return true;
+
+            for (const postCodeSpec of Object.values(countryPostCodeSpecs)) {
+                if (new RegExp(postCodeSpec.pattern).test(postCode)) return true;
+                validatedPostCodeExamples.push(postCodeSpec.example);
+            }
+            if (validatedPostCodeExamples) {
+                context.addMessages(field, 'postcode-warning', [
+                    '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
+                    '<?= $escaper->escapeJs(__(' Example: ')) ?>' + validatedPostCodeExamples.join('; ') + '. ',
+                    '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
+                ]);
+            }
+
+            return true;
+        });
+    })
+</script>
+
 <section>
     <h2 class="text-text-500 text-lg font-bold mb-5">
         <?= $escaper->escapeHtml(__('Customer Address')) ?>
@@ -334,124 +460,3 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
         </div>
     </form>
 </section>
-
-<script>
-    function initCustomerAddressEdit() {
-        return {
-            directoryData: {},
-            availableRegions: {},
-            messageTime: 5000,
-            fieldsNames: [],
-            selectedRegion: '<?= $escaper->escapeJs($block->getRegion() ?: 0) ?>',
-            isZipRequired: true,
-            isRegionRequired: true,
-            showOptionalRegions: <?= $showOptionalRegions ? 'true' : 'false' ?>,
-            onPrivateContentLoaded(data) {
-                this.directoryData = data['directory-data'] || {};
-
-                <?php if ($block->getCountryId()): ?>
-                this.setCountry(this.$refs['country_id'], '<?= $escaper->escapeJs($block->getRegion()) ?>');
-                <?php endif; ?>
-
-            },
-            setRegionInputValue(regionName) {
-                this.$nextTick(() => {
-                    const regionInputElement = this.$refs['region'];
-                    if (regionInputElement) {
-                        regionInputElement.value = regionName;
-                    }
-                })
-            },
-            setCountry(countrySelectElement, initialRegion) {
-                const selectedOption = countrySelectElement.options[countrySelectElement.selectedIndex];
-                const countryCode = countrySelectElement.value;
-                const countryData = this.directoryData[countryCode] || false;
-
-                if (!countryData) {
-                    this.setRegionInputValue('');
-                    return;
-                }
-
-                this.isZipRequired = selectedOption.dataset.isZipRequired === '1';
-                this.isRegionRequired = selectedOption.dataset.isRegionRequired === '1';
-
-                this.availableRegions = countryData.regions || {};
-
-                const initialRegionId = Object.keys(this.availableRegions).filter(regionId => this.availableRegions[regionId].name === initialRegion)[0];
-                this.selectedRegion = initialRegionId || '0';
-                this.setRegionInputValue(initialRegionId && this.availableRegions[initialRegionId].name || '');
-
-            },
-            changeCountry(event, initialRegion) {
-                this.setCountry(event.target, initialRegion);
-                this.validateCountryDependentFields();
-                this.onChange(event);
-            },
-            validateCountryDependentFields() {
-                this.$nextTick(() => {
-                    <?php /* Reinitialize validation rules for fields that depend on the country */ ?>
-                    this.fields['postcode'] && this.removeMessages(this.fields['postcode'])
-                    this.fields['region'] && this.removeMessages(this.fields['region'])
-                    delete this.fields['postcode'];
-                    delete this.fields['region'];
-                    <?php /* Initialize country_id, too, because the postcode validation depends on it */ ?>
-                    this.setupField(this.$refs['country_id']);
-                    this.setupField(this.$refs['postcode']);
-                    this.setupField(this.$refs['region']);
-                    this.setupField(this.$refs['region_id']);
-
-                    this.fields['postcode'] && this.validateField(this.fields['postcode']);
-                    this.fields['region'] && this.validateField(this.fields['region']);
-                    this.fields['region_id'] && this.validateField(this.fields['region_id']);
-                })
-            },
-            hasAvailableRegions() {
-                return Object.keys(this.availableRegions).length > 0;
-            },
-            onRegionIdChange(event) {
-                this.$refs.region.value = this.selectedRegion.length > 0 ?
-                    this.availableRegions[this.selectedRegion].name :
-                    ''
-                this.onChange(event)
-                this.validateField(this.fields['region'])
-            }
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-
-        hyva.formValidation.addRule('telephone', (value, options) => {
-            const phoneNumber = value.trim().replace(' ', '');
-            if (phoneNumber && phoneNumber.length < (options.minlength || 3)) {
-                return '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>';
-            }
-
-            return true;
-        });
-
-        const postCodeSpecs = <?= /* @noEscape */ $block->getPostCodeConfig()->getSerializedPostCodes() ?>;
-
-        hyva.formValidation.addRule('postcode', (postCode, options, field, context) => {
-            context.removeMessages(field, 'postcode-warning')
-            const countryId = (context.fields['country_id'] && context.fields['country_id'].element.value),
-                validatedPostCodeExamples = [],
-                countryPostCodeSpecs = countryId && postCodeSpecs ? postCodeSpecs[countryId] : false;
-
-            if (! postCode || ! countryPostCodeSpecs) return true;
-
-            for (const postCodeSpec of Object.values(countryPostCodeSpecs)) {
-                if (new RegExp(postCodeSpec.pattern).test(postCode)) return true;
-                validatedPostCodeExamples.push(postCodeSpec.example);
-            }
-            if (validatedPostCodeExamples) {
-                context.addMessages(field, 'postcode-warning', [
-                    '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
-                    '<?= $escaper->escapeJs(__(' Example: ')) ?>' + validatedPostCodeExamples.join('; ') + '. ',
-                    '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
-                ]);
-            }
-
-            return true;
-        });
-    })
-</script>
