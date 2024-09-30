@@ -22,6 +22,7 @@ import { TransitionPreview } from "./data/TransitionPreview";
 import { ProductList } from "./data/ProductList";
 import { Filters } from "./data/Filters";
 import { ProductPage } from "./data/ProductPage";
+import { DownloadableProduct } from "./data/DownloadableProduct";
 import { RecentOrders } from "./data/RecentOrders";
 import { Dropdown } from "./data/Dropdown";
 import { Search } from "./data/Search";
@@ -56,6 +57,7 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("ProductList", ProductList);
   Alpine.data("Filters", Filters);
   Alpine.data("ProductPage", ProductPage);
+  Alpine.data("DownloadableProduct", DownloadableProduct);
   Alpine.data("RecentOrders", RecentOrders);
   Alpine.data("Dropdown", Dropdown);
   Alpine.data("Search", Search);
