@@ -30,9 +30,7 @@ $isPopup = $block->getData('is_popup') ?? false;
     so, if desktop do nothing, if mobile render only if is popup except for simple prods
   -->
 
-  <template
-    x-if="!$store.main.isMobile || <?= (int) ($isPopup || in_array($productType, ['simple', 'virtual'])) ?>"
-  >
+  <template x-if="!$store.main.isMobile || <?= (int) ($isPopup || in_array($productType, ['simple', 'virtual'])) ?>">
     <form method="post"
           action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
           id="product_addtocart_form"

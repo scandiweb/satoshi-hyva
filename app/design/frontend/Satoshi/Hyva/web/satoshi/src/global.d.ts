@@ -10,13 +10,17 @@ declare global {
 
   interface Window {
     hyva: {
-      getFormKey: function;
-      formatPrice: function;
-      getUenc: function;
-      replaceDomElement: function;
-      strf: function;
-      getBrowserStorage: function;
+      getFormKey: () => string;
+      formatPrice: (value: number) => string;
+      getUenc: () => string;
+      replaceDomElement: (element: HTMLElement) => void;
+      strf: (value: string) => string;
+      getBrowserStorage: (key: string) => string | null;
+      releaseFocus: function;
     };
+    grecaptchaInstanceNewsletter?: number;
+    googleRecaptchaCallbackNewsletter?: (response: string) => void;
+    dispatchMessages: function;
 
     // TODO: Remove
     Shopify: {
@@ -29,17 +33,49 @@ declare global {
       };
       cdnHost: string;
       PaymentButton: {
-        init: function;
+        init: () => void;
       };
-      loadFeatures: function;
+      loadFeatures: () => void;
     };
+
     ShopifyXR?: {
-      addModels: function;
-      setupXRElements: function;
+      addModels: (models: any[]) => void;
+      setupXRElements: (elements: HTMLElement[]) => void;
     };
+
+    YT?: {
+      Player: new (elementId: string, options: any) => any;
+      PlayerState: {
+        UNSTARTED: number;
+        ENDED: number;
+        PLAYING: number;
+        PAUSED: number;
+        BUFFERING: number;
+        CUED: number;
+      };
+    };
+
+    onYouTubeIframeAPIReady?: () => void;
+
+    [key: string]: any;
   }
+
   const BASE_URL: string;
   const CURRENT_STORE_CODE: string;
+}
+
+declare module "youtube-iframe-api" {
+  export interface YT {
+    Player: new (elementId: string, options: any) => any;
+    PlayerState: {
+      UNSTARTED: number;
+      ENDED: number;
+      PLAYING: number;
+      PAUSED: number;
+      BUFFERING: number;
+      CUED: number;
+    };
+  }
 }
 
 declare module "alpinejs" {
