@@ -47,7 +47,7 @@ export const Gallery = (
       ["@update-gallery.window"](event: CustomEvent) {
         this.receiveImages(event.detail);
       },
-      ["@reset-gallery.window"](event: CustomEvent) {
+      ["@reset-gallery.window"]() {
         this.images = this.initialImages;
       },
     },
