@@ -83,7 +83,6 @@ export const DownloadableProduct = (
       /**
        * The way x-model works it can have duplicates, so we create a new set with unique values only.
        */
-      console.log("selectedValues", this.selectedValues);
       return (
         new Set(this.selectedValues).size === Object.keys(config.links).length
       );

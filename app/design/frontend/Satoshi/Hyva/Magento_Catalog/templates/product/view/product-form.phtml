@@ -23,13 +23,6 @@ $isPopup = $block->getData('is_popup') ?? false;
 ?>
 
 <?php if ($product->isSaleable()): ?>
-
-  <!--
-    What do we need here ?
-    this form gets rendered twice, once on desktop in its own position, and on mobile inside the popup, when mobile we need to not render it in normal position, unless product has no popup!
-    so, if desktop do nothing, if mobile render only if is popup except for simple prods
-  -->
-
   <template x-if="!$store.main.isMobile || <?= (int) ($isPopup || in_array($productType, ['simple', 'virtual'])) ?>">
     <form method="post"
           action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
