@@ -1,0 +1,105 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use \Magento\LoginAsCustomerAssistance\ViewModel\ShoppingAssistanceViewModel;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ShoppingAssistanceViewModel $shoppingAssistanceViewModel */
+$shoppingAssistanceViewModel = $viewModels->require(ShoppingAssistanceViewModel::class);
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+if (!$shoppingAssistanceViewModel->isLoginAsCustomerEnabled()) {
+    return;
+}
+?>
+<script>
+    function initAllowShippingAssistence() {
+        return {
+            isAllowed: <?= $shoppingAssistanceViewModel->isAssistanceAllowed() ? 'true' : 'false' ?>,
+            showTooltip: false,
+            onChange(value) {
+                /**
+                 * assistance_allowed accepts 2 for "allowed" and 1 for "not allowed"
+                 * if assistance_allowed_checkbox is set to false, we cast it to 0 and add 1 === "1"
+                 * if assistance_allowed_checkbox is set to true, we cast it to 1 and add 1 === "2"
+                 */
+                this.$refs['assistance-input'].value = Number(value) + 1;
+            }
+        }
+    }
+</script>
+<div class="flex"
+     x-data="initAllowShippingAssistence()"
+>
+    <label class="flex items-center gap-x-3 mx-4"
+           for="assistance_allowed_checkbox"
+           x-data="initAllowShippingAssistence()"
+    >
+        <input type="checkbox"
+               @change="onChange($event.target.checked)"
+               name="assistance_allowed_checkbox"
+               id="assistance_allowed_checkbox"
+               value="1"
+               title="<?= $escaper->escapeHtmlAttr(__('Allow remote shopping assistance')) ?>"
+               class="checkbox__input"
+               aria-describedby="assistance_allowed_checkbox_tooltip"
+            <?php if ($shoppingAssistanceViewModel->isAssistanceAllowed()): ?>
+                checked
+            <?php endif; ?>
+        />
+        <span class="checkbox__control" aria-hidden="true">
+            <?= $hyvaicons->renderHtml('checkmark') ?>
+        </span>
+        <span class="checkbox__label ml-0">
+            <?= $escaper->escapeHtml(__($shoppingAssistanceViewModel->getAssistanceCheckboxTitle())) ?>
+        </span>
+    </label>
+    <input type="hidden"
+           name="assistance_allowed"
+           x-ref="assistance-input"
+           value="<?= (int) $shoppingAssistanceViewModel->isAssistanceAllowed() + 1 ?>"
+    />
+
+    <div class="inline-flex">
+        <button
+            type="button"
+            @mouseover.prevent.stop="showTooltip = true"
+            @mouseleave.prevent.stop="showTooltip = false"
+            @focus="showTooltip = true"
+            @focusout="showTooltip = false"
+            @keydown.escape="showTooltip = false"
+            aria-labelledby="assistance_allowed_checkbox_tooltip"
+            aria-disabled="true"
+            class="text-primary-500 h-full w-full"
+        >
+            <?= $hyvaicons->renderHtml('info') ?>
+        </button>
+        <div class="relative" x-cloak x-show="showTooltip">
+            <div class="shadow-lg">
+                <div class="absolute top-0 left-0 z-10 w-64 p-2 -mt-6 text-sm leading-tight text-black transform
+                    -translate-x-full md:-translate-x-1/3 -translate-y-full bg-white rounded-lg shadow-lg p-4">
+                    <span
+                        class="subtitle text-base"
+                        id="assistance_allowed_checkbox_tooltip"
+                    >
+                        <?= $escaper->escapeHtml(__($shoppingAssistanceViewModel->getAssistanceCheckboxTooltip())) ?>
+                    </span>
+                </div>
+                <svg class="absolute z-10 w-8 h-8 text-white transform -translate-x-full
+                    -translate-y-8 fill-current stroke-current" width="12" height="12" aria-hidden="true">
+                    <rect x="12" y="-12" width="12" height="12" transform="rotate(45)" class="shadow-xl" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
