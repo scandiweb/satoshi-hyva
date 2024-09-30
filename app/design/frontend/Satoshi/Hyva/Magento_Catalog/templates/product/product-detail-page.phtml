@@ -1,0 +1,48 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\View;
+use Magento\Framework\Escaper;
+
+/** @var View $block */
+/** @var Escaper $escaper */
+
+$product = $block->getProduct();
+
+$groupedIds = [];
+if ($product->getTypeId() === 'grouped') {
+  $groupedIds = array_map(fn($item) => $item['entity_id'], $product->getTypeInstance()->getAssociatedProducts($product));
+}
+?>
+
+<section
+  class="product-page"
+  x-data="ProductPage()"
+>
+  <div
+    x-init="
+    () => {
+      $data.setProductPageProps({
+        productId: <?= $product['entity_id'] ?>,
+        groupedIds: <?= $escaper->escapeHtmlAttr(json_encode($groupedIds)) ?>,
+        isScrollingToTop: true,
+      })
+    }
+  "
+    class="contents"
+  >
+    <div id="product-page">
+      <!-- product-page-content -->
+      <?= $block->getChildHtml('product.details') ?>
+      <!-- end-product-page-content -->
+    </div>
+  </div>
+</section>
+
+<section>
+  <?= $block->getChildHtml('related') ?>
+  <?= $block->getChildHtml('upsell') ?>
+  <?= $block->getChildHtml('review_list') ?>
+  <?= $block->getChildHtml('review_form') ?>
+</section>

@@ -1,4 +1,4 @@
-.unreset {
+.rte {
   /**
    * Unreset CSS
    *
@@ -10,6 +10,8 @@
    * Eric Meyer's Reset CSS, YUI 3 Reset CSS, HTML5 Reset Stylesheet of HTML5
    * Doctor, or Tim Murtaugh's HTML5 Reset.
    */
+
+  @apply [&_a:link]:underline [&_img]:rounded-md;
 
   html {
     box-sizing: content-box;
@@ -24,7 +26,11 @@
     margin: 1em 0;
   }
 
-  blockquote,
+  blockquote {
+    margin: 1em 40px;
+    @apply border-l pl-3;
+  }
+
   figure {
     margin: 1em 40px;
   }
@@ -141,7 +147,6 @@
   table {
     border-collapse: separate;
     border-spacing: 2px;
-    border-color: gray;
   }
 
   thead,
@@ -160,6 +165,12 @@
 
   th {
     font-weight: bold;
+  }
+
+  table,
+  th,
+  td {
+    border: 1px solid gray;
   }
 
   caption {

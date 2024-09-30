@@ -1,0 +1,340 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductAttributes;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Catalog\Model\Product;
+use Magento\Checkout\Helper\Cart;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\ProductActions;
+
+/** @var ProductActions $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+/** @var ProductAttributes $attributesViewModel */
+$attributesViewModel = $viewModels->require(ProductAttributes::class);
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+$productType = $product->getTypeId();
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$isProductInCart = in_array($productType,
+    ['simple', 'virtual']) && $this->helper(Cart::class)->getQuote()->hasProductId($product->getId());
+$isPopup = $block->getData('is_popup') ?? false;
+$isSmall = $block->getData('is_small') ?? false;
+$hasVariants = $productType === 'configurable';
+$isGroup = $productType === 'grouped';
+$inStock = $product->isSaleable();
+
+$isVariantsPopup = $isPopup && $hasVariants;
+
+// hide on mobile always when out of stock, if in stock then hide on mobile when not popup & product is configurable, if popup hide if variant in cart
+$hideOnMobile = false;
+if (!$inStock) {
+  $hideOnMobile = true;
+} elseif ($isPopup) {
+  $hideOnMobile = $isProductInCart;
+} else {
+  $hideOnMobile = $isGroup ?? $hasVariants;
+}
+
+$cartMessage = $block->getCartMessage();
+?>
+<div class="relative md:rounded-b-md max-md:px-3 w-full">
+  <?php if ($isPopup && $productType === 'bundle'): ?>
+    <!-- Bundle product summary -->
+    <div x-html="document.getElementById('bundleSummary').innerHTML"></div>
+  <?php endif; ?>
+
+  <div class="flex flex-grow justify-stretch gap-3 bg-bg-500 relative">
+    <!-- Quantity Controls -->
+    <?php if ($block->getChildBlock('product.info.quantity')): ?>
+      <?= $block->getChildBlock('product.info.quantity')->setData([
+        'is_popup' => $isPopup,
+        'is_small' => $isSmall
+      ])->toHtml() ?>
+    <?php endif; ?>
+
+    <!-- Add to cart button -->
+    <button
+      <?php if ($isProductInCart || !$inStock): ?>
+        style="display: none"
+      <?php endif; ?>
+      x-show="<?= (int) $inStock ?> && !isVariantInCart"
+      class="
+        <?= (in_array($productType,
+          ['configurable', 'downloadable', 'grouped', 'bundle']) && !$isPopup) ? 'max-md:hidden' : '' ?>
+        <?= $isSmall ? 'button--size-sm' : '' ?>
+        animate-on-transition button button--filled-primary flex-grow
+      "
+      :class="
+        {
+          'md:hidden': isVariantInCart || <?= (int) !$inStock ?>,
+          'max-md:hidden':
+            <?= (int) !$inStock ?> ||
+            (<?= (int) (!$isPopup && in_array($productType, ['configurable', 'downloadable', 'grouped', 'bundle'])) ?>) ||
+            (<?= (int) $isPopup ?> && isVariantInCart),
+          'button--disabled': isProductBeingAdded || isProductBeingRemoved
+        }
+      "
+      type="submit"
+      form="product_addtocart_form"
+      title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
+      data-addto="cart"
+      x-a11y-trap-target.end="$store.popup.currentPopup === productActionsPopup"
+      :disabled="isProductBeingAdded || isProductBeingRemoved"
+      type="button"
+    >
+      <span
+        class="flex"
+        x-show="!isProductBeingAdded && !isProductBeingRemoved"
+      >
+          <?= __('Add to cart') ?>
+          <span class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>">
+              <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+          </span>
+      </span>
+
+      <span style="display: none" x-show="isProductBeingRemoved">
+          <?= __('Removing from cart...') ?>
+      </span>
+
+      <span style="display: none" x-show="isProductBeingAdded">
+          <?= __('Adding...') ?>
+      </span>
+    </button>
+
+    <!-- Select items, only for grouped products -->
+    <button
+      <?php if ($productType !== 'grouped'): ?>
+        style="display: none"
+      <?php endif; ?>
+      class="animate-on-transition button button--filled-primary w-full md:hidden <?= $isSmall ? 'button--size-sm' : '' ?> <?= ($isPopup || $productType !== 'grouped') ? 'max-md:hidden' : '' ?>"
+      @click.prevent="showProductActions()"
+      :class="
+      {
+        'button--disabled': isProductBeingAdded || isProductBeingRemoved
+      }
+    "
+      :disabled="isProductBeingAdded || isProductBeingRemoved"
+      type="button"
+    >
+    <span
+      x-show="!isProductBeingAdded && !isProductBeingRemoved"
+      class="inline-flex items-center"
+    >
+      <?= __('Select items') ?>
+      <span
+        class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>"
+      >
+        <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+      </span>
+    </span>
+
+      <span style="display: none" x-show="isProductBeingRemoved">
+        <?= __('Removing from cart...') ?>
+    </span>
+
+      <span style="display: none" x-show="isProductBeingAdded">
+        <?= __('Adding...') ?>
+    </span>
+    </button>
+
+    <!-- Select options, for configurable product when variant not in cart -->
+    <button
+      <?php if ($isProductInCart): ?>
+        style="display: none"
+      <?php endif; ?>
+      x-show="!isVariantInCart"
+      class="animate-on-transition button button--filled-primary w-full md:hidden <?= $isSmall ? 'button--size-sm' : '' ?> <?= ($isPopup || !$hasVariants) ? 'max-md:hidden' : '' ?>"
+      @click.prevent="showProductActions()"
+      :class="
+      {
+        'button--disabled': isProductBeingAdded || isProductBeingRemoved
+      }
+    "
+      :disabled="isProductBeingAdded || isProductBeingRemoved"
+      type="button"
+    >
+    <span
+      x-show="!isProductBeingAdded && !isProductBeingRemoved"
+      class="inline-flex items-center"
+    >
+      <?= __('Select options') ?>
+      <span
+        class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>"
+      >
+        <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+      </span>
+    </span>
+
+      <span style="display: none" x-show="isProductBeingRemoved">
+        <?= __('Removing from cart...') ?>
+    </span>
+
+      <span style="display: none" x-show="isProductBeingAdded">
+        <?= __('Adding...') ?>
+    </span>
+    </button>
+
+    <!-- TODO: refactor to eliminate duplicates -->
+    <!-- Select another option, for configurable when variant is in cart -->
+    <button
+      <?php if (!$isProductInCart || $isPopup || !$hasVariants): ?>
+        style="display: none"
+      <?php endif; ?>
+      x-show="<?= (int) $hasVariants ?> && isVariantInCart && !<?= (int) $isPopup ?>"
+      class="animate-on-transition button button--filled-primary w-full md:hidden <?= $isSmall ? 'button--size-sm' : '' ?>"
+      @click.prevent="showProductActions()"
+      type="button"
+    >
+    <span
+      x-show="!isProductBeingAdded && !isProductBeingRemoved"
+      class="inline-flex items-center"
+    >
+      <?= __('Select another option') ?>
+      <span
+        class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>"
+      >
+        <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+      </span>
+    </span>
+
+      <span style="display: none" x-show="isProductBeingRemoved">
+        <?= __('Removing from cart...') ?>
+    </span>
+
+      <span style="display: none" x-show="isProductBeingAdded">
+        <?= __('Adding...') ?>
+    </span>
+    </button>
+
+    <!-- Show links, for downloadable products -->
+    <?php if ($productType === 'downloadable'): ?>
+      <button
+        <?php if (!$inStock | $isPopup): ?>
+          style="display: none"
+        <?php endif; ?>
+        x-show="<?= (int) !$isPopup ?>"
+        class="animate-on-transition button button--filled-primary w-full md:hidden <?= $isSmall ? 'button--size-sm' : '' ?>"
+        @click.prevent="showProductActions()"
+        type="button"
+      >
+      <span
+        x-show="!isProductBeingAdded && !isProductBeingRemoved"
+        class="inline-flex items-center"
+      >
+        <?= __('Show links') ?>
+        <span
+          class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>"
+        >
+          <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+        </span>
+      </span>
+
+        <span style="display: none" x-show="isProductBeingRemoved">
+          <?= __('Removing from cart...') ?>
+      </span>
+
+        <span style="display: none" x-show="isProductBeingAdded">
+          <?= __('Adding...') ?>
+      </span>
+      </button>
+    <?php endif; ?>
+
+    <!-- Customize bundle, for bundle products -->
+    <?php if ($productType === 'bundle'): ?>
+      <button
+        <?php if (!$inStock | $isPopup): ?>
+          style="display: none"
+        <?php endif; ?>
+        x-show="<?= (int) !$isPopup ?>"
+        class="animate-on-transition button button--filled-primary w-full md:hidden <?= $isSmall ? 'button--size-sm' : '' ?>"
+        @click.prevent="showProductActions()"
+        type="button"
+      >
+      <span
+        x-show="!isProductBeingAdded && !isProductBeingRemoved"
+        class="inline-flex items-center"
+      >
+        <?= __('Customize bundle') ?>
+        <span
+          class="button__icon button__icon--right <?= $isSmall ? 'text-lg' : '' ?>"
+        >
+          <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+        </span>
+      </span>
+
+        <span style="display: none" x-show="isProductBeingRemoved">
+          <?= __('Removing from cart...') ?>
+      </span>
+
+        <span style="display: none" x-show="isProductBeingAdded">
+          <?= __('Adding...') ?>
+      </span>
+      </button>
+    <?php endif; ?>
+
+    <!-- Already in cart -->
+    <button
+      <?php if (!$isProductInCart): ?>
+        style="display: none"
+      <?php endif; ?>
+      x-show="isVariantInCart && contentId !== 'product-options'"
+      class="animate-on-transition button button--disabled button--outline-secondary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= $hasVariants ? 'max-md:hidden' : '' ?>"
+      @click.prevent="$store.cart.showCart()"
+      x-a11y-trap-target.end="$store.popup.currentPopup === productActionsPopup"
+      type="button"
+    >
+    <span>
+      <?= __('Already in cart') ?>
+    </span>
+    </button>
+
+    <!-- Out of stock button -->
+    <button
+      <?php if ($isProductInCart || !$inStock): ?>
+        style="display: none"
+      <?php endif; ?>
+      x-show="!isVariantInCart || <?= (int) $isPopup ?>"
+      class="animate-on-transition button button--disabled button--outline-secondary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= ($inStock || (!$isPopup && $hasVariants)) ? 'max-md:hidden' : '' ?> <?= $inStock ? 'md:hidden' : '' ?>"
+      disabled
+      type="button"
+    >
+      <?= __('Out of stock') ?>
+    </button>
+
+    <!-- Show product button -->
+    <a
+      <?php if (!$isPopup || !$isProductInCart || $productType === 'downloadable'): ?>
+        style="display: none"
+      <?php endif; ?>
+      x-show="<?= (int) ($productType !== 'downloadable') ?> && (!isVariantInCart || <?= (int) $isPopup ?>)"
+      class="animate-on-transition button button--outline-primary w-full md:hidden"
+      :class="
+      {
+        'max-md:hidden': !isVariantInCart || !<?= (int) $isPopup ?>
+      }
+    "
+      href="#"
+      @click.prevent="hideProductActions()"
+    >
+      <?= __('Show product') ?>
+    </a>
+  </div>
+</div>
+
+<!-- Status Message -->
+<?php if (!$isPopup && is_array($cartMessage)): ?>
+  <span class="basis-full <?= $cartMessage['status'] === 'error' ? 'text-error' : '' ?>">
+    <?= $cartMessage['message'] ?>
+  </span>
+<?php endif; ?>
