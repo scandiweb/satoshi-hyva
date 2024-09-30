@@ -70,7 +70,7 @@ $productName = $block->getProduct()->getName();
                 class="object-center no-fade <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
                 src="<?= $mainImageUrl ?>"
                 alt="<?= $mainImage ? $escaper->escapeHtmlAttr($mainImage->getData('label')) : '' ?>"
-                id="main-image-<?= $mainImage->getData('position') ?>"
+                id="<?= $mainImage ? 'main-image-' . $mainImage->getData('position') : 'main-image' ?>"
             >
             <?php if($mainImage->getData('media_type') && str_contains($mainImage->getData('media_type'), 'video')): ?>
                 <template x-if="!$store.main.isMobile">
