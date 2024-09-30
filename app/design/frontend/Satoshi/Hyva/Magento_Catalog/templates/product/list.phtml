@@ -6,6 +6,7 @@ use Magento\Catalog\Block\Product\ListProduct;
 use Magento\Catalog\Block\Product\ReviewRendererInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
+use Magento\Catalog\Helper\Data;
 
 /** @var ListProduct $block */
 /** @var Escaper $escaper */
@@ -14,8 +15,10 @@ use Magento\Framework\Escaper;
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
 
 $eagerLoadImagesCount = (int)($block->getData('eager_load_images_count') ?? 3);
-$productCollection = $block->getLoadedProductCollection();
+$productCollection = $block->getLoadedProductCollection()->addMediaGalleryData();
 
+$catalogData = $this->helper(Data::class);
+$breadcrumbs = $catalogData->getBreadcrumbPath();
 ?>
 <?php if (!$productCollection->count()): ?>
     <div class="flex w-full flex-col gap-5 py-5 md:items-start">
@@ -46,8 +49,8 @@ $productCollection = $block->getLoadedProductCollection();
                 <!-- pagination-content -->
                 <?php
                 /** @var Product $product */
-                foreach (array_values($productCollection->getItems()) as $i => $product):
-                    if ($i < $eagerLoadImagesCount) {
+                foreach (array_values($productCollection->getItems()) as $index => $product):
+                    if ($index < $eagerLoadImagesCount) {
                         $product->setData('image_custom_attributes', ['loading' => 'eager', 'fetchpriority' => 'high']);
                     }
                     ?>
@@ -57,7 +60,9 @@ $productCollection = $block->getLoadedProductCollection();
                     'grid',
                     ReviewRendererInterface::SHORT_VIEW,
                     'category_page_grid',
-                    false
+                    false,
+                    $index,
+                    $breadcrumbs
                 ); ?>
                 <?php endforeach; ?>
                 <!-- end-pagination-content -->

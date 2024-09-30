@@ -331,6 +331,8 @@ $cartMessage = $block->getCartMessage();
     </a>
   </div>
 </div>
+
+<!-- Status Message -->
 <?php if (!$isPopup && is_array($cartMessage)): ?>
   <span class="basis-full <?= $cartMessage['status'] === 'error' ? 'text-error' : '' ?>">
     <?= $cartMessage['message'] ?>
