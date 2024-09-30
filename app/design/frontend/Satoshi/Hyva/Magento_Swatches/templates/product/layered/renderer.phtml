@@ -21,6 +21,11 @@ $configurableViewModel = $viewModels->require(ConfigurableViewModel::class);
 $swatchData = $block->getSwatchData();
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
+
+$filters = $block->getLayout()->getBlock('catalog.leftnav')->getFilters() ?? [];
+$availableFilters = array_filter($filters, function ($filter) {
+    return $filter->getItemsCount();
+});
 ?>
 <script>
     function initLayeredSwatch_<?= $escaper->escapeJs($swatchData['attribute_code']) ?>() {
@@ -90,15 +95,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <button
                 type="button"
                 class="button button--ghost-primary icon-button icon-button--size-xs text-xxl transition-transform duration-300 motion-reduce:transition-none"
-                aria-label="<?= __('Go to back to all filters') ?>"
+                aria-label="<?= __('Go back to all filters') ?>"
                 @click="isTopLevel = true; currentName = ''"
+                :tabindex="isTopLevel ? -1 : 0"
             >
                 <?= $hyvaicons->renderHtml('chevron-left'); ?>
             </button>
             <h2
                 class="text-md text-text-500 transition-transform duration-300 motion-reduce:transition-none"
+                x-text="isTopLevel ? '<?= $escaper->escapeHtmlAttr(__('Filters')) ?>' : currentName"
             >
-                <?= $swatchData['attribute_label'] ?>
             </h2>
         </div>
         <button
@@ -113,7 +119,36 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     <hr class="divider -mx-3">
 </div>
 <article class="relative px-2" :aria-label="isTopLevel ? 'All filters' : 'Filter by ' + currentName?.toLowerCase()" x-data="initLayeredSwatch_<?= $escaper->escapeJs($swatchData['attribute_code']) ?>()">
-    <div class="flex gap-4 pt-4 md:pb-5 flex-wrap">
+    <nav class="flex flex-col gap-3 py-3 md:hidden" x-show="isTopLevel" aria-label="<?= $escaper->escapeHtmlAttr(__('Available filters')) ?>">
+        <?php foreach($availableFilters as $availableFilter): ?>
+            <button
+                type="button"
+                class="flex min-h-10 items-center justify-between py-1"
+                @click="isTopLevel = false; currentName = '<?= $availableFilter->getName() ?>'"
+            >
+                <span
+                    class="mr-4 <?= $availableFilter['attribute_model']['attribute_code'] !== $swatchData['attribute_code'] ? 'hidden' : '' ?>"
+                >
+                    <?= $hyvaicons->renderHtml('dot'); ?>
+                </span>
+                <p
+                    class="grow text-left <?= $availableFilter['attribute_model']['attribute_code'] === $swatchData['attribute_code'] ? 'text-primary-500 font-semibold' : '' ?>"
+                >
+                    <?= $availableFilter->getName() ?>
+                </p>
+                <p class="icon-button">
+                    <?= $hyvaicons->renderHtml('chevron'); ?>
+                </p>
+            </button>
+        <?php endforeach; ?>
+    </nav>
+
+    <div
+        class="flex gap-4 pt-4 md:pb-5 flex-wrap"
+        :class="{
+            'max-md:hidden': isTopLevel
+        }"
+    >
         <?php foreach ($swatchData['options'] as $option => $label):
             // check required if attribute property "is_filterable" is set to "Filterable (no results)"
             if (!isset($swatchData['swatches'][$option])):

@@ -25,6 +25,7 @@ $filteredFilters = array_filter($filters, function ($filter) {
 ?>
 <?php if ($block->canShowBlock()): ?>
     <div id="filters-sidebar" class="relative" x-data="Filters">
+        <!-- Show/Hide filters button -->
         <div class="absolute right-0 top-[-68px] ml-8 md:pl-2">
             <button
                 type="button"
@@ -42,6 +43,7 @@ $filteredFilters = array_filter($filters, function ($filter) {
             </button>
         </div>
 
+        <!-- Filters -->
         <template x-portal="document.getElementById($store.main.isMobile ? 'toolbar-filters' : 'filters-sidebar')">
             <div
                 role="region"
@@ -90,7 +92,7 @@ $filteredFilters = array_filter($filters, function ($filter) {
                                     <div class="contents">
                                         <!-- Mobile filters navigation -->
                                         <button
-                                            @click="$store.popup.showPopup('<?= $filter['attribute_model']['attribute_code'] ?>')"
+                                            @click="isTopLevel = false; currentName = '<?= $filter->getName() ?>'; $store.popup.showPopup('<?= $filter['attribute_model']['attribute_code'] ?>')"
                                             type="button"
                                             class="button duration-300 button--outline-secondary md:hidden"
                                         >
@@ -99,9 +101,8 @@ $filteredFilters = array_filter($filters, function ($filter) {
                                         <?=
                                             $popup
                                                 ->setData([
-                                                    'id' => $filter['attribute_model']['attribute_code'],
-                                                    'isFocused' => true,
-                                                    'isFullScreen' => false,
+                                                    'id' => 'filters',
+                                                    'isFocused' => true
                                                 ])
                                                 ->setChildHtml($block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter))
                                                 ->render()

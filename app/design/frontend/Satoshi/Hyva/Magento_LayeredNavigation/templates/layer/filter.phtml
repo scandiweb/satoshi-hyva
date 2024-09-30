@@ -18,24 +18,37 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $catalogHelper = $this->helper(Data::class);
 
+
+$filters = $block->getParentBlock('catalog.leftnav')->getFilters() ?? [];
+$availableFilters = array_filter($filters, function ($filter) {
+    return $filter->getItemsCount();
+});
+
 ?>
 <div>
     <!-- Filters popup header on mobile -->
     <div class="sticky start-0 top-0 z-10 flex flex-col gap-3 bg-bg-500 px-2 md:pt-2 md:hidden">
         <div class="flex justify-between">
-            <div class="flex gap-3 items-center">
+            <div
+                class="relative flex gap-3 items-center"
+                :class="{
+                    '-translate-x-[34px]': isTopLevel,
+                    'translate-x-0': !isTopLevel,
+                }"
+            >
                 <button
                     type="button"
                     class="button button--ghost-primary icon-button icon-button--size-xs text-xxl transition-transform duration-300 motion-reduce:transition-none"
-                    aria-label="<?= __('Go to back to all filters') ?>"
+                    aria-label="<?= __('Go back to all filters') ?>"
                     @click="isTopLevel = true; currentName = ''"
+                    :tabindex="isTopLevel ? -1 : 0"
                 >
                     <?= $hyvaicons->renderHtml('chevron-left'); ?>
                 </button>
                 <h2
                     class="text-md text-text-500 transition-transform duration-300 motion-reduce:transition-none"
+                    x-text="isTopLevel ? '<?= $escaper->escapeHtmlAttr(__('Filters')) ?>' : currentName"
                 >
-                    <?= $block->getFilterTitle() ?>
                 </h2>
             </div>
             <button
@@ -55,7 +68,36 @@ $catalogHelper = $this->helper(Data::class);
         class="relative px-2"
         :aria-label="isTopLevel ? 'All filters' : 'Filter by ' + currentName?.toLowerCase()"
     >
-        <div class="flex flex-col gap-4 pt-3 md:pb-5 md:pt-4">
+        <nav class="flex flex-col gap-3 py-3 md:hidden" x-show="isTopLevel" aria-label="<?= $escaper->escapeHtmlAttr(__('Available filters')) ?>">
+            <?php foreach($availableFilters as $availableFilter): ?>
+                <button
+                    type="button"
+                    class="flex min-h-10 items-center justify-between py-1"
+                    @click="isTopLevel = false; currentName = '<?= $availableFilter->getName() ?>'"
+                >
+                    <span
+                        class="mr-4 <?= $availableFilter['attribute_model']['attribute_code'] !== $attribute_code ? 'hidden' : '' ?>"
+                    >
+                        <?= $hyvaicons->renderHtml('dot'); ?>
+                    </span>
+                    <p
+                        class="grow text-left <?= $availableFilter['attribute_model']['attribute_code'] === $attribute_code ? 'text-primary-500 font-semibold' : '' ?>"
+                    >
+                        <?= $availableFilter->getName() ?>
+                    </p>
+                    <p class="icon-button">
+                        <?= $hyvaicons->renderHtml('chevron'); ?>
+                    </p>
+                </button>
+            <?php endforeach; ?>
+        </nav>
+
+        <div
+            class="flex flex-col gap-4 pt-3 md:pb-5 md:pt-4"
+            :class="{
+                'max-md:hidden': isTopLevel
+            }"
+        >
             <div role="radiogroup" aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter options', $block->getFilterTitle())) ?>">
                 <?php foreach ($filterItems as $filterItem): ?>
                     <div class="relative h-11 w-full">
@@ -102,6 +144,7 @@ $catalogHelper = $this->helper(Data::class);
             >
                 <?= __('Reset') ?>
             </button>
+
             <button
                 type="button"
                 class="button button--filled-primary grow"
