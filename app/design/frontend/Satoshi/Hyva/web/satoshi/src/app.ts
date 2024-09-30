@@ -22,6 +22,8 @@ import { TransitionPreview } from "./data/TransitionPreview";
 import { ProductList } from "./data/ProductList";
 import { Filters } from "./data/Filters";
 import { ProductPage } from "./data/ProductPage";
+import { DownloadableProduct } from "./data/DownloadableProduct";
+import { RecentOrders } from "./data/RecentOrders";
 import { Dropdown } from "./data/Dropdown";
 import { Search } from "./data/Search";
 import { Shipping } from "./data/Shipping.js";
@@ -31,6 +33,7 @@ import { RangeSlider } from "./data/RangeSlider";
 import { Slider } from "./data/Slider";
 import { CountdownTimer } from "./data/CountdownTimer";
 import { TransitionImage } from "./data/TransitionImage";
+import { Gallery } from "./data/Gallery.ts";
 import { Newsletter } from "./data/Newsletter";
 
 document.addEventListener("alpine:init", () => {
@@ -54,6 +57,8 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("ProductList", ProductList);
   Alpine.data("Filters", Filters);
   Alpine.data("ProductPage", ProductPage);
+  Alpine.data("DownloadableProduct", DownloadableProduct);
+  Alpine.data("RecentOrders", RecentOrders);
   Alpine.data("Dropdown", Dropdown);
   Alpine.data("Search", Search);
   Alpine.data("Shipping", Shipping);
@@ -63,5 +68,6 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("Slider", Slider);
   Alpine.data("CountdownTimer", CountdownTimer);
   Alpine.data("TransitionImage", TransitionImage);
+  Alpine.data("Gallery", Gallery);
   Alpine.data("Newsletter", Newsletter);
 });
