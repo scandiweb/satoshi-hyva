@@ -9,6 +9,7 @@ use Satoshi\Theme\Block\Template;
 /** @var Template $block */
 /** @var ViewModelRegistry $viewModels */
 /** @var Escaper $escaper */
+/** @var Template $template */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
@@ -18,7 +19,7 @@ $mixBackground = false;
 ?>
 
 <div
-  class="flex flex-col gap-5 <?= $isCartPage ? 'flex-1 md:pr-5' : 'md:overflow-auto md:max-h-[calc(100dvh-255px)] md:px-4' ?>"
+  class="flex flex-col gap-5 <?= $isCartPage ? 'flex-1 md:pr-5' : 'md:overflow-auto md:max-h-[calc(100dvh-225px)] md:px-4' ?>"
 >
   <div
     class="flex flex-col gap-5 md:gap-5 md:pb-3 <?= $isCartPage ? 'md:grid md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4' : 'md:pt-4 md:pb-10' ?>"
@@ -56,6 +57,7 @@ $mixBackground = false;
                 loading="lazy"
                 width=""
                 height=""
+                alt=""
               >
             </template>
 
@@ -76,8 +78,8 @@ $mixBackground = false;
                   :key="o"
                 >
                   <p
-                    class="text-md"
-                    x-text="`${option.label}: ${option.value}`"
+                    class="text-md mb-1 [&_.price]:text-primary-500 [&_.price]:block whitespace-nowrap text-ellipsis overflow-hidden"
+                    x-html="`${option.label}: ${option.value}`"
                   ></p>
                 </template>
               </template>
@@ -103,7 +105,7 @@ $mixBackground = false;
         ->getLayout()
         ->createBlock(Coupon::class)
         ->setTemplate('Magento_Theme::html/header/cart/coupon.phtml')
-        ->toHtml();
+        ->toHtml()
     ?>
     <?php endif; ?>
 

@@ -1,0 +1,87 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\Block\Popup;
+use Satoshi\Theme\Block\Template;
+
+/** @var Popup $popup */
+/** @var SvgIcons $hyvaicons */
+/** @var ViewModelRegistry $viewModels */
+/** @var Template $block */
+/** @var Template $template */
+
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$title = $block->getData('title');
+$url = $block->getData('url');
+$id = $block->getData('id');
+$desktop_id = "$id-desktop";
+?>
+<div
+  x-data="{
+    isVisible: false,
+    keyDown: null,
+    showPopup: () => {},
+    hidePopup: () => {},
+    copied: false
+  }"
+  x-init="
+    const container = document.getElementById('<?= $desktop_id ?>');
+    const btn = document.getElementById('<?= $id ?>-btn');
+
+    hidePopup = () => {
+      isVisible = false;
+      document.removeEventListener('click', keyDown)
+    }
+
+    keyDown = (e) => {
+      if (!container.contains(e.target) && !btn.contains(e.target)) {
+        hidePopup();
+      }
+    };
+
+    showPopup = () => {
+        copied = false;
+        if ($store.main.isMobile) {
+          $store.popup.showPopup('<?= $id ?>', true)
+        } else {
+          isVisible = true;
+          $nextTick(() => {
+            document.addEventListener('click', keyDown);
+          })
+        }
+    }
+  "
+>
+  <button
+    id="<?= $id ?>-btn"
+    class="button button--ghost-primary animate-on-transition w-full"
+    @click.prevent="showPopup()"
+    type="button"
+  >
+    <?= $title ?>
+  </button>
+
+  <div
+    id="<?= $desktop_id ?>"
+    class="absolute right-0 z-20 mt-3 w-[400px] max-w-full rounded-md border bg-bg-500 p-5 shadow-sm  max-md:hidden"
+    :class="{'md:hidden': !isVisible}"
+    x-a11y-trap="isVisible"
+    x-cloak
+  ></div>
+
+  <?=
+    $popup
+      ->setData([
+        'id' => $id,
+        'isFocused' => true,
+        'desktopTarget' => $desktop_id,
+      ])
+      ->setChildHtml($template->setData(
+        [
+          'id' => $id,
+          'url' => $url
+        ])->render('Magento_Theme::html/components/share-content.phtml'))
+      ->render()
+  ?>
+</div>
