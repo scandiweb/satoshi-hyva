@@ -16,6 +16,7 @@ declare global {
       replaceDomElement: (element: HTMLElement) => void;
       strf: (value: string) => string;
       getBrowserStorage: (key: string) => string | null;
+      releaseFocus: function;
     };
     grecaptchaInstanceNewsletter?: number;
     googleRecaptchaCallbackNewsletter?: (response: string) => void;
