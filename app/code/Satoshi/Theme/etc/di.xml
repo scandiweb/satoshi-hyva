@@ -5,7 +5,8 @@
         <plugin name="utilities_template_engine_plugin"
                 type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"/>
     </type>
-
+    <preference for="Magento\Customer\Controller\Account\LoginPost"
+                type="Satoshi\Theme\Plugin\Customer\Controller\Account\LoginPost"/>
     <preference
         for="Magento\Checkout\Controller\Cart\CouponPost"
         type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
@@ -13,10 +14,6 @@
     <preference
         for="Magento\Checkout\Block\Cart\Coupon"
         type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
-    />
-    <preference
-        for="Hyva\Theme\ViewModel\Currency"
-        type="Satoshi\Theme\ViewModel\Currency"
     />
     <preference
         for="Hyva\Theme\Service\Navigation"
