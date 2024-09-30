@@ -302,6 +302,7 @@ export const ProductPage = () =>
 
       if (!this.isGroupValid) {
         // this triggers an immediate display of the form errors
+        // @ts-ignore
         document.querySelector("#product_addtocart_form")!.reportValidity();
         return false;
       }
