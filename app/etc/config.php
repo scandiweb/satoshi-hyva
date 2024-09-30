@@ -359,6 +359,7 @@ return [
         'ReadyMage_Maintenance' => 1,
         'Satoshi_CatalogGraphQl' => 1,
         'Satoshi_Contact' => 1,
+        'Satoshi_Checkout' => 1,
         'Satoshi_Theme' => 1,
         'Temando_ShippingRemover' => 1
     ],
