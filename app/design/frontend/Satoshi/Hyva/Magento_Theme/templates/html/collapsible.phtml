@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
@@ -11,38 +10,35 @@ use Magento\Framework\View\Element\Template;
 /** @var Template $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-/** @var HeroiconsOutline $heroicons */
+/** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div class="block <?= $escaper->escapeHtmlAttr($block->getBlockCss()) ?> card filter-option p-3 bg-white rounded-xl"
-     x-data="Accordion(!$store.main.isMobile, 300)"
-     x-effect="isMobile = $store.main.isMobile; isExpanded = !isMobile"
->
-    <button
+<div x-data="Accordion(!$store.main.isMobile, 300)" class="max-md:mt-3 bg-bg-400 p-5 md:p-4 rounded-md overflow-hidden">
+  <button
+        class="group flex items-center justify-between w-full text-primary-600 md:hidden"
         x-ref="AccordionButton"
         type="button"
-        class="
-            title <?= $escaper->escapeHtmlAttr($block->getBlockCss()) ?>-title
-            flex justify-between items-center
-            items-center hover:text-secondary-darker w-full md:hidden
-        "
         :aria-expanded="isExpanded"
-        :aria-disabled="!isMobile"
+        :disabled="!$store.main.isMobile"
     >
-        <span class="text-primary-700"><?=__('My Account')?></span>
-
-        <span x-ref="AccordionIcon"
-              class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
-                <?= $hyvaicons->renderHtml('chevron', 'rotate-90'); ?>
-            </span>
-
+        <span class="font-bold">
+            <?= $escaper->escapeHtml(__($block->getData('block_title'))) ?>
+        </span>
+        <span
+            x-ref="AccordionIcon"
+            class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable border-primary-600"
+        >
+            <?= $hyvaicons->renderHtml('chevron', 'rotate-90'); ?>
+        </span>
     </button>
-    <div class="content <?= $escaper->escapeHtmlAttr($block->getBlockCss()) ?>-content mt-4 md:mt-0"
-         id="<?= $escaper->escapeHtmlAttr($block->getBlockCss()) ?>"
+
+    <div
+        x-ref="AccordionPanel"
+        :inert="!isExpanded"
+        role="region"
+        class="text-text-700 [&_.current]:text-text-500 [&_a:hover]:underline"
     >
-        <div x-ref="AccordionPanel" x-cloak class="text-text-700 flex flex-col text-sm">
-            <?= $block->getChildHtml() ?>
-        </div>
+        <?= $block->getChildHtml() ?>
     </div>
 </div>

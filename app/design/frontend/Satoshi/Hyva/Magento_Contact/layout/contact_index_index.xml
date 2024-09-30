@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Remove the global message block -->
+        <referenceBlock name="messages" remove="true"/>
+
+        <!-- Remove the page title -->
+        <referenceBlock name="page.main.title" remove="true"/>
+
+        <!-- Add breadcrumbs -->
+        <referenceBlock name="breadcrumbs" template="Magento_Theme::html/breadcrumbs.phtml">
+            <action method="addCrumb">
+                <argument name="crumbName" xsi:type="string">home</argument>
+                <argument name="crumbInfo" xsi:type="array">
+                    <item name="title" xsi:type="string" translate="true">Home</item>
+                    <item name="label" xsi:type="string" translate="true">Home</item>
+                    <item name="link" xsi:type="string">{{baseUrl}}</item>
+                </argument>
+            </action>
+            <action method="addCrumb">
+                <argument name="crumbName" xsi:type="string">contact</argument>
+                <argument name="crumbInfo" xsi:type="array">
+                    <item name="title" xsi:type="string" translate="true">Contact</item>
+                    <item name="label" xsi:type="string" translate="true">Contact</item>
+                    <item name="last" xsi:type="boolean">true</item>
+                </argument>
+            </action>
+        </referenceBlock>
+
+        <!-- Add a custom class to contactDetails block -->
+        <referenceBlock name="contactDetails" class="Satoshi\Contact\Block\ContactDetails" />
+    </body>
+</page>

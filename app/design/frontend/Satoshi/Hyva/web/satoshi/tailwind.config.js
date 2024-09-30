@@ -60,6 +60,7 @@ module.exports = hyvaModules.mergeTailwindConfig({
           500: "var(--color-primary-500)",
           600: "var(--color-primary-600)",
           700: "var(--color-primary-700)",
+          800: "var(--color-primary-800)",
         },
         // secondary colors (must not catch attention)
         secondary: {
