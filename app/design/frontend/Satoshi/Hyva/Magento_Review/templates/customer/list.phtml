@@ -37,11 +37,20 @@ $viewModelStoreConfig = $viewModels->require(StoreConfig::class);
 
 $productUrlSuffix = $viewModelStoreConfig->getStoreConfig('catalog/seo/product_url_suffix');
 $baseUrl = $block->getBaseUrl();
+$customerReviewsQuery = $viewModelCustomerReviews->getCustomerReviewsGraphQlQuery();
+$storeCode = $viewModelStore->getStoreCode();
+
+$baseUrl = $block->getBaseUrl();
 $ratingSteps = 5;
 ?>
 
 <div id="content"
-     x-data="initReviewList()"
+     x-data="ReviewList({
+         baseUrl: '<?= $escaper->escapeJs($baseUrl) ?>',
+         productUrlSuffix: '<?= $escaper->escapeJs($productUrlSuffix) ?>',
+         storeCode: '<?= $escaper->escapeJs($storeCode) ?>',
+         customerReviewsQuery: '<?= $escaper->escapeJs('{customer {' . $customerReviewsQuery . '}}') ?>'
+     })"
      @private-content-loaded.window="onPrivateContentLoaded(event.detail.data)">
     <template x-if="pageInfo && pageInfo.page_size && pageInfo.total_pages">
         <div>
@@ -168,91 +177,7 @@ $ratingSteps = 5;
             </template>
         </div>
     </template>
-    <?= $block->getChildHtml('loading') ?>
     <template x-if="!isLoading && !(reviews && reviews.length)">
         <p><?= $escaper->escapeHtml(__('You have submitted no reviews.')) ?></p>
     </template>
 </div>
-<script>
-    function initReviewList() {
-        return {
-            customerToken: false,
-            onPrivateContentLoaded(data) {
-                this.customerToken = data.customer['signin_token'];
-                if (this.customerToken) {
-                    this.getReviewsList();
-                } else {
-                    this.isLoading = false;
-                }
-
-            },
-            currentPage: 1,
-            pageSize: 5,
-            totalPagesObject: {},
-            pageInfo: {},
-            isLoading: true,
-            reviews: {},
-            setCurrentPage(page) {
-                this.currentPage = page;
-                this.getReviewsList();
-            },
-            getCustomerReviewsQuery() {
-                return <?= /** @noEscape */ json_encode(
-                    '{customer {' . $viewModelCustomerReviews->getCustomerReviewsGraphQlQuery() . '}}'
-                ); ?>.replace('%currentPage%', this.currentPage).replace('%pageSize%', this.pageSize)
-            },
-            getReviewsList() {
-                this.isLoading = true;
-                return fetch(`${BASE_URL}graphql`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Store': '<?= $escaper->escapeHtmlAttr($viewModelStore->getStoreCode()) ?>'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({
-                            query: this.getCustomerReviewsQuery()
-                        })
-                    }
-                ).then(
-                    (response) => response.json()
-                ).then((data) => {
-                    if (data && data.errors) {
-                        this.initErrorMessages(data.errors);
-                    } else {
-                        this.reviews = (
-                            data &&
-                            data.data &&
-                            data.data.customer &&
-                            data.data.customer.reviews &&
-                            data.data.customer.reviews.items || []
-                        );
-                        this.pageInfo = (
-                            data &&
-                            data.data &&
-                            data.data.customer &&
-                            data.data.customer.reviews &&
-                            data.data.customer.reviews.page_info || []
-                        );
-                        this.totalPagesObject = (
-                            this.pageInfo &&
-                            this.pageInfo.total_pages &&
-                            Array.from(
-                                {length: this.pageInfo.total_pages},
-                                (v, i) => i + 1
-                            ) || []
-                        );
-                    }
-                    this.isLoading = false;
-                });
-            },
-            initErrorMessages(errors) {
-                const messages = [];
-                for (const error in Object.keys(errors)) {
-                    messages.push({type: 'error', text: errors[error].message});
-                }
-                dispatchMessages(messages)
-            },
-        }
-    }
-</script>
