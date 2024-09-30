@@ -29,9 +29,9 @@
         <move element="columns" destination="preview.content" before="-"/>
         <!-- END: Wrap content within preview-content comment -->
 
-        <!-- Add h-full classes to columns and main -->
-        <referenceContainer name="columns" htmlClass="h-full"/>
-        <referenceContainer name="main" htmlClass="h-full"/>
+        <referenceContainer name="columns" htmlClass="grid-columns"/>
+        <referenceContainer name="main" htmlClass="h-full row-span-2 col-span-3 only:col-span-full"/>
+        <referenceContainer name="div.sidebar.main" htmlClass="col-span-1"/>
 
         <referenceContainer name="header.container" htmlClass="page-header contents"/>
         <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-bg-500">
