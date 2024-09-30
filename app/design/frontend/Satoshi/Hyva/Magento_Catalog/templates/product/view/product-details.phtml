@@ -107,7 +107,7 @@ if ($product) {
                     ?>
                 </div>
 
-                <?php if($mainImage->getData('media_type') && str_contains($mainImage->getData('media_type'), 'video')): ?>
+                <?php if($mainImage && $mainImage->getData('media_type') && str_contains($mainImage->getData('media_type'), 'video')): ?>
                     <template x-if="$store.main.isMobile">
                         <div class="contents">
                             <!-- Play button -->
