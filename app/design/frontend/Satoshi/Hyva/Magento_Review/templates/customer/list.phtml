@@ -1,0 +1,258 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\Customer\ReviewList;
+use Hyva\Theme\ViewModel\Store;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var HeroiconsSolid $heroiconsSolid */
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+
+/** @var ReviewList $viewModelCustomerReviews */
+$viewModelCustomerReviews = $viewModels->require(ReviewList::class);
+
+/** @var Store $viewModelStore */
+$viewModelStore = $viewModels->require(Store::class);
+
+/** @var StoreConfig $viewModelStoreConfig */
+$viewModelStoreConfig = $viewModels->require(StoreConfig::class);
+
+$productUrlSuffix = $viewModelStoreConfig->getStoreConfig('catalog/seo/product_url_suffix');
+$baseUrl = $block->getBaseUrl();
+$ratingSteps = 5;
+?>
+
+<div id="content"
+     x-data="initReviewList()"
+     @private-content-loaded.window="onPrivateContentLoaded(event.detail.data)">
+    <template x-if="pageInfo && pageInfo.page_size && pageInfo.total_pages">
+        <div>
+            <template x-if="pageInfo.total_pages > 1">
+                <div class="flex items-center toolbar-pager bg-b">
+                    <p class="flex w-4/12 text-sm leading-5 text-gray-700 toolbar-amount"
+                       id="toolbar-amount"><?= $escaper->escapeHtml(__('Items')) ?>&nbsp;<span
+                            x-text="currentPage > 1 && (currentPage - 1)* pageSize + 1 || 1"
+                        ></span>&nbsp;-&nbsp;<span
+                            x-text="currentPage > 1 && (currentPage) * pageSize || pageSize"></span>
+                    </p>
+                    <ul class="relative z-0 inline-flex w-8/12 items pages-items">
+                        <li class="relative inline-flex items-center px-2 py-2 text-sm font-medium leading-5
+                                text-gray-500 transition duration-150 ease-in-out bg-white border border-r-0
+                                border-gray-300 item pages-item-previous rounded-l-md hover:text-gray-400
+                                focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
+                                active:bg-gray-100 active:text-gray-500"
+                        >
+                            <a href="#" @click.prevent="currentPage > 1 && setCurrentPage(currentPage - 1)"
+                               :class="{'cursor-default' : currentPage < 2}"
+                               title="<?= $escaper->escapeHtmlAttr(__('Previous')) ?>">
+                                <span>
+                                    <?= $heroicons->chevronLeftHtml('', 20, 20); ?>
+                                </span>
+                            </a>
+                        </li>
+                        <template x-for="i in Object.values(totalPagesObject)">
+                            <li :class="{
+                                    'border-primary -ml-px ': i === pageInfo.current_page,
+                                    'border-gray-300' : i !== pageInfo.current_page
+                                }"
+                                class="relative inline-flex items-center text-sm font-medium leading-5 text-gray-700
+                                    transition duration-150 ease-in-out bg-white border item hover:text-gray-500
+                                    focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
+                                    active:bg-gray-100 active:text-gray-700">
+                                <template x-if="i === pageInfo.current_page">
+                                    <strong class="px-4 py-2 cursor-default page">
+                                        <span x-text="i"></span>
+                                    </strong>
+                                </template>
+                                <template x-if="i !== pageInfo.current_page">
+                                    <a class="px-4 py-2 page" href="#" @click.prevent="setCurrentPage(i)">
+                                        <span x-text="i"></span>
+                                    </a>
+                                </template>
+                            </li>
+                        </template>
+                        <li class="relative inline-flex items-center px-2 py-2 text-sm font-medium leading-5
+                            text-gray-500 transition duration-150 ease-in-out bg-white border border-l-0
+                            border-gray-300 item pages-item-next rounded-r-md hover:text-gray-400 focus:z-10
+                            focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100
+                            active:text-gray-500"
+                        >
+                            <a @click.prevent="currentPage < pageInfo.total_pages && setCurrentPage(currentPage + 1)"
+                               :class="{'cursor-default' : currentPage >= pageInfo.total_pages}"
+                               href="#" title="<?= $escaper->escapeHtmlAttr(__('Next')) ?>">
+                                <span>
+                                    <?= $heroicons->chevronRightHtml('', 20, 20); ?>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </template>
+        </div>
+    </template>
+    <template x-if="reviews && reviews.length">
+        <div>
+            <template x-for="review in reviews" :key="review">
+                <div class="mb-5 card p-5 rounded-xl">
+                    <div class="flex gap-5 md:gap-5 flex-row mb-3">
+                        <div class="flex-shrink-0 w-20 h-20 md:w-32 md:h-32 rounded-xl overflow-hidden">
+                            <img :src="review.product && review.product.image && review.product.image.url"
+                                 :alt="review.product && review.product.image && review.product.image.label"
+                                 class="w-full h-full object-cover"/>
+                        </div>
+                        <div>
+                            <p class="font-bold mb-1">
+                                <a :href="review.product && review.product.url_key && (
+                                '<?= $escaper->escapeJs($baseUrl) ?>' +
+                                 review.product.url_key  +
+                                 '<?= $escaper->escapeJs($productUrlSuffix) ?>'
+                               )"
+                                   x-text="review.product && review.product.name">
+                                </a>
+                            </p>
+                            <p class="mb-3 text-primary-600">
+                                <?= $escaper->escapeHtml(__('Created at')) ?>
+                                <span x-text="review &&
+                                review.created_at &&
+                                new Date(review.created_at).toLocaleDateString()"
+                                ></span>
+                            </p>
+                            <template x-for="(item, index) in review.ratings_breakdown" :key="index">
+                                <div class="flex gap-4 mb-3 items-center">
+                                    <div class="flex">
+                                        <template x-for="i in <?= $escaper->escapeJs($ratingSteps) ?>">
+                                            <div>
+                                                <template x-if="i <= item.value">
+                                                    <?= $heroiconsSolid->starHtml('text-primary-600'); ?>
+                                                </template>
+                                                <template x-if="i > item.value">
+                                                    <?= $heroiconsSolid->starHtml('text-gray-300'); ?>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <div>
+                                        <p x-text="item.value + '.0'" class="text-primary-600"></p>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="hidden md:block mt-1 leading-relaxed">
+                                <p class="font-bold text-lg mb-3" x-text="review.summary"></p>
+                                <p x-text="review.text"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-1 md:hidden leading-relaxed">
+                        <p class="font-bold text-lg mb-3" x-text="review.summary"></p>
+                        <p x-text="review.text"></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+    <?= $block->getChildHtml('loading') ?>
+    <template x-if="!isLoading && !(reviews && reviews.length)">
+        <p><?= $escaper->escapeHtml(__('You have submitted no reviews.')) ?></p>
+    </template>
+</div>
+<script>
+    function initReviewList() {
+        return {
+            customerToken: false,
+            onPrivateContentLoaded(data) {
+                this.customerToken = data.customer['signin_token'];
+                if (this.customerToken) {
+                    this.getReviewsList();
+                } else {
+                    this.isLoading = false;
+                }
+
+            },
+            currentPage: 1,
+            pageSize: 5,
+            totalPagesObject: {},
+            pageInfo: {},
+            isLoading: true,
+            reviews: {},
+            setCurrentPage(page) {
+                this.currentPage = page;
+                this.getReviewsList();
+            },
+            getCustomerReviewsQuery() {
+                return <?= /** @noEscape */ json_encode(
+                    '{customer {' . $viewModelCustomerReviews->getCustomerReviewsGraphQlQuery() . '}}'
+                ); ?>.replace('%currentPage%', this.currentPage).replace('%pageSize%', this.pageSize)
+            },
+            getReviewsList() {
+                this.isLoading = true;
+                return fetch(`${BASE_URL}graphql`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Store': '<?= $escaper->escapeHtmlAttr($viewModelStore->getStoreCode()) ?>'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify({
+                            query: this.getCustomerReviewsQuery()
+                        })
+                    }
+                ).then(
+                    (response) => response.json()
+                ).then((data) => {
+                    if (data && data.errors) {
+                        this.initErrorMessages(data.errors);
+                    } else {
+                        this.reviews = (
+                            data &&
+                            data.data &&
+                            data.data.customer &&
+                            data.data.customer.reviews &&
+                            data.data.customer.reviews.items || []
+                        );
+                        this.pageInfo = (
+                            data &&
+                            data.data &&
+                            data.data.customer &&
+                            data.data.customer.reviews &&
+                            data.data.customer.reviews.page_info || []
+                        );
+                        this.totalPagesObject = (
+                            this.pageInfo &&
+                            this.pageInfo.total_pages &&
+                            Array.from(
+                                {length: this.pageInfo.total_pages},
+                                (v, i) => i + 1
+                            ) || []
+                        );
+                    }
+                    this.isLoading = false;
+                });
+            },
+            initErrorMessages(errors) {
+                const messages = [];
+                for (const error in Object.keys(errors)) {
+                    messages.push({type: 'error', text: errors[error].message});
+                }
+                dispatchMessages(messages)
+            },
+        }
+    }
+</script>
