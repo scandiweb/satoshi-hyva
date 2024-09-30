@@ -1,0 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\Store;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template as Block;
+use Satoshi\Theme\Block\Template;
+use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
+
+/** @var Template $template */
+/** @var Block $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var Store $viewModelStore */
+/** @var ProductPage $productViewModel */
+/** @var ProductListItem $productListItemViewModel */
+
+$viewModelStore = $viewModels->require(Store::class);
+$productViewModel = $viewModels->require(ProductPage::class);
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+
+$viewMode = 'grid';
+$imageDisplayArea = 'category_page_grid';
+$showDescription = false;
+
+$name = (string) $block->getName();
+$title = (string) $block->getTitle();
+$headingTag = $block->getData('heading_tag') ?: 'h3';
+$items = $block->getItems() ?? [];
+if (is_object($items) && $items instanceof Iterator) {
+    $items = iterator_to_array($items);
+}
+if (!$itemCount = count($items)) {
+    return '';
+}
+
+$sliderIndex = 1;
+$sliderItemRenderer = $block->getLayout()->getBlock('product_list_item')
+    ?: $block->getChildBlock('slider.item.template')
+        ?: $block->getLayout()->createBlock(Template::class);
+
+$hideRatingSummary = (bool) $block->getData('hide_rating_summary');
+$hideDetails = (bool) $block->getData('hide_details');
+
+$slidesHtml = '';
+foreach ($items as $product) {
+    $slidesHtml .= '<div class="slider__slide">' .
+        $productListItemViewModel->getItemHtmlWithRenderer(
+            $sliderItemRenderer,
+            $product,
+            $block,
+            $viewMode,
+            ProductReviewRenderer::SHORT_VIEW,
+            $imageDisplayArea,
+            $showDescription
+        ) .
+        '</div>';
+}
+
+echo $template
+    ->setData([
+        'slides' => $slidesHtml,
+        'gap' => 16,
+        'slides_amount_in_view' => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 6],
+        'title' => $title,
+        'id' => $name,
+        'is_full_page' => true,
+        'class' => 'py-9',
+    ])
+    ->render('Magento_Catalog::html/slider.phtml');
