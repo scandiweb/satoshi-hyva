@@ -170,6 +170,8 @@ export const Gallery = (
       );
       const videoId = videoData.id;
 
+      console.log("vimeoContainer || !videoId", vimeoContainer, videoId);
+
       if (!vimeoContainer || !videoId) return;
 
       if (this.loopVideo) {
@@ -202,6 +204,7 @@ export const Gallery = (
         const newImages = images.filter(
           (image) => !initialUrls.includes(image.full),
         );
+        // TODO: Make it prepend, issue will be with main image.
         this.images = [...this.initialImages, ...newImages];
       } else {
         this.images = images;
