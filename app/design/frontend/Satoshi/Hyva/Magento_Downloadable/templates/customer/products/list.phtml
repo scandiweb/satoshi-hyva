@@ -62,7 +62,7 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
                     </div>
                     <div class="p-2 flex lg:block justify-between">
                         <div class="font-bold text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Download')) ?></div>
-                        <?php if ($item->getStatus() == Item::LINK_STATUS_AVAILABLE || true): ?>
+                        <?php if ($item->getStatus() == Item::LINK_STATUS_AVAILABLE): ?>
                             <a
                                 href="<?= $escaper->escapeUrl($block->getDownloadUrl($item)) ?>"
                                 class="inline-block lg:mt-2 text-sm underline text-secondary-darker max-lg:flex max-lg:items-center"
