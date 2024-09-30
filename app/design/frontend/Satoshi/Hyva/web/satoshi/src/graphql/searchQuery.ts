@@ -13,11 +13,13 @@ export const searchQuery = (term: string, size: number) => {
                 id
                 name
                 sku,
-                small_image {
+                url_rewrites {
+                    url
+                },
+                media_gallery {
                     url,
                     label
                 },
-                url_key,
                 price_range {
                     minimum_price {
                         regular_price {

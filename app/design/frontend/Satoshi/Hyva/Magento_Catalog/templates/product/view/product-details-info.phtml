@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Catalog\Block\Product\View;
+use Satoshi\Theme\Block\Template;
+
+/** @var View $block */
+/** @var Template $template */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$product = $block->getProduct();
+
+?>
+
+<div class="relative flex flex-col" :style="`--price-width: ${$refs.ProductPrice?.clientWidth}px`">
+    <?= $block->getChildHtml('product.info') ?>
+    <?= $block->getChildHtml('product.info.details') ?>
+
+    <div class="mb-8 px-4 md:p-0">
+        <?= $template->setData([
+            'title' => __('Share') . " <span class='ms-3 leading-none'>{$hyvaicons->renderHtml('share')}</span>",
+            'id' => 'share-product-' . $product->getId(),
+            'url' => $product->getProductUrl()
+        ])->render('Magento_Theme::html/components/share.phtml') ?>
+    </div>
+
+    <button
+        style="display: none"
+        x-show="typeof hidePreview === 'function'"
+        class="button button--ghost-primary animate-on-transition max-md:hidden w-full"
+        @click="hidePreview"
+        type="button"
+    >
+        <?= __('Hide product') ?>
+        <span class="button__icon button__icon--right text-lg">
+            <?= $hyvaicons->renderHtml('close'); ?>
+        </span>
+    </button>
+</div>

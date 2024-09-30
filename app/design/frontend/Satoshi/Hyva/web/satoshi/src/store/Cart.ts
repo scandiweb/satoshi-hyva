@@ -52,7 +52,7 @@ export type CartStoreType = {
   cartItems: CartItem[];
   cartTotals: any;
   isLoading: boolean;
-  addingItemIds: number[];
+  addingItemIds: string[];
   removingItemId: string | null;
   abortController: AbortController | null;
   errors: Record<string, string[]>;
@@ -61,7 +61,7 @@ export type CartStoreType = {
   setCartItems(cartItems: CartItem[]): void;
   addCartItems(cartItems: CartItem[]): void;
   updateCartItem(item_id: string): void;
-  focusInCart(key: string): void;
+  focusInCart(item_id: string | string[]): void;
   increaseQty(item_id: string): void;
   decreaseQty(item_id: string): void;
   setQty(qty: number, item_id: string): void;
@@ -105,37 +105,37 @@ export const CartStore = <CartStoreType>{
   },
 
   addToCart() {
-    //   const { id } = itemProps;
-    //   if (!this.addingItemIds.includes(id)) {
-    //     this.addingItemIds.push(id);
-    //   }
-    //   const formData = {
-    //     items: [itemProps],
-    //   };
-    //   fetch(`${window.Shopify.routes.root}cart/add.js`, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(formData),
+    // const { id } = itemProps;
+    // if (!this.addingItemIds.includes(id)) {
+    //   this.addingItemIds.push(id);
+    // }
+    // const formData = {
+    //   items: [itemProps],
+    // };
+    // fetch(`${window.Shopify.routes.root}cart/add.js`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(formData),
+    // })
+    //   .then((response) => response.json())
+    //   .then((response) => {
+    //     if (response.status === 422) {
+    //       this.errors = response.errors;
+    //       return;
+    //     }
+    //     const items = this.processCartItems(response.items);
+    //     this.addCartItems(items);
+    //     this.focusInCart(response.items[0]?.key);
+    //     this.errors = {};
     //   })
-    //     .then((response) => response.json())
-    //     .then((response) => {
-    //       if (response.status === 422) {
-    //         this.errors = response.errors;
-    //         return;
-    //       }
-    //       const items = this.processCartItems(response.items);
-    //       this.addCartItems(items);
-    //       this.focusInCart(response.items[0]?.key);
-    //       this.errors = {};
-    //     })
-    //     .catch((error) => console.error("Error:", error))
-    //     .finally(() => {
-    //       this.addingItemIds = this.addingItemIds.filter(
-    //         (itemId) => itemId !== id,
-    //       );
-    //     });
+    //   .catch((error) => console.error("Error:", error))
+    //   .finally(() => {
+    //     this.addingItemIds = this.addingItemIds.filter(
+    //       (itemId) => itemId !== id,
+    //     );
+    //   });
   },
 
   updateCartItem(item_id) {
@@ -199,12 +199,14 @@ export const CartStore = <CartStoreType>{
     }
   },
 
-  focusInCart(_key) {
-    // this.cartItems.forEach((cartItem) => {
-    //   const isFocused = cartItem.key === key;
-    //   cartItem.focusedUntil = isFocused ? Date.now() + 2000 : undefined;
-    // });
-    // this.showCart();
+  focusInCart(entity) {
+    this.cartItems.forEach((cartItem) => {
+      const isFocused = Array.isArray(entity)
+        ? entity.includes(cartItem.item_id)
+        : cartItem.item_id === entity;
+      cartItem.focusedUntil = isFocused ? Date.now() + 2000 : undefined;
+    });
+    this.showCart();
   },
 
   decreaseQty(item_id) {

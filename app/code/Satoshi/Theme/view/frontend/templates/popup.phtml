@@ -1,5 +1,11 @@
 <?php
-$id = $block->getId();
+
+declare(strict_types=1);
+
+use Satoshi\Theme\Block\Popup;
+
+/** @var Popup $block */
+$id = $block->getData('id');
 $isFocused = $block->getData('isFocused') ?? false;
 $isFullScreen = $block->getData('isFullScreen')  ?? false;
 $isAlwaysVisible = $block->getData('isAlwaysVisible')  ?? false;
