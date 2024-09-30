@@ -49,7 +49,7 @@ $productName = $block->getProduct()->getName();
             x-data="
                 TransitionImage({
                     src: '<?= $mainImageUrl ?>',
-                    imageId: 'main-image-<?= $mainImage->getData('position') ?>'
+                    imageId: <?= $mainImage ? 'main-image-' . $mainImage->getData('position') : 'main-image' ?>'
                 })
             "
             x-show="!!src"
