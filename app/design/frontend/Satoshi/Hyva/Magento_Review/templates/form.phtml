@@ -63,19 +63,26 @@ mutation createProductReviewMutation(
 ';
 
 ?>
-<div>
+<div class="flex flex-col items-center py-7 md:py-8 px-5 md:px-12 rounded-xl bg-secondary-500 content-wrapper mx-auto">
+    <div class="mb-4 text-2xl text-text-500">
+        <?= $escaper->escapeHtml(__('Write Your Own Review')) ?>
+    </div>
     <?php if ($block->getAllowWriteReviewFlag()): ?>
         <form
-            class="flex flex-col items-center py-7 md:py-8 px-5 md:px-12 rounded-xl bg-secondary-500 content-wrapper mx-auto"
+            class="content-wrapper flex flex-col items-center justify-center"
             id="<?= $escaper->escapeHtmlAttr($formId) ?>"
             @submit.prevent="submitForm()"
             action=""
-            x-data="initReviewForm()"
-            x-defer="intersect"
+            x-data="ReviewForm({
+                formId: '<?= $escaper->escapeJs($formId) ?>',
+                ratingsCount: <?= count($block->getRatings()) ?>,
+                sku: '<?= $escaper->escapeJs($block->getProductInfo()->getSku()) ?>',
+                storeCode: '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>',
+                gqlCreateProductReviewMutation: `<?= $gqlViewModel->query('create_product_review_mutation', $gqlCreateProductReviewMutation) ?>`,
+                recaptchaFieldName: '<?= $recaptcha ? $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId)) : '' ?>'
+            })"
+
         >
-            <div class="mb-4 text-2xl text-text-500">
-                <?= $escaper->escapeHtml(__('Write Your Own Review')) ?>
-            </div>
             <?= $block->getChildHtml('form_fields_before') ?>
             <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
             <fieldset class="w-full flex flex-col items-center justify-center">
@@ -195,11 +202,11 @@ mutation createProductReviewMutation(
                         </label>
                         <div>
                             <textarea
-                                      required
-                                      placeholder="<?= $escaper->escapeHtml(__('Review') . '*') ?>" name="detail"
-                                      id="review_field" cols="5"
-                                      rows="5"
-                                      class="input__field input__field--outline flex h-36 resize-none bg-bg-500 px-5 py-[10px]"
+                                required
+                                placeholder="<?= $escaper->escapeHtml(__('Review') . '*') ?>" name="detail"
+                                id="review_field" cols="5"
+                                rows="5"
+                                class="input__field input__field--outline flex h-36 resize-none bg-bg-500 px-5 py-[10px]"
                             ></textarea>
                         </div>
                     </div>
@@ -242,119 +249,6 @@ mutation createProductReviewMutation(
                 <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
             </div>
         </form>
-
-        <script>
-            function initReviewForm() {
-
-                return {
-                    isLoading: false,
-                    displayNickname: false,
-                    displaySuccessMessage: false,
-                    displayErrorMessage: false,
-                    errorMessages: [],
-                    errors: 0,
-                    hasCaptchaToken: 0,
-                    nickname: null,
-                    summary: null,
-                    ratings: [],
-                    review: null,
-                    setErrorMessages: function (messages) {
-                        this.errorMessages = [messages]
-                        this.displayErrorMessage = this.errorMessages.length
-                    },
-                    submitForm: function () {
-                        // Do not remove $form. The variable is used in the recaptcha child template.
-                        const $form = document.querySelector('#<?= $escaper->escapeJs($formId) ?>');
-                        this.validate();
-
-                        <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
-
-                        if (this.errors === 0) {
-                            this.placeReview();
-                        }
-                    },
-                    validate: function () {
-                        this.nickname = document.getElementById('nickname_field').value;
-                        this.summary = document.getElementById('summary_field').value;
-                        this.review = document.getElementById('review_field').value;
-
-                        let ratingValue;
-                        <?php foreach ($block->getRatings() as $rating): ?>
-                        try {
-                            ratingValue =
-                                document
-                                    .querySelector('input[name="ratings[<?= (int)$rating->getId() ?>]"]:checked')
-                                    .value;
-                            this.ratings[<?= (int)$rating->getId() ?>] = btoa(ratingValue);
-                        } catch (e) {
-                            console.log(e);
-                        }
-                        <?php endforeach; ?>
-
-                        if (!(this.nickname &&
-                            this.summary &&
-                            this.review &&
-                            Object.keys(this.ratings).length === <?= count($block->getRatings()) ?>
-                        )) {
-                            this.setErrorMessages(
-                                ['<?= $escaper
-                                    ->escapeJs(
-                                        __('Please verify you\'ve entered all required information')
-                                    ) ?>']
-                            );
-                            this.displayErrorMessage = true;
-                            this.errors = 1;
-                            this.hasCaptchaToken = 0;
-                        }
-                    },
-                    placeReview: function () {
-                        this.isLoading = true;
-                        this.displayErrorMessage = false;
-
-                        const query = `<?= /* @noEscape */ $gqlViewModel->query('create_product_review_mutation', $gqlCreateProductReviewMutation) ?>`;
-                        const variables = {
-                            sku: '<?= $escaper->escapeJs($block->getProductInfo()->getSku()) ?>',
-                            nick: this.nickname,
-                            summary: this.summary,
-                            review: this.review,
-                            ratings: Object.keys(this.ratings).map(key => {
-                                return {id: btoa(key), value_id: this.ratings[key]}
-                            })
-                        };
-
-                        const form = document.querySelector('#<?= $escaper->escapeJs($formId) ?>');
-
-                        const fieldName = '<?= $recaptcha
-                            ? $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId))
-                            : '' ?>';
-                        const recaptchaHeader = fieldName && form && form.elements[fieldName]
-                            ? {'X-ReCaptcha': form.elements[fieldName].value}
-                            : {};
-
-                        fetch(`${BASE_URL}graphql`, {
-                            method: 'POST',
-                            headers: Object.assign({
-                                'Content-Type': 'application/json;charset=utf-8',
-                                'Store': '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>'
-                            }, recaptchaHeader),
-                            credentials: 'include',
-                            body: JSON.stringify({query: query, variables: variables})
-                        })
-                            .then(response => response.json())
-                            .then(data => {
-                                    this.isLoading = false;
-                                    if (data.errors) {
-                                        this.setErrorMessages(['<?= $escaper->escapeJs(__('Submitting your review failed, please try again.')) ?>']);
-                                        this.displayErrorMessage = true;
-                                    } else {
-                                        this.displaySuccessMessage = true;
-                                    }
-                                }
-                            );
-                    }
-                }
-            }
-        </script>
     <?php else: ?>
         <div
             id="review-form"
