@@ -19,6 +19,28 @@ export const searchQuery = (term: string, size: number) => {
                 media_gallery {
                     url,
                     label
+                },
+                price_range {
+                    minimum_price {
+                        regular_price {
+                            value
+                            currency
+                        }
+                        final_price {
+                            value
+                            currency
+                        }
+                    }
+                    maximum_price {
+                        regular_price {
+                            value
+                            currency
+                        }
+                        final_price {
+                            value
+                            currency
+                        }
+                    }
                 }
             }
         }
