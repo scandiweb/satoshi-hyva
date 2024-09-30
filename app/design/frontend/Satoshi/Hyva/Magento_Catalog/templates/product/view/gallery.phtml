@@ -72,7 +72,7 @@ $productName = $block->getProduct()->getName();
                 alt="<?= $mainImage ? $escaper->escapeHtmlAttr($mainImage->getData('label')) : '' ?>"
                 id="<?= $mainImage ? 'main-image-' . $mainImage->getData('position') : 'main-image' ?>"
             >
-            <?php if($mainImage?->getData('media_type') && str_contains($mainImage?->getData('media_type'), 'video')): ?>
+            <?php if($mainImage && $mainImage->getData('media_type') && str_contains($mainImage->getData('media_type'), 'video')): ?>
                 <template x-if="!$store.main.isMobile">
                     <div class="contents">
                         <!-- Play button -->
@@ -80,8 +80,8 @@ $productName = $block->getProduct()->getName();
                             type="button"
                             class="group absolute inset-0 grid place-items-center"
                             aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                            @click="activateVideo(<?= $mainImage?->getData('position') ?>)"
-                            @keydown.enter="activateVideo(<?= $mainImage?->getData('position') ?>)"
+                            @click="activateVideo(<?= $mainImage->getData('position') ?>)"
+                            @keydown.enter="activateVideo(<?= $mainImage->getData('position') ?>)"
                             x-cloak
                         >
                             <?= $heroiconsSolid->playHtml(
@@ -98,7 +98,7 @@ $productName = $block->getProduct()->getName();
                             x-transition.opacity.duration.500ms
                             x-show="activeVideoType === 'youtube'"
                         >
-                            <div id="youtube-player-<?= $mainImage?->getData('position') ?>" class="size-full"></div>
+                            <div id="youtube-player-<?= $mainImage->getData('position') ?>" class="size-full"></div>
                         </div>
 
                         <!-- Video container -->
@@ -107,7 +107,7 @@ $productName = $block->getProduct()->getName();
                             x-transition.opacity.duration.500ms
                             x-show="activeVideoType === 'vimeo'"
                         >
-                            <div id="vimeo-player-<?= $mainImage?->getData('position') ?>" class="size-full"></div>
+                            <div id="vimeo-player-<?= $mainImage->getData('position') ?>" class="size-full"></div>
                         </div>
                     </div>
                 </template>
@@ -116,7 +116,7 @@ $productName = $block->getProduct()->getName();
     </div>
 
     <!-- Other images -->
-    <template x-for="(image, index) in images.filter(img => img.position != <?= $mainImage?->getData('position') ?>)" :key="index">
+    <template x-for="(image, index) in images.filter(img => img.position !== '<?= $mainImage ? $mainImage->getData('position') : null ?>)'" :key="index">
         <div class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl">
             <div class="flex items-center justify-center size-full <?= $isContain ? 'p-[4%]' : '' ?>">
                 <img
@@ -132,8 +132,8 @@ $productName = $block->getProduct()->getName();
                     type="button"
                     class="group absolute inset-0 grid place-items-center"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                    @click="activateVideo(<?= $mainImage?->getData('position') ?>)"
-                    @keydown.enter="activateVideo(<?= $mainImage?->getData('position') ?>)"
+                    @click="activateVideo(image.position)"
+                    @keydown.enter="activateVideo(image.position)"
                     x-cloak
                 >
                     <?= $heroiconsSolid->playHtml(
