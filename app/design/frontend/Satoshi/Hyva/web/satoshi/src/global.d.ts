@@ -10,16 +10,16 @@ declare global {
 
   interface Window {
     hyva: {
-      getFormKey: () => string;
-      formatPrice: (value: number) => string;
-      getUenc: () => string;
-      replaceDomElement: (element: HTMLElement) => void;
-      strf: (value: string) => string;
-      getBrowserStorage: (key: string) => string | null;
+      getFormKey: function;
+      formatPrice: function;
+      getUenc: function;
+      replaceDomElement: function;
+      strf: function;
+      getBrowserStorage: function;
       releaseFocus: function;
     };
     grecaptchaInstanceNewsletter?: number;
-    googleRecaptchaCallbackNewsletter?: (response: string) => void;
+    googleRecaptchaCallbackNewsletter?: function;
     dispatchMessages: function;
 
     // TODO: Remove
