@@ -133,7 +133,7 @@ export const Address = () =>
             body: formData,
         }).then((res) => {
             if (res.ok) {
-                this.fetchAndReplaceContent('/customer/address/');
+                navigateWithTransition('/customer/address/');
             }
         }).catch((error) => {
             console.error("Error while creating or updating address:", error);
