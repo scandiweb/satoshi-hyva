@@ -17,11 +17,8 @@ $product = $block->getProduct();
 
 ?>
 
-<div>
-    <div class="flex flex-wrap justify-between mb-8">
-        <?= $block->getChildHtml('product.info') ?>
-    </div>
-    <?= $block->getChildHtml('product_options_wrapper_bottom') ?>
+<div class="relative flex flex-col" :style="`--price-width: ${$refs.ProductPrice?.clientWidth}px`">
+    <?= $block->getChildHtml('product.info') ?>
     <?= $block->getChildHtml('product.info.details') ?>
 
     <div class="mb-8 px-4 md:p-0">

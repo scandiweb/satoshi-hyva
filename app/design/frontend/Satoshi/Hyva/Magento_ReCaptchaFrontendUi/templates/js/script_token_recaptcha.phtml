@@ -1,0 +1,46 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ReCaptcha;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$storeConfig = $viewModels->require(StoreConfig::class);
+$siteKey     = $storeConfig->getStoreConfig('recaptcha_frontend/type_recaptcha/public_key');
+
+if (!$siteKey) {
+    // No v2 checkbox google API credentials configured
+    return;
+}
+
+$formId = $block->getData('form_id') ?? '';
+$recaptcha = $viewModels->require(ReCaptcha::class);
+$fieldName = $recaptcha->getResultTokenFieldName($formId);
+
+?>
+<?php /* render_script_tag is never set, it is present to force editors to see the code as JavaScript */ ?>
+<?php if ($block->getData('render_script_tag')): ?>
+<script>
+    <?php endif; ?>
+    this.hasCaptchaToken = $form['<?= $escaper->escapeJs($fieldName) ?>'] &&
+        $form['<?= $escaper->escapeJs($fieldName) ?>'].value.length > 0;
+    this.errors = this.hasCaptchaToken ? 0 : 1;
+
+    if (this.errors) {
+        const error = '<?= $escaper->escapeJs(__('ReCaptcha validation failed, please try again')) ?>';
+        if (this.setErrorMessages) {
+            this.setErrorMessages([error])
+            this.displayErrorMessage = true;
+        } else {
+            window.dispatchMessages && window.dispatchMessages([{ type: "error", text: error }], 5000);
+        }
+    }
+
+    <?php if ($block->getData('render_script_tag')): ?>
+</script>
+<?php endif; ?>
