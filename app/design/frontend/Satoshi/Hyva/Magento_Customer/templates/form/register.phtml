@@ -29,106 +29,92 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
         <h2 class="mb-7 w-full text-2xl"><?= __('Create account') ?></h2>
     </header>
     <div class="flex items-center">
-        <form id="<?= $escaper->escapeHtmlAttr($formId) ?>"
-                action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>" method="post"
-                novalidate="novalidate" enctype="multipart/form-data" autocomplete="off"
-                x-data="Object.assign(hyva.formValidation($el), initForm())"
-                @submit.prevent="submitForm">
-            <?= $block->getBlockHtml('formkey'); ?>
-            <?= $block->getChildHtml('form_fields_before') ?>
-            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>
+        <div class="w-full">
+            <form id="<?= $escaper->escapeHtmlAttr($formId) ?>"
+                    action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>" method="post"
+                    novalidate="novalidate" enctype="multipart/form-data" autocomplete="off"
+                    x-data="Object.assign(hyva.formValidation($el), initForm())"
+                    @submit.prevent="submitForm">
+                <?= $block->getBlockHtml('formkey'); ?>
+                <?= $block->getChildHtml('form_fields_before') ?>
+                <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>
 
-            <div class="mt-3 flex flex-col">
-                <label for="first_name" class="sr-only tracking-widest">
-                    <?= __('First name') ?>
-                </label>
-                <input
-                    type="text"
-                    name="firstname"
-                    id="first_name"
-                    placeholder="<?= __('First name') ?>"
-                    class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                    value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getFirstname()) ?>"
-                    autocomplete="given-name"
-                />
-            </div>
+                <div class="mt-3 flex flex-col">
+                    <label for="first_name" class="sr-only tracking-widest">
+                        <?= __('First name') ?>
+                    </label>
+                    <input
+                        type="text"
+                        name="firstname"
+                        id="first_name"
+                        placeholder="<?= __('First name') ?>"
+                        class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                        value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getFirstname()) ?>"
+                        autocomplete="given-name"
+                    />
+                </div>
 
-            <div class="mt-3 flex flex-col">
-                <label for="last_name" class="sr-only tracking-widest">
-                    <?= __('Last name') ?>
-                </label>
-                <input
-                    type="text"
-                    name="lastname"
-                    id="last_name"
-                    placeholder="<?= __('Last name') ?>"
-                    class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                    value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getLastname()) ?>"
-                    autocomplete="family-name"
-                />
-            </div>
+                <div class="mt-3 flex flex-col">
+                    <label for="last_name" class="sr-only tracking-widest">
+                        <?= __('Last name') ?>
+                    </label>
+                    <input
+                        type="text"
+                        name="lastname"
+                        id="last_name"
+                        placeholder="<?= __('Last name') ?>"
+                        class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                        value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getLastname()) ?>"
+                        autocomplete="family-name"
+                    />
+                </div>
 
-            <div class="mt-3 flex flex-col">
-                <label for="email_address" class="sr-only tracking-widest">
-                    <?= __('Email') ?>
-                </label>
-                <input
-                    type="email"
-                    name="email"
-                    id="email_address"
-                    placeholder="<?= __('Email') ?>"
-                    class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                    value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getEmail()) ?>"
-                    autocomplete="email"
-                    required
-                />
-            </div>
+                <div class="mt-3 flex flex-col">
+                    <label for="email_address" class="sr-only tracking-widest">
+                        <?= __('Email') ?>
+                    </label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email_address"
+                        placeholder="<?= __('Email') ?>"
+                        class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                        value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getEmail()) ?>"
+                        autocomplete="email"
+                        required
+                    />
+                </div>
 
-            <div class="mt-3 flex flex-col">
-                <label for="password" class="sr-only tracking-widest">
-                    <?= __('Password') ?>
-                </label>
-                <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="<?= __('Password') ?>"
-                    class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                    required
-                    data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
-                    autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
-                />
-            </div>
+                <div class="mt-3 flex flex-col">
+                    <label for="password" class="sr-only tracking-widest">
+                        <?= __('Password') ?>
+                    </label>
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="<?= __('Password') ?>"
+                        class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                        required
+                        data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
+                        autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
+                    />
+                </div>
 
-            <div class="mt-3 flex flex-col">
-                <label for="password" class="sr-only tracking-widest">
-                    <?= __('Password') ?>
-                </label>
-                <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="<?= __('Password') ?>"
-                    class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                    required
-                    data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
-                    autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
-                />
-            </div>
+                <button class="button button--filled-primary mt-7 w-full py-4">
+                    <?= __('Create') ?>
+                </button>
 
-            <button class="button button--filled-primary mt-7 w-full py-4">
-                <?= __('Create') ?>
-            </button>
-
-            <div class="mt-6 text-center text-sm tracking-wider">
-                <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-                    class="link link--primary text-md"
-                    x-element-transition-trigger
-                >
-                    <?= __('Back to login') ?>
-                </a>
-            </div>
-        </form>
+                <div class="mt-6 text-center text-sm tracking-wider">
+                    <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+                        class="link link--primary text-md"
+                        x-element-transition-trigger
+                    >
+                        <?= __('Back to login') ?>
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
