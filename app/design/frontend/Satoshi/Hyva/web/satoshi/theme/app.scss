@@ -21,7 +21,7 @@ img {
 }
 
 body {
-  @apply overflow-x-hidden text-md text-text-on-fg;
+  @apply overflow-x-hidden text-md text-text-700;
 }
 
 svg {
@@ -41,11 +41,11 @@ h3 {
 }
 
 .breadcrumb {
-  @apply inline font-bold [&:not(:last-of-type)]:text-neutral-500 contrast-more:[&:not(:last-of-type)]:text-secondary-700;
+  @apply inline font-bold;
 }
 
 .order-cell {
-  @apply whitespace-nowrap text-text-700 before:mb-2 before:flex-1 before:text-black before:content-[attr(data-label)] contrast-more:text-secondary-700 md:before:block max-md:mb-2 max-md:flex;
+  @apply whitespace-nowrap before:mb-2 before:flex-1 before:text-text-500 before:content-[attr(data-label)]  md:before:block max-md:mb-2 max-md:flex;
 }
 
 @screen md {
@@ -58,7 +58,7 @@ h3 {
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply rounded-sm bg-[#888];
+    @apply rounded-sm bg-bg-700;
   }
 }
 
@@ -76,6 +76,10 @@ h3 {
 
     height: 1em;
     width: 1em;
+  }
+
+  .contrast-border {
+    @apply contrast-more:border contrast-more:border-current;
   }
 }
 
@@ -109,7 +113,7 @@ h3 {
 }
 
 .skip-to-content-link:focus-visible {
-  @apply not-sr-only fixed left-6 top-6 z-40 h-auto w-auto bg-white p-4 text-base font-semibold shadow-outline;
+  @apply not-sr-only fixed left-6 top-6 z-40 h-auto w-auto bg-bg-500 p-4 text-base font-semibold shadow-outline;
   clip: auto;
 }
 
@@ -127,12 +131,21 @@ h3 {
   }
 }
 
+.disable-fade .faded-img {
+  @apply opacity-100 #{!important};
+}
+
 .page-wrapper {
   @apply -mt-[88px] flex-1 max-md:overflow-hidden;
 }
 
-.disable-fade .faded-img {
-  @apply opacity-100 #{!important};
+.product-page {
+  @apply max-md:pb-10;
+}
+
+.grid-columns {
+  @apply h-full flex flex-col md:grid grid-rows-[auto_minmax(0,1fr)] gap-x-8 gap-y-5;
+  grid-template-columns: 275px repeat(2, minmax(0, 1fr)) 275px;
 }
 
 @layer components {
@@ -150,12 +163,17 @@ h3 {
   @import "components/slider";
   @import "components/button";
   @import "components/icon-button";
-  @import "components/unreset";
+  @import "components/rte";
   @import "components/card-product";
+  @import "components/card";
+  @import "components/link";
 }
 @import "components/progress-bar";
 
-.sidebar-main {
-  // TODO: Remove from here when applied in side bar template
-  @apply flex-shrink-0 w-[275px] ml-[2rem];
+@layer base {
+  *,
+  ::before,
+  ::after {
+    @apply border-bg-600;
+  }
 }

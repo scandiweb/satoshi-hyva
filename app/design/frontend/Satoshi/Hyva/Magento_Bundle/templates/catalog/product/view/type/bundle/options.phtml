@@ -1,0 +1,267 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\ProductPrice;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Bundle\Block\Catalog\Product\View\Type\Bundle;
+use Magento\Bundle\Pricing\Price\FinalPrice;
+use Magento\Catalog\Pricing\Price\RegularPrice;
+use Magento\Framework\Escaper;
+
+/** @var Bundle $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$product = $block->getProduct();
+$stripSelection = $product->getConfigureMode() ? true : false;
+$options = $block->decorateArray($block->getOptions($stripSelection));
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+/** @var ProductPrice $productPriceViewModel */
+$productPriceViewModel = $viewModels->require(ProductPrice::class);
+
+$displayTax = $productPriceViewModel->displayPriceIncludingTax();
+
+$regularPrice = $productPriceViewModel->getPriceValue(RegularPrice::PRICE_CODE, $product);
+$finalPrice = $productPriceViewModel->getPriceValue(FinalPrice::PRICE_CODE, $product);
+
+if ($productPriceViewModel->displayPriceInclAndExclTax()) {
+  $basePrice = $productPriceViewModel->getPriceValueExclTax(FinalPrice::PRICE_CODE, $product);
+}
+?>
+<?php if ($product->isSaleable()): ?>
+  <?php if (count($options)): ?>
+    <script>
+      // TODO: Move to alpine files
+      function initBundleOptions() {
+        return {
+          optionConfig: <?= /* @noEscape */ $block->getJsonConfig() ?>,
+          regularPriceKey: '<?= /* @noEscape */ $displayTax ? 'oldPrice' : 'baseOldPrice' ?>',
+          finalPriceKey: '<?= /* @noEscape */ $displayTax ? 'finalPrice' : 'basePrice' ?>',
+          <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+          basePriceKey: 'basePrice',
+          <?php endif; ?>
+          productFinalPrice: false,
+          activeSelectOptions: {},
+          getMultiOptionQty(option, optionSelection) {
+            if (option.isMulti) {
+              return optionSelection.qty;
+            }
+            return false;
+          },
+          calculateTotalPrice() {
+            let selectedProductsPerOption = [];
+
+            for (const [optionId, option] of Object.entries(this.optionConfig.options)) {
+              const optionElement = document.querySelector(`[data-option-id="${optionId}"]`);
+              const qtyElement = document.getElementById('bundle-option-' + optionId + '-qty-input');
+
+              let selectedOption = selectedProductsPerOption[optionId] || [];
+
+              if (optionElement) {
+                if (optionElement.checked || optionElement.selected) {
+                  const optionSelection = option.selections[optionElement.dataset.selectionId];
+                  selectedOption.push({
+                    data: optionSelection,
+                    qty: this.getMultiOptionQty(option, optionSelection) ||
+                      (qtyElement && qtyElement.value) || 1
+                  });
+                }
+              } else {
+                for (const [selectionId, selection] of Object.entries(option.selections)) {
+                  const selectionElement = document.querySelector(
+                    `[data-option-id="${optionId}-${selectionId}"]`
+                  );
+                  if (
+                    selectionElement &&
+                    (
+                      selectionElement.checked ||
+                      selectionElement.selected
+                    )
+                  ) {
+                    selectedOption.push({
+                      data: selection,
+                      qty: this.getMultiOptionQty(option, selection) ||
+                        (qtyElement && qtyElement.value) || 1
+                    });
+                  }
+                }
+              }
+
+              selectedProductsPerOption[optionId] = Object.assign(
+                [],
+                selectedProductsPerOption[optionId],
+                selectedOption
+              );
+            }
+            const gatherLowestPriceForOptionProduct = (accPrice, product) => {
+              <?php /* Gather the lowest (normal price | tier price) for the option product/ */ ?>
+              const lowestPrice = product.data.tierPrice.reduce((finalValue, tierPrice) => {
+                if (product.qty >= tierPrice.price_qty) {
+                  return (tierPrice.prices[this.finalPriceKey].amount < finalValue[this.finalPriceKey].amount)
+                    ? tierPrice.prices
+                    : finalValue;
+                }
+                return finalValue;
+              }, product.data.prices);
+
+              // add the lowest price for qty
+              return {
+                oldPrice: accPrice.oldPrice + (lowestPrice.oldPrice.amount * product.qty),
+                finalPrice: accPrice.finalPrice + (lowestPrice[this.finalPriceKey].amount * product.qty),
+                <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+                basePrice: accPrice.basePrice + (lowestPrice.basePrice.amount * product.qty),
+                <?php endif; ?>
+              };
+            }
+
+            this.productFinalPrice = Object.values(selectedProductsPerOption)
+              .reduce(
+                (totalPrice, option) => {
+                  <?php /* Sum all old, final and base prices for all simple products */ ?>
+                  const totalOptionPrice = Object.values(option).reduce(gatherLowestPriceForOptionProduct, {
+                    oldPrice: 0,
+                    finalPrice: 0,
+                    basePrice: 0,
+                  });
+                  return {
+                    oldPrice: totalPrice.oldPrice + totalOptionPrice.oldPrice,
+                    finalPrice: totalPrice.finalPrice + totalOptionPrice.finalPrice,
+                    <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+                    basePrice: totalPrice.basePrice + totalOptionPrice.basePrice,
+                    <?php endif; ?>
+                  }
+
+                }, {
+                  oldPrice: 0,
+                  finalPrice: 0,
+                  <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+                  basePrice: 0,
+                  <?php endif; ?>
+                }
+              );
+
+            this.selectedBundleOptions = Object.keys(selectedProductsPerOption).map((optionId) => {
+              return {
+                label: this.optionConfig.options[optionId].title,
+                products: Object.values(selectedProductsPerOption[optionId]).map(product => {
+                  return {
+                    qty: product.qty,
+                    name: product.data.name
+                  }
+                })
+              }
+            });
+
+            this.dispatchFinalPrice();
+            this.dispatchOptionSelection();
+            this._updateSelectedVariantCartState();
+          },
+          dispatchFinalPrice() {
+            window.dispatchEvent(new CustomEvent("update-bundle-option-prices", {detail: this.productFinalPrice}));
+          },
+          dispatchOptionSelection() {
+            window.dispatchEvent(new CustomEvent("update-bundle-option-selection", {detail: this.selectedBundleOptions}));
+          },
+          getQtyValue(optionId) {
+            const selectionConfig = this.getSelectionOptionConfig(optionId);
+
+            return selectionConfig ? selectionConfig.qty : "0";
+          },
+          getSelectionOptionConfig(optionId) {
+            const activeSelectOption = this.activeSelectOptions[optionId];
+            let activeSelectOptionValue = null;
+
+            if (!activeSelectOption) {
+              return false;
+            }
+
+            if (typeof activeSelectOption == 'object' && activeSelectOption.length) {
+              activeSelectOptionValue = activeSelectOption[0];
+            } else {
+              activeSelectOptionValue = activeSelectOption;
+            }
+
+            return this.optionConfig
+              .options[optionId]
+              .selections[activeSelectOptionValue];
+          },
+          getQtyDisabled(optionId) {
+            const selectionConfig = this.getSelectionOptionConfig(optionId);
+
+            if (!selectionConfig) {
+              return true;
+            }
+
+            return !selectionConfig || selectionConfig.customQty === "0";
+          },
+          setQtyValue(optionId, value) {
+            const selectionConfig = this.getSelectionOptionConfig(optionId);
+            if (selectionConfig) {
+              selectionConfig.qty = value;
+            }
+          },
+        }
+      }
+    </script>
+    <div x-data="initBundleOptions()"
+         x-init="
+                  calculateTotalPrice();
+                  $nextTick(() => {
+                      dispatchFinalPrice();
+                      dispatchOptionSelection();
+                      $dispatch('set-selected-options', {});
+                  })"
+         x-defer="intersect"
+         class="w-full mb-6">
+
+      <!-- Title & close button -->
+      <div class="flex justify-between items-center pb-3 max-md:sticky max-md:top-0 max-md:bg-bg-500 z-10">
+        <h2 class="font-semibold text-text-500">
+          <?= $escaper->escapeHtml(__('Customize %1', $product->getName())) ?>
+        </h2>
+        <button
+          type="button"
+          class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+          aria-label="<?= __('Close') ?>"
+          @click.prevent="hideProductActions()"
+        >
+          <?= $hyvaicons->renderHtml('close') ?>
+        </button>
+      </div>
+
+      <!-- TODO: What is this ? -->
+      <?= $block->getChildHtml('product_info_bundle_options_top') ?>
+
+      <!-- Bundle items -->
+      <div class="flex flex-col gap-5 mt-3">
+        <?php foreach ($options as $option): ?>
+          <?php if (!$option->getSelections()) {
+            continue;
+          } ?>
+          <div>
+            <label
+              id="option-label-<?= $escaper->escapeHtmlAttr($option->getId()) ?>"
+              class="text-text-500 flex-grow font-semibold"
+            >
+              <?= $escaper->escapeHtml($option->getTitle()) ?>
+            </label>
+            <div class="mt-2">
+              <?= $block->getOptionHtml($option); ?>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      </div>
+      <?= $block->getChildHtml('product_info_bundle_options_bottom') ?>
+    </div>
+  <?php else: ?>
+    <p class="empty"><?= $escaper->escapeHtml(__('No options of this product are available.')) ?></p>
+  <?php endif; ?>
+<?php endif; ?>

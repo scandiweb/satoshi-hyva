@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product.detail.page">
+            <block class="Magento\Catalog\Block\Product\View\Gallery" name="product.details" template="Magento_Catalog::product/view/product-details.phtml">
+                <block class="Magento\Catalog\Block\Product\View" name="product.details.info" template="Magento_Catalog::product/view/product-details-info.phtml" />
+            </block>
+        </referenceBlock>
+
+        <referenceBlock name="product.info">
+            <!-- Product actions -->
+            <block class="Satoshi\Theme\Block\ProductActions" name="product.actions"
+                   template="Magento_Catalog::product/view/product-actions.phtml"/>
+        </referenceBlock>
+        <move element="product.info.quantity" destination="product.actions" />
+
+        <move element="page.main.title" destination="product.info" as="product.title" />
+        <move element="product.media" destination="product.details" />
+        <move element="product.info" destination="product.details.info" />
+        <move element="product.info.options.wrapper.bottom" destination="product.info" after="product.info.form"/>
+        <move element="product.info.details" destination="product.details.info" />
+    </body>
+</page>
