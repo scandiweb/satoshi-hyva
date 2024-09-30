@@ -280,12 +280,11 @@ $addressViewModel = $viewModels->require(AddressViewModel::class);
                     this.showDatepicker = false;
                 }
 
-                if (keyCode !== "Enter") {
-                    evt.preventDefault();
-                }
-
                 if (keyCode === "Space") {
                     this.showDatepicker = !this.showDatepicker;
+                }
+
+                if (keyCode !== "Enter") {
                     evt.preventDefault();
                 }
             }
