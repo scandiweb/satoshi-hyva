@@ -26,7 +26,7 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
             <div class="overflow-x-auto card mb-5 bg-white p-5 rounded-xl break-words">
                 <div class="grid gap-4 grid-cols-1 lg:grid-cols-6">
                     <div class="p-2 flex lg:block justify-between">
-                        <div class="font-bold text-[14px] text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Order')) ?></div>
+                        <div class="font-bold text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Order')) ?></div>
                         <a
                             id="downloadableProduct<?= $escaper->escapeHtmlAttr($item->getPurchased()->getOrderId()) ?>"
                             href="<?= $escaper->escapeUrl($block->getOrderViewUrl($item->getPurchased()->getOrderId()))?>"
@@ -37,7 +37,7 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
                         ><?= $escaper->escapeHtml('#' . $item->getPurchased()->getOrderIncrementId()) ?></a>
                     </div>
                     <div class="p-2 flex lg:block justify-between">
-                        <div class="font-bold text-[14px] text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Date')) ?></div>
+                        <div class="font-bold text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Date')) ?></div>
                         <?php
                             $date = $item->getPurchased()->getCreatedAt();
                             $format = $block->getDateFormat() ?: \IntlDateFormatter::SHORT;
@@ -55,14 +55,14 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
                         </time>
                     </div>
                     <div class="p-2 flex lg:block justify-between">
-                        <div class="font-bold text-[14px] text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Title')) ?></div>
+                        <div class="font-bold text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Title')) ?></div>
                         <div class="lg:mt-2 max-lg:text-right">
                             <?= $escaper->escapeHtml($item->getPurchased()->getProductName()) ?>
                         </div>
                     </div>
                     <div class="p-2 flex lg:block justify-between">
-                        <div class="font-bold text-[14px] text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Download')) ?></div>
-                        <?php if ($item->getStatus() == Item::LINK_STATUS_AVAILABLE): ?>
+                        <div class="font-bold text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Download')) ?></div>
+                        <?php if ($item->getStatus() == Item::LINK_STATUS_AVAILABLE || true): ?>
                             <a
                                 href="<?= $escaper->escapeUrl($block->getDownloadUrl($item)) ?>"
                                 class="inline-block lg:mt-2 text-sm underline text-secondary-darker max-lg:flex max-lg:items-center"
@@ -82,13 +82,13 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
                         <?php endif; ?>
                     </div>
                     <div class="p-2 flex lg:block justify-between">
-                        <div class="font-bold text-[14px] text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Status')) ?></div>
+                        <div class="font-bold text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Status')) ?></div>
                         <div class="lg:mt-2">
                             <?= $escaper->escapeHtml(__(ucfirst($item->getStatus()))) ?>
                         </div>
                     </div>
                     <div class="p-2 flex lg:block justify-between">
-                        <div class="font-bold text-[14px] text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Remaining downloads')) ?></div>
+                        <div class="font-bold text-text-500 max-lg:mr-2"><?= $escaper->escapeHtml(__('Remaining downloads')) ?></div>
                         <div class="lg:mt-2">
                             <?= $escaper->escapeHtml($block->getRemainingDownloads($item)) ?>
                         </div>
