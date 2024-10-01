@@ -79,23 +79,23 @@ $customOptionPrices = [];
                 <span class="sr-only"><?= __('Sale Price') ?></span>
                 <span class="text-primary-500">
                 <?= /** @noEscape */
-                $productViewModel->formatCurrencyBefore($specialPrice) ?>
+                $productViewModel->format($specialPrice) ?>
             </span>
                 <s>
                     <?= /** @noEscape */
-                    $productViewModel->formatCurrencyBefore($regularPrice) ?>
+                    $productViewModel->format($regularPrice) ?>
                 </s>
             <?php elseif ($product->getPriceMin() != $product->getPriceMax()): ?>
                 <span><?= __('From') ?></span>
                 <span>
                 <?= /** @noEscape */
-                $productViewModel->formatCurrencyBefore($product->getPriceMin()) ?>
+                $productViewModel->format($product->getPriceMin()) ?>
             </span>
             <?php else: ?>
                 <span class="sr-only"><?= __('Regular Price') ?></span>
                 <span class="text-primary-500">
                 <?= /** @noEscape */
-                $productViewModel->formatCurrencyBefore($regularPrice) ?>
+                $productViewModel->format($regularPrice) ?>
             </span>
             <?php endif; ?>
 
@@ -103,14 +103,14 @@ $customOptionPrices = [];
                 <span class="sr-only"><?= __('From') ?></span>
                 <span class="text-primary-500">
                 <?= /** @noEscape */
-                $productViewModel->formatCurrencyBefore($productPriceViewModel->getLowestTierPrice($tierPrices)) ?>
+                $productViewModel->format($productPriceViewModel->getLowestTierPrice($tierPrices)) ?>
             </span>
             <?php endif; ?>
 
             <?php if ($msrpPrice && $msrpPrice->canApplyMsrp($product) && $msrpPrice->isMinimalPriceLessMsrp($product)): ?>
                 <span class="sr-only"><?= __('MSRP') ?></span>
                 <span class="text-gray-500"><?= /** @noEscape */
-                    $productViewModel->formatCurrencyBefore($msrpPrice->getAmount()->getValue()) ?>
+                    $productViewModel->format($msrpPrice->getAmount()->getValue()) ?>
                 </span>
             <?php endif; ?>
 
@@ -118,7 +118,7 @@ $customOptionPrices = [];
                 <span class="sr-only"><?= __('Custom Options Price') ?></span>
                 <span class="text-primary-500">
                 <?= /** @noEscape */
-                $productViewModel->formatCurrencyBefore($finalPrice + array_sum($customOptionPrices)) ?>
+                $productViewModel->format($finalPrice + array_sum($customOptionPrices)) ?>
             </span>
             <?php endif; ?>
 
