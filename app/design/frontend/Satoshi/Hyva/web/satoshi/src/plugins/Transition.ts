@@ -295,7 +295,7 @@ export const replaceContent = (
   target.innerHTML = newContent;
 };
 
-const replaceMainContent = (rawContent: string) => {
+export const replaceMainContent = (rawContent: string) => {
   lastMainContentUpdateUrl = window.location.href;
   replaceMeta(rawContent);
   return morphContent(
