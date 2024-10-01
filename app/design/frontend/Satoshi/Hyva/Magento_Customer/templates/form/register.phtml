@@ -38,6 +38,7 @@ $regionLabel = $block->getAttributeData()->getFrontendLabel('region');
 $minimumPasswordLength = $block->getMinimumPasswordLength();
 $passwordMinCharacterSets = $block->getRequiredCharacterClassesNumber();
 $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_storefront');
+$fieldMessages = $block->getFieldMessages();
 ?>
 
 <div class="container mx-auto flex h-full items-center px-5">
@@ -98,6 +99,11 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             required
                         />
                     </div>
+                    <?php if (isset($fieldMessages['email'])): ?>
+                        <div class="px-5 <?= $fieldMessages['email']['status'] === 'error' ? 'text-error' : '' ?>">
+                            <?= $fieldMessages['email']['message'] ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="field field-reserved">
@@ -125,11 +131,16 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             <div id="password-strength-meter" class="password-strength-meter">
                                 <?= $escaper->escapeHtml(__('Password Strength')) ?>:
                                 <span id="password-strength-meter-label" class="lowercase"
-                                      data-role="password-strength-meter-label">
-                                        <?= $escaper->escapeHtml(__('No Password')) ?>
-                                    </span>
+                                  data-role="password-strength-meter-label">
+                                    <?= $escaper->escapeHtml(__('No Password')) ?>
+                                </span>
                             </div>
                         </div>
+                        <?php if (isset($fieldMessages['password'])): ?>
+                            <div class="px-5 <?= $fieldMessages['password']['status'] === 'error' ? 'text-error' : '' ?>">
+                                <?= $fieldMessages['password']['message'] ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -150,6 +161,11 @@ $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_st
                             autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                         />
                     </div>
+                    <?php if (isset($fieldMessages['password_confirmation'])): ?>
+                        <div class="px-5 <?= $fieldMessages['password_confirmation']['status'] === 'error' ? 'text-error' : '' ?>">
+                            <?= $fieldMessages['password_confirmation']['message'] ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <?php if ($block->getShowAddressFields()): ?>

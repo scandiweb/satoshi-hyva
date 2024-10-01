@@ -35,4 +35,12 @@
         for="Magento\Customer\Controller\Account\CreatePost"
         type="Satoshi\Theme\Plugin\Customer\Controller\Account\CreatePost"
     />
+    <preference
+        for="Magento\Customer\Block\Form\Register"
+        type="Satoshi\Theme\Block\Form\Register"
+    />
+    <preference
+        for="Magento\Customer\Block\Widget\Name"
+        type="Satoshi\Theme\Block\Widget\Name"
+    />
 </config>
