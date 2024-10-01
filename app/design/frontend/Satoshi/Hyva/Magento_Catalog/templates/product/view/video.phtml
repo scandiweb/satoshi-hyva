@@ -1,0 +1,51 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+
+/** @var HeroiconsSolid $heroiconsSolid */
+/** @var ViewModelRegistry $viewModels */
+/** @var Escaper $escaper */
+/** @var Template $block */
+
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+
+$image = $block->getData('image');
+$index = $block->getData('index');
+?>
+
+<div>
+    <?php if ($image['type'] === 'video' && !in_array($index, $playingVideoIndexes ?? [])): ?>
+        <button
+            type="button"
+            class="group absolute inset-0 outline-offset-2 grid place-items-center"
+            aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
+            @click="activateVideo(<?= $index ?>)"
+        >
+            <?= $heroiconsSolid->playHtml(
+                'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 w-24 h-24',
+                44,
+                44,
+                ['aria-hidden' => 'true']
+            ); ?>
+        </button>
+    <?php endif; ?>
+    <?php if ($image['type'] === 'video'): ?>
+        <div class="absolute inset-0 hidden w-full h-full bg-black nonmobile"
+             :class="{ 'hidden': activeVideoType !== 'youtube' }"
+             x-transition.opacity.duration.500ms
+             x-show="activeVideoType === 'youtube' && playingVideoIndexes.includes(<?= $index ?>)"
+        >
+            <div id="youtube-player-<?= $index ?>" class="w-full h-full"></div>
+        </div>
+        <div class="absolute inset-0 hidden w-full h-full bg-white"
+             :class="{ 'hidden': activeVideoType !== 'vimeo' }"
+             x-transition.opacity.duration.500ms
+             x-show="activeVideoType === 'vimeo'"
+        >
+            <div id="vimeo-player-<?= $index ?>" class="w-full h-full"></div>
+        </div>
+    <?php endif; ?>
+</div>
