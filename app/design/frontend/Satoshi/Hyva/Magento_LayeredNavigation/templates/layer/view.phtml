@@ -13,6 +13,21 @@ use Magento\LayeredNavigation\Block\Navigation;
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
+$sorter = $block->getChildBlock('filter_sort') ?? [];
+
+$sortOptions = [];
+$selectedSort = [];
+$index = 0;
+foreach ($sorter->getAvailableOrders() as $key => $option) {
+    $sortOptions[] = ['value' => $key, 'name' => "{$option}, asc", 'dir' => 'asc'];
+    $sortOptions[] = ['value' => $key, 'name' => "{$option}, desc", 'dir' => 'desc'];
+
+    if ($sorter->isOrderCurrent($key) && ($index !== 0 || $sorter->getCurrentDirection() !== 'asc')) {
+        $selectedSort = ['value' => $key, 'name' => $option, 'dir' => $sorter->getCurrentDirection()];
+    }
+    $index++;
+}
+
 ?>
 <?php if ($block->canShowBlock()): ?>
     <!-- Show / Hide filters button -->
@@ -32,7 +47,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             </span>
         </button>
     </div>
-
 
     <!-- Desktop filters -->
     <div
@@ -61,14 +75,62 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     role="region"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Product filters')) ?>"
                 >
-                    <?= $block->getChildHtml('state') ?>
+                    <?= $block->getChildBlock('state')->setData(['selected_sort' => $selectedSort])->toHtml() ?>
 
-                    <!-- Desktop filters -->
                     <template x-if="!$store.main.isMobile">
                         <div class="contents">
+                            <!-- Desktop Sort -->
+                            <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(false, 300)">
+                                <div class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2" x-ref="AccordionButton">
+                                    <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__('Sort by')) ?></h2>
+                                    <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
+                                        <span x-ref="AccordionIcon">
+                                            <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div
+                                    class="overflow-hidden md:px-2"
+                                    x-ref="AccordionPanel"
+                                    :class="{
+                                        'transition-none': $store.main.isReducedMotion,
+                                        'transition': $store.main.isReducedMotion
+                                    }"
+                                >
+                                    <div class="md:pb-3 md:pt-2">
+                                        <div class="flex flex-col gap-4 py-3">
+                                            <div role="radiogroup" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
+                                                <?php foreach ($sortOptions as $sortOption): ?>
+                                                    <div class="relative h-11 w-full">
+                                                        <label for="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>" class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
+                                                            <div class="flex items-center">
+                                                                <input
+                                                                    type="radio"
+                                                                    name="filter-item-sort_by"
+                                                                    id="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>"
+                                                                    class="radio__input"
+                                                                    aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>"
+                                                                    @change="selectSort('<?= $sortOption['value'] ?>', '<?= $sortOption['dir'] ?>')"
+                                                                    <?php if($sorter->isOrderCurrent($sortOption['value']) && $sorter->getCurrentDirection() === $sortOption['dir']): ?>
+                                                                        checked="checked"
+                                                                    <?php endif; ?>
+                                                                />
+                                                                <span class="radio__control mr-5" aria-hidden="true"></span>
+                                                                <span class="radio__label ml-0"><?= /* @noEscape */ $sortOption['name'] ?></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Desktop filters -->
                             <?php foreach ($block->getFilters() as $filter): ?>
                                 <?php if ($filter->getItemsCount()): ?>
-                                    <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(true, 300)">
+                                    <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(false, 300)">
                                         <div class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2" x-ref="AccordionButton">
                                             <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__($filter->getName())) ?></h2>
                                             <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button" aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>">
@@ -102,12 +164,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     <?= $popup->setData([
                             'id' => 'filters',
                             'isFocused' => true,
-                        ])->setChildTemplate('Magento_LayeredNavigation::layer/filters-popup.phtml', ['filters' => $block->getFilters(), 'renderer' => $block->getChildBlock('renderer')])
+                        ])->setChildTemplate('Magento_LayeredNavigation::layer/filters-popup.phtml', ['filters' => $block->getFilters(), 'renderer' => $block->getChildBlock('renderer'), 'sort_options' => $sortOptions, 'sorter' => $sorter])
                         ->render() ?>
 
                     <!-- Mobile bottom popup filters -->
                     <?= $popup->setData(['id' => 'bottom-filters'])
-                        ->setChildTemplate('Magento_LayeredNavigation::layer/bottom-filters-popup.phtml', ['filters' => $block->getChildBlock('state')->getActiveFilters()])
+                        ->setChildTemplate('Magento_LayeredNavigation::layer/bottom-filters-popup.phtml', ['filters' => $block->getChildBlock('state')->getActiveFilters(), 'selected_sort' => $selectedSort])
                         ->render() ?>
                 </div>
             </template>
@@ -115,19 +177,4 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     </div>
     <?php // Needed to offset bottom filters at the bottom ?>
     <div class="h-[60px] md:hidden"></div>
-
-    <script>
-        function initLayeredNavigation() {
-            return {
-                isMobile: false,
-                blockOpen: false,
-                checkIsMobileResolution() {
-                    const mobileElement = this.$refs.LayeredNavigationMobileToggleIcon;
-                    this.isMobile = mobileElement
-                        ? getComputedStyle(mobileElement).display !== "none"
-                        : window.matchMedia('(max-width: 767px)').matches; // Fallback to `md` breakpoint
-                }
-            }
-        }
-    </script>
 <?php endif; ?>
