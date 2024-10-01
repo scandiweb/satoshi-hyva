@@ -16,7 +16,7 @@ use Magento\Catalog\Helper\Data;
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
 
 $eagerLoadImagesCount = (int)($block->getData('eager_load_images_count') ?? 3);
-$productCollection = $block->getLoadedProductCollection();
+$productCollection = $block->getLoadedProductCollection()->addMediaGalleryData();
 
 $catalogData = $this->helper(Data::class);
 $breadcrumbs = $catalogData->getBreadcrumbPath();
