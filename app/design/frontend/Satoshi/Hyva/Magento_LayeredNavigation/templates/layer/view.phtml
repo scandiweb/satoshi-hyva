@@ -98,11 +98,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         </div>
                     </template>
 
-                    <!-- Mobile popup and filters -->
+                    <!-- Mobile filters popup -->
                     <?= $popup->setData([
                             'id' => 'filters',
                             'isFocused' => true,
                         ])->setChildTemplate('Magento_LayeredNavigation::layer/filters-popup.phtml', ['filters' => $block->getFilters(), 'renderer' => $block->getChildBlock('renderer')])
+                        ->render() ?>
+
+                    <!-- Mobile bottom popup filters -->
+                    <?= $popup->setData(['id' => 'bottom-filters'])
+                        ->setChildTemplate('Magento_LayeredNavigation::layer/bottom-filters-popup.phtml', ['filters' => $block->getChildBlock('state')->getActiveFilters()])
                         ->render() ?>
                 </div>
             </template>

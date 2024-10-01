@@ -62,13 +62,6 @@ $renderer = $block->getData('renderer');
             : '<?= $escaper->escapeJs(__('Filter by')) ?> ' + currentName?.toLowerCase()
         "
     >
-
-
-
-
-
-
-
         <!-- Items -->
         <nav class="flex flex-col gap-3 py-3" x-show="isTopLevel" aria-label="<?= $escaper->escapeHtmlAttr(__('Available filters')) ?>">
             <?php foreach ($filters as $filter): ?>
@@ -99,17 +92,6 @@ $renderer = $block->getData('renderer');
                 </fieldset>
             <?php endforeach; ?>
         </div>
-        <!-- Items -->
-
-
-
-
-
-
-
-
-
-
 
         <!-- Buttons -->
         <div class="min-h-20"></div>

@@ -56,7 +56,7 @@ $filters = $block->getActiveFilters();
             <div class="contents" id="mobile-available-filters"></div>
         <?php else: ?>
             <p class="pr-3 text-center md:pr-0 md:text-left max-md:hidden">
-                <?= __('The selected filters will appear here.') ?>
+                <?= $escaper->escapeHtml(__('The selected filters will appear here.')) ?>
             </p>
         <?php endif; ?>
 
@@ -74,4 +74,5 @@ $filters = $block->getActiveFilters();
             <?php endforeach; ?>
         </div>
     </div>
+    <div x-intersect:full="isTopFilterVisible = true" x-intersect:leave="isTopFilterVisible = false" x-morph-ignore></div>
 </div>
