@@ -13,18 +13,18 @@ $cols = $block->getData('is_context_shipment') ? 3 : ($block->getData('is_contex
 ?>
 <div class="lg:grid grid-cols-<?= $escaper->escapeHtmlAttr($cols) - 1 ?>">
     <div class="grid grid-cols-2 lg:block mb-3 lg:mb-0">
-        <p class="text-sm font-bold lg:sr-only">Product name</p>
+        <p class=" font-bold lg:sr-only">Product name</p>
         <div>
             <span><?= $escaper->escapeHtml($item->getName()) ?></span>
             <div class="item-options mt-2">
-                <div class="text-sm flex">
+                <div class=" flex">
                     <span><?= $escaper->escapeHtml(__('SKU')) ?>:</span>
-                    <span class="text-sm ml-1"><?= /* @noEscape */
+                    <span class=" ml-1"><?= /* @noEscape */
                         $block->prepareSku($block->getSku()) ?></span>
                 </div>
                 <?php if ($options = $block->getItemOptions()): ?>
                     <?php foreach ($options as $option): ?>
-                        <div class="text-sm flex mt-1">
+                        <div class=" flex mt-1">
                             <span><?= $escaper->escapeHtml($option['label']) ?>:</span>
                             <?php if (!$block->getPrintStatus()): ?>
                                 <?php $formatedOptionValue = $block->getFormatedOptionValue($option) ?>
@@ -60,12 +60,12 @@ $cols = $block->getData('is_context_shipment') ? 3 : ($block->getData('is_contex
     </div>
     <?php if (!$block->getData('is_context_shipment')): ?>
         <div class=" grid grid-cols-2 lg:block mb-3 lg:mb-0">
-            <p class="lg:sr-only text-sm font-bold"><?= $escaper->escapeHtml(__('Price')) ?></p>
+            <p class="lg:sr-only  font-bold"><?= $escaper->escapeHtml(__('Price')) ?></p>
             <?= $block->getItemPriceHtml() ?>
         </div>
     <?php endif; ?>
     <div class=" grid grid-cols-2 lg:block mb-3 lg:mb-0">
-        <p class="text-sm font-bold lg:sr-only">
+        <p class=" font-bold lg:sr-only">
             <?php if ($block->getData('is_context_invoice')): ?>
                 <?= $escaper->escapeHtml(__('Qty Invoiced')) ?>
             <?php elseif ($block->getData('is_context_shipment')): ?>
@@ -117,7 +117,7 @@ $cols = $block->getData('is_context_shipment') ? 3 : ($block->getData('is_contex
     </div>
     <?php if (!$block->getData('is_context_shipment')): ?>
         <div class="lg:text-right grid grid-cols-2 lg:block mb-3 lg:mb-0">
-            <p class="text-sm font-bold lg:sr-only"><?= $escaper->escapeHtml(__('Subtotal')) ?></p>
+            <p class=" font-bold lg:sr-only"><?= $escaper->escapeHtml(__('Subtotal')) ?></p>
             <?= $block->getItemRowTotalHtml() ?>
         </div>
     <?php endif; ?>

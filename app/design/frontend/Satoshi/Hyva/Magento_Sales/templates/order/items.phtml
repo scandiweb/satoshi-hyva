@@ -21,8 +21,8 @@ $cols = $block->getData('is_context_shipment') ? 3 : 5;
     <?php $items = $block->getOrder()->getAllItems(); ?>
     <?php $giftMessage = '' ?>
     <?php foreach ($items as $item): ?>
-        <div class="pt-4 pb-3 lg:py-6 border-b">
-            <div class="hidden mb-1 lg:grid grid-cols-<?= $escaper->escapeHtmlAttr($cols) - 1 ?> text-sm font-bold">
+        <div class="pt-5 pb-3 lg:py-7 border-b">
+            <div class="hidden mb-2 lg:grid grid-cols-<?= $escaper->escapeHtmlAttr($cols) - 1 ?> font-bold">
                 <div><?= $escaper->escapeHtml(__('Product Name')) ?></div>
                 <?php if (!$block->getData('is_context_shipment')): ?>
                     <div><?= $escaper->escapeHtml(__('Price')) ?></div><?php endif; ?>
@@ -91,7 +91,7 @@ $cols = $block->getData('is_context_shipment') ? 3 : 5;
         <?= $block->getPagerHtml() ?>
     <?php endif ?>
 </div>
-<div class="lg:grid grid-cols-4 mt-4 lg:mt-6">
+<div class="lg:grid grid-cols-4 mt-5 lg:mt-7">
     <div class="grid col-start-3 col-span-2 grid-cols-2 lg:text-right p-2 gap-2">
         <?= $block->getChildHtml('order_totals') ?>
     </div>
