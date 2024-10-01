@@ -425,7 +425,9 @@ $fieldMessages = $block->getFieldMessages();
                 </button>
                 <div class="text-center tracking-wider">
                     <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-                       class="link link--primary">
+                       class="link link--primary"
+                       x-element-transition-trigger
+                    >
                         <?= __('Back to login') ?>
                     </a>
                 </div>
