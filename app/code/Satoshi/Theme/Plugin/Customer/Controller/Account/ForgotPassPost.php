@@ -15,9 +15,11 @@ use Magento\Framework\Validator\EmailAddress;
 use Magento\Framework\Validator\ValidatorChain;
 use Magento\Framework\Controller\Result\JsonFactory;
 
-
 class ForgotPassPost extends ForgotPasswordPost
 {
+    protected JsonFactory $jsonFactory;
+    protected $session;
+
     public function __construct(
         Context                    $context,
         Session                    $customerSession,
@@ -27,22 +29,21 @@ class ForgotPassPost extends ForgotPasswordPost
     )
     {
         $this->jsonFactory = $jsonFactory;
+        $this->session = $customerSession;
         parent::__construct($context, $customerSession, $customerAccountManagement, $escaper);
     }
 
-    protected JsonFactory $jsonFactory;
-
     public function execute()
     {
-        $resultJson = $this->jsonFactory->create();
-        return $resultJson->setData(['success' => false, 'message' => __('The email address is incorrect. Verify the email address and try again.'), 'field' => 'username']);
         /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         $email = (string)$this->getRequest()->getPost('email');
         if ($email) {
             if (!ValidatorChain::is($email, EmailAddress::class)) {
                 $this->session->setForgottenEmail($email);
-                return $resultJson->setData(['success' => false, 'message' => __('The email address is incorrect. Verify the email address and try again.'), 'field' => 'username']);
+                // Store error message in session
+                $this->session->setErrorMessage(__('The email address is incorrect. Verify the email address and try again.'));
+                return $resultRedirect->setPath('*/*/forgotpassword');
             }
 
             try {
@@ -54,15 +55,21 @@ class ForgotPassPost extends ForgotPasswordPost
             } catch (NoSuchEntityException $exception) {
                 // Do nothing, we don't want anyone to use this action to determine which email accounts are registered.
             } catch (SecurityViolationException $exception) {
-                return $resultJson->setData(['success' => false, 'message' => __($exception->getMessage()), 'field' => 'username']);
+                // Store error message in session
+                $this->session->setErrorMessage($exception->getMessage());
+                return $resultRedirect->setPath('*/*/forgotpassword');
             } catch (\Exception $exception) {
-                return $resultJson->setData(['success' => false, 'message' => __('We\'re unable to send the password reset email.'), 'field' => 'username']);
+                // Store exception message in session
+                $this->session->setErrorMessage(__('We\'re unable to send the password reset email.'));
+                return $resultRedirect->setPath('*/*/forgotpassword');
             }
-            $this->messageManager->addSuccessMessage($this->getSuccessMessage($email));
+            // Store success message in session
+            $this->session->setSuccessMessage($this->getSuccessMessage($email));
             return $resultRedirect->setPath('*/*/');
         } else {
-            return $resultJson->setData(['success' => false, 'message' => __('Please enter your email.'), 'field' => 'username']);
+            // Store error message in session
+            $this->session->setErrorMessage(__('Please enter your email.'));
+            return $resultRedirect->setPath('*/*/forgotpassword');
         }
     }
-
 }

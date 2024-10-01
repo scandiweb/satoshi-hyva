@@ -33,4 +33,7 @@
         for="Hyva\Theme\ViewModel\ProductListItem"
         type="Satoshi\Theme\ViewModel\ProductListItem"
     />
+    <preference for="Magento\Customer\Block\Account\Forgotpassword"
+                type="Satoshi\Theme\Block\Account\ForgotPassword"
+    />
 </config>
