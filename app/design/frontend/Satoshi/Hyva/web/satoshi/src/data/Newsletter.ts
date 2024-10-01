@@ -23,7 +23,6 @@ export type NewsletterType = {
     clearFormSubmissionMessages(): void;
     submitForm(navigatedUrl? :string): void;
     subscribe(formData: FormData, navigatedUrl? :string): void;
-    fetchAndReplaceContent(url: string): void;
 };
 
 export const Newsletter = ({
@@ -149,11 +148,6 @@ export const Newsletter = ({
             .finally(() => {
                 this.isLoading = false;
             });
-        },
-
-        fetchAndReplaceContent(url: string) {
-            if (!url) return;
-            navigateWithTransition(url);
         },
     }
 }

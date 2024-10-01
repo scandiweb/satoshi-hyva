@@ -72,7 +72,7 @@ $recaptcha = $block->getData('viewModelRecaptcha');
             </button>
             <a class="button button--ghost-primary"
                href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-               @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getBackUrl()) ?>')"
+               x-element-transition-trigger
             >
             <span>
                 <?= $escaper->escapeHtml(__('Go back')) ?>
