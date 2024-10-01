@@ -36,6 +36,7 @@ import { TransitionImage } from "./data/TransitionImage";
 import { Authentication } from "./data/Authentication";
 import { Gallery } from "./data/Gallery.ts";
 import { Newsletter } from "./data/Newsletter";
+import { ContactForm } from "./data/ContactForm";
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -72,4 +73,5 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("Authentication", Authentication);
   Alpine.data("Gallery", Gallery);
   Alpine.data("Newsletter", Newsletter);
+  Alpine.data("ContactForm", ContactForm);
 });
