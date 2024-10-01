@@ -214,8 +214,8 @@ $fieldMessages = $block->getFieldMessages();
                         <?php for ($i = 2, $n = $this->helper(Address::class)->getStreetLines(); $i <= $n; $i++): ?>
                             <div class="field field-reserved">
                                 <label class="sr-only tracking-widest" for="street_<?= /* @noEscape */
-                                $i + 1 ?>">
-                                    <span><?= $escaper->escapeHtml(__('Street Address %1', $i + 1)) ?></span>
+                                $i ?>">
+                                    <span><?= $escaper->escapeHtml(__('Street Address %1', $i)) ?></span>
                                 </label>
                                 <div>
                                     <input type="text" name="street[]"
@@ -225,7 +225,7 @@ $fieldMessages = $block->getFieldMessages();
                                            title="<?= $escaper
                                                ->escapeHtmlAttr(__('Street Address %1', $i)) ?>"
                                            id="street_<?= (int)$i ?>"
-                                           placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your street address %1', $i + 1)) ?>"
+                                           placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your street address %1', $i)) ?>"
                                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                            @input.debounce="onChange"
                                     />
