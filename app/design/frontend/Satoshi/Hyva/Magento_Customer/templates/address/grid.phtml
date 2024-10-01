@@ -26,7 +26,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     <?php $i++ ?>
                     <div class="bg-white grid lg:grid-cols-6 gap-4 mt-5 p-5 rounded-xl">
                         <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
-                            <div class="text-text-500 text-[14px] font-bold">
+                            <div class="text-text-500 font-bold">
                                 <?= $escaper->escapeHtml(__('Company')) ?>
                             </div>
                             <div>
@@ -35,7 +35,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         </div>
 
                         <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
-                            <div class="text-text-500 text-[14px] font-bold">
+                            <div class="text-text-500 font-bold">
                                 <?= $escaper->escapeHtml(__('Name')) ?>
                             </div>
                             <div>
@@ -45,7 +45,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         </div>
 
                         <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
-                            <div class="text-text-500 text-[14px] font-bold">
+                            <div class="text-text-500 font-bold">
                                 <?= $escaper->escapeHtml(__('Street Address')) ?>
                             </div>
                             <div>
@@ -54,7 +54,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         </div>
 
                         <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
-                            <div class="text-text-500 text-[14px] font-bold">
+                            <div class="text-text-500 font-bold">
                                 <?= $escaper->escapeHtml(__('City')) ?>
                             </div>
                             <div>
@@ -63,7 +63,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         </div>
 
                         <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
-                            <div class="text-text-500 text-[14px] font-bold">
+                            <div class="text-text-500 font-bold">
                                 <?= $escaper->escapeHtml(__('Country')) ?>
                             </div>
                             <div>
@@ -72,12 +72,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         </div>
 
                         <div class="grid grid-cols-2 lg:flex lg:flex-col md:items-end gap-2">
-                            <div class="text-text-500 text-[14px] font-bold">
+                            <div class="text-text-500 font-bold">
                                 <?= $escaper->escapeHtml(__('Edit / Remove')) ?>
                             </div>
                             <div class="flex gap-5">
                                 <a
-                                    class="text-[14px] text-primary-500 w-5 h-5"
+                                    class="text-primary-500 w-5 h-5"
                                     title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
                                     href="<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>"
                                     x-element-transition-trigger
@@ -85,7 +85,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                     <?= $hyvaicons->renderHtml('pencil', 'w-full h-full', attributes: ['title' => 'Edit']) ?>
                                 </a>
                                 <a
-                                    class="text-[14px] text-primary-500 w-5 h-5"
+                                    class="text-primary-500 w-5 h-5"
                                     :class="isLoading && 'button--disabled'"
                                     :disabled="isLoading"
                                     title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
