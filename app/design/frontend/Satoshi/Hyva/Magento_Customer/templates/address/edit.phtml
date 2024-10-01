@@ -27,141 +27,14 @@ $regionLabel = $block->getAttributeData()->getFrontendLabel('region');
 $showOptionalRegions = $block->getConfig('general/region/display_all');
 ?>
 
-<!--
-Moved the script to the top to ensure all JavaScript functions and variables are initialized before Alpine.js starts.
-This prevents errors caused by undefined functions or bindings like initCustomerAddressEdit during component initialization.
-Using document.addEventListener('DOMContentLoaded') did not fully resolve the issue due to timing conflicts with Alpine.js initialization.
--->
-<script>
-    function initCustomerAddressEdit() {
-        return {
-            directoryData: {},
-            availableRegions: {},
-            messageTime: 5000,
-            fieldsNames: [],
-            selectedRegion: '<?= $escaper->escapeJs($block->getRegion() ?: 0) ?>',
-            isZipRequired: true,
-            isRegionRequired: true,
-            showOptionalRegions: <?= $showOptionalRegions ? 'true' : 'false' ?>,
-            onPrivateContentLoaded(data) {
-                this.directoryData = data['directory-data'] || {};
-
-                <?php if ($block->getCountryId()): ?>
-                this.setCountry(this.$refs['country_id'], '<?= $escaper->escapeJs($block->getRegion()) ?>');
-                <?php endif; ?>
-
-            },
-            setRegionInputValue(regionName) {
-                this.$nextTick(() => {
-                    const regionInputElement = this.$refs['region'];
-                    if (regionInputElement) {
-                        regionInputElement.value = regionName;
-                    }
-                })
-            },
-            setCountry(countrySelectElement, initialRegion) {
-                const selectedOption = countrySelectElement.options[countrySelectElement.selectedIndex];
-                const countryCode = countrySelectElement.value;
-                const countryData = this.directoryData[countryCode] || false;
-
-                if (!countryData) {
-                    this.setRegionInputValue('');
-                    return;
-                }
-
-                this.isZipRequired = selectedOption.dataset.isZipRequired === '1';
-                this.isRegionRequired = selectedOption.dataset.isRegionRequired === '1';
-
-                this.availableRegions = countryData.regions || {};
-
-                const initialRegionId = Object.keys(this.availableRegions).filter(regionId => this.availableRegions[regionId].name === initialRegion)[0];
-                this.selectedRegion = initialRegionId || '0';
-                this.setRegionInputValue(initialRegionId && this.availableRegions[initialRegionId].name || '');
-
-            },
-            changeCountry(event, initialRegion) {
-                this.setCountry(event.target, initialRegion);
-                this.validateCountryDependentFields();
-                this.onChange(event);
-            },
-            validateCountryDependentFields() {
-                this.$nextTick(() => {
-                    <?php /* Reinitialize validation rules for fields that depend on the country */ ?>
-                    this.fields['postcode'] && this.removeMessages(this.fields['postcode'])
-                    this.fields['region'] && this.removeMessages(this.fields['region'])
-                    delete this.fields['postcode'];
-                    delete this.fields['region'];
-                    <?php /* Initialize country_id, too, because the postcode validation depends on it */ ?>
-                    this.setupField(this.$refs['country_id']);
-                    this.setupField(this.$refs['postcode']);
-                    this.setupField(this.$refs['region']);
-                    this.setupField(this.$refs['region_id']);
-
-                    this.fields['postcode'] && this.validateField(this.fields['postcode']);
-                    this.fields['region'] && this.validateField(this.fields['region']);
-                    this.fields['region_id'] && this.validateField(this.fields['region_id']);
-                })
-            },
-            hasAvailableRegions() {
-                return Object.keys(this.availableRegions).length > 0;
-            },
-            onRegionIdChange(event) {
-                this.$refs.region.value = this.selectedRegion.length > 0 ?
-                    this.availableRegions[this.selectedRegion].name :
-                    ''
-                this.onChange(event)
-                this.validateField(this.fields['region'])
-            }
-        }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-
-        hyva.formValidation.addRule('telephone', (value, options) => {
-            const phoneNumber = value.trim().replace(' ', '');
-            if (phoneNumber && phoneNumber.length < (options.minlength || 3)) {
-                return '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>';
-            }
-
-            return true;
-        });
-
-        const postCodeSpecs = <?= /* @noEscape */ $block->getPostCodeConfig()->getSerializedPostCodes() ?>;
-
-        hyva.formValidation.addRule('postcode', (postCode, options, field, context) => {
-            context.removeMessages(field, 'postcode-warning')
-            const countryId = (context.fields['country_id'] && context.fields['country_id'].element.value),
-                validatedPostCodeExamples = [],
-                countryPostCodeSpecs = countryId && postCodeSpecs ? postCodeSpecs[countryId] : false;
-
-            if (! postCode || ! countryPostCodeSpecs) return true;
-
-            for (const postCodeSpec of Object.values(countryPostCodeSpecs)) {
-                if (new RegExp(postCodeSpec.pattern).test(postCode)) return true;
-                validatedPostCodeExamples.push(postCodeSpec.example);
-            }
-            if (validatedPostCodeExamples) {
-                context.addMessages(field, 'postcode-warning', [
-                    '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
-                    '<?= $escaper->escapeJs(__(' Example: ')) ?>' + validatedPostCodeExamples.join('; ') + '. ',
-                    '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
-                ]);
-            }
-
-            return true;
-        });
-    })
-</script>
-
 <section>
     <h2 class="text-text-500 text-lg font-bold mb-5">
         <?= $escaper->escapeHtml(__('Customer Address')) ?>
     </h2>
-    <!--TODO: @submit="onSubmit(() => createOrUpdateAddress())", but where to find onSubmit method-->
     <form
         x-data="Object.assign(Address(), initCustomerAddressEdit(), hyva.formValidation($root))"
+        @submit.prevent="submitForm(() => createOrUpdateAddress())"
         @private-content-loaded.window="onPrivateContentLoaded($event.detail.data)"
-        @submit="onSubmit"
         action="<?= $escaper->escapeUrl($block->getSaveUrl()) ?>"
         method="post"
         id="form-validate"
@@ -201,48 +74,45 @@ Using document.addEventListener('DOMContentLoaded') did not fully resolve the is
                 <?= $escaper->escapeHtml(__('Address')) ?>
             </h2>
             <div class="grid lg:grid-cols-2 gap-3">
-                <div class="flex flex-col gap-3">
-
-                    <div class="field field-reserved">
-                        <label for="street_1" class="sr-only tracking-widest">
+                <div class="field field-reserved">
+                    <label for="street_1" class="sr-only tracking-widest">
                         <span><?= /* @noEscape */
                             $streetLabel ?></span>
+                    </label>
+                    <div>
+                        <input type="text"
+                               name="street[]"
+                               required
+                               value="<?= $escaper->escapeHtmlAttr($block->getStreetLine(1)) ?>"
+                               title="<?= /* @noEscape */
+                               $streetLabel ?>"
+                               id="street_1"
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your street address')) ?>"
+                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                               @input.debounce="onChange"
+                        />
+                    </div>
+                </div>
+
+                <?php for ($i = 1, $n = $addressViewModel->addressGetStreetLines(); $i < $n; $i++): ?>
+                    <div class="field field-reserved">
+                        <label class="sr-only tracking-widest" for="street_<?= /* @noEscape */
+                        $i + 1 ?>">
+                            <span><?= $escaper->escapeHtml(__('Street Address %1', $i + 1)) ?></span>
                         </label>
                         <div>
-                            <input type="text"
-                                   name="street[]"
-                                   required
-                                   value="<?= $escaper->escapeHtmlAttr($block->getStreetLine(1)) ?>"
-                                   title="<?= /* @noEscape */
-                                   $streetLabel ?>"
-                                   id="street_1"
-                                   placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your street address')) ?>"
+                            <input type="text" name="street[]"
+                                   value="<?= $escaper->escapeHtmlAttr($block->getStreetLine($i + 1)) ?>"
+                                   title="<?= $escaper->escapeHtmlAttr(__('Street Address %1', $i + 1)) ?>"
+                                   id="street_<?= /* @noEscape */
+                                   $i + 1 ?>"
+                                   placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your street address %1', $i + 1)) ?>"
                                    class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                    @input.debounce="onChange"
                             />
                         </div>
                     </div>
-
-                    <?php for ($i = 1, $n = $addressViewModel->addressGetStreetLines(); $i < $n; $i++): ?>
-                        <div class="field field-reserved">
-                            <label class="sr-only tracking-widest" for="street_<?= /* @noEscape */
-                            $i + 1 ?>">
-                                <span><?= $escaper->escapeHtml(__('Street Address %1', $i + 1)) ?></span>
-                            </label>
-                            <div>
-                                <input type="text" name="street[]"
-                                       value="<?= $escaper->escapeHtmlAttr($block->getStreetLine($i + 1)) ?>"
-                                       title="<?= $escaper->escapeHtmlAttr(__('Street Address %1', $i + 1)) ?>"
-                                       id="street_<?= /* @noEscape */
-                                       $i + 1 ?>"
-                                       placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your street address %1', $i + 1)) ?>"
-                                       class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-                                       @input.debounce="onChange"
-                                />
-                            </div>
-                        </div>
-                    <?php endfor; ?>
-                </div>
+                <?php endfor; ?>
 
                 <?php if ($addressViewModel->addressIsVatAttributeVisible()): ?>
                     <div class="field field-reserved">
@@ -259,10 +129,12 @@ Using document.addEventListener('DOMContentLoaded') did not fully resolve the is
                                    placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your VAT ID')) ?>"
                                    class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                    id="vat_id"
-                                   @input.debounce="onChange">
+                                   @input.debounce="onChange"
+                            />
                         </div>
                     </div>
                 <?php endif; ?>
+
                 <div class="field field-reserved">
                     <label class="sr-only tracking-widest" for="zip">
                     <span><?= /* @noEscape */
@@ -280,9 +152,12 @@ Using document.addEventListener('DOMContentLoaded') did not fully resolve the is
                                @input.debounce="onChange"
                                data-validate='{"postcode": true}'
                                class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-                               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your postcode')) ?>">
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your postcode')) ?>"
+                        />
                     </div>
                 </div>
+
+                <br class="hidden lg:block"/>
 
                 <div class="field field-reserved">
                     <label class="sr-only tracking-widest" for="city">
@@ -298,7 +173,8 @@ Using document.addEventListener('DOMContentLoaded') did not fully resolve the is
                                placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your city')) ?>"
                                class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                id="city"
-                               @input.debounce="onChange">
+                               @input.debounce="onChange"
+                        />
                     </div>
                 </div>
 
@@ -409,9 +285,9 @@ Using document.addEventListener('DOMContentLoaded') did not fully resolve the is
                         name="default_billing"
                         value="1">
                     <span class="checkbox__control w-5 h-5" aria-hidden="true">
-                        <?= $hyvaicons->renderHtml('check') ?>
+                        <?= $hyvaicons->renderHtml('checkmark') ?>
                     </span>
-                    <span class="checkbox__label text-[14px] ml-0">
+                    <span class="checkbox__label ml-0">
                         <?= $escaper->escapeHtml(__('Use as my default billing address')) ?>
                     </span>
                 </label>
@@ -426,11 +302,12 @@ Using document.addEventListener('DOMContentLoaded') did not fully resolve the is
                         class="checkbox__input"
                         id="primary_shipping"
                         name="default_shipping"
-                        value="1">
+                        value="1"
+                    />
                     <span class="checkbox__control w-5 h-5" aria-hidden="true">
-                        <?= $hyvaicons->renderHtml('check') ?>
+                        <?= $hyvaicons->renderHtml('checkmark') ?>
                     </span>
-                    <span class="checkbox__label text-[14px] ml-0">
+                    <span class="checkbox__label ml-0">
                         <?= $escaper->escapeHtml(__('Use as my default shipping address')) ?>
                     </span>
                 </label>
@@ -448,15 +325,151 @@ Using document.addEventListener('DOMContentLoaded') did not fully resolve the is
             >
                 <span x-text="isLoading ?
                 '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
-                '<?= $escaper->escapeHtml(__('Save Address')) ?>'">Save</span>
+                '<?= $escaper->escapeHtml(__('Save Address')) ?>'">Save Address</span>
             </button>
             <a
                 class="button button--ghost-primary"
                 href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-                @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getBackUrl()) ?>')"
+                x-element-transition-trigger
             >
                 <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
             </a>
         </div>
     </form>
 </section>
+
+<script>
+    function initCustomerAddressEdit() {
+        return {
+            directoryData: {},
+            availableRegions: {},
+            messageTime: 5000,
+            fieldsNames: [],
+            selectedRegion: '<?= $escaper->escapeJs($block->getRegion() ?: 0) ?>',
+            isZipRequired: true,
+            isRegionRequired: true,
+            showOptionalRegions: <?= $showOptionalRegions ? 'true' : 'false' ?>,
+            onPrivateContentLoaded(data) {
+                this.directoryData = data['directory-data'] || {};
+
+                <?php if ($block->getCountryId()): ?>
+                this.setCountry(this.$refs['country_id'], '<?= $escaper->escapeJs($block->getRegion()) ?>');
+                <?php endif; ?>
+
+            },
+            setRegionInputValue(regionName) {
+                this.$nextTick(() => {
+                    const regionInputElement = this.$refs['region'];
+                    if (regionInputElement) {
+                        regionInputElement.value = regionName;
+                    }
+                })
+            },
+            setCountry(countrySelectElement, initialRegion) {
+                const selectedOption = countrySelectElement.options[countrySelectElement.selectedIndex];
+                const countryCode = countrySelectElement.value;
+                const countryData = this.directoryData[countryCode] || false;
+
+                if (!countryData) {
+                    this.setRegionInputValue('');
+                    return;
+                }
+
+                this.isZipRequired = selectedOption.dataset.isZipRequired === '1';
+                this.isRegionRequired = selectedOption.dataset.isRegionRequired === '1';
+
+                this.availableRegions = countryData.regions || {};
+
+                const initialRegionId = Object.keys(this.availableRegions).filter(regionId => this.availableRegions[regionId].name === initialRegion)[0];
+                this.selectedRegion = initialRegionId || '0';
+                this.setRegionInputValue(initialRegionId && this.availableRegions[initialRegionId].name || '');
+
+            },
+            changeCountry(event, initialRegion) {
+                this.setCountry(event.target, initialRegion);
+                this.validateCountryDependentFields();
+                this.onChange(event);
+            },
+            validateCountryDependentFields() {
+                this.$nextTick(() => {
+                    <?php /* Reinitialize validation rules for fields that depend on the country */ ?>
+                    this.fields['postcode'] && this.removeMessages(this.fields['postcode'])
+                    this.fields['region'] && this.removeMessages(this.fields['region'])
+                    delete this.fields['postcode'];
+                    delete this.fields['region'];
+                    <?php /* Initialize country_id, too, because the postcode validation depends on it */ ?>
+                    this.setupField(this.$refs['country_id']);
+                    this.setupField(this.$refs['postcode']);
+                    this.setupField(this.$refs['region']);
+                    this.setupField(this.$refs['region_id']);
+
+                    this.fields['postcode'] && this.validateField(this.fields['postcode']);
+                    this.fields['region'] && this.validateField(this.fields['region']);
+                    this.fields['region_id'] && this.validateField(this.fields['region_id']);
+                })
+            },
+            hasAvailableRegions() {
+                return Object.keys(this.availableRegions).length > 0;
+            },
+            onRegionIdChange(event) {
+                this.$refs.region.value = this.selectedRegion.length > 0 ?
+                    this.availableRegions[this.selectedRegion].name :
+                    ''
+                this.onChange(event)
+                this.validateField(this.fields['region'])
+            },
+            submitForm(cb) {
+                this.validate()
+                    .then(() => {
+                        const invalidFields = Object.values(this.fields).filter(field => !field.state.valid);
+
+                        if (invalidFields.length === 0) {
+                            cb();
+                        }
+                    })
+                    .catch((invalid) => {
+                        if (invalid.length > 0) {
+                            invalid[0].focus();
+                        }
+                    });
+            },
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+
+        hyva.formValidation.addRule('telephone', (value, options) => {
+            const phoneNumber = value.trim().replace(' ', '');
+            if (phoneNumber && phoneNumber.length < (options.minlength || 3)) {
+                return '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>';
+            }
+
+            return true;
+        });
+
+        const postCodeSpecs = <?= /* @noEscape */ $block->getPostCodeConfig()->getSerializedPostCodes() ?>;
+
+        hyva.formValidation.addRule('postcode', (postCode, options, field, context) => {
+            context.removeMessages(field, 'postcode-warning')
+            const countryId = (context.fields['country_id'] && context.fields['country_id'].element.value),
+                validatedPostCodeExamples = [],
+                countryPostCodeSpecs = countryId && postCodeSpecs ? postCodeSpecs[countryId] : false;
+
+            if (!postCode || !countryPostCodeSpecs) return true;
+
+            for (const postCodeSpec of Object.values(countryPostCodeSpecs)) {
+                if (new RegExp(postCodeSpec.pattern).test(postCode)) return true;
+                validatedPostCodeExamples.push(postCodeSpec.example);
+            }
+            if (validatedPostCodeExamples) {
+                context.addMessages(field, 'postcode-warning', [
+                    '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
+                    '<?= $escaper->escapeJs(__(' Example: ')) ?>' + validatedPostCodeExamples.join('; ') + '. ',
+                    '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
+                ]);
+            }
+
+            return true;
+        });
+    })
+</script>
