@@ -18,7 +18,7 @@ export type NewsletterType = {
     errorMessages: string[];
 
     setErrorMessages(messages: string): void;
-    clearFormSubmissionMessages(): void;
+    clearMessages(): void;
     submitForm(): void;
     subscribe(formData: FormData): void;
 };
@@ -44,11 +44,15 @@ export const Newsletter = ({
             this.errorMessages = [messages]
             this.displayErrorMessage = this.errorMessages.length
         },
-        clearFormSubmissionMessages() {
+        clearMessages() {
             this.formSubmissionErrorMessages = {};
             this.formSubmissionSuccessMessage = '';
+            this.displayErrorMessage = false;
+            this.errorMessages = [];
         },
         submitForm() {
+            this.clearMessages();
+
             // Do not rename $form, the variable is expected to be declared in the recaptcha output
             const $form = document.querySelector('#newsletter-validate-detail') as HTMLFormElement;
             eval(recaptchaValidationCode);
@@ -117,7 +121,6 @@ export const Newsletter = ({
         subscribe(formData) {
             const $form = document.querySelector('#newsletter-validate-detail') as HTMLFormElement;
             this.isLoading = true;
-            this.clearFormSubmissionMessages();
 
             fetch($form.action, {
                 method: 'POST',

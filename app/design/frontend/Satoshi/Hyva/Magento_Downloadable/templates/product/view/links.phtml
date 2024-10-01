@@ -1,0 +1,107 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\ProductPrice;
+use Magento\Downloadable\Block\Catalog\Product\Links as DownloadableLinks;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var DownloadableLinks $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var ProductPrice $productPriceViewModel */
+/** @var HeroiconsOutline $iconViewModel */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+if (!$block->getProduct()->isSaleable() && $block->hasLinks()) {
+    return;
+}
+
+$productPriceViewModel    = $viewModels->require(ProductPrice::class);
+$iconViewModel            = $viewModels->require(HeroiconsOutline::class);
+$displayTax               = $productPriceViewModel->displayPriceIncludingTax();
+$linksPurchasedSeparately = $block->getLinksPurchasedSeparately();
+$links                    = $block->getLinks();
+$configuredValues         = $block->getProduct()->getPreconfiguredValues();
+$configuredLinks          = $configuredValues->getLinks() ?? [];
+$hasSamples               = $block->getProduct()->getTypeInstance()->hasSamples($block->getProduct());
+?>
+<div class="flex justify-between items-center mb-3">
+    <h2 class="font-semibold text-text-500">
+        <?= $escaper->escapeHtml($block->getLinksTitle()) ?>
+    </h2>
+    <?php if(!$hasSamples): ?>
+        <button
+            type="button"
+            class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+            aria-label="<?= __('Close') ?>"
+            @click.prevent="hideProductActions()"
+        >
+            <?= $hyvaicons->renderHtml('close') ?>
+        </button>
+    <?php endif; ?>
+</div>
+
+<div
+    <?php if ($linksPurchasedSeparately): ?>
+        x-data="DownloadableProduct(
+            <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>,
+            <?= $escaper->escapeHtmlAttr(json_encode([join(',', $configuredLinks)])) ?>,
+            '<?= /** @noEscape  */ $displayTax ? 'finalPrice' : 'basePrice' ?>'
+        )"
+    <?php endif; ?>
+>
+    <div id="downloadable-links-list" class="flex flex-col gap-3">
+        <?php foreach ($links as $link): ?>
+            <div class="flex items-center justify-between">
+                <div>
+                    <?php if ($linksPurchasedSeparately): ?>
+                        <label class="flex items-center gap-3" for="links_<?= $escaper->escapeHtmlAttr($link->getId()) ?>">
+                            <input
+                                class="checkbox__input"
+                                type="checkbox"
+                                id="links_<?= $escaper->escapeHtmlAttr($link->getId()) ?>"
+                                name="links[]"
+                                value="<?= $escaper->escapeHtmlAttr($link->getId()) ?>"
+                                <?= $escaper->escapeHtml($block->getLinkCheckedValue($link)) ?>
+                                x-model="selectedValues"
+                                @change="linkSelectionChange($event.target, '<?= $link['title'] ?>')"
+                            >
+                            <span class="checkbox__control h-5 w-5" aria-hidden="true">
+                                <?= $hyvaicons->renderHtml('checkmark') ?>
+                            </span>
+                            <span class="checkbox__label ml-0 ">
+                        <?php endif; ?>
+                                <?= $escaper->escapeHtml($link->getTitle()) ?>
+                        <?php if ($linksPurchasedSeparately): ?>
+                            </span>
+                            <?= /* @noEscape */ $block->getLinkPrice($link) ?>
+                        </label>
+                    <?php endif; ?>
+                </div>
+                <?php if ($link->getSampleFile() || $link->getSampleUrl()): ?>
+                    <a class="item-link samples-item-link"
+                    href="<?= $escaper->escapeUrl($block->getLinkSampleUrl($link)) ?>"
+                    <?= $block->getIsOpenInNewWindow() ? 'target="_blank"' : '' ?>>
+                    <?= $iconViewModel->documentDownloadHtml('inline-block w-6 h-6 mr-1', 26, 26) ?>
+                    <?= $escaper->escapeHtml(__('sample')) ?>
+                    </a>
+                <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+        <?php if ($linksPurchasedSeparately && count($links) > 1): ?>
+            <button type="button" class="link link--primary w-fit" @click="toggleAll">
+                <span x-text="
+                    areAllSelected()
+                        ? '<?= $escaper->escapeJs(__('Unselect all')) ?>'
+                        : '<?= $escaper->escapeJs(__('Select all')) ?>'
+                "><?= $escaper->escapeHtml(__('Select all')) ?></span>
+            </button>
+        <?php endif; ?>
+    </div>
+</div>
