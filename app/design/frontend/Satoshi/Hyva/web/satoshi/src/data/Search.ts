@@ -103,7 +103,7 @@ export const Search = () =>
         type: "search",
         animate: true,
         data: {
-          search: this.searchTermInput,
+          q: this.searchTermInput,
         },
       });
     },

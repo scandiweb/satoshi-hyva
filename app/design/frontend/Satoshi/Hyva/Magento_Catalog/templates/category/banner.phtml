@@ -69,21 +69,9 @@ $height = $block->getVar('category_page_category_image/height');
       </div>
       <?php endif; ?>
     </div>
-    <div class="ml-8 md:pl-2">
-      <button
-        type="button"
-        class="button button--filled-primary hidden w-[275px] min-w-[275px] md:inline-flex"
-        @click="$store.productList.toggleFiltersSidebar()"
-      >
-        <span
-          x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
-        >
-          <?= __('Hide filter') ?>
-        </span>
-        <span class="button__icon ml-3 text-xl">
-          <?= $hyvaicons->renderHtml('filter'); ?>
-        </span>
-      </button>
-    </div>
+
+    <div
+      class="button button--filled-primary invisible ml-8 hidden w-[275px] min-w-[275px] md:inline-flex md:pl-2"
+    ></div>
   </div>
 </article>

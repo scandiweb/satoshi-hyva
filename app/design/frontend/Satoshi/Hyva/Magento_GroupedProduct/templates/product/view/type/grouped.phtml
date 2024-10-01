@@ -1,125 +1,138 @@
 <?php
+
 declare(strict_types=1);
 
 use Magento\Catalog\Block\Product\View\BaseImage;
 use Magento\Catalog\Pricing\Price\TierPrice;
 use Magento\Framework\Escaper;
 use Magento\GroupedProduct\Block\Product\View\Type\Grouped;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 /**
  * @var BaseImage $block
  * @var Grouped $block
  * @var Escaper $escaper
+ * @var ViewModelRegistry $viewModels
  */
 
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
 $block->setPreconfiguredValue();
 $product = $block->getProduct();
 $associatedProducts = $block->getAssociatedProducts();
 $hasAssociatedProducts = count($associatedProducts) > 0;
+
 ?>
-<script>
-    function initGroupedOptions() {
-        return {
-            isValid: true,
-            validateForm() {
-                const validateInputs = Array.from(
-                    document.querySelectorAll('input[name^=super_group]')
-                );
+<?php if ($hasAssociatedProducts): ?>
+  <div class="flex justify-between items-center mb-3">
+    <h2 class="font-semibold text-text-500">
+        <?= $escaper->escapeHtml(__('Product Set')) ?>
+    </h2>
+    <button
+      type="button"
+      class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+      aria-label="<?= __('Close') ?>"
+      @click.prevent="hideProductActions()"
+    >
+      <?= $hyvaicons->renderHtml('close') ?>
+    </button>
+  </div>
 
-                // At least one of the inputs has to have a qty > 0
-                this.isValid = validateInputs.filter(
-                    input => input.value > 0
-                ).length;
+  <div class="flex flex-col gap-5 mt-3">
+    <?php foreach ($associatedProducts as $item): ?>
+        <div class="flex justify-between items-center">
 
-                // Set or unset validity for all fields at once
-                // Empty string unsets invalidity
-                validateInputs.map(input =>
-                    input.setCustomValidity(this.isValid ?
-                        "" :
-                        "<?= $escaper->escapeJs(__('Please specify the quantity of product(s).')) ?>")
-                )
-
-                if (!this.isValid) {
-                    // Triggers an immediate display of the form errors
-                    document.querySelector("#product_addtocart_form").reportValidity();
-                    return false;
-                }
-                return true;
-            },
-            init() {
-                document.querySelector("#product_addtocart_form")
-                    .addEventListener("submit", (e) => {
-                        // Don't submit on errors
-                        if (!this.validateForm()) {
-                            e.preventDefault();
-                        }
-                    });
-            }
-        }
-    }
-</script>
-<div class="my-12" x-data="initGroupedOptions()">
-    <?php if ($hasAssociatedProducts): ?>
-        <h2 class="text-gray-900 text-xl title-font font-medium mb-2">
-            <?= $escaper->escapeHtml(__('Grouped product items')) ?>
-        </h2>
-        <div class="hidden sm:flex py-2 border-t border-gray-300 w-full items-center justify-between gap-2">
-            <div class="text-gray-500 font-semibold text-left">
-                <?= $escaper->escapeHtml(__('Product Name')) ?>
-            </div>
-            <div class="text-gray-500 font-semibold text-left w-20">
-                <?= $escaper->escapeHtml(__('Qty')) ?>
-            </div>
-        </div>
-
-        <?php foreach ($associatedProducts as $item): ?>
-            <div class="flex flex-wrap border-t border-gray-300 py-2 w-full items-center justify-between gap-2">
-                <label class="text-gray-700 text-left" for="super_group[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]">
-                    <span class="product-item-name font-semibold">
-                        <?= $escaper->escapeHtml($item->getName()) ?>
-                    </span>
-                    <?php if ($block->getCanShowProductPrice($product)): ?>
-                        <?php if ($block->getCanShowProductPrice($item)): ?>
-                            <?= /* @noEscape */ $block->getProductPrice($item) ?>
-                        <?php endif; ?>
+            <!-- Label & Price -->
+            <label
+                class="text-base text-text-500 flex-grow"
+                for="super_group[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
+            >
+                <?= $escaper->escapeHtml($item->getName()) ?>
+                <?php if ($block->getCanShowProductPrice($product)): ?>
+                    <?php if ($block->getCanShowProductPrice($item)): ?>
+                        <?= /* @noEscape */ $block->getProductPrice($item) ?>
                     <?php endif; ?>
-                </label>
-                <div class="label text-gray-900 text-left sm:text-right w-full sm:w-20">
-                    <?php if ($product->isSaleable()): ?>
+                <?php endif; ?>
+            </label>
 
-                        <?php if ($item->isSaleable()): ?>
-                            <div class="control qty">
-                                <input type="number"
-                                       min="0"
-                                       name="super_group[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
-                                       id="super_group[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
-                                       value="<?= $escaper->escapeHtmlAttr($item->getQty() * 1) ?>"
-                                       title="<?= $escaper->escapeHtmlAttr(__('Qty')) ?>"
-                                       class="qty form-input px-2 py-2 w-20 text-center"
-                                       :class=" { 'border-red-500 focus:border-red-500 focus:ring-red-500': !isValid }"
-                                       @input.debounce="validateForm()"
-                                />
-                            </div>
-                        <?php else: ?>
-                            <div class="stock unavailable" title="<?= $escaper->escapeHtmlAttr(__('Availability')) ?>">
-                                <?= $escaper->escapeHtml(__('Out of stock')) ?>
-                            </div>
-                        <?php endif; ?>
+            <!-- Quantity control -->
+            <?php if ($product->isSaleable()): ?>
+                <?php if ($item->isSaleable()): ?>
+                    <div class="contents" x-data="{value: <?= (int) $escaper->escapeHtmlAttr($item->getQty() * 1) ?>}">
+                      <button
+                        type="button"
+                        class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-sm me-2"
+                        aria-label="<?= __('Decrease quantity') ?>"
+                        @click.prevent.stop="() => {
+                          value--;
+                          Alpine.nextTick(() => {
+                            validateGroupedProduct();
+                          })
+                        }"
+                      >
+                        <span class="sr-only">
+                          <?= __('Decrease quantity for %1', $product->getName()) ?>
+                        </span>
+                        <?= $hyvaicons->renderHtml('minus'); ?>
+                      </button>
 
-                    <?php endif; ?>
-                </div>
+                      <label for="super_group[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]" class="sr-only tracking-widest">
+                        <?= __('Quantity') ?>
+                      </label>
+                      <input type="number"
+                              min="0"
+                              name="super_group[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
+                              id="super_group[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
+                              :value="value"
+                              title="<?= $escaper->escapeHtmlAttr(__('Qty')) ?>"
+                              class="animate-on-transition input__field flex-shrink-0 basis-14 text-center bg-transparent h-9 px-3 me-2"
+                              :class=" { 'border-red-500 focus:border-red-500 focus:ring-red-500': !isGroupValid }"
+                              @input.debounce="validateGroupedProduct()"
+                              aria-label="<?= __('Quantity') ?>"
+                      />
 
-                <?php if ($block->getCanShowProductPrice($product)
-                    && $block->getCanShowProductPrice($item)
-                    && trim($block->getProductPriceHtml($item, TierPrice::PRICE_CODE))): ?>
-                    <div class="flex pt-2 w-full items-center">
-                        <?= $block->getProductPriceHtml($item, TierPrice::PRICE_CODE) ?>
+                      <button
+                        type="button"
+                        class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-sm"
+                        aria-label="<?= __('Increase quantity') ?>"
+                        @click.prevent.stop="() => {
+                          value++;
+                          Alpine.nextTick(() => {
+                            validateGroupedProduct();
+                          })
+                        }"
+                      >
+                        <span class="sr-only">
+                          <?= __('Increase quantity') ?>
+                        </span>
+                        <?= $hyvaicons->renderHtml('plus'); ?>
+                      </button>
+                    </div>
+                <?php else: ?>
+                    <div class="stock unavailable"
+                          title="<?= $escaper->escapeHtmlAttr(__('Availability')) ?>"
+                    >
+                        <?= $escaper->escapeHtml(__('Out of stock')) ?>
                     </div>
                 <?php endif; ?>
+            <?php endif; ?>
+        </div>
 
+        <?php if ($block->getCanShowProductPrice($product)
+            && $block->getCanShowProductPrice($item)
+            && trim($block->getProductPriceHtml(
+                $item,
+                TierPrice::PRICE_CODE
+            ))): ?>
+            <div class="flex pt-2 w-full items-center">
+                <?= $block->getProductPriceHtml(
+                    $item,
+                    TierPrice::PRICE_CODE
+                ) ?>
             </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <?= $escaper->escapeHtml(__('No options of this product are available.')) ?>
-    <?php endif; ?>
-</div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+  </div>
+<?php else: ?>
+    <?= $escaper->escapeHtml(__('No options of this product are available.')) ?>
+<?php endif; ?>
