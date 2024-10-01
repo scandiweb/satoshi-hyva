@@ -7,8 +7,8 @@ export type FiltersType = {
   currentName: string;
 
   init(): void;
-  selectFilter(filterCode: string, filterUrl: string): void;
-  applyFilters(filterCode: string): void;
+  selectFilter(filterName: string, filterUrl: string): void;
+  applyFilters(filterName: string): void;
   showFilters(isTopLevel: boolean, currentName: string): void;
   hideFilters(): void;
   onResetButtonClick(): void;
@@ -57,16 +57,16 @@ export const Filters = (clearUrl: string) =>
       // });
     },
 
-    selectFilter(filterCode, filterUrl) {
-      this.selectedFilters[filterCode] = filterUrl;
+    selectFilter(filterName, filterUrl) {
+      this.selectedFilters[filterName] = filterUrl;
 
       if (!Alpine.store("main").isMobile) {
-        this.applyFilters(filterCode);
+        this.applyFilters(filterName);
       }
     },
 
-    applyFilters(filterCode) {
-      const filterUrl = this.selectedFilters[filterCode];
+    applyFilters(filterName) {
+      const filterUrl = this.selectedFilters[filterName];
       this.hideFilters();
 
       if (filterUrl) {

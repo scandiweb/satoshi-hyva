@@ -24,7 +24,7 @@ $renderer = $block->getData('renderer');
                 type="button"
                 class="button button--ghost-primary icon-button icon-button--size-xs absolute bottom-0 start-0 top-0 m-auto text-xxl transition-transform duration-300 motion-reduce:transition-none"
                 aria-label="<?= $escaper->escapeHtmlAttr(__('Back to all filters')) ?>"
-                @click="isTopLevel = true; currentCode = ''; currentName = ''"
+                @click="isTopLevel = true; currentName = ''"
                 :tabindex="isTopLevel ? -1 : 0"
                 :class="{
                     '-translate-x-full': isTopLevel,
@@ -75,7 +75,7 @@ $renderer = $block->getData('renderer');
                 <button
                     type="button"
                     class="flex min-h-10 items-center justify-between py-1"
-                    @click="isTopLevel = false; currentCode='<?= $escaper->escapeJs($filter->getName()) ?>'; currentName='<?= $escaper->escapeJs($filter->getName()) ?>'"
+                    @click="isTopLevel = false; currentName='<?= $escaper->escapeJs($filter->getName()) ?>'"
                 >
                     <p class="grow text-left">
                         <?= $escaper->escapeHtml($filter->getName()) ?>
@@ -89,7 +89,7 @@ $renderer = $block->getData('renderer');
 
         <div>
             <?php foreach ($filters as $filter): ?>
-                <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5" x-show="currentCode == '<?= $escaper->escapeJs($filter->getName()) ?>'">
+                <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5" x-show="currentName == '<?= $escaper->escapeJs($filter->getName()) ?>'">
                     <div
                         id="filter-<?= $escaper->escapeHtmlAttr($filter->getName()) ?>"
                         key="filter-<?= $escaper->escapeHtmlAttr($filter->getName()) ?>"
@@ -127,7 +127,7 @@ $renderer = $block->getData('renderer');
                     <button
                         type="button"
                         class="button button--filled-primary grow"
-                        @click="applyFilters(currentCode)"
+                        @click="applyFilters(currentName)"
                     >
                         <?= $escaper->escapeHtml(__('Apply')) ?>
                     </button>
