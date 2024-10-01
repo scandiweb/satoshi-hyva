@@ -18,14 +18,16 @@ $sorter = $block->getChildBlock('filter_sort') ?? [];
 $sortOptions = [];
 $selectedSort = [];
 $index = 0;
-foreach ($sorter->getAvailableOrders() as $key => $option) {
-    $sortOptions[] = ['value' => $key, 'name' => "{$option}, asc", 'dir' => 'asc'];
-    $sortOptions[] = ['value' => $key, 'name' => "{$option}, desc", 'dir' => 'desc'];
-
-    if ($sorter->isOrderCurrent($key) && ($index !== 0 || $sorter->getCurrentDirection() !== 'asc')) {
-        $selectedSort = ['value' => $key, 'name' => $option, 'dir' => $sorter->getCurrentDirection()];
+if ($sorter) {
+    foreach ($sorter->getAvailableOrders() as $key => $option) {
+        $sortOptions[] = ['value' => $key, 'name' => "{$option}, asc", 'dir' => 'asc'];
+        $sortOptions[] = ['value' => $key, 'name' => "{$option}, desc", 'dir' => 'desc'];
+    
+        if ($sorter->isOrderCurrent($key) && ($index !== 0 || $sorter->getCurrentDirection() !== 'asc')) {
+            $selectedSort = ['value' => $key, 'name' => $option, 'dir' => $sorter->getCurrentDirection()];
+        }
+        $index++;
     }
-    $index++;
 }
 
 ?>
