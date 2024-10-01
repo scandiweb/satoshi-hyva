@@ -1,4 +1,5 @@
 import type { Magics } from "alpinejs";
+import {navigateWithTransition} from "../plugins/Transition";
 
 export type RecentOrdersType = {
   reorderProducts: {
@@ -13,6 +14,7 @@ export type RecentOrdersType = {
   receiveReorderData(data: any): void;
   addToCart(postUrl: string): void;
   reorderSidebarFetchHandler(body: string, postUrl: string): any;
+  onReorder(event: Event): void;
 } & Magics<{}>;
 
 export const RecentOrders = (messageText: string) =>
@@ -86,4 +88,24 @@ export const RecentOrders = (messageText: string) =>
           window.dispatchMessages && window.dispatchMessages([message], 5000);
         });
     },
+
+      onReorder(event) {
+        const $form = event.target.closest("form");
+
+        if (!$form) return;
+
+        const formData = new FormData($form);
+
+        fetch($form.action, {
+          method: "POST",
+          body: formData,
+        }).then((res) => {
+          if (res.ok) {
+          navigateWithTransition('/checkout/cart');
+          }
+        }).catch((error) => {
+          console.error("Error while updating account information:", error);
+          location.reload();
+        });
+      },
   };

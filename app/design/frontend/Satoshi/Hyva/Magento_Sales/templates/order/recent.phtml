@@ -153,6 +153,8 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                                         action="<?= $escaper->escapeUrl($formData['action']) ?>"
                                         method="post"
                                         class="inline-flex items-center"
+                                        x-data="RecentOrders"
+                                        @submit.prevent="onReorder($event)"
                                     >
                                         <?= $block->getBlockHtml('formkey'); ?>
                                         <input type="hidden" name="data" value='<?= /* @noEscape */
