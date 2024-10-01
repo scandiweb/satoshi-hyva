@@ -3,18 +3,12 @@ import { navigateWithTransition } from "../plugins/Transition";
 
 export type AccountInformationType = {
     isLoading: boolean;
-    fetchAndReplaceContent(url: string): void;
     handleFormSubmit(): void;
 } & Magics<{}>;
 
 export const AccountInformation = () =>
     <AccountInformationType>{
     isLoading: false,
-
-    fetchAndReplaceContent(url: string) {
-        if (!url) return;
-        navigateWithTransition(url);
-    },
 
     handleFormSubmit() {
         const $form = document.getElementById('form-validate') as HTMLFormElement;
