@@ -1,0 +1,129 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Catalog\Block\Product\View as ProductView;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var ProductView $block */
+/** @var ViewModelRegistry $viewModels */
+
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$product = $block->getProduct();
+?>
+<?php if ($product->isSaleable() && $block->hasOptions()): ?>
+  <div id="bundleSummary">
+    <div class="hidden [.popup\_\_fixed-content-portal--visible_&]:contents md:contents"
+         x-data="{isSummaryExpanded: false}"
+    >
+      <div
+        class="max-md:absolute left-0 right-0 top-0 origin-bottom max-md:-translate-y-[2.5rem] transition-all duration-700 motion-reduce:transition-none md:mb-0 md:w-full"
+        :class="
+        {
+          'max-md:-translate-y-full': isSummaryExpanded,
+          'max-md:-translate-y-[2.5rem] max-md:pointer-events-none': !isSummaryExpanded
+        }
+      "
+        :style="{
+          'clip-path': isSummaryExpanded || !$store.main.isMobile ? 'inset(0 0 0 0)' : 'inset(0 0 50% 0)'
+        }"
+      >
+        <div
+          class="pointer-events-none relative top-0 h-10 bg-gradient-to-t from-[#00000010] via-transparent to-transparent md:hidden"></div>
+        <div
+          class="flex flex-col gap-4 bg-bg-500 px-4 max-md:pointer-events-none max-md:opacity-0 transition-opacity duration-300 delay-200 pt-4 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto"
+          :class="{
+          'max-md:opacity-0 delay-200': !isSummaryExpanded,
+          'opacity-100': isSummaryExpanded
+        }"
+          :inert="!isSummaryExpanded"
+        >
+          <div class="flex items-center justify-between pt-2">
+            <h2 class="text-text-500"><?= __('Summary') ?></h2>
+            <button
+              type="button"
+              class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+              :aria-label="isSummaryExpanded ? '<?= __('Collapse') ?>' : '<?= __('Expand') ?>'"
+              @click="isSummaryExpanded = !isSummaryExpanded"
+              @transitionend.stop
+              :tabindex="0"
+            >
+              <div class="rotate-90">
+                <?= $hyvaicons->renderHtml('chevron') ?>
+              </div>
+            </button>
+          </div>
+          <!-- Summary Content -->
+          <div>
+            <?= $block->getChildHtml('product.info.form') ?>
+            <?= $block->getChildHtml("product.price.tier") ?>
+            <div x-data="initBundleSummary()"
+                 x-bind="eventListeners"
+            >
+              <div x-show="selectedOptions.length">
+                <ul class="bundle items">
+                  <template x-for="option in selectedOptions">
+                    <li class="mb-3" x-show="option.products.length">
+                      <span class="font-semibold" x-html="option.label"></span>
+                      <template x-for="product in option.products">
+                        <div><span x-html="product.qty"></span> x <span x-html="product.name"></span></div>
+                      </template>
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+            <script>
+              function initBundleSummary() {
+                return {
+                  selectedOptions: [],
+                  eventListeners: {
+                    ['@update-bundle-option-selection.window'](event) {
+                      this.selectedOptions = event.detail;
+                    }
+                  }
+                }
+              }
+            </script>
+          </div>
+          <hr class="divider -mx-4">
+        </div>
+      </div>
+      <div
+        class="max-md:pointer-events-none px-3 relative -mx-4 rounded-b-md bg-bg-500 transition-opacity duration-300 md:pb-4 max-md:px-3 max-md:pb-5 [.popup\_\_main_&]:pb-3 [.popup\_\_wrapper--visible_&]:pointer-events-auto [.resizable--visible_&]:pointer-events-auto"
+      >
+        <div
+          class="flex items-center justify-between overflow-x-hidden bg-bg-500 pb-2 px-2 pt-4 text-text-500 max-md:px-3">
+          <h2><?= __('Bundle total') ?></h2>
+          <div
+            class="flex translate-x-0 items-center gap-5 transition-transform delay-200 duration-300 motion-reduce:transition-none"
+            :class="
+            {
+              'translate-x-11': isSummaryExpanded,
+              'translate-x-0 delay-200': !isSummaryExpanded,
+            }
+          "
+          >
+            <div>
+              <?= $block->getChildHtml("product.info.bundle.price") ?>
+            </div>
+            <button
+              type="button"
+              class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+              :aria-label="isSummaryExpanded ? '<?= __('Collapse') ?>' : '<?= __('Expand') ?>'"
+              @click="isSummaryExpanded = !isSummaryExpanded"
+              @transitionend.stop
+              :tabindex="isSummaryExpanded ? -1 : 0"
+            >
+              <div class="-rotate-90">
+                <?= $hyvaicons->renderHtml('chevron') ?>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<?php endif; ?>
