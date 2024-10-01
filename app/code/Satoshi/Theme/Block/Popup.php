@@ -17,11 +17,11 @@ class Popup extends Template
     parent::__construct($context, $data);
   }
 
-  public function setChildTemplate(string $childTemplate)
+  public function setChildTemplate(string $childTemplate, array $data = [])
   {
     $this->setChild(
       'popup-content',
-      $this->getLayout()->createBlock(Template::class)->setTemplate($childTemplate)
+      $this->getLayout()->createBlock(Template::class)->setTemplate($childTemplate)->setData($data)
     );
     return $this;
   }
