@@ -16,11 +16,11 @@ $order = $block->getOrder();
 ?>
 <div class="md:flex md:justify-between md:flex-wrap md:gap-4 items-center mb-5">
     <div class="lg:flex items-center md:text-left">
-        <div class="lg:inline-block">
+        <div>
             <div class="text-lg font-bold mb-2"><?= $escaper->escapeHtml(__('Order # %1', $order->getRealOrderId())) ?></div>
             <?= $block->getChildHtml('order.date') ?>
         </div>
-        <div class="mt-7 md:mt-0 lg:inline-block lg:ml-7">
+        <div class="mt-7 md:mt-0 lg:ml-7">
             <?= $block->getChildHtml('order.status') ?>
         </div>
     </div>
