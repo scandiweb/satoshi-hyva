@@ -3,30 +3,68 @@ import { ProductListType } from "./ProductList";
 export type FiltersType = {
   [key: string | symbol]: any;
   selectedFilters: Record<string, string>;
+  selectedSort: Record<string, string>;
   isTopLevel: boolean;
   currentName: string;
   isTopFilterVisible: null | boolean;
 
   init(): void;
+  selectSort(sortKey: string, sortDir: string): void;
+  applySort(): void;
+  removeSort(): void;
   selectFilter(filterName: string, filterUrl: string): void;
   applyFilters(filterName: string): void;
   showFilters(isTopLevel?: boolean, currentName?: string): void;
   hideFilters(): void;
   onResetButtonClick(): void;
+  clearAllFilters(): void;
 } & ProductListType;
 
 const POPUP_FILTERS = "filters";
 const POPUP_BOTTOM_FILTERS = "bottom-filters";
 
-export const FILTER_SORT = "sort_by";
+export const FILTER_SORT_KEY = "product_list_order";
+export const FILTER_SORT_DIR = "product_list_dir";
 export const FILTER_PRICE = "Price";
 export const FILTER_PRICE_PARAM_NAME = "filter.v.price";
 export const FILTER_PRICE_MIN = "filter.v.price.gte";
 export const FILTER_PRICE_MAX = "filter.v.price.lte";
 
+export const modifyUrlParams = (
+  url: string,
+  params: Record<string, string>,
+  removeParams?: string[],
+) => {
+  const parsedUrl = new URL(url);
+  const searchParams = parsedUrl.searchParams;
+
+  // Add or update params
+  for (const [key, value] of Object.entries(params)) {
+    if (searchParams.has(key)) {
+      if (searchParams.get(key) !== value) {
+        searchParams.set(key, value);
+      }
+    } else {
+      searchParams.append(key, value);
+    }
+  }
+
+  // remove params
+  removeParams?.forEach((param) => {
+    if (searchParams.has(param)) {
+      searchParams.delete(param);
+    }
+  });
+
+  parsedUrl.search = searchParams.toString();
+
+  return parsedUrl.toString();
+};
+
 export const Filters = (clearUrl: string) =>
   <FiltersType>{
     selectedFilters: {},
+    selectedSort: {},
     isTopLevel: false,
     currentName: "",
     isTopFilterVisible: null,
@@ -59,6 +97,40 @@ export const Filters = (clearUrl: string) =>
       });
     },
 
+    selectSort(sortKey, sortDir) {
+      this.selectedSort = {
+        key: sortKey,
+        dir: sortDir,
+      };
+
+      if (!Alpine.store("main").isMobile) {
+        this.applySort();
+      }
+    },
+
+    applySort() {
+      const url = window.location.href;
+
+      this.hideFilters();
+      if (this.selectedSort.key && this.selectedSort.dir) {
+        // TODO: Replace with transition
+        window.location.href = modifyUrlParams(url, {
+          [FILTER_SORT_KEY]: this.selectedSort.key,
+          [FILTER_SORT_DIR]: this.selectedSort.dir,
+        });
+      }
+    },
+
+    removeSort() {
+      const url = window.location.href;
+
+      // TODO: Replace with transition
+      window.location.href = modifyUrlParams(url, {}, [
+        FILTER_SORT_KEY,
+        FILTER_SORT_DIR,
+      ]);
+    },
+
     selectFilter(filterName, filterUrl) {
       this.selectedFilters[filterName] = filterUrl;
 
@@ -68,9 +140,19 @@ export const Filters = (clearUrl: string) =>
     },
 
     applyFilters(filterName) {
-      const filterUrl = this.selectedFilters[filterName];
-      this.hideFilters();
+      const url = window.location.href;
 
+      this.hideFilters();
+      if (filterName === "Sort by") {
+        // TODO: Replace with transition
+        window.location.href = modifyUrlParams(url, {
+          [FILTER_SORT_KEY]: this.selectedSort.key,
+          [FILTER_SORT_DIR]: this.selectedSort.dir,
+        });
+        return;
+      }
+
+      const filterUrl = this.selectedFilters[filterName];
       if (filterUrl) {
         // TODO: Replace with transition
         window.location.href = filterUrl;
@@ -92,8 +174,17 @@ export const Filters = (clearUrl: string) =>
     onResetButtonClick() {
       this.hideFilters();
       if (this.isTopLevel) {
-        // TODO: Replace with transition
-        window.location.href = clearUrl;
+        this.clearAllFilters();
       }
+    },
+
+    clearAllFilters() {
+      const url = modifyUrlParams(clearUrl, {}, [
+        FILTER_SORT_KEY,
+        FILTER_SORT_DIR,
+      ]);
+
+      // TODO: Replace with transition
+      window.location.href = url;
     },
   };
