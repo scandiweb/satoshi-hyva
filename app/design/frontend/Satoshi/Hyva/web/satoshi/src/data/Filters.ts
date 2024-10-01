@@ -141,7 +141,6 @@ export const Filters = (clearUrl: string) =>
 
     applyFilters(filterName) {
       const url = window.location.href;
-      console.log("this.selectedSort", this.selectedSort);
 
       this.hideFilters();
       if (filterName === "Sort by") {
