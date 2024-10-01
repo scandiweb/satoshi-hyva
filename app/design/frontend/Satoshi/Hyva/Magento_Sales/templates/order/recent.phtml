@@ -163,6 +163,8 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                                             title="<?= $escaper->escapeHtmlAttr(__('Reorder')) ?>"
                                             type="submit"
                                             class="text-transparent w-5 h-5"
+                                            :class="{ 'button--disabled animate-spin': isLoading }"
+                                            :disabled="isLoading"
                                             aria-label="<?= $escaper->escapeHtmlAttr(__('Reorder') . ' ' . ltrim($order->getRealOrderId(), '0')) ?>"
                                         >
                                             <?= $hyvaicons->renderHtml('reload', 'w-full h-full', attributes: ['title' => 'Reorder']) ?>

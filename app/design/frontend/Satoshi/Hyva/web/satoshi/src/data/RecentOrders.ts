@@ -10,6 +10,7 @@ export type RecentOrdersType = {
   reorderItems: any[];
   isShowAddToCart: boolean;
   checkboxId: string;
+  isLoading: boolean;
 
   receiveReorderData(data: any): void;
   addToCart(postUrl: string): void;
@@ -24,6 +25,7 @@ export const RecentOrders = (messageText: string) =>
     reorderItems: {},
     isShowAddToCart: false,
     checkboxId: "reorder-item-",
+    isLoading: false,
 
     receiveReorderData(data) {
       if (data["last-ordered-items"]) {
@@ -90,11 +92,13 @@ export const RecentOrders = (messageText: string) =>
     },
 
       onReorder(event) {
-        const $form = event.target.closest("form");
+        const target = event.target as HTMLElement;
+        const $form = target?.closest("form");
 
         if (!$form) return;
 
         const formData = new FormData($form);
+        this.isLoading = true;
 
         fetch($form.action, {
           method: "POST",
@@ -104,8 +108,10 @@ export const RecentOrders = (messageText: string) =>
           navigateWithTransition('/checkout/cart');
           }
         }).catch((error) => {
-          console.error("Error while updating account information:", error);
+          console.error("Error while processing reorder request:", error);
           location.reload();
+        }).finally(() => {
+            this.isLoading = false;
         });
       },
   };
