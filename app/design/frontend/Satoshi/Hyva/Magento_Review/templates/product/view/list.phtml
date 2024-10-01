@@ -1,0 +1,140 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+use Magento\Framework\Escaper;
+use Magento\Review\Block\Product\View as ProductReview;
+use Magento\Theme\Block\Html\Pager;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var ProductReview $block */
+/** @var SecureHtmlRenderer $secureRenderer */
+/** @var Escaper $escaper */
+/** @var Pager $toolbar */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var HeroiconsSolid $heroiconsSolid */
+$heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
+
+$reviewCollection = $block->getReviewsCollection();
+
+// Note: Setting the collection on the toolbar block applies pagination, so it has to happen before collection loading.
+if ($toolbar = $block->getChildBlock('review_list.toolbar')) {
+    $toolbar->setCollection($reviewCollection);
+}
+$reviewCollection->load()->addRateVotes();
+
+$items = $reviewCollection->getItems();
+$format = $block->getDateFormat() ?: \IntlDateFormatter::SHORT;
+$formatLong = $block->getDateFormat() ?: \IntlDateFormatter::LONG;
+$headingTag = $block->getData('heading_tag') ?: 'h3';
+$productName = $block->getProduct()->getName();
+
+?>
+<?php if (count($items)): ?>
+    <div
+        class="mx-auto px-5 md:p-0 content-wrapper"
+        id="customer-review-list"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('Customer Reviews')) ?>"
+        tabindex="-1"
+        role="group"
+    >
+        <div class="flex mb-6 md:flex-row">
+            <?php if (!$block->getHideTitle()): ?>
+            <<?= /* @noEscape */ $headingTag ?> class="text-gray-900 text-lg title-font font-base text-center md:text-left w-full">
+            <?= $escaper->escapeHtml(__('Customer Reviews')) ?>
+        </<?= /* @noEscape */ $headingTag ?>>
+        <?php endif ?>
+    </div>
+    <div class="card w-full">
+        <?php foreach ($items as $review): ?>
+            <div itemscope itemprop="review" itemtype="http://schema.org/Review"
+                 class="border-b pb-4 my-4 border-container last:border-0 last:mb-0">
+                <?php if (count($review->getRatingVotes())): ?>
+                    <div class="table">
+                        <?php foreach ($review->getRatingVotes() as $vote): ?>
+                            <?php
+                            $rating = $vote->getPercent();
+                            $ratingSteps = 5;
+                            $starsFilled = is_numeric($rating) ? floor($rating / 100 * $ratingSteps) : 0;
+                            $starsEmpty = floor($ratingSteps - $starsFilled);
+                            ?>
+                            <div class="flex items-center" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                                <div class="table-cell pr-6 align-middle text-left">
+                                    <?= $escaper->escapeHtml($vote->getRatingCode()) ?>
+                                </div>
+                                <span class="hidden" itemprop="ratingValue"><?= /** @noEscape */ $starsFilled; ?></span>
+                                <div
+                                    class="flex flex-row"
+                                    role="img"
+                                    aria-label="<?= $escaper->escapeHtmlAttr(__('%1 rating. %2 out of %3 stars', $productName, $starsFilled, $ratingSteps))?>"
+                                >
+                                    <?php $i = 0; ?>
+                                    <?php while ($i < $starsFilled): ?>
+                                        <?= $heroiconsSolid->starHtml('text-yellow-400', 24, 24, ["aria-hidden" => "true"]); ?>
+                                        <?php $i++; ?>
+                                    <?php endwhile; ?>
+                                    <?php $i = 0; ?>
+                                    <?php while ($i < $starsEmpty): ?>
+                                        <?= $heroiconsSolid->starHtml('text-gray-400', 24, 24, ["aria-hidden" => "true"]); ?>
+                                        <?php $i++; ?>
+                                    <?php endwhile; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+                <div class="text-lg my-2" itemprop="name">
+                    <?= $escaper->escapeHtml($review->getTitle()) ?>
+                </div>
+                <div>
+                    <span><?= $escaper->escapeHtml(__('Review by')) ?></span>
+                    <strong itemprop="author" itemscope itemtype="https://schema.org/Person">
+                        <span itemprop="name"><?= $escaper->escapeHtml($review->getNickname()) ?></span>
+                    </strong>
+                    <time
+                        class="text-gray-700 inline-block ml-2"
+                        itemprop="datePublished"
+                        datetime="<?= $escaper->escapeHtmlAttr($block->formatDate($review->getCreatedAt(), $format)); ?>"
+                    >
+                                <span class="sr-only">
+                                    <?= $escaper->escapeHtml(
+                                        $block->formatDate(
+                                            $review->getCreatedAt(),
+                                            $formatLong
+                                        )
+                                    ) ?>
+                                </span>
+                        <span aria-hidden="true">
+                                    <?= $escaper->escapeHtml(
+                                        $block->formatDate($review->getCreatedAt(), $format)
+                                    ) ?>
+                                </span>
+                    </time>
+                </div>
+                <div class="mt-2" itemprop="description">
+                    <?= /* @noEscape */ nl2br($escaper->escapeHtml($review->getDetail())) ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <?php if ($toolbar): ?>
+        <div class="toolbar review-toolbar mt-4">
+            <?= $toolbar->toHtml() ?>
+        </div>
+    <?php endif; ?>
+    </div>
+<?php endif; ?>
