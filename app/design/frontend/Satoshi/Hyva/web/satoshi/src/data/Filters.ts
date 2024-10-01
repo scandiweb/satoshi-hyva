@@ -3,10 +3,15 @@ import { ProductListType } from "./ProductList";
 export type FiltersType = {
   [key: string | symbol]: any;
   selectedFilters: Record<string, string>;
+  isTopLevel: boolean;
+  currentName: string;
 
   init(): void;
-  selectFilter(filterName: string, filterUrl: string): void;
-  applyFilters(filterName: string): void;
+  selectFilter(filterCode: string, filterUrl: string): void;
+  applyFilters(filterCode: string): void;
+  showFilters(isTopLevel: boolean, currentName: string): void;
+  hideFilters(): void;
+  onResetButtonClick(): void;
 } & ProductListType;
 
 const POPUP_FILTERS = "filters";
@@ -18,27 +23,75 @@ export const FILTER_PRICE_PARAM_NAME = "filter.v.price";
 export const FILTER_PRICE_MIN = "filter.v.price.gte";
 export const FILTER_PRICE_MAX = "filter.v.price.lte";
 
-export const Filters = () =>
+export const Filters = (clearUrl: string) =>
   <FiltersType>{
     selectedFilters: {},
+    isTopLevel: false,
+    currentName: "",
 
-    init() {},
+    init() {
+      // Change popup height on content change
+      this.$watch("currentName", (value, oldValue) => {
+        if (value != oldValue) {
+          this.$nextTick(() => {
+            // setTimeout fixes content height calculations in some cases
+            setTimeout(() => {
+              Alpine.store("popup").updateContentSize();
+            }, 50);
+          });
+        }
+      });
 
-    selectFilter(filterName, filterUrl) {
-      console.log("selecting filter", this.selectedFilters);
-      this.selectedFilters[filterName] = filterUrl;
+      // this.$watch("isTopFilterVisible", (value) => {
+      //   if (value) {
+      //     Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
+      //   } else {
+      //     Alpine.store("popup").showPopup(POPUP_BOTTOM_FILTERS, false);
+      //   }
+      // });
+
+      // this.$watch("$store.popup.currentPopup", (value) => {
+      //   if (value === POPUP_BOTTOM_FILTERS && this.isTopFilterVisible) {
+      //     Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
+      //   }
+      // });
+    },
+
+    selectFilter(filterCode, filterUrl) {
+      this.selectedFilters[filterCode] = filterUrl;
 
       if (!Alpine.store("main").isMobile) {
-        this.applyFilters(filterName);
+        this.applyFilters(filterCode);
       }
     },
 
-    applyFilters(filterName) {
-      const filterUrl = this.selectedFilters[filterName];
+    applyFilters(filterCode) {
+      const filterUrl = this.selectedFilters[filterCode];
+      this.hideFilters();
 
       if (filterUrl) {
-        // Replace with transition
+        // TODO: Replace with transition
         window.location.href = filterUrl;
+      }
+    },
+
+    showFilters(isTopLevel, currentName) {
+      this.isTopLevel = isTopLevel;
+      this.currentName = currentName;
+      Alpine.store("popup").showPopup(POPUP_FILTERS, true);
+    },
+
+    hideFilters() {
+      this.$store.popup.hidePopup(POPUP_FILTERS);
+      this.isTopLevel = false;
+      this.currentName = "";
+    },
+
+    onResetButtonClick() {
+      this.hideFilters();
+      if (this.isTopLevel) {
+        // TODO: Replace with transition
+        window.location.href = clearUrl;
       }
     },
   };

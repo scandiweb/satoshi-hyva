@@ -57,42 +57,53 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         >
             <template x-portal="document.getElementById($store.main.isMobile ? 'selected-filters-mobile' : 'filters-sidebar')">
                 <div
-                    x-data="Filters()"
+                    x-data="Filters('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
                     role="region"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Product filters')) ?>"
                 >
                     <?= $block->getChildHtml('state') ?>
-                    <?php foreach ($block->getFilters() as $filter): ?>
-                        <?php if ($filter->getItemsCount()): ?>
 
-                            <!-- Desktop filters -->
-                            <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(true, 300)">
-                                <div class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2" x-ref="AccordionButton">
-                                    <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__($filter->getName())) ?></h2>
-                                    <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button" aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>">
-                                        <span x-ref="AccordionIcon">
-                                            <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
-                                        </span>
-                                    </button>
-                                </div>
-
-                                <div
-                                    class="overflow-hidden md:px-2"
-                                    x-ref="AccordionPanel"
-                                    :class="{
-                                        'transition-none': $store.main.isReducedMotion,
-                                        'transition': $store.main.isReducedMotion
-                                    }"
-                                >
-                                    <div class="md:pb-3 md:pt-2">
-                                        <div class="flex flex-col gap-4 py-3">
-                                            <?= /* @noEscape */ $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
+                    <!-- Desktop filters -->
+                    <template x-if="!$store.main.isMobile">
+                        <div class="contents">
+                            <?php foreach ($block->getFilters() as $filter): ?>
+                                <?php if ($filter->getItemsCount()): ?>
+                                    <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(true, 300)">
+                                        <div class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2" x-ref="AccordionButton">
+                                            <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__($filter->getName())) ?></h2>
+                                            <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button" aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>">
+                                                <span x-ref="AccordionIcon">
+                                                    <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
+                                                </span>
+                                            </button>
                                         </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+
+                                        <div
+                                            class="overflow-hidden md:px-2"
+                                            x-ref="AccordionPanel"
+                                            :class="{
+                                                'transition-none': $store.main.isReducedMotion,
+                                                'transition': $store.main.isReducedMotion
+                                            }"
+                                        >
+                                            <div class="md:pb-3 md:pt-2">
+                                                <div class="flex flex-col gap-4 py-3">
+                                                    <?= /* @noEscape */ $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </template>
+
+                    <!-- Mobile popup and filters -->
+                    <?= $popup->setData([
+                            'id' => 'filters',
+                            'isFocused' => true,
+                        ])->setChildTemplate('Magento_LayeredNavigation::layer/filters-popup.phtml', ['filters' => $block->getFilters(), 'renderer' => $block->getChildBlock('renderer')])
+                        ->render() ?>
                 </div>
             </template>
         </div>
