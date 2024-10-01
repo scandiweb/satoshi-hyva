@@ -2,6 +2,7 @@
 
 namespace Satoshi\Theme\Customer\Controller\Account;
 
+use Exception;
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Controller\Account\ForgotPasswordPost as SourceForgotPasswordPost;
 use Magento\Customer\Model\AccountManagement;
@@ -13,35 +14,52 @@ use Magento\Framework\Escaper;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\SecurityViolationException;
 use Magento\Framework\Validator\EmailAddress;
+use Magento\Framework\Validator\ValidateException;
 use Magento\Framework\Validator\ValidatorChain;
 
 class ForgotPasswordPost extends SourceForgotPasswordPost
 {
+    /**
+     * @var JsonFactory
+     */
     protected JsonFactory $jsonFactory;
+
+    /**
+     * @var Session
+     */
     protected $session;
 
+    /**
+     * @param Context $context
+     * @param Session $customerSession
+     * @param AccountManagementInterface $customerAccountManagement
+     * @param Escaper $escaper
+     * @param JsonFactory $jsonFactory
+     */
     public function __construct(
         Context                    $context,
         Session                    $customerSession,
         AccountManagementInterface $customerAccountManagement,
         Escaper                    $escaper,
         JsonFactory                $jsonFactory,
-    )
-    {
+    ) {
         $this->jsonFactory = $jsonFactory;
         $this->session = $customerSession;
         parent::__construct($context, $customerSession, $customerAccountManagement, $escaper);
     }
 
-    public function execute()
+    /**
+     * @return Redirect
+     * @throws ValidateException
+     */
+    public function execute(): Redirect
     {
-        /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         $email = (string)$this->getRequest()->getPost('email');
+
         if ($email) {
             if (!ValidatorChain::is($email, EmailAddress::class)) {
                 $this->session->setForgottenEmail($email);
-                // Store error message in session
                 $this->session->setErrorMessage(__('The email address is incorrect. Verify the email address and try again.'));
                 return $resultRedirect->setPath('*/*/forgotpassword');
             }
@@ -51,13 +69,12 @@ class ForgotPasswordPost extends SourceForgotPasswordPost
                     $email,
                     AccountManagement::EMAIL_RESET
                 );
-                // phpcs:ignore Magento2.CodeAnalysis.EmptyBlock.DetectedCatch
             } catch (NoSuchEntityException $exception) {
-                // Do nothing, we don't want anyone to use this action to determine which email accounts are registered.
+                // Do nothing, we don't want to disclose if the email exists or not
             } catch (SecurityViolationException $exception) {
                 $this->session->setErrorMessage($exception->getMessage());
                 return $resultRedirect->setPath('*/*/forgotpassword');
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $this->session->setErrorMessage(__('We\'re unable to send the password reset email.'));
                 return $resultRedirect->setPath('*/*/forgotpassword');
             }
