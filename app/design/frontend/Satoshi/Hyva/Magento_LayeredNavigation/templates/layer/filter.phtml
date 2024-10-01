@@ -16,8 +16,6 @@ $catalogHelper = $this->helper(Data::class);
 
 /** @var array $filterItems */
 /** @var FilterInterface $filter */
-$attributeCode = $filter->getAttributeModel()->getAttributeCode();
-
 ?>
 
 <div aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>" role="radiogroup">
@@ -28,10 +26,10 @@ $attributeCode = $filter->getAttributeModel()->getAttributeCode();
                     <?php if ($filterItem->getCount() > 0): ?>
                         <input
                             type="radio"
-                            name="filter-item-<?= $attributeCode ?>"
+                            name="filter-item-<?= $filter->getName() ?>"
                             id="filter-item-<?= $filterItem->getValueString() ?>"
                             class="radio__input"
-                            @change="selectFilter('<?= $escaper->escapeJs($attributeCode) ?>', '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>')"
+                            @change="selectFilter('<?= $escaper->escapeJs($filter->getName()) ?>', '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>')"
                             <?php if ((int) $filterItem->getCount() === 1): ?>
                                 aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, 1 available product', strip_tags((string)$filterItem->getLabel()))) ?>"
                             <?php else: ?>

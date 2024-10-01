@@ -16,7 +16,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 $filters = $block->getActiveFilters();
 
 ?>
-
 <div class="contents md:block md:px-2 md:pb-7 md:pt-2">
     <div class="mb-5 hidden items-center justify-between md:flex">
         <h2 class="text-text-500"><?= $escaper->escapeHtml(__('Selected filters')) ?></h2>
@@ -64,11 +63,10 @@ $filters = $block->getActiveFilters();
         <div class="contents md:hidden">
             <?php foreach ($block->getParentBlock()->getFilters() as $filter): ?>
                 <?php if ($filter->getItemsCount()): ?>
-                    <!-- TODO: Make it open filters popup -->
                     <button
                         type="button"
                         class="button button--outline-secondary button--size-sm shrink-0 max-md:h-[44px] max-md:text-base"
-                        x-element-transition-trigger
+                        @click="showFilters(false, '<?= $escaper->escapeJs(__($filter->getName())) ?>')"
                     >
                         <?= $escaper->escapeHtml(__($filter->getName())) ?>
                     </button>
