@@ -38,7 +38,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
     @submit.prevent="submitForm(() => handleFormSubmit())"
     autocomplete="off"
 >
-    <div class="bg-white p-5 rounded-xl">
+    <div class="bg-bg-400 p-5 rounded-xl">
         <?= $block->getBlockHtml('formkey') ?>
         <div class="space-y-3">
             <?= $block->getLayout()->createBlock(Name::class)->setObject($block->getCustomer())->toHtml() ?>
