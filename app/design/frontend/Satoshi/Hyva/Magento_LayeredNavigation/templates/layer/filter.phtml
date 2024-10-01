@@ -21,13 +21,13 @@ $catalogHelper = $this->helper(Data::class);
 <div aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>" role="radiogroup">
     <?php foreach ($filterItems as $filterItem): ?>
         <div class="relative h-11 w-full">
-            <label for="filter-item-<?= $filterItem->getValueString() ?>" class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
+            <label for="filter-item-<?= $filterItem->getName() ?>-<?= $filterItem->getValueString() ?>" class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
                 <div class="flex items-center">
                     <?php if ($filterItem->getCount() > 0): ?>
                         <input
                             type="radio"
                             name="filter-item-<?= $filter->getName() ?>"
-                            id="filter-item-<?= $filterItem->getValueString() ?>"
+                            id="filter-item-<?= $filterItem->getName() ?>-<?= $filterItem->getValueString() ?>"
                             class="radio__input"
                             @change="selectFilter('<?= $escaper->escapeJs($filter->getName()) ?>', '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>')"
                             <?php if ((int) $filterItem->getCount() === 1): ?>

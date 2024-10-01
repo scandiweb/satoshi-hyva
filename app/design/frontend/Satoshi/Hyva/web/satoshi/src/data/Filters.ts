@@ -5,11 +5,12 @@ export type FiltersType = {
   selectedFilters: Record<string, string>;
   isTopLevel: boolean;
   currentName: string;
+  isTopFilterVisible: null | boolean;
 
   init(): void;
   selectFilter(filterName: string, filterUrl: string): void;
   applyFilters(filterName: string): void;
-  showFilters(isTopLevel: boolean, currentName: string): void;
+  showFilters(isTopLevel?: boolean, currentName?: string): void;
   hideFilters(): void;
   onResetButtonClick(): void;
 } & ProductListType;
@@ -28,6 +29,7 @@ export const Filters = (clearUrl: string) =>
     selectedFilters: {},
     isTopLevel: false,
     currentName: "",
+    isTopFilterVisible: null,
 
     init() {
       // Change popup height on content change
@@ -42,19 +44,19 @@ export const Filters = (clearUrl: string) =>
         }
       });
 
-      // this.$watch("isTopFilterVisible", (value) => {
-      //   if (value) {
-      //     Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
-      //   } else {
-      //     Alpine.store("popup").showPopup(POPUP_BOTTOM_FILTERS, false);
-      //   }
-      // });
+      this.$watch("isTopFilterVisible", (value) => {
+        if (value) {
+          Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
+        } else {
+          Alpine.store("popup").showPopup(POPUP_BOTTOM_FILTERS, false);
+        }
+      });
 
-      // this.$watch("$store.popup.currentPopup", (value) => {
-      //   if (value === POPUP_BOTTOM_FILTERS && this.isTopFilterVisible) {
-      //     Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
-      //   }
-      // });
+      this.$watch("$store.popup.currentPopup", (value) => {
+        if (value === POPUP_BOTTOM_FILTERS && this.isTopFilterVisible) {
+          Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
+        }
+      });
     },
 
     selectFilter(filterName, filterUrl) {
@@ -75,7 +77,7 @@ export const Filters = (clearUrl: string) =>
       }
     },
 
-    showFilters(isTopLevel, currentName) {
+    showFilters(isTopLevel = true, currentName = "") {
       this.isTopLevel = isTopLevel;
       this.currentName = currentName;
       Alpine.store("popup").showPopup(POPUP_FILTERS, true);
