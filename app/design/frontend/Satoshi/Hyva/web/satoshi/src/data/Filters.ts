@@ -1,3 +1,4 @@
+import { navigateWithTransition } from "../plugins/Transition";
 import { ProductListType } from "./ProductList";
 
 export type FiltersType = {
@@ -113,22 +114,22 @@ export const Filters = (clearUrl: string) =>
 
       this.hideFilters();
       if (this.selectedSort.key && this.selectedSort.dir) {
-        // TODO: Replace with transition
-        window.location.href = modifyUrlParams(url, {
+        const newUrl = modifyUrlParams(url, {
           [FILTER_SORT_KEY]: this.selectedSort.key,
           [FILTER_SORT_DIR]: this.selectedSort.dir,
         });
+        navigateWithTransition(newUrl);
       }
     },
 
     removeSort() {
       const url = window.location.href;
 
-      // TODO: Replace with transition
-      window.location.href = modifyUrlParams(url, {}, [
+      const newUrl = modifyUrlParams(url, {}, [
         FILTER_SORT_KEY,
         FILTER_SORT_DIR,
       ]);
+      navigateWithTransition(newUrl);
     },
 
     selectFilter(filterName, filterUrl) {
@@ -144,18 +145,16 @@ export const Filters = (clearUrl: string) =>
 
       this.hideFilters();
       if (filterName === "Sort by") {
-        // TODO: Replace with transition
-        window.location.href = modifyUrlParams(url, {
+        const newUrl = modifyUrlParams(url, {
           [FILTER_SORT_KEY]: this.selectedSort.key,
           [FILTER_SORT_DIR]: this.selectedSort.dir,
         });
-        return;
+        return navigateWithTransition(newUrl);
       }
 
       const filterUrl = this.selectedFilters[filterName];
       if (filterUrl) {
-        // TODO: Replace with transition
-        window.location.href = filterUrl;
+        navigateWithTransition(filterUrl);
       }
     },
 
@@ -184,7 +183,6 @@ export const Filters = (clearUrl: string) =>
         FILTER_SORT_DIR,
       ]);
 
-      // TODO: Replace with transition
-      window.location.href = url;
+      navigateWithTransition(url);
     },
   };
