@@ -180,9 +180,9 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                             name="password_confirmation" id="password-confirmation"
                             placeholder="<?= $escaper->escapeHtml(__('Confirm new password')) ?>"
                             data-validate='{"equalTo": "password"}'
+                            title="<?= $escaper->escapeHtmlAttr(__('Confirm Password')) ?>"
                             @input="onChange"
                             autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
-                            aria-describedby="password-strength-meter"
                         />
                     </div>
                 </div>
@@ -207,7 +207,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
         <a
             class="button button--ghost-primary"
             href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-            @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getBackUrl()) ?>')"
+            x-element-transition-trigger
         >
             <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
         </a>
