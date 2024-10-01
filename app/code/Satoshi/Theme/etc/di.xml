@@ -36,4 +36,7 @@
     <preference for="Magento\Customer\Block\Account\Forgotpassword"
                 type="Satoshi\Theme\Block\Account\ForgotPassword"
     />
+    <preference for="Magento\Customer\Block\Form\Login"
+                type="Satoshi\Theme\Block\Form\Login"
+    />
 </config>

@@ -56,19 +56,7 @@ class ForgotPassword extends Template
     public function getErrorMessage(): ?string
     {
         $errorMessage = $this->customerSession->getErrorMessage();
-        $this->customerSession->unsErrorMessage(); // Clear error message after retrieving it
+        $this->customerSession->unsErrorMessage();
         return $errorMessage;
-    }
-
-    /**
-     * Get success message from session
-     *
-     * @return string|null
-     */
-    public function getSuccessMessage(): ?string
-    {
-        $successMessage = $this->customerSession->getSuccessMessage();
-        $this->customerSession->unsSuccessMessage(); // Clear success message after retrieving it
-        return $successMessage;
     }
 }

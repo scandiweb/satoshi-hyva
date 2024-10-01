@@ -55,19 +55,15 @@ class ForgotPassPost extends ForgotPasswordPost
             } catch (NoSuchEntityException $exception) {
                 // Do nothing, we don't want anyone to use this action to determine which email accounts are registered.
             } catch (SecurityViolationException $exception) {
-                // Store error message in session
                 $this->session->setErrorMessage($exception->getMessage());
                 return $resultRedirect->setPath('*/*/forgotpassword');
             } catch (\Exception $exception) {
-                // Store exception message in session
                 $this->session->setErrorMessage(__('We\'re unable to send the password reset email.'));
                 return $resultRedirect->setPath('*/*/forgotpassword');
             }
-            // Store success message in session
             $this->session->setSuccessMessage($this->getSuccessMessage($email));
             return $resultRedirect->setPath('*/*/');
         } else {
-            // Store error message in session
             $this->session->setErrorMessage(__('Please enter your email.'));
             return $resultRedirect->setPath('*/*/forgotpassword');
         }
