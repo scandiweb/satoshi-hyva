@@ -20,20 +20,20 @@ export type NewsletterType = {
     errorMessages: string[];
 
     setErrorMessages(messages: string): void;
-    clearFormSubmissionMessages(): void;
-    submitForm(navigatedUrl? :string): void;
-    subscribe(formData: FormData, navigatedUrl? :string): void;
+    clearMessages(): void;
+    submitForm(navigatedUrl?: string): void;
+    subscribe(formData: FormData, navigatedUrl?: string): void;
 };
 
 export const Newsletter = ({
-    recaptchaValidationCode,
-    isCaptchaEnabled,
-    recaptchaSiteKey,
-    recaptchaFormIdNewsletter,
-    recaptchaType,
-    recaptchaV2InvisibleBadgePosition,
-    defaultErrorMessage
-}: NewsletterPropsType) => {
+                               recaptchaValidationCode,
+                               isCaptchaEnabled,
+                               recaptchaSiteKey,
+                               recaptchaFormIdNewsletter,
+                               recaptchaType,
+                               recaptchaV2InvisibleBadgePosition,
+                               defaultErrorMessage
+                           }: NewsletterPropsType) => {
     return <NewsletterType>{
         isLoading: false,
         formSubmissionErrorMessages: {},
@@ -46,11 +46,15 @@ export const Newsletter = ({
             this.errorMessages = [messages]
             this.displayErrorMessage = this.errorMessages.length
         },
-        clearFormSubmissionMessages() {
+        clearMessages() {
             this.formSubmissionErrorMessages = {};
             this.formSubmissionSuccessMessage = '';
+            this.displayErrorMessage = false;
+            this.errorMessages = [];
         },
         submitForm(navigatedUrl) {
+            this.clearMessages();
+
             // Do not rename $form, the variable is expected to be declared in the recaptcha output
             const $form = document.querySelector('#newsletter-validate-detail') as HTMLFormElement;
             eval(recaptchaValidationCode);
@@ -119,7 +123,6 @@ export const Newsletter = ({
         subscribe(formData, navigatedUrl) {
             const $form = document.querySelector('#newsletter-validate-detail') as HTMLFormElement;
             this.isLoading = true;
-            this.clearFormSubmissionMessages();
 
             fetch($form.action, {
                 method: 'POST',
@@ -128,26 +131,26 @@ export const Newsletter = ({
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => {
-                if (navigatedUrl && response.ok && response.redirected) {
-                    navigateWithTransition(navigatedUrl);
-                    return;
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    this.formSubmissionSuccessMessage = data.message;
-                } else {
-                    this.formSubmissionErrorMessages[data.field] = data.message;
-                }
-            })
-            .catch(() => {
-                this.formSubmissionErrorMessages['email'] = defaultErrorMessage;
-            })
-            .finally(() => {
-                this.isLoading = false;
-            });
-        },
+                .then(response => {
+                    if (navigatedUrl && response.ok && response.redirected) {
+                        navigateWithTransition(navigatedUrl);
+                        return;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        this.formSubmissionSuccessMessage = data.message;
+                    } else {
+                        this.formSubmissionErrorMessages[data.field] = data.message;
+                    }
+                })
+                .catch(() => {
+                    this.formSubmissionErrorMessages['email'] = defaultErrorMessage;
+                })
+                .finally(() => {
+                    this.isLoading = false;
+                });
+        }
     }
 }
