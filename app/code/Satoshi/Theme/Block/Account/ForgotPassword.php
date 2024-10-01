@@ -2,20 +2,16 @@
 
 namespace Satoshi\Theme\Block\Account;
 
-use Magento\Customer\Model\Url;
 use Magento\Customer\Model\Session;
+use Magento\Customer\Model\Url;
 use Magento\Framework\View\Element\Template;
+use Magento\Customer\Block\Account\Forgotpassword as SourceForgotPassword;
 
 /**
- * Customer forgot password block
+ * Custom forgot password block extending Magento's Forgotpassword
  */
-class ForgotPassword extends Template
+class ForgotPassword extends SourceForgotPassword
 {
-    /**
-     * @var Url
-     */
-    protected $customerUrl;
-
     /**
      * @var Session
      */
@@ -33,19 +29,8 @@ class ForgotPassword extends Template
         Session $customerSession,
         array $data = []
     ) {
-        $this->customerUrl = $customerUrl;
         $this->customerSession = $customerSession;
-        parent::__construct($context, $data);
-    }
-
-    /**
-     * Get login URL
-     *
-     * @return string
-     */
-    public function getLoginUrl(): string
-    {
-        return $this->customerUrl->getLoginUrl();
+        parent::__construct($context, $customerUrl, $data);
     }
 
     /**
