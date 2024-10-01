@@ -6,6 +6,7 @@ use Magento\Customer\Model\Session;
 use Magento\Customer\Model\Url;
 use Magento\Framework\View\Element\Template;
 use Magento\Customer\Block\Account\Forgotpassword as SourceForgotPassword;
+
 class ForgotPassword extends SourceForgotPassword
 {
     /**
