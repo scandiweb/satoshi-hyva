@@ -1,0 +1,79 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Magento\LayeredNavigation\Block\Navigation\State;
+
+/** @var State $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$filters = $block->getActiveFilters();
+
+?>
+
+<div class="contents md:block md:px-2 md:pb-7 md:pt-2">
+    <div class="mb-5 hidden items-center justify-between md:flex">
+        <h2 class="text-text-500"><?= $escaper->escapeHtml(__('Selected filters')) ?></h2>
+
+        <?php if ($block->getLayer()->getState()->getFilters()): ?>
+            <a href="<?= $escaper->escapeUrl($block->getClearUrl()) ?>" class="link link--primary" x-element-transition-trigger>
+                <?= $escaper->escapeHtml(__('Clear All')) ?>
+            </a>
+        <?php endif; ?>
+    </div>
+
+    <div class="flex md:flex-wrap gap-3 max-md:overflow-x-scroll max-md:pb-4 max-md:pt-2">
+        <?php if($block->getLayer()->getState()->getFilters()): ?>
+            <a
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Clear All')) ?>"
+                class="md:hidden button min-w-[44px] px-0 text-xl button--filled-primary opacity-100 h-[44px]"
+                href="<?= $escaper->escapeUrl($block->getClearUrl()) ?>"
+                x-element-transition-trigger
+            >
+                <span><?= $hyvaicons->renderHtml('remove'); ?></span>
+            </a>
+
+            <?php foreach ($filters as $filter): ?>
+            <?php
+                $filterName = $filter->getName();
+                $filterLabel = $block->stripTags($filter->getLabel());
+            ?>
+            <a
+                href="<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>"
+                class="button button--outline-secondary button--size-sm shrink-0 max-md:h-[44px] max-md:text-base max-md:text-primary-600"
+                title="<?= /* @noEscape */ $escaper->escapeHtmlAttr(__('Remove active %1 filter: %2', $filterName, $filterLabel)) ?>"
+                x-element-transition-trigger
+            >
+                <span class="mr-2"><?= $escaper->escapeHtml(__($filterName)) ?>:</span>
+                <span><?= $escaper->escapeHtml($filterLabel) ?></span>
+            </a>
+            <?php endforeach; ?>
+            <div class="contents" id="mobile-available-filters"></div>
+        <?php else: ?>
+            <p class="pr-3 text-center md:pr-0 md:text-left max-md:hidden">
+                <?= __('The selected filters will appear here.') ?>
+            </p>
+        <?php endif; ?>
+
+        <div class="contents md:hidden">
+            <?php foreach ($block->getParentBlock()->getFilters() as $filter): ?>
+                <?php if ($filter->getItemsCount()): ?>
+                    <!-- TODO: Make it open filters popup -->
+                    <button
+                        type="button"
+                        class="button button--outline-secondary button--size-sm shrink-0 max-md:h-[44px] max-md:text-base"
+                        x-element-transition-trigger
+                    >
+                        <?= $escaper->escapeHtml(__($filter->getName())) ?>
+                    </button>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
