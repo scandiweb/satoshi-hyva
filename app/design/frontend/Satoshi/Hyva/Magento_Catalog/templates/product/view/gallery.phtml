@@ -116,7 +116,7 @@ $productName = $block->getProduct()->getName();
     </div>
 
     <!-- Other images -->
-    <template x-for="(image, index) in images.filter(img => img.position !== '<?= $mainImage ? $mainImage->getData('position') : null ?>)'" :key="index">
+    <template x-for="(image, index) in images.filter(img => img.position !== '<?= $mainImage ? $mainImage->getData('position') : null ?>')" :key="index">
         <div class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl">
             <div class="flex items-center justify-center size-full <?= $isContain ? 'p-[4%]' : '' ?>">
                 <img
