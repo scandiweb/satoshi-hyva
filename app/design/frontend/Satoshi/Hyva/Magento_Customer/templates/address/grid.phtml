@@ -80,7 +80,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                     class="text-[14px] text-primary-500 w-5 h-5"
                                     title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
                                     href="<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>"
-                                    @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>')"
+                                    x-element-transition-trigger
                                 >
                                     <?= $hyvaicons->renderHtml('pencil', 'w-full h-full', attributes: ['title' => 'Edit']) ?>
                                 </a>
@@ -116,7 +116,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <a
             class="button button--filled-primary"
             href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
-            @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>')"
+            x-element-transition-trigger
         >
         <span>
             <?= $escaper->escapeHtml(__('Add new address')) ?>
@@ -125,7 +125,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <a
             class="button button--ghost-primary"
             href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
-            @click.prevent="fetchAndReplaceContent('<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>')"
+            x-element-transition-trigger
         >
         <span>
             <?= $escaper->escapeHtml(__('Go back')) ?>
