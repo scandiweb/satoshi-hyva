@@ -17,13 +17,14 @@ use Magento\Framework\Escaper;
         </h2>
         <a class="text-primary-500 hover:text-primary-700 transition-colors"
            href="<?= $escaper->escapeUrl($block->getAddressBookUrl()) ?>"
+           x-element-transition-trigger
         >
             <span><?= $escaper->escapeHtml(__('Manage Addresses')) ?></span>
         </a>
     </div>
 
     <div class="grid gap-5 lg:gap-8 grid-cols-1 lg:grid-cols-2">
-        <div class="bg-white p-6 rounded-xl">
+        <div class="bg-bg-400 p-6 rounded-xl">
             <h2 class="text-text-500 text-lg font-bold mb-4">
                 <?= $escaper->escapeHtml(__('Default billing address')) ?>
             </h2>
@@ -36,12 +37,13 @@ use Magento\Framework\Escaper;
                     href="<?= $escaper->escapeUrl($block->getPrimaryBillingAddressEditUrl()) ?>"
                     data-ui-id="default-billing-edit-link"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Edit address - billing default')) ?>"
+                    x-element-transition-trigger
                 >
                     <span><?= $escaper->escapeHtml(__('Edit address')) ?></span>
                 </a>
             </div>
         </div>
-        <div class="bg-white p-6 rounded-xl">
+        <div class="bg-bg-400 p-6 rounded-xl">
             <h2 class="text-text-500 text-lg font-bold mb-4">
                 <?= $escaper->escapeHtml(__('Default billing address')) ?>
             </h2>
@@ -54,6 +56,7 @@ use Magento\Framework\Escaper;
                     href="<?= $escaper->escapeUrl($block->getPrimaryShippingAddressEditUrl()) ?>"
                     data-ui-id="default-billing-edit-link"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Edit address - shipping default')) ?>"
+                    x-element-transition-trigger
                 >
                     <span><?= $escaper->escapeHtml(__('Edit address')) ?></span>
                 </a>

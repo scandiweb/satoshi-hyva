@@ -49,13 +49,14 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                 class="text-primary-500 hover:text-primary-700 transition-colors"
                 href="<?= $escaper->escapeUrl($block->getUrl('sales/order/history')) ?>"
                 aria-label="<?= $escaper->escapeHtmlAttr(__('View all orders')) ?>"
+                x-element-transition-trigger
             ><?= $escaper->escapeHtml(__('View all orders')) ?></a>
         </div>
 
         <div class="space-y-5 break-words">
             <?= $block->getChildHtml() ?>
             <?php foreach ($orders as $order): ?>
-                <div class="bg-white grid lg:grid-cols-6 gap-4 p-5 rounded-xl">
+                <div class="bg-bg-400 grid lg:grid-cols-6 gap-4 p-5 rounded-xl">
                     <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
                         <div class="text-text-500 text-[14px] font-bold">
                             <?= $escaper->escapeHtml(__('Order')) ?>
@@ -132,9 +133,10 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                             <?php // The condition will always return 'true' in Magento Open Source ?>
                             <?php if ($order->getStatus() !== 'received'): ?>
                                 <a
-                                    class="text-[14px] text-transparent w-5 h-5"
+                                    class="text-transparent w-5 h-5"
                                     title="<?= $escaper->escapeHtmlAttr(__('View Order')) ?>"
                                     href="<?= $escaper->escapeUrl($block->getViewUrl($order)) ?>"
+                                    x-element-transition-trigger
                                     aria-label="<?= $escaper->escapeHtmlAttr(__('View order') . ' ' . ltrim($order->getRealOrderId(), '0')) ?>"
                                 >
                                     <?= $hyvaicons->renderHtml('eye', 'w-full h-full', attributes: ['title' => 'View']) ?>
@@ -158,7 +160,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                                         <button
                                             title="<?= $escaper->escapeHtmlAttr(__('Reorder')) ?>"
                                             type="submit"
-                                            class="text-[14px] text-transparent w-5 h-5"
+                                            class="text-transparent w-5 h-5"
                                             aria-label="<?= $escaper->escapeHtmlAttr(__('Reorder') . ' ' . ltrim($order->getRealOrderId(), '0')) ?>"
                                         >
                                             <?= $hyvaicons->renderHtml('reload', 'w-full h-full', attributes: ['title' => 'Reorder']) ?>
@@ -168,7 +170,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                                     <button
                                         type="button"
                                         disabled
-                                        class="text-[14px] text-transparent w-5 h-5 opacity-50"
+                                        class="text-transparent w-5 h-5 opacity-50"
                                     >
                                         <?= $hyvaicons->renderHtml('reload', 'w-full h-full', attributes: ['title' => '', 'aria-hidden' => 'true']) ?>
                                     </button>

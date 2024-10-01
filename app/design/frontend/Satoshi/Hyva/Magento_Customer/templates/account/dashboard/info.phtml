@@ -18,7 +18,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     <?= $escaper->escapeHtml(__('Account Information')) ?>
 </h2>
 <div class="grid grid-cols-1 xl:grid-cols-2 gap-3 lg:gap-5 xl:gap-8">
-    <div class="bg-white p-7 rounded-xl flex flex-col md:flex-row gap-4 md:gap-5">
+    <div class="bg-bg-400 p-7 rounded-xl flex flex-col md:flex-row gap-4 md:gap-5">
         <div class="self-start flex items-center align-center gap-4">
             <div class="p-4 text-primary-500 bg-bg-500 rounded-xl">
                 <?= $hyvaicons->renderHtml('user', 'w-6 h-6') ?>
@@ -42,12 +42,14 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     class="button button--outline-primary"
                     href="<?= $escaper->escapeUrl($block->getUrl('customer/account/edit')) ?>"
                     aria-label="<?= $escaper->escapeHtml(__('Edit contact information')) ?>"
+                    x-element-transition-trigger
                 >
                     <span><?= $escaper->escapeHtml(__('Edit')) ?></span>
                 </a>
                 <a
                     class="button button--ghost-primary"
                     href="<?= $escaper->escapeUrl($block->getChangePasswordUrl()) ?>"
+                    x-element-transition-trigger
                 >
                     <?= $escaper->escapeHtml(__('Change Password')) ?>
                 </a>
@@ -55,7 +57,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </div>
     </div>
     <?php if ($block->isNewsletterEnabled()): ?>
-        <div class="bg-white p-7 rounded-xl flex flex-col md:flex-row gap-4 md:gap-5">
+        <div class="bg-bg-400 p-7 rounded-xl flex flex-col md:flex-row gap-4 md:gap-5">
             <div class="self-start flex items-center align-center gap-4">
                 <div class="p-4 text-primary-500 bg-bg-500 rounded-xl">
                     <?= $hyvaicons->renderHtml('envelope', 'w-6 h-6') ?>
@@ -84,6 +86,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         class="button button--outline-primary mb-5 md:mb-0"
                         href="<?= $escaper->escapeUrl($block->getUrl('newsletter/manage')) ?>"
                         aria-label="<?= $escaper->escapeHtml(__('Edit newsletters')) ?>"
+                        x-element-transition-trigger
                     >
                         <span><?= $escaper->escapeHtml(__('Edit')) ?></span>
                     </a>
