@@ -41,6 +41,7 @@ $selectedSort = $block->getData('selected_sort') ?? [];
                     <div class="flex gap-3">
                         <?php if (count($selectedSort)): ?>
                             <a
+                                @click="removeSort()"
                                 class="button button--outline-secondary button--size-sm shrink-0"
                                 title="<?= /* @noEscape */ $escaper->escapeHtmlAttr(__('Remove sort %1 by: %2', $selectedSort['name'], $selectedSort['dir'])) ?>"
                             >
