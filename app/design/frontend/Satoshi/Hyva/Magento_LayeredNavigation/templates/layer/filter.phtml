@@ -1,0 +1,51 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\LocaleFormatter;
+use Magento\Catalog\Helper\Data;
+use Magento\Catalog\Model\Layer\Filter\FilterInterface;
+use Magento\Framework\Escaper;
+use Magento\LayeredNavigation\Block\Navigation\FilterRenderer;
+
+/** @var FilterRenderer $block */
+/** @var Escaper $escaper */
+/** @var LocaleFormatter $localeFormatter */
+
+$catalogHelper = $this->helper(Data::class);
+
+/** @var array $filterItems */
+/** @var FilterInterface $filter */
+$attributeCode = $filter->getAttributeModel()->getAttributeCode();
+
+?>
+
+<div aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>" role="radiogroup">
+    <?php foreach ($filterItems as $filterItem): ?>
+        <div class="relative h-11 w-full">
+            <label for="filter-item-<?= $filterItem->getValueString() ?>" class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
+                <div class="flex items-center">
+                    <?php if ($filterItem->getCount() > 0): ?>
+                        <input
+                            type="radio"
+                            name="filter-item-<?= $attributeCode ?>"
+                            id="filter-item-<?= $filterItem->getValueString() ?>"
+                            class="radio__input"
+                            @change="selectFilter('<?= $escaper->escapeJs($attributeCode) ?>', '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>')"
+                            <?php if ((int) $filterItem->getCount() === 1): ?>
+                                aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, 1 available product', strip_tags((string)$filterItem->getLabel()))) ?>"
+                            <?php else: ?>
+                                aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, %2 available products', strip_tags((string)$filterItem->getLabel()), $filterItem->getCount())) ?>"
+                            <?php endif; ?>
+                        />
+                        <span class="radio__control mr-5" aria-hidden="true"></span>
+                    <?php endif; ?>
+                    <span class="radio__label ml-0"><?= /* @noEscape */ $filterItem->getLabel() ?></span>
+                </div>
+                <?php if ($catalogHelper->shouldDisplayProductCountOnLayer()): ?>
+                    <span>(<?= /* @noEscape */ $localeFormatter->formatNumber((int)$filterItem->getCount()) ?>)</span>
+                <?php endif; ?>
+            </label>
+        </div>
+    <?php endforeach ?>
+</div>
