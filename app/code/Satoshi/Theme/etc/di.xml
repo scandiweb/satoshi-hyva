@@ -7,6 +7,8 @@
     </type>
     <preference for="Magento\Customer\Controller\Account\LoginPost"
                 type="Satoshi\Theme\Plugin\Customer\Controller\Account\LoginPost"/>
+    <preference for="Magento\Customer\Controller\Account\ForgotPasswordPost"
+                type="Satoshi\Theme\Customer\Controller\Account\ForgotPasswordPost"/>
     <preference
         for="Magento\Checkout\Controller\Cart\CouponPost"
         type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
@@ -30,5 +32,11 @@
     <preference
         for="Hyva\Theme\ViewModel\ProductListItem"
         type="Satoshi\Theme\ViewModel\ProductListItem"
+    />
+    <preference for="Magento\Customer\Block\Account\Forgotpassword"
+                type="Satoshi\Theme\Block\Account\ForgotPassword"
+    />
+    <preference for="Magento\Customer\Block\Form\Login"
+                type="Satoshi\Theme\Block\Form\Login"
     />
 </config>
