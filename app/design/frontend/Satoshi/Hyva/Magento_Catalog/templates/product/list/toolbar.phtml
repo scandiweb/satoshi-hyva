@@ -79,6 +79,9 @@ $additionalOptions = ['page' => 'p'];
     <?php if ($block->getIsBottom()): ?>
         <?= $block->getPagerHtml() ?>
     <?php else: ?>
+        <!-- Mobile filters -->
+        <div id="selected-filters-mobile" class="shrink-0 grow"></div>
+
         <div x-data="initToolbar<?= /** @noEscape */ $uniqueId ?>()"
             class="toolbar toolbar-products grid grid-cols-4 sm:grid-cols-8 md:grid-cols-4
                 lg:grid-cols-8  grid-flow-row gap-2 items-center">
