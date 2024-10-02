@@ -43,71 +43,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
          customerReviewsQuery: '<?= $escaper->escapeJs('{customer {' . $customerReviewsQuery . '}}') ?>'
      })"
      @private-content-loaded.window="onPrivateContentLoaded(event.detail.data)">
-    <template x-if="pageInfo && pageInfo.page_size && pageInfo.total_pages">
-        <div>
-            <template x-if="pageInfo.total_pages > 1">
-                <div class="flex items-center">
-                    <p class="flex w-4/12 text-sm leading-5 text-gray-700 toolbar-amount"
-                       id="toolbar-amount"><?= $escaper->escapeHtml(__('Items')) ?>&nbsp;<span
-                            x-text="currentPage > 1 && (currentPage - 1)* pageSize + 1 || 1"
-                        ></span>&nbsp;-&nbsp;<span
-                            x-text="currentPage > 1 && (currentPage) * pageSize || pageSize"></span>
-                    </p>
-                    <ul class="relative z-0 inline-flex w-8/12 items pages-items">
-                        <li class="relative inline-flex items-center px-2 py-2 text-sm font-medium leading-5
-                                text-gray-500 transition duration-150 ease-in-out bg-bg-400 border border-r-0
-                                border-gray-300 item pages-item-previous rounded-l-md hover:text-gray-400
-                                focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
-                                active:bg-gray-100 active:text-gray-500"
-                        >
-                            <a href="#" @click.prevent="currentPage > 1 && setCurrentPage(currentPage - 1)"
-                               :class="{'cursor-default' : currentPage < 2}"
-                               title="<?= $escaper->escapeHtmlAttr(__('Previous')) ?>">
-                                <span>
-                                    left
-                                </span>
-                            </a>
-                        </li>
-                        <template x-for="i in Object.values(totalPagesObject)">
-                            <li :class="{
-                                    'border-primary -ml-px ': i === pageInfo.current_page,
-                                    'border-gray-300' : i !== pageInfo.current_page
-                                }"
-                                class="relative inline-flex items-center text-sm font-medium leading-5 text-gray-700
-                                    transition duration-150 ease-in-out bg-bg-400 border item hover:text-gray-500
-                                    focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
-                                    active:bg-gray-100 active:text-gray-700">
-                                <template x-if="i === pageInfo.current_page">
-                                    <strong class="px-4 py-2 cursor-default page">
-                                        <span x-text="i"></span>
-                                    </strong>
-                                </template>
-                                <template x-if="i !== pageInfo.current_page">
-                                    <a class="px-4 py-2 page" href="#" @click.prevent="setCurrentPage(i)">
-                                        <span x-text="i"></span>
-                                    </a>
-                                </template>
-                            </li>
-                        </template>
-                        <li class="relative inline-flex items-center px-2 py-2 text-sm font-medium leading-5
-                            text-gray-500 transition duration-150 ease-in-out bg-bg-400 border border-l-0
-                            border-gray-300 item pages-item-next rounded-r-md hover:text-gray-400 focus:z-10
-                            focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100
-                            active:text-gray-500"
-                        >
-                            <a @click.prevent="currentPage < pageInfo.total_pages && setCurrentPage(currentPage + 1)"
-                               :class="{'cursor-default' : currentPage >= pageInfo.total_pages}"
-                               href="#" title="<?= $escaper->escapeHtmlAttr(__('Next')) ?>">
-                                <span>
-                                    right
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </template>
-        </div>
-    </template>
     <template x-if="reviews && reviews.length">
         <div>
             <template x-for="(review, index) in reviews" :key="index">
@@ -164,6 +99,20 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         <p class="font-bold text-lg mb-3" x-text="review.summary"></p>
                         <p x-text="review.text"></p>
                     </div>
+                </div>
+            </template>
+        </div>
+    </template>
+    <template x-if="pageInfo && pageInfo.page_size && pageInfo.total_pages">
+        <div>
+            <template x-if="totalPagesObject.length > 1">
+                <div class="my-7 flex flex-col items-center">
+                    <a @click.prevent="setPageSize()"
+                       class="button btn--size-md button--ghost-primary w-full cursor-pointer text-center md:w-auto"
+                       href="#" title="<?= $escaper->escapeHtmlAttr(__('Load more')) ?>">
+                        <?= __('Load more') ?>
+                        <?= $hyvaicons->renderHtml('chevron', 'button__icon button__icon--right top-[1px] text-lg rotate-90'); ?>
+                    </a>
                 </div>
             </template>
         </div>
