@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Customer\LoginButton;
 use Hyva\Theme\ViewModel\HeroiconsOutline;
-use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Hyva\Theme\ViewModel\ReCaptcha;
 use Magento\Customer\Block\Form\Login;
 use Magento\Framework\Escaper;
@@ -16,10 +15,7 @@ use Magento\Framework\Escaper;
 /** @var ViewModelRegistry $viewModels */
 /** @var ReCaptcha $recaptcha */
 /** @var HeroiconsOutline $heroiconsoutline */
-/** @var HeroiconsSolid $heroiconssolid */
 
-$heroiconsoutline = $viewModels->require(HeroiconsOutline::class);
-$heroiconssolid = $viewModels->require(HeroiconsSolid::class);
 $loginButtonViewModel = $viewModels->require(LoginButton::class);
 
 // Disabling autocomplete on form fields is not recommended,
