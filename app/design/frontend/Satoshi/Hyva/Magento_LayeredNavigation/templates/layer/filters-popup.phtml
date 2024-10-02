@@ -15,6 +15,8 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $filters = $block->getData('filters');
 $renderer = $block->getData('renderer');
+$sortOptions = $block->getData('sort_options') ?? [];
+$sorter = $block->getData('sorter') ?? [];
 ?>
 <div>
     <!-- Heading -->
@@ -64,6 +66,18 @@ $renderer = $block->getData('renderer');
     >
         <!-- Items -->
         <nav class="flex flex-col gap-3 py-3" x-show="isTopLevel" aria-label="<?= $escaper->escapeHtmlAttr(__('Available filters')) ?>">
+            <button
+                type="button"
+                class="flex min-h-10 items-center justify-between py-1"
+                @click="isTopLevel = false; currentName='Sort by'"
+            >
+                <p class="grow text-left">
+                    <?= $escaper->escapeHtml(__('Sort by')) ?>
+                </p>
+                <p class="icon-button">
+                    <?= $hyvaicons->renderHtml('chevron'); ?>
+                </p>
+            </button>
             <?php foreach ($filters as $filter): ?>
                 <button
                     type="button"
@@ -81,6 +95,36 @@ $renderer = $block->getData('renderer');
         </nav>
 
         <div>
+            <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5" x-show="currentName == 'Sort by'">
+                <div
+                    id="filter-sort_by"
+                    key="filter-sort_by"
+                >
+                    <div role="radiogroup" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
+                        <?php foreach ($sortOptions as $sortOption): ?>
+                            <div class="relative h-11 w-full">
+                                <label for="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>" class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="filter-item-sort_by"
+                                            id="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>"
+                                            class="radio__input"
+                                            aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>"
+                                            @change="selectSort('<?= $sortOption['value'] ?>', '<?= $sortOption['dir'] ?>')"
+                                            <?php if($sorter->isOrderCurrent($sortOption['value']) && $sorter->getCurrentDirection() === $sortOption['dir']): ?>
+                                                checked="checked"
+                                            <?php endif; ?>
+                                        />
+                                        <span class="radio__control mr-5" aria-hidden="true"></span>
+                                        <span class="radio__label ml-0"><?= /* @noEscape */ $sortOption['name'] ?></span>
+                                    </div>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </fieldset>
             <?php foreach ($filters as $filter): ?>
                 <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5" x-show="currentName == '<?= $escaper->escapeJs($filter->getName()) ?>'">
                     <div

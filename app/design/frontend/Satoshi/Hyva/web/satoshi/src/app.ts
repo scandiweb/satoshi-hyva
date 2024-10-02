@@ -37,6 +37,7 @@ import { Authentication } from "./data/Authentication";
 import { Gallery } from "./data/Gallery.ts";
 import { Newsletter } from "./data/Newsletter";
 import { ContactForm } from "./data/ContactForm";
+import { Rating } from "./data/Rating";
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -74,4 +75,5 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("Gallery", Gallery);
   Alpine.data("Newsletter", Newsletter);
   Alpine.data("ContactForm", ContactForm);
+  Alpine.data("Rating", Rating);
 });

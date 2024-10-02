@@ -128,7 +128,7 @@ if ($product) {
                             class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform  md:group-hover:scale-105">
                             <img
                                 :src="product.media_gallery?.[0]?.url"
-                                :alt="product.image.label"
+                                :alt="product.image?.label"
                                 class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
                                 loading="lazy"
                                 width=""
