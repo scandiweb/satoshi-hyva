@@ -2,7 +2,7 @@ import nProgress from "nprogress";
 
 nProgress.configure({showSpinner: false});
 
-interface Review {
+type Review = {
     product: {
         image: {
             url: string;
@@ -15,15 +15,15 @@ interface Review {
     ratings_breakdown: { value: number }[];
     summary: string;
     text: string;
-}
+};
 
-interface PageInfo {
+type PageInfo = {
     page_size: number;
     total_pages: number;
     current_page: number;
-}
+};
 
-interface AlpineReviewList {
+type AlpineReviewList = {
     customerToken: string | false;
     currentPage: number;
     pageSize: number;
@@ -40,65 +40,64 @@ interface AlpineReviewList {
     onPrivateContentLoaded(data: any): void;
 
     initErrorMessages(errors: any): void;
-}
+};
 
-export function ReviewList(props: {
+export const ReviewList = (props: {
     baseUrl: string;
     productUrlSuffix: string;
     storeCode: string;
     customerReviewsQuery: string;
-}) {
-    return {
-        customerToken: false,
-        currentPage: 1,
-        pageSize: 5,
-        totalPagesObject: [],
-        pageInfo: null,
-        reviews: [],
-        getCustomerReviewsQuery() {
-            return props.customerReviewsQuery
-                .replace('%currentPage%', this.currentPage.toString())
-                .replace('%pageSize%', this.pageSize.toString());
-        },
-        setCurrentPage(page: number) {
-            this.currentPage = page;
-            this.getReviewsList();
-        },
-        getReviewsList() {
-            nProgress.start();
-            return fetch(`${props.baseUrl}graphql`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Store: props.storeCode
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    query: this.getCustomerReviewsQuery()
-                })
+}) => <AlpineReviewList>{
+    customerToken: false,
+    currentPage: 1,
+    pageSize: 5,
+    totalPagesObject: [],
+    pageInfo: null,
+    reviews: [],
+    errors: [],
+    getCustomerReviewsQuery() {
+        return props.customerReviewsQuery
+            .replace('%currentPage%', this.currentPage.toString())
+            .replace('%pageSize%', this.pageSize.toString());
+    },
+    setCurrentPage(page: number) {
+        this.currentPage = page;
+        this.getReviewsList();
+    },
+    getReviewsList() {
+        nProgress.start();
+        return fetch(`${props.baseUrl}graphql`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Store: props.storeCode
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                query: this.getCustomerReviewsQuery()
             })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data && data.errors) {
-                        this.initErrorMessages(data.errors);
-                    } else {
-                        this.reviews = data?.data?.customer?.reviews?.items || [];
-                        this.pageInfo = data?.data?.customer?.reviews?.page_info || {};
-                        this.totalPagesObject = Array.from({length: this.pageInfo?.total_pages || 0}, (_, i) => i + 1);
-                    }
-                    nProgress.done();
-                });
-        },
-        onPrivateContentLoaded(data: any) {
-            this.customerToken = data.customer?.signin_token || false;
-            if (this.customerToken) {
-                this.getReviewsList();
-            } else {
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data && data.errors) {
+                    this.initErrorMessages(data.errors);
+                } else {
+                    this.reviews = data?.data?.customer?.reviews?.items || [];
+                    this.pageInfo = data?.data?.customer?.reviews?.page_info || {};
+                    this.totalPagesObject = Array.from({length: this.pageInfo?.total_pages || 0}, (_, i) => i + 1);
+                }
                 nProgress.done();
-            }
-        },
-        initErrorMessages(errors: any) {
-            // Handle errors
-        },
-    } as AlpineReviewList;
+            });
+    },
+    onPrivateContentLoaded(data: any) {
+        this.customerToken = data.customer?.signin_token || false;
+        if (this.customerToken) {
+            this.getReviewsList();
+        } else {
+            nProgress.done();
+        }
+    },
+    initErrorMessages(errors: any) {
+        this.errors = errors.map((error: { message: string }) => error.message);
+    },
 }
