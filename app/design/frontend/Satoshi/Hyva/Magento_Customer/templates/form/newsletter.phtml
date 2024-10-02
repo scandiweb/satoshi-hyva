@@ -39,7 +39,7 @@ $recaptcha = $block->getData('viewModelRecaptcha');
         </h2>
         <div class="mb-5">
             <?= $block->getBlockHtml('formkey') ?>
-            <label class="flex items-center gap-x-3 mt-5 mb-3 mx-4" for="subscription">
+            <label class="flex items-center gap-3 mt-5 mb-3 mx-4" for="subscription">
                 <input
                     type="checkbox"
                     name="is_subscribed"
@@ -59,7 +59,7 @@ $recaptcha = $block->getData('viewModelRecaptcha');
             <?php /* Extensions placeholder */ ?>
             <?= $block->getChildHtml('customer.form.newsletter.extra') ?>
         </div>
-        <div class="flex gap-x-4 flex-col md:flex-row">
+        <div class="flex flex-col md:flex-row gap-4">
             <button type="submit"
                     title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
                     class="button button--filled-primary"

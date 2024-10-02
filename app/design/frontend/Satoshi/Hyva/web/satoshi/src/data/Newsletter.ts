@@ -1,4 +1,4 @@
-import { navigateWithTransition } from "../plugins/Transition";
+import {navigateWithTransition} from "../plugins/Transition";
 
 export type NewsletterPropsType = {
     recaptchaValidationCode: string;
@@ -26,14 +26,14 @@ export type NewsletterType = {
 };
 
 export const Newsletter = ({
-                               recaptchaValidationCode,
-                               isCaptchaEnabled,
-                               recaptchaSiteKey,
-                               recaptchaFormIdNewsletter,
-                               recaptchaType,
-                               recaptchaV2InvisibleBadgePosition,
-                               defaultErrorMessage
-                           }: NewsletterPropsType) => {
+    recaptchaValidationCode,
+    isCaptchaEnabled,
+    recaptchaSiteKey,
+    recaptchaFormIdNewsletter,
+    recaptchaType,
+    recaptchaV2InvisibleBadgePosition,
+    defaultErrorMessage
+   }: NewsletterPropsType) => {
     return <NewsletterType>{
         isLoading: false,
         formSubmissionErrorMessages: {},
@@ -52,7 +52,7 @@ export const Newsletter = ({
             this.displayErrorMessage = false;
             this.errorMessages = [];
         },
-        submitForm(navigatedUrl) {
+        submitForm(navigatedUrl = '') {
             this.clearMessages();
 
             // Do not rename $form, the variable is expected to be declared in the recaptcha output
