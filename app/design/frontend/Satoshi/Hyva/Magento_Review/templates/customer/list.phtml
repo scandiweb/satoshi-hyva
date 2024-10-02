@@ -25,8 +25,6 @@ $productUrlSuffix = $viewModelStoreConfig->getStoreConfig('catalog/seo/product_u
 $baseUrl = $block->getBaseUrl();
 $customerReviewsQuery = $viewModelCustomerReviews->getCustomerReviewsGraphQlQuery();
 $storeCode = $viewModelStore->getStoreCode();
-
-$baseUrl = $block->getBaseUrl();
 $ratingSteps = 5;
 
 /** @var SvgIcons $hyvaicons */
@@ -43,6 +41,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
          customerReviewsQuery: '<?= $escaper->escapeJs('{customer {' . $customerReviewsQuery . '}}') ?>'
      })"
      @private-content-loaded.window="onPrivateContentLoaded(event.detail.data)">
+    <template x-if="errors.length" x-for="(error, index) in errors" :key="index">
+        <p :key="index" x-text="error" class="text error mb-3"></p>
+    </template>
+    <template x-if="!isLoading && !(reviews && reviews.length)">
+        <p><?= $escaper->escapeHtml(__('You have submitted no reviews.')) ?></p>
+    </template>
     <template x-if="reviews && reviews.length">
         <div>
             <template x-for="(review, index) in reviews" :key="index">
@@ -116,8 +120,5 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 </div>
             </template>
         </div>
-    </template>
-    <template x-if="!isLoading && !(reviews && reviews.length)">
-        <p><?= $escaper->escapeHtml(__('You have submitted no reviews.')) ?></p>
     </template>
 </div>
