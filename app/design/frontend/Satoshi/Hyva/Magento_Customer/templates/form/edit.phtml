@@ -96,7 +96,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                       id="change_password_description"><?= $escaper->escapeHtml(__('form appears when field is selected')) ?></span>
             </label>
 
-            <template x-if="showEmailField">
+            <template x-transition x-if="showEmailField">
                 <div
                     class="field field-reserved mt-7"
                     id="email-fields"
@@ -115,7 +115,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                 </div>
             </template>
 
-            <template x-if="showEmailField || showPasswordFields">
+            <template x-transition x-if="showEmailField || showPasswordFields">
                 <div
                     class="field field-reserved mt-3 mb-5" :class="{'!mt-7': !showEmailField, '!mb-0': showPasswordFields}"
                     id="password-fields"
@@ -137,7 +137,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                 </div>
             </template>
 
-            <template x-if="showPasswordFields">
+            <template x-transition x-if="showPasswordFields">
                 <div>
                     <div class="field field-reserved mt-3">
                         <label class="sr-only tracking-widest" for="password"><span>
