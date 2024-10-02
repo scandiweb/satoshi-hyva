@@ -4,8 +4,6 @@ namespace Satoshi\Theme\Plugin\Customer\Controller\Account;
 
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\HttpPostActionInterface;
-use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\View\Result\PageFactory;
 use Magento\Customer\Controller\Account\Login;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -21,13 +19,12 @@ use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Exception\LocalizedException;;
 
 
-class LoginPost extends Login implements HttpGetActionInterface, HttpPostActionInterface
+class LoginPost extends Login
 {
     protected AccountManagementInterface $customerAccountManagement;
     protected Validator $formKeyValidator;
     protected AccountRedirect $accountRedirect;
 
-    protected $session;
     private $customerUrl;
     protected JsonFactory $jsonFactory;
 
@@ -42,7 +39,6 @@ class LoginPost extends Login implements HttpGetActionInterface, HttpPostActionI
         Validator $formKeyValidator,
         AccountRedirect $accountRedirect,
     ) {
-        $this->session = $customerSession;
         $this->customerAccountManagement = $customerAccountManagement;
         $this->customerUrl = $customerHelperData;
         $this->formKeyValidator = $formKeyValidator;
@@ -55,7 +51,7 @@ class LoginPost extends Login implements HttpGetActionInterface, HttpPostActionI
     /**
      * Customer login form page with error message for invalid credentials
      *
-     * @return \Magento\Framework\Controller\Result\Json|\Magento\Framework\View\Result\Page
+     * @return Json|ResultInterface|ResponseInterface
      */
     public function execute(): Json|ResultInterface|ResponseInterface
     {
