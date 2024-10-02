@@ -306,7 +306,7 @@ const replaceTagContent = (rawContent: string, tag: string) => {
   }
 };
 
-const replaceMainContent = (rawContent: string) => {
+export const replaceMainContent = (rawContent: string) => {
   lastMainContentUpdateUrl = window.location.href;
   replaceMeta(rawContent);
   return morphContent(
