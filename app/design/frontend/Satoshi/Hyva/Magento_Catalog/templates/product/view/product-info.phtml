@@ -129,7 +129,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <!-- Product actions popup -->
         <?php
         $popup_id = 'product_actions-' . $product->getId();
-        $options = $block->getChildBlock('product.info.form') ? $block->getChildBlock('product.info.form')->setData(['is_popup' => true])->toHtml() : '';
+        $options = $block->getChildBlock('product.info.form')->setData(['is_popup' => true])->toHtml();
 
         $options .= $block->getChildHtml('product_options_wrapper_bottom');
 
