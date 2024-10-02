@@ -148,6 +148,22 @@ h3 {
   grid-template-columns: 275px repeat(2, minmax(0, 1fr)) 275px;
 }
 
+.price-box {
+  @apply flex flex-col gap-1 md:gap-2;
+
+  .sticky-actions & {
+    @apply text-[14px];
+  }
+}
+
+.old-price {
+  @apply text-[14px];
+}
+
+.price {
+  @apply text-primary-600;
+}
+
 @layer components {
   @import "components/content-wrapper";
   @import "components/checkbox";
