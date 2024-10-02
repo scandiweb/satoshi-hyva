@@ -13,7 +13,6 @@ $tokens = $block->getPaymentTokens();
 
 ?>
 <?php if (count($tokens) > 0): ?>
-    <div class="mb-5 text-lg font-bold"><?= $escaper->escapeHtml(__('Stored Payment Methods')) ?></div>
     <?php foreach ($tokens as $token): ?>
         <div class="card grid md:grid-cols-4 p-5 bg-white rounded-xl mb-5">
             <div class="hidden md:block font-bold">
