@@ -131,7 +131,6 @@ module.exports = hyvaModules.mergeTailwindConfig({
       gridTemplateColumns: {
         header: "40px 40px 1fr 40px 40px",
         addressForms: "repeat(auto-fit, 400px)",
-        customerCols: 'auto 1fr',
       },
       keyframes: {
         fadeIn: {
