@@ -26,7 +26,7 @@ foreach ($currencies as $code => $currency) {
 
     $postData = json_decode($currencyViewModel->getSwitchCurrencyPostData($code), true);
     $url = "{$postData['action']}?currency={$postData['data']['currency']}&uenc={$postData['data']['uenc']}";
-    $switchUrl = "fetchAndReplaceContent('{$escaper->escapeUrl($url)}')";
+    $switchUrl = "navigateAndReplaceContent('{$escaper->escapeUrl($url)}')";
     $isCurrent = $code === $currentCurrencyCode;
 
     $options[] = [

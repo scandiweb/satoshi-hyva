@@ -14,7 +14,7 @@ export type DropdownType = {
     show(): void;
     hide(): void;
     search(value: string): void;
-    fetchAndReplaceContent(url: string): void;
+    navigateAndReplaceContent(url: string): void;
 } & Magics<{}>;
 
 export const Dropdown = () =>
@@ -81,7 +81,7 @@ export const Dropdown = () =>
             });
         },
 
-        fetchAndReplaceContent(url: string) {
+        navigateAndReplaceContent(url: string) {
             if (!url) return;
 
             this.hide();
