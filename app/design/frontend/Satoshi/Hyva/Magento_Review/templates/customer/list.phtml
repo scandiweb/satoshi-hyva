@@ -52,10 +52,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <template x-for="(review, index) in reviews" :key="index">
                 <div class="mb-5 card p-5 rounded-xl bg-bg-400">
                     <div class="flex gap-5 md:gap-5 flex-row mb-3">
-                        <div class="flex-shrink-0 w-16 h-20 md:w-32 md:h-[158px] rounded-xl overflow-hidden">
+                        <div class="flex-shrink-0 w-16 h-20 md:w-32 md:h-[158px] rounded-xl overflow-hidden bg-[--fade-in-bg]">
                             <img :src="review.product && review.product.image && review.product.image.url"
                                  :alt="review.product && review.product.image && review.product.image.label"
-                                 class="w-full h-full object-cover"/>
+                                 class="w-full h-full object-cover mix-blend-darken"/>
                         </div>
                         <div>
                             <p class="font-bold text-lg mb-1">
@@ -94,7 +94,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                 </div>
                             </template>
                             <div class="hidden md:block mt-1">
-                                <p class="font-bold text-lg mb-3" x-text="review.summary"></p>
+                                <p class="font-bold md:text-lg mb-3" x-text="review.summary"></p>
                                 <p x-text="review.text"></p>
                             </div>
                         </div>
