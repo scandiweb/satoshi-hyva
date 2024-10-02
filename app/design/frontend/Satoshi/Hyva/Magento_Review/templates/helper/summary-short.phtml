@@ -1,0 +1,120 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Review\Block\Product\ReviewRenderer;
+
+/** @var ReviewRenderer $block */
+/** @var Escaper $escaper */
+
+$rating = $block->getRatingSummary();
+$ratingSteps = 5;
+$starsFilled = is_numeric($rating) ? floor($rating / 100 * $ratingSteps) : 0;
+$starFragment = $rating / 100 * $ratingSteps - $starsFilled;
+$starsEmpty = floor($ratingSteps - $starsFilled - $starFragment);
+$yellowHex = '#f6e05e';
+$greyHex = '#cbd5e0';
+$productName = $block->getProduct()->getName();
+$productId = $block->getProduct()->getId();
+$uniqueId = $productId . uniqid();
+?>
+<?php if ($block->isReviewEnabled()): ?>
+    <div
+        x-data="Rating"
+        x-defer="intersect"
+        @keyup.enter="scrollToRatings()"
+        @click="scrollToRatings()"
+        class="rating-summary flex"
+        :class="{'cursor-pointer' : reviewsSection}"
+        <?php if (!$rating): ?>
+            title="<?= $escaper->escapeHtmlAttr(__('Be the first to review this product')) ?>"
+        <?php endif; ?>
+        :tabindex="reviewsSection ? '0' : '-1'"
+        :aria-label="reviewsSection
+            ? '<?= $escaper->escapeJs(__('%1 rating. %2 out of %3 stars. Click to go to reviews.', $productName, $starsFilled + $starFragment, $ratingSteps))?>'
+            : '<?= $escaper->escapeJs(__('%1 rating. %2 out of %3 stars', $productName, $starsFilled + $starFragment, $ratingSteps))?>'
+        "
+        :role="reviewsSection ? 'button' : 'img'"
+    >
+        <?php if ($rating): ?>
+            <?php $i = 0; ?>
+            <?php while ($i < $starsFilled): ?>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg" class="fill-current w-6 h-6" viewBox="3 0 20 20"
+                    style="color: <?= /** @noEscape */ $yellowHex ?>"
+                    fill="currentColor"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371
+                        1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54
+                        1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1
+                        1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <?php $i++; ?>
+            <?php endwhile; ?>
+            <?php if ($starFragment): ?>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="3 0 20 20"
+                    fill="currentColor"
+                    class="w-6 h-6"
+                    aria-hidden="true"
+                >
+                    <defs>
+                        <linearGradient id="partialFill<?= /* @noEscape */ $block->getProduct()->getId() ?>">
+                            <stop offset="0%" stop-color="<?= /** @noEscape */ $yellowHex ?>"/>
+                            <stop offset="<?= $starFragment * 100 ?>%" stop-color="<?= /** @noEscape */ $yellowHex ?>"/>
+                            <stop offset="<?= $starFragment * 100 ?>%" stop-color="<?= /** @noEscape */ $greyHex ?>"/>
+                            <stop offset="100%" stop-color="<?= /** @noEscape */ $greyHex ?>"/>
+                        </linearGradient>
+                    </defs>
+                    <g fill="url(#partialFill<?= (int)$block->getProduct()->getId() ?>)">
+                        <path
+                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969
+                            0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54
+                            1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1
+                            0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </g>
+                </svg>
+            <?php endif; ?>
+            <?php $i = 0; ?>
+                <?php while ($i < $starsEmpty): ?>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="fill-current w-6 h-6"
+                    style="color: <?= /** @noEscape */ $greyHex ?>"
+                    viewBox="3 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0
+                        1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54
+                        1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1
+                        1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                    />
+                </svg>
+                    <?php $i++; ?>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <?php $i = 0; ?>
+            <?php while ($i < $ratingSteps): ?>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="fill-current text-gray-200 w-6 h-6"
+                    viewBox="3 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371
+                        1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54
+                        1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1
+                        1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                    />
+                </svg>
+                <?php $i++; ?>
+            <?php endwhile; ?>
+        <?php endif; ?>
+    </div>
+<?php endif; ?>
