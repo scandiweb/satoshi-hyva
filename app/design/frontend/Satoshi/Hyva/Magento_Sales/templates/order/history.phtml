@@ -31,11 +31,10 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
 }
 
 ?>
-<h2 id="my-orders-title" class="md:hidden text-2xl mb-6"><?= $escaper->escapeHtml(__('My Orders')) ?></h2>
 <?= $block->getChildHtml('info') ?>
 <?php if ($orders && count($orders)): ?>
     <?php foreach ($orders as $order): ?>
-        <div class="overflow-x-auto card mb-4 bg-white p-4 rounded-xl">
+        <div class="overflow-x-auto mb-4 bg-bg-400 p-4 rounded-xl">
             <?php
             $date = $order->getCreatedAt();
             $format = $block->getDateFormat() ?: \IntlDateFormatter::SHORT;
@@ -127,11 +126,11 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
     </div>
 
     <?php if ($block->getPagerHtml()): ?>
-        <div class="order-products-toolbar toolbar bottom">
+        <div>
             <?= $block->getPagerHtml() ?>
         </div>
     <?php endif ?>
 <?php else: ?>
-    <div class="message info empty"><span><?= $escaper->escapeHtml($block->getEmptyOrdersMessage()) ?></span></div>
+    <div class="mb5"><?= $escaper->escapeHtml($block->getEmptyOrdersMessage()) ?></div>
 <?php endif ?>
 
