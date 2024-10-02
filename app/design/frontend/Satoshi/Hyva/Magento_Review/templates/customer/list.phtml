@@ -51,8 +51,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <div>
             <template x-for="(review, index) in reviews" :key="index">
                 <div class="mb-5 card p-5 rounded-xl bg-bg-400">
-                    <div class="flex gap-5 md:gap-5 flex-row mb-3">
-                        <div class="flex-shrink-0 w-16 h-20 md:w-32 md:h-[158px] rounded-xl overflow-hidden bg-[--fade-in-bg]">
+                    <div class="flex gap-5 lg:gap-5 flex-row mb-3">
+                        <div class="flex-shrink-0 w-16 h-20 lg:w-32 lg:h-[158px] rounded-xl overflow-hidden bg-[--fade-in-bg]">
                             <img :src="review.product && review.product.image && review.product.image.url"
                                  :alt="review.product && review.product.image && review.product.image.label"
                                  class="w-full h-full object-cover mix-blend-darken"/>
@@ -93,13 +93,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                     </div>
                                 </div>
                             </template>
-                            <div class="hidden md:block mt-1">
-                                <p class="font-bold md:text-lg mb-3" x-text="review.summary"></p>
+                            <div class="hidden lg:block mt-1">
+                                <p class="font-bold lg:text-lg mb-3" x-text="review.summary"></p>
                                 <p x-text="review.text"></p>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-1 md:hidden">
+                    <div class="mt-1 lg:hidden">
                         <p class="font-bold text-lg mb-3" x-text="review.summary"></p>
                         <p x-text="review.text"></p>
                     </div>
@@ -112,7 +112,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <template x-if="totalPagesObject.length > 1">
                 <div class="my-7 flex flex-col items-center">
                     <a @click.prevent="setPageSize()"
-                       class="button btn--size-md button--ghost-primary w-full cursor-pointer text-center md:w-auto"
+                       class="button btn--size-lg button--ghost-primary w-full cursor-pointer text-center lg:w-auto"
                        href="#" title="<?= $escaper->escapeHtmlAttr(__('Load more')) ?>">
                         <?= __('Load more') ?>
                         <?= $hyvaicons->renderHtml('chevron', 'button__icon button__icon--right top-[1px] text-lg rotate-90'); ?>
