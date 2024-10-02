@@ -34,8 +34,6 @@ type AlpineReviewList = {
 
     getCustomerReviewsQuery(): string;
 
-    setCurrentPage(page: number): void;
-
     getReviewsList(): void;
 
     onPrivateContentLoaded(data: any): void;
@@ -51,19 +49,20 @@ export const ReviewList = (props: {
 }) => <AlpineReviewList>{
     customerToken: false,
     currentPage: 1,
-    pageSize: 5,
+    pageSize: 10,
     totalPagesObject: [],
     pageInfo: null,
     reviews: [],
     errors: [],
     isLoading: true,
+
     getCustomerReviewsQuery() {
         return props.customerReviewsQuery
             .replace('%currentPage%', this.currentPage.toString())
             .replace('%pageSize%', this.pageSize.toString());
     },
-    setCurrentPage(page: number) {
-        this.currentPage = page;
+    setPageSize() {
+        this.pageSize += 10;
         this.getReviewsList();
     },
     getReviewsList() {
@@ -90,7 +89,7 @@ export const ReviewList = (props: {
                             customer: {
                                 reviews: {
                                     items = [],
-                                    page_info = {}
+                                    page_info = {},
                                 } = {}
                             } = {}
                         } = {}
@@ -98,6 +97,7 @@ export const ReviewList = (props: {
                     this.reviews = items;
                     this.pageInfo = page_info;
                     this.totalPagesObject = Array.from({length: this.pageInfo?.total_pages || 0}, (_, i) => i + 1);
+                    console.log(this.totalPagesObject)
                 }
                 nProgress.done();
                 this.isLoading = false;
