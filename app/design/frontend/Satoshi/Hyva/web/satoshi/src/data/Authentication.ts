@@ -13,7 +13,7 @@ export type AuthenticationType = {
   clearError(field: string): void;
   setErrorMessages(messages: Record<string, string>): void;
   submitForm(event: Event, formId: string): void;
-  submitForgotPasswordForm(formId: string): void;
+  submitAuthForm(formId: string): void;
 } & MainStoreType;
 
 export const Authentication = () => {
@@ -63,7 +63,7 @@ export const Authentication = () => {
         });
     },
 
-    submitForgotPasswordForm(formId) {
+    submitAuthForm(formId) {
       const form = document.getElementById(formId) as HTMLFormElement;
       const formData = new FormData(form);
 
@@ -71,7 +71,7 @@ export const Authentication = () => {
         method: "POST",
         body: formData,
         headers: {
-          "X-Requested-With": "XMLHttpRequest", // Optional if you want to handle it as an AJAX request
+          "X-Requested-With": "XMLHttpRequest",
         },
       })
         .then((response) => {

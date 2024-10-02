@@ -31,15 +31,10 @@ class Login extends SourceLogin
         parent::__construct($context, $customerSession, $customerUrl, $data);
     }
 
-    /**
-     * Retrieve and clear the success message from the session
-     *
-     * @return string|null
-     */
-    public function getSuccessMessage(): ?string
+    public function getErrorMessage(): ?string
     {
-        $successMessage = $this->_customerSession->getSuccessMessage();
-        $this->_customerSession->unsSuccessMessage();
-        return $successMessage;
+        $errorMessage = $this->_customerSession->getErrorMessage();
+        $this->_customerSession->unsErrorMessage();
+        return $errorMessage;
     }
 }
