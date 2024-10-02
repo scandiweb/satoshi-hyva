@@ -46,7 +46,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     <template x-if="pageInfo && pageInfo.page_size && pageInfo.total_pages">
         <div>
             <template x-if="pageInfo.total_pages > 1">
-                <div class="flex items-center toolbar-pager bg-b">
+                <div class="flex items-center">
                     <p class="flex w-4/12 text-sm leading-5 text-gray-700 toolbar-amount"
                        id="toolbar-amount"><?= $escaper->escapeHtml(__('Items')) ?>&nbsp;<span
                             x-text="currentPage > 1 && (currentPage - 1)* pageSize + 1 || 1"
@@ -55,7 +55,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     </p>
                     <ul class="relative z-0 inline-flex w-8/12 items pages-items">
                         <li class="relative inline-flex items-center px-2 py-2 text-sm font-medium leading-5
-                                text-gray-500 transition duration-150 ease-in-out bg-white border border-r-0
+                                text-gray-500 transition duration-150 ease-in-out bg-bg-400 border border-r-0
                                 border-gray-300 item pages-item-previous rounded-l-md hover:text-gray-400
                                 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
                                 active:bg-gray-100 active:text-gray-500"
@@ -74,7 +74,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                     'border-gray-300' : i !== pageInfo.current_page
                                 }"
                                 class="relative inline-flex items-center text-sm font-medium leading-5 text-gray-700
-                                    transition duration-150 ease-in-out bg-white border item hover:text-gray-500
+                                    transition duration-150 ease-in-out bg-bg-400 border item hover:text-gray-500
                                     focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue
                                     active:bg-gray-100 active:text-gray-700">
                                 <template x-if="i === pageInfo.current_page">
@@ -90,7 +90,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             </li>
                         </template>
                         <li class="relative inline-flex items-center px-2 py-2 text-sm font-medium leading-5
-                            text-gray-500 transition duration-150 ease-in-out bg-white border border-l-0
+                            text-gray-500 transition duration-150 ease-in-out bg-bg-400 border border-l-0
                             border-gray-300 item pages-item-next rounded-r-md hover:text-gray-400 focus:z-10
                             focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100
                             active:text-gray-500"

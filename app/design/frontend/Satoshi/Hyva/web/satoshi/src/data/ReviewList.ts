@@ -30,6 +30,7 @@ type AlpineReviewList = {
     totalPagesObject: number[];
     pageInfo: PageInfo | null;
     reviews: Review[];
+    isLoading: boolean;
 
     getCustomerReviewsQuery(): string;
 
@@ -55,6 +56,7 @@ export const ReviewList = (props: {
     pageInfo: null,
     reviews: [],
     errors: [],
+    isLoading: true,
     getCustomerReviewsQuery() {
         return props.customerReviewsQuery
             .replace('%currentPage%', this.currentPage.toString())
@@ -65,6 +67,7 @@ export const ReviewList = (props: {
         this.getReviewsList();
     },
     getReviewsList() {
+        this.isLoading = true;
         nProgress.start();
         return fetch(`${props.baseUrl}graphql`, {
             method: 'POST',
@@ -82,11 +85,22 @@ export const ReviewList = (props: {
                 if (data && data.errors) {
                     this.initErrorMessages(data.errors);
                 } else {
-                    this.reviews = data?.data?.customer?.reviews?.items || [];
-                    this.pageInfo = data?.data?.customer?.reviews?.page_info || {};
+                    const {
+                        data: {
+                            customer: {
+                                reviews: {
+                                    items = [],
+                                    page_info = {}
+                                } = {}
+                            } = {}
+                        } = {}
+                    } = data || {};
+                    this.reviews = items;
+                    this.pageInfo = page_info;
                     this.totalPagesObject = Array.from({length: this.pageInfo?.total_pages || 0}, (_, i) => i + 1);
                 }
                 nProgress.done();
+                this.isLoading = false;
             });
     },
     onPrivateContentLoaded(data: any) {
@@ -95,6 +109,7 @@ export const ReviewList = (props: {
             this.getReviewsList();
         } else {
             nProgress.done();
+            this.isLoading = false;
         }
     },
     initErrorMessages(errors: any) {
