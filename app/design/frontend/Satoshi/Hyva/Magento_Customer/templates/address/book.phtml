@@ -16,7 +16,7 @@ use Magento\Framework\Escaper;
     </h2>
     <div class="grid gap-5 lg:gap-8 grid-cols-1 lg:grid-cols-2">
         <?php if ($customerDefaultBillingAddress = $block->getDefaultBilling()): ?>
-            <div class="bg-white p-5 rounded-xl">
+            <div class="bg-bg-400 p-5 rounded-xl">
                 <h2 class="text-text-500 text-lg font-bold mb-4">
                     <?= $escaper->escapeHtml(__('Default billing address')) ?>
                 </h2>
@@ -36,7 +36,7 @@ use Magento\Framework\Escaper;
                 </div>
             </div>
         <?php else: ?>
-            <div class="bg-white p-5 rounded-xl">
+            <div class="bg-bg-400 p-5 rounded-xl">
                 <h2 class="text-text-500 text-lg font-bold mb-4">
                     <?= $escaper->escapeHtml(__('Default billing address')) ?>
                 </h2>
@@ -47,7 +47,7 @@ use Magento\Framework\Escaper;
         <?php endif ?>
 
         <?php if ($customerDefaultBillingAddress = $block->getDefaultShipping()): ?>
-            <div class="bg-white p-5 rounded-xl">
+            <div class="bg-bg-400 p-5 rounded-xl">
                 <h2 class="text-text-500 text-lg font-bold mb-4">
                     <?= $escaper->escapeHtml(__('Default shipping address')) ?>
                 </h2>
@@ -65,7 +65,7 @@ use Magento\Framework\Escaper;
                 </div>
             </div>
         <?php else: ?>
-            <div class="bg-white p-5 rounded-xl">
+            <div class="bg-bg-400 p-5 rounded-xl">
                 <h2 class="text-text-500 text-lg font-bold mb-4">
                     <?= $escaper->escapeHtml(__('Default shipping address')) ?>
                 </h2>
