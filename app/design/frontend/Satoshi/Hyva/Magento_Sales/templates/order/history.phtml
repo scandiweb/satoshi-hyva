@@ -37,7 +37,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
     <div data-content-wrapper>
         <!-- pagination-content -->
         <?php foreach ($orders as $order): ?>
-            <div class="overflow-x-auto mb-4 bg-bg-400 p-4 rounded-xl">
+            <div class="overflow-x-auto mb-5 bg-bg-400 p-5 rounded-xl">
                 <?php
                 $date = $order->getCreatedAt();
                 $format = $block->getDateFormat() ?: \IntlDateFormatter::SHORT;
@@ -47,12 +47,12 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                         id="my-orders-grid"
                         class="grid gap-4 grid-cols-1 md:grid-cols-6"
                 >
-                    <div class="p-2 flex md:block justify-between">
-                        <div class="font-bold"><?= $escaper->escapeHtml(__('Order #')) ?></div>
+                    <div class="flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('Order #')) ?></div>
                         <div><?= $escaper->escapeHtml($order->getRealOrderId()) ?></div>
                     </div>
-                    <div class="p-2 flex md:block justify-between">
-                        <div class="font-bold"><?= $escaper->escapeHtml(__('Date')) ?></div>
+                    <div class="flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('Date')) ?></div>
                         <time class="mt-1"
                               datetime="<?= $escaper->escapeHtmlAttr($block->formatDate($date, $format)); ?>">
                             <span aria-hidden="true"><?= $escaper->escapeHtml($block->formatDate($date, $format)); ?></span>
@@ -61,27 +61,27 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                         </time>
                     </div>
                     <?= $block->getChildHtml('extra.column.header') ?>
-                    <div class="p-2 flex md:block justify-between">
-                        <div class="font-bold"><?= $escaper->escapeHtml(__('Ship To')) ?></div>
+                    <div class="flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('Ship To')) ?></div>
                         <div class="md:mt-1">
                             <?= $order->getShippingAddress() ? $escaper->escapeHtml($order->getShippingAddress()->getName()) : '&nbsp;' ?>
                         </div>
                     </div>
-                    <div class="p-2 flex md:block justify-between">
+                    <div class="flex md:block justify-between">
                         <div class="font-bold"><?= $escaper->escapeHtml(__('Order Total')) ?></div>
                         <div class="md:mt-1">
                             <?= $order->formatPrice($order->getGrandTotal()) ?>
                         </div>
                     </div>
-                    <div class="p-2 flex md:block justify-between">
-                        <div class="font-bold"><?= $escaper->escapeHtml(__('Status')) ?></div>
+                    <div class="flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('Status')) ?></div>
                         <div class="md:mt-1">
                             <?= $escaper->escapeHtml($order->getStatusLabel()) ?>
                         </div>
                     </div>
-                    <div class="p-2 md:text-right flex md:block justify-between">
-                        <div class="font-bold"><?= $escaper->escapeHtml(__('View / Reorder')) ?></div>
-                        <div class="flex items-center justify-end gap-4 md:mt-1">
+                    <div class="md:text-right flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('View / Reorder')) ?></div>
+                        <div class="flex items-center justify-end gap-5 md:mt-1">
                             <a
                                     href="<?= $escaper->escapeUrl($block->getViewUrl($order)) ?>"
                                     class="inline-block underline text-secondary-darker"
