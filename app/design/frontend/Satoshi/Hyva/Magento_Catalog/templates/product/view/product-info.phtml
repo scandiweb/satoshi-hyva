@@ -31,7 +31,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 <h1 class="heading mb-1 ps-4 text-md leading-tight text-text-500 md:px-0 md:text-4xl max-md:pe-[--price-width]">
     <?= $block->getChildBlock('product.title')->getPageHeading() ?>
 </h1>
-<div class="animate-on-transition px-4 leading-tight md:px-0 md:text-base max-md:mb-4 max-md:pe-[--price-width]">
+<div class="animate-on-transition px-4 leading-tight md:px-0 md:text-base mb-4 md:mb-7 max-md:pe-[--price-width]">
   <?= $block->getChildHtml('product.info.review') ?>
 </div>
 
@@ -39,7 +39,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 <?= $block->getChildHtml("alert.urls") ?>
 
 <!-- Price -->
-<div class="animate-on-transition px-4 ps-2 leading-tight md:mb-8 md:mt-7 md:px-0 max-md:absolute max-md:right-0" x-ref="ProductPrice">
+<div class="animate-on-transition px-4 ps-2 leading-tight md:mb-8 z-10 md:px-0 max-md:absolute max-md:right-0" x-ref="ProductPrice">
   <div role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
     <?= $block->getChildHtml("product.info.price") ?>
     <?php if ($productType === 'bundle' || true): ?>
@@ -129,7 +129,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <!-- Product actions popup -->
         <?php
         $popup_id = 'product_actions-' . $product->getId();
-        $options = $block->getChildBlock('product.info.form')->setData(['is_popup' => true])->toHtml();
+        $options = $block->getChildBlock('product.info.form') ? $block->getChildBlock('product.info.form')->setData(['is_popup' => true])->toHtml() : '';
 
         $options .= $block->getChildHtml('product_options_wrapper_bottom');
 
