@@ -96,99 +96,96 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                       id="change_password_description"><?= $escaper->escapeHtml(__('form appears when field is selected')) ?></span>
             </label>
 
-            <template x-transition x-if="showEmailField">
-                <div
-                    class="field field-reserved mt-7"
-                    id="email-fields"
-                >
-                    <label class="sr-only tracking-widest" for="email">
-                        <span><?= $escaper->escapeHtml(__('Email')) ?></span>
-                    </label>
-                    <div>
-                        <input type="email" name="email" id="email" autocomplete="email" required
-                               value="<?= $escaper->escapeHtmlAttr($block->getCustomer()->getEmail()) ?>"
-                               title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
-                               placeholder="<?= $escaper->escapeHtmlAttr(__('Your email')) ?>"
-                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-                        />
-                    </div>
-                </div>
-            </template>
-
-            <template x-transition x-if="showEmailField || showPasswordFields">
-                <div
-                    class="field field-reserved mt-3 mb-5" :class="{'!mt-7': !showEmailField, '!mb-0': showPasswordFields}"
-                    id="password-fields"
-                >
-                    <label class="sr-only tracking-widest" for="current-password">
-                        <span><?= $escaper->escapeHtml(__('Current Password')) ?></span>
-                    </label>
-                    <div>
-                        <input type="password"
-                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-                               name="current_password" id="current-password"
-                               data-input="current-password"
-                               placeholder="<?= $escaper->escapeHtmlAttr(__('Your current password')) ?>"
-                               required
-                               autocomplete="<?= $isAutocompleteEnabled ? 'current-password' : 'off' ?>"
-                               aria-describedby="password-strength-meter"
-                        />
-                    </div>
-                </div>
-            </template>
-
-            <template x-transition x-if="showPasswordFields">
+            <div
+                x-cloak x-transition x-show="showEmailField"
+                class="field field-reserved mt-7"
+                id="email-fields"
+            >
+                <label class="sr-only tracking-widest" for="email">
+                    <span><?= $escaper->escapeHtml(__('Email')) ?></span>
+                </label>
                 <div>
-                    <div class="field field-reserved mt-3">
-                        <label class="sr-only tracking-widest" for="password"><span>
+                    <input type="email" name="email" id="email" autocomplete="email" required
+                           value="<?= $escaper->escapeHtmlAttr($block->getCustomer()->getEmail()) ?>"
+                           title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                           placeholder="<?= $escaper->escapeHtmlAttr(__('Your email')) ?>"
+                           class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                    />
+                </div>
+            </div>
+
+            <div
+                x-cloak x-transition x-show="showEmailField || showPasswordFields"
+                class="field field-reserved mt-3 mb-5" :class="{'!mt-7': !showEmailField, '!mb-0': showPasswordFields}"
+                id="password-fields"
+            >
+                <label class="sr-only tracking-widest" for="current-password">
+                    <span><?= $escaper->escapeHtml(__('Current Password')) ?></span>
+                </label>
+                <div>
+                    <input type="password"
+                           class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                           name="current_password" id="current-password"
+                           data-input="current-password"
+                           placeholder="<?= $escaper->escapeHtmlAttr(__('Your current password')) ?>"
+                           required
+                           autocomplete="<?= $isAutocompleteEnabled ? 'current-password' : 'off' ?>"
+                           aria-describedby="password-strength-meter"
+                    />
+                </div>
+            </div>
+
+            <div x-cloak x-transition x-show="showPasswordFields">
+                <div class="field field-reserved mt-3">
+                    <label class="sr-only tracking-widest" for="password"><span>
                             <?= $escaper->escapeHtml(__('New Password')) ?>
                     </span></label>
-                        <div>
-                            <input
-                                type="password"
-                                class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-                                name="password"
-                                id="password"
-                                placeholder="<?= $escaper->escapeHtmlAttr(__('New password')) ?>"
-                                required
-                                data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
-                                @input="onChange"
-                                minlength="<?= $escaper->escapeHtmlAttr($minimumPasswordLength) ?>"
-                                autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
-                                aria-describedby="password-strength-meter"
-                            />
-                            <div id="password-strength-meter-container" class="mt-2 text-sm"
-                                 data-role="password-strength-meter" aria-live="polite">
-                                <div id="password-strength-meter" class="password-strength-meter">
-                                    <?= $escaper->escapeHtml(__('Password Strength')) ?>:
-                                    <span id="password-strength-meter-label" class="lowercase"
-                                          data-role="password-strength-meter-label">
+                    <div>
+                        <input
+                            type="password"
+                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                            name="password"
+                            id="password"
+                            placeholder="<?= $escaper->escapeHtmlAttr(__('New password')) ?>"
+                            required
+                            data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
+                            @input="onChange"
+                            minlength="<?= $escaper->escapeHtmlAttr($minimumPasswordLength) ?>"
+                            autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
+                            aria-describedby="password-strength-meter"
+                        />
+                        <div id="password-strength-meter-container" class="mt-2 text-sm"
+                             data-role="password-strength-meter" aria-live="polite">
+                            <div id="password-strength-meter" class="password-strength-meter">
+                                <?= $escaper->escapeHtml(__('Password Strength')) ?>:
+                                <span id="password-strength-meter-label" class="lowercase"
+                                      data-role="password-strength-meter-label">
                                     <?= $escaper->escapeHtml(__('No Password')) ?>
                                 </span>
-                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="field field-reserved mt-3 mb-5">
-                        <label class="sr-only tracking-widest" for="password-confirmation">
-                            <span><?= $escaper->escapeHtml(__('Confirm New Password')) ?></span>
-                        </label>
-                        <div>
-                            <input
-                                type="password"
-                                class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-                                name="password_confirmation" id="password-confirmation"
-                                placeholder="<?= $escaper->escapeHtml(__('Confirm new password')) ?>"
-                                data-validate='{"equalTo": "password"}'
-                                title="<?= $escaper->escapeHtmlAttr(__('Confirm Password')) ?>"
-                                @input="onChange"
-                                autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
-                            />
-                        </div>
+                <div class="field field-reserved mt-3 mb-5">
+                    <label class="sr-only tracking-widest" for="password-confirmation">
+                        <span><?= $escaper->escapeHtml(__('Confirm New Password')) ?></span>
+                    </label>
+                    <div>
+                        <input
+                            type="password"
+                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                            name="password_confirmation" id="password-confirmation"
+                            placeholder="<?= $escaper->escapeHtml(__('Confirm new password')) ?>"
+                            data-validate='{"equalTo": "password"}'
+                            title="<?= $escaper->escapeHtmlAttr(__('Confirm Password')) ?>"
+                            @input="onChange"
+                            autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
+                        />
                     </div>
                 </div>
-            </template>
+            </div>
+
             <?= $block->getChildHtml('fieldset_edit_info_additional') ?>
             <?= $block->getChildHtml('form_additional_info') ?>
         </div>
