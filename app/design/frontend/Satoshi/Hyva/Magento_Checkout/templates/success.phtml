@@ -18,7 +18,7 @@ use Magento\Checkout\Block\Onepage\Success;
                     __(
                         'Your order number is: %1.',
                         sprintf(
-                            '<a href="%s" class="order-number"><strong>%s</strong></a>',
+                            '<a href="%s" x-element-transition-trigger><strong>%s</strong></a>',
                             $escaper->escapeUrl($block->getViewOrderUrl()),
                             $block->getOrderId()
                         )
@@ -42,7 +42,7 @@ use Magento\Checkout\Block\Onepage\Success;
     <div class="flex gap-6">
         <?= $block->getChildBlock('checkout.success.print.button')->toHtml() ?>
 
-        <a class="button button--filled-primary" href="<?= $escaper->escapeUrl($block->getContinueUrl()) ?>">
+        <a class="button btn--size-md button--ghost-primary w-full cursor-pointer text-center md:w-auto" href="<?= $escaper->escapeUrl($block->getContinueUrl()) ?>" x-element-transition-trigger>
             <?= $escaper->escapeHtml(__('Continue Shopping')) ?>
         </a>
     </div>
