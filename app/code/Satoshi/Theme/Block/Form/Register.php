@@ -14,8 +14,8 @@ class Register extends BaseRegister
      */
     public function getFieldMessages(): array
     {
-        $messages = $this->customerSession->getFieldMessages();
-        $this->customerSession->unsFieldMessages();
+        $messages = $this->_customerSession->getFieldMessages();
+        $this->_customerSession->unsFieldMessages();
         return is_array($messages) ? $messages : [];
     }
 }
