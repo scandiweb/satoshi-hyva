@@ -361,6 +361,24 @@ export const fetchAndCachePage = async (url: string) => {
   return html;
 };
 
+export const replaceMainContentWithTransition = async (
+  url: string,
+  content: string,
+) => {
+  const scrollPosition = window.scrollY;
+
+  nProgress.start();
+  Alpine.store("popup").hideAllPopups();
+  Alpine.store("resizable").hideAll();
+
+  history.replaceState({ ...history.state, scrollPosition }, "");
+  pushStateAndNotify({}, "", url!);
+  replaceMainContent(content);
+  window.scrollTo(0, 0);
+
+  nProgress.done();
+};
+
 export const navigateWithTransition = (
   nextUrl: string,
   options: {
