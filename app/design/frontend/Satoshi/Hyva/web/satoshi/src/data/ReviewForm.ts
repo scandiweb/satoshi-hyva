@@ -37,8 +37,6 @@ export function ReviewForm(props: {
             this.summary = (document.getElementById('summary_field') as HTMLInputElement).value;
             this.review = (document.getElementById('review_field') as HTMLInputElement).value;
 
-            let ratingValue: string | null = null;
-
             [...document.querySelectorAll('input[name^="ratings"]')].forEach(input => {
                 const radioInput = input as HTMLInputElement;
                 if (radioInput.checked) {
