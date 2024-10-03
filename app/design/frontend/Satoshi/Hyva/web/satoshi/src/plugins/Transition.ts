@@ -298,7 +298,7 @@ export const replaceContent = (
 export const replaceMainContent = (rawContent: string) => {
   lastMainContentUpdateUrl = window.location.href;
   replaceMeta(rawContent);
-  return morphContent(
+  return replaceContent(
     rawContent,
     "main-content",
     document.getElementById("MainContent")!,
