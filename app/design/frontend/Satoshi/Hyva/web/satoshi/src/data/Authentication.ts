@@ -1,4 +1,8 @@
-import { replaceMainContent } from "../plugins/Transition";
+import {
+  pushStateAndNotify,
+  replaceMainContent,
+  replaceMainContentWithTransition,
+} from "../plugins/Transition";
 import { MainStoreType } from "../store/Main";
 
 export type AuthenticationType = {
@@ -71,12 +75,12 @@ export const Authentication = () => {
         method: "POST",
         body: formData,
         headers: {
-          "X-Requested-With": "XMLHttpRequest", // Optional if you want to handle it as an AJAX request
+          "X-Requested-With": "XMLHttpRequest",
         },
       })
         .then((response) => {
-          return response.text().then((content) => {
-            replaceMainContent(content);
+          return response.text().then(async (content) => {
+            await replaceMainContentWithTransition(response.url, content);
           });
         })
         .catch((error) => {
