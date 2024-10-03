@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Satoshi\Theme\Block\Widget;
 
-use Magento\Customer\Block\Widget\Name as BaseName;
+use Magento\Customer\Block\Widget\Name as SourceName;
 use Magento\Customer\Model\Session;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Customer\Helper\Address as AddressHelper;
@@ -11,7 +11,7 @@ use Magento\Customer\Api\CustomerMetadataInterface;
 use Magento\Customer\Model\Options;
 use Magento\Customer\Api\AddressMetadataInterface;
 
-class Name extends BaseName
+class Name extends SourceName
 {
     /**
      * @var Session
@@ -49,7 +49,7 @@ class Name extends BaseName
     }
 
     /**
-     * Retrieve form field messages from session.
+     * Retrieve and clear the form field messages from session.
      *
      * @return array
      */
