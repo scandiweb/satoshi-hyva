@@ -26,7 +26,7 @@ $couponMessage = $block->getCouponMessage();
     x-data="Accordion(<?= $hasCouponCode || $couponMessage ? 'true' : 'false' ?>, 300)"
   >
     <button
-      class="group flex items-center justify-between w-full px-5"
+      class="group flex items-center justify-between text-start w-full px-5"
       x-ref="AccordionButton"
       :aria-expanded="isExpanded"
       aria-controls="coupon-panel"
