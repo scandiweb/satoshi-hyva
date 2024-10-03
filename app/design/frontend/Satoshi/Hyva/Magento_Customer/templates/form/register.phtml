@@ -24,8 +24,6 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var ViewModelRegistry $viewModels */
 /** @var SvgIcons $hyvaicons */
 
-$formId = 'accountcreate';
-
 // Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
 // on the Magento_ReCaptchaCustomer module
 $recaptcha = $block->getData('viewModelRecaptcha');
@@ -50,12 +48,12 @@ $fieldMessages = $block->getFieldMessages();
         <?= $block->getChildHtml('customer.form.register.extra') ?>
         <form
             action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
-            x-data="Object.assign(hyva.formValidation($el), initForm())"
+            x-data="Object.assign(Register(), hyva.formValidation($el), initForm())"
             <?php if ($block->getShowAddressFields()): ?>
                 @private-content-loaded.window="onPrivateContentLoaded(event.detail.data)"
             <?php endif; ?>
-            id="<?= $escaper->escapeHtmlAttr($formId) ?>"
-            @submit.prevent="submitForm"
+            id="form-validate"
+            @submit.prevent="submitForm(() => handleFormSubmit())"
             method="post" id="form-validate" enctype="multipart/form-data" autocomplete="off"
         >
             <?= /* @noEscape */
@@ -131,7 +129,7 @@ $fieldMessages = $block->getFieldMessages();
                             <div id="password-strength-meter" class="password-strength-meter">
                                 <?= $escaper->escapeHtml(__('Password Strength')) ?>:
                                 <span id="password-strength-meter-label" class="lowercase"
-                                  data-role="password-strength-meter-label">
+                                      data-role="password-strength-meter-label">
                                     <?= $escaper->escapeHtml(__('No Password')) ?>
                                 </span>
                             </div>
@@ -418,6 +416,8 @@ $fieldMessages = $block->getFieldMessages();
             <div class="flex flex-col gap-6 mt-7">
                 <button
                     class="button button--filled-primary"
+                    :class="isLoading && 'button--disabled'"
+                    :disabled="isLoading"
                     type="submit"
                     title="<?= $escaper->escapeHtmlAttr(__('Create an Account')) ?>"
                 >
@@ -442,15 +442,15 @@ $fieldMessages = $block->getFieldMessages();
                 hasCaptchaToken: 0,
                 showPassword: false,
                 showPasswordConfirm: false,
-                submitForm() {
+                submitForm(cb) {
                     this.validate()
                         .then(() => {
                             // Do not rename $form, the variable is expected to be declared in the recaptcha output
-                            const $form = document.querySelector('#<?= $escaper->escapeJs($formId) ?>');
+                            const $form = document.querySelector('#form-validate');
                             <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>
 
                             if (this.errors === 0) {
-                                $form.submit();
+                                cb();
                             }
                         })
                         .catch((invalid) => {
