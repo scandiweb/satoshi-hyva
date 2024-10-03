@@ -1,4 +1,8 @@
-import { replaceMainContent } from "../plugins/Transition";
+import {
+  pushStateAndNotify,
+  replaceMainContent,
+  replaceMainContentWithTransition,
+} from "../plugins/Transition";
 import { MainStoreType } from "../store/Main";
 
 export type AuthenticationType = {
@@ -75,8 +79,8 @@ export const Authentication = () => {
         },
       })
         .then((response) => {
-          return response.text().then((content) => {
-            replaceMainContent(content);
+          return response.text().then(async (content) => {
+            await replaceMainContentWithTransition(response.url, content);
           });
         })
         .catch((error) => {
