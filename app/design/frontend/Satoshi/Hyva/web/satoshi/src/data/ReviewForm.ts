@@ -1,3 +1,7 @@
+import nProgress from "nprogress";
+
+nProgress.configure({ showSpinner: false });
+
 export function ReviewForm(props: {
     formId: string;
     ratingsCount: number;
@@ -7,7 +11,6 @@ export function ReviewForm(props: {
     recaptchaFieldName: string | null;
 }) {
     return {
-        isLoading: false,
         displaySuccessMessage: false,
         displayErrorMessage: false,
         errorMessages: [] as string[],
@@ -51,7 +54,7 @@ export function ReviewForm(props: {
             }
         },
         async placeReview() {
-            this.isLoading = true;
+            nProgress.start();
             this.displayErrorMessage = false;
 
             const variables = {
@@ -95,7 +98,7 @@ export function ReviewForm(props: {
             } catch (error) {
                 this.setErrorMessages(['An error occurred while submitting your review. Please try again.']);
             } finally {
-                this.isLoading = false;
+                nProgress.done();
             }
         }
     }
