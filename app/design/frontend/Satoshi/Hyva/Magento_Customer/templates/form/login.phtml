@@ -26,6 +26,7 @@ $loginButtonViewModel = $viewModels->require(LoginButton::class);
 $recaptcha = $block->getData('viewModelRecaptcha');
 
 $errorMessage = $block->getErrorMessage();
+$successMessage = $block->getSuccessMessage();
 ?>
 <div class="mx-auto mb-16 w-[412px] max-w-full" x-data="Authentication">
     <div aria-labelledby="block-customer-login-heading">
@@ -43,17 +44,22 @@ $errorMessage = $block->getErrorMessage();
                         <?= $escaper->escapeHtml(__('Login')) ?>
                     </h2>
                 </legend>
+                <?php if ($successMessage): ?>
+                    <div class="text-primary-600">
+                        <?= $successMessage ?>
+                    </div>
+                <?php endif; ?>
                 <div class="field email required mt-3">
-                        <input name="login[username]"
-                               placeholder="Email"
-                               class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                               required
-                               value="<?= $escaper->escapeHtmlAttr($block->getUsername()) ?>"
-                               autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'username' ?>"
-                               id="email"
-                               type="email"
-                               title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
-                        />
+                    <input name="login[username]"
+                        placeholder="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                        class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                        required
+                        value="<?= $escaper->escapeHtmlAttr($block->getUsername()) ?>"
+                        autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'username' ?>"
+                        id="email"
+                        type="email"
+                        title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                    />
                 </div>
                 <?php if ($errorMessage): ?>
                     <div class="text-red-600 mt-3">
@@ -62,7 +68,7 @@ $errorMessage = $block->getErrorMessage();
                 <?php endif; ?>
                 <div class="flex items-center mt-3">
                     <input name="login[password]"
-                           placeholder="password"
+                           placeholder="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
                            required
                            type="password"
