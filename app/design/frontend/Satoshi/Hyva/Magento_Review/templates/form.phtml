@@ -131,7 +131,7 @@ mutation createProductReviewMutation(
                                                         @click="clickedRatingId = <?= (int)$iterator ?> || 0"
                                                     >
                                                         <label
-                                                            class="rating-<?= (int)$iterator ?> m-0 cursor-pointer text-gray-400"
+                                                            class="rating-<?= (int)$iterator ?> m-0 cursor-pointer text-secondary-600"
                                                             for="<?= $escaper
                                                                 ->escapeHtmlAttr(
                                                                     $rating->getRatingCode() . '_' . $option->getValue()
@@ -142,10 +142,10 @@ mutation createProductReviewMutation(
                                                                 ) ?>_label"
                                                         >
                                                                 <span :class="<?= (int)$iterator ?> <= clickedRatingId
-                                                                    ? 'text-yellow-400'
-                                                                    : 'text-gray-400'"
+                                                                    ? 'text-primary-500'
+                                                                    : 'text-secondary-600'"
                                                                 >
-                                                                    <?= $heroiconsSolid->starHtml('', 32, 32, ["aria-hidden" => "true"]); ?>
+                                                                    <?= $hyvaicons->renderHtml('star', 'text-xl') ?>
                                                                 </span>
                                                             <input
                                                                 class="absolute opacity-0 bottom-0 left-0 cursor-pointer"
@@ -219,31 +219,18 @@ mutation createProductReviewMutation(
                                 <?= $escaper->escapeHtml(__('Submit Review')) ?>
                             </span>
                 </button>
-                <div class="flex flex-row justify-start items-center w-full"
-                     x-show="isLoading"
-                     x-cloak>
-                    <?= $hyvaicons->loaderHtml('text-primary', 57, 57); ?>
-                    <div class="ml-4 text-primary">
-                        <?= $escaper->escapeHtml(__('Loading...')) ?>
-                    </div>
-                </div>
-                <p x-cloak
-                   x-show="displaySuccessMessage"
-                   class="text-green flex items-center">
-                            <span class="inline-block mr-3">
-                                <?= $heroicons->checkCircleHtml('w-6 h-6'); ?>
-                            </span>
-                    <?= $escaper->escapeHtml(__('You submitted your review for moderation.')) ?>
-                </p>
-                <template x-if="displayErrorMessage">
-                    <p class="text-red flex items-center">
-                                <span class="inline-block w-8 h-8 mr-3">
-                                    <?= $heroicons->exclamationCircleHtml('w-6 h-6'); ?>
-                                </span>
-                        <template x-for="errorMessage in errorMessages">
-                            <span x-html="errorMessage"></span>
-                        </template>
+                <template x-cloak
+                          x-if="displaySuccessMessage"
+                          class="text-primary-700 flex items-center">
+                    <p>
+                        <?= $escaper->escapeHtml(__('You submitted your review for moderation.')) ?>
                     </p>
+                </template>
+                <template x-if="displayErrorMessage">
+                    <template x-for="errorMessage in errorMessages">
+                        <p x-text="errorMessage" class="text-red flex items-center">
+                        </p>
+                    </template>
                 </template>
                 <?= $block->getChildHtml('form_additional_after') ?>
                 <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
