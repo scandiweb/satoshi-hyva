@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Checkout\Block\Onepage\Success;
+use Magento\Framework\Escaper;
+
+/** @var Success $block */
+/** @var Escaper $escaper */
+?>
+<?php if ($block->getCanViewOrder() && $block->getCanPrintOrder()): ?>
+    <a href="<?= $escaper->escapeUrl($block->getPrintUrl()) ?>"
+       target="_blank"
+       rel="noopener"
+       class="button btn--size-md button--ghost-primary w-full cursor-pointer text-center md:w-auto"
+    >
+        <?= $escaper->escapeHtml(__('Print receipt')) ?>
+    </a>
+    <?= $block->getChildHtml() ?>
+<?php endif;?>
