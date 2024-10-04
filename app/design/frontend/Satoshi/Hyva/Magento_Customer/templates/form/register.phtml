@@ -37,6 +37,8 @@ $minimumPasswordLength = $block->getMinimumPasswordLength();
 $passwordMinCharacterSets = $block->getRequiredCharacterClassesNumber();
 $isAutocompleteEnabled = $block->getConfig('customer/password/autocomplete_on_storefront');
 $fieldMessages = $block->getFieldMessages();
+$successMessage = $block->getSuccessMessage();
+$errorMessage = $block->getErrorMessage();
 ?>
 
 <div class="container mx-auto flex h-full items-center px-5">
@@ -44,6 +46,17 @@ $fieldMessages = $block->getFieldMessages();
         <header class="flex items-center justify-between sm:text-center mb-7">
             <h2 class="w-full text-2xl" tabindex="-1"><?= __('Create account') ?></h2>
         </header>
+
+        <?php if ($successMessage): ?>
+            <div class="text-green-600">
+                <?= $successMessage ?>
+            </div>
+        <?php elseif ($errorMessage): ?>
+            <div class="text-red-600">
+                <?= $errorMessage ?>
+            </div>
+        <?php endif; ?>
+
         <?php /* Extensions placeholder */ ?>
         <?= $block->getChildHtml('customer.form.register.extra') ?>
         <form
@@ -97,11 +110,6 @@ $fieldMessages = $block->getFieldMessages();
                             required
                         />
                     </div>
-                    <?php if (isset($fieldMessages['email'])): ?>
-                        <div class="px-5 <?= $fieldMessages['email']['status'] === 'error' ? 'text-error' : '' ?>">
-                            <?= $fieldMessages['email']['message'] ?>
-                        </div>
-                    <?php endif; ?>
                 </div>
 
                 <div class="field field-reserved">
@@ -134,11 +142,6 @@ $fieldMessages = $block->getFieldMessages();
                                 </span>
                             </div>
                         </div>
-                        <?php if (isset($fieldMessages['password'])): ?>
-                            <div class="px-5 <?= $fieldMessages['password']['status'] === 'error' ? 'text-error' : '' ?>">
-                                <?= $fieldMessages['password']['message'] ?>
-                            </div>
-                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -159,11 +162,6 @@ $fieldMessages = $block->getFieldMessages();
                             autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                         />
                     </div>
-                    <?php if (isset($fieldMessages['password_confirmation'])): ?>
-                        <div class="px-5 <?= $fieldMessages['password_confirmation']['status'] === 'error' ? 'text-error' : '' ?>">
-                            <?= $fieldMessages['password_confirmation']['message'] ?>
-                        </div>
-                    <?php endif; ?>
                 </div>
 
                 <?php if ($block->getShowAddressFields()): ?>

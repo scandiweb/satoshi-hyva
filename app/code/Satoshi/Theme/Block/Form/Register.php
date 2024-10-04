@@ -3,38 +3,31 @@ declare(strict_types=1);
 
 namespace Satoshi\Theme\Block\Form;
 
-use Magento\Customer\Block\Form\Register as BaseRegister;
+use Magento\Customer\Block\Form\Register as SourceRegister;
 
-class Register extends BaseRegister
+class Register extends SourceRegister
 {
     /**
-     * Retrieve form field messages from customer session.
+     * Retrieve and clear the success message from the session
      *
-     * @return array
+     * @return string|null
      */
-    public function getFieldMessages(): array
+    public function getSuccessMessage(): ?string
     {
-        $messages = $this->_customerSession->getFieldMessages();
-        $this->_customerSession->unsFieldMessages();
-        return is_array($messages) ? $messages : [];
+        $successMessage = $this->_customerSession->getSuccessMessage();
+        $this->_customerSession->unsSuccessMessage();
+        return $successMessage;
     }
 
     /**
-     * Set field-specific messages into customer session.
+     * Retrieve and clear the error message from the session
      *
-     * This method allows storing an array of field-specific messages into the customer session,
-     * which can later be retrieved and used to display error or success messages for form fields.
-     *
-     * @param array $messages An associative array of field messages, where each key represents
-     *                        a form field (e.g., 'email', 'password') and the value is an array
-     *                        containing:
-     *                        - 'status' => (string) The status of the message (e.g., 'error', 'success')
-     *                        - 'message' => (string) The actual message to be displayed for the field
-     *
-     * @return void
+     * @return string|null
      */
-    public function setFieldMessages(array $messages): void
+    public function getErrorMessage(): ?string
     {
-        $this->_customerSession->setFieldMessages($messages);
+        $errorMessage = $this->_customerSession->getErrorMessage();
+        $this->_customerSession->unsErrorMessage();
+        return $errorMessage;
     }
 }
