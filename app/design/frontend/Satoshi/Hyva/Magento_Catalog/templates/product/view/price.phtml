@@ -92,12 +92,12 @@ if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPr
 
             <?php if ($finalPrice < $regularPrice): ?>
                 <!-- Discount, Old Price -->
-                <div class="flex flex-col gap-2">
-                    <s id="product-price-<?= (int)$product->getId() ?>">
-                        <span x-html="hyva.formatPrice(<?= (float)$regularPrice ?> + getCustomOptionPrice())">
+                <div class="flex flex-col gap-2 old-price">
+                    <span id="product-price-<?= (int)$product->getId() ?>">
+                        <span class="price" x-html="hyva.formatPrice(<?= (float)$regularPrice ?> + getCustomOptionPrice())">
                             <?= /** @noEscape */ $productViewModel->format($regularPrice) ?>
                         </span>
-                    </s>
+                    </span>
                     <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
                         <div class="text-[14px]">
                             <span><?= $escaper->escapeHtml(__('Excl. Tax')) ?>:</span>
@@ -138,9 +138,9 @@ if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPr
 
             <template x-if="activeProductsPriceData && activeProductsPriceData.oldPrice && activeProductsPriceData[finalPriceKey].amount < activeProductsPriceData[regularPriceKey].amount">
                 <!-- Old price -->
-                <s id="product-price-<?= (int)$product->getId() ?>" class="">
-                    <span x-html="hyva.formatPrice(activeProductsPriceData[regularPriceKey].amount + getCustomOptionPrice())"></span>
-                </s>
+                <span id="product-price-<?= (int)$product->getId() ?>" class="old-price">
+                    <span class="price" x-html="hyva.formatPrice(activeProductsPriceData[regularPriceKey].amount + getCustomOptionPrice())"></span>
+                </span>
             </template>
         </div>
 

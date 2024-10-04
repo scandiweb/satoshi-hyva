@@ -171,7 +171,7 @@ if ($product) {
                     <!-- TODO: Implement quick buy popup here -->
                 </div>
 
-                <div class="z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3">
+                <div class="z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
                     <?php if ($isSearch) : ?>
                         <template
                             x-if="product.price_range.minimum_price.final_price.value < product.price_range.minimum_price.regular_price.value">
@@ -197,7 +197,7 @@ if ($product) {
                             </div>
                             </template>
                     <?php else: ?>
-                    <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+                        <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
                     <?php endif; ?>
                 </div>
             </div>
