@@ -1,21 +1,22 @@
 import nProgress from "nprogress";
 
-nProgress.configure({ showSpinner: false });
+nProgress.configure({showSpinner: false});
 
 export function ReviewForm(props: {
     formId: string;
-    ratingsCount: number;
     sku: string;
     storeCode: string;
     gqlCreateProductReviewMutation: string;
     recaptchaFieldName: string | null;
+    ratings: { rating_id: number }[],
+    recaptchaValidation: string,
 }) {
     return {
         displaySuccessMessage: false,
         displayErrorMessage: false,
         errorMessages: [] as string[],
-        errors: 0,
-        ratings: {} as Record<number, string>,
+        errors: false,
+        ratings: [],
         nickname: '',
         summary: '',
         review: '',
@@ -24,11 +25,13 @@ export function ReviewForm(props: {
             this.displayErrorMessage = !!messages.length;
         },
         submitForm() {
-            const form = document.querySelector(`#${props.formId}`) as HTMLFormElement;
+            const $form = document.querySelector(`#${props.formId}`) as HTMLFormElement;
 
             this.validate();
 
-            if (this.errors === 0) {
+            eval(props.recaptchaValidation);
+
+            if (!this.errors) {
                 this.placeReview();
             }
         },
@@ -36,24 +39,36 @@ export function ReviewForm(props: {
             this.nickname = (document.getElementById('nickname_field') as HTMLInputElement).value;
             this.summary = (document.getElementById('summary_field') as HTMLInputElement).value;
             this.review = (document.getElementById('review_field') as HTMLInputElement).value;
+            let ratingValue;
+            props.ratings.forEach((rating) => {
+                try {
+                    ratingValue =
+                        document
+                            .querySelector(`input[name="ratings[${rating['rating_id']}]"]:checked`)
+                            .value;
+                    this.ratings[rating['rating_id']] = btoa(ratingValue);
 
-            [...document.querySelectorAll('input[name^="ratings"]')].forEach(input => {
-                const radioInput = input as HTMLInputElement;
-                if (radioInput.checked) {
-                    this.ratings[parseInt(radioInput.name.replace('ratings[', '').replace(']', ''))] = btoa(radioInput.value);
+                } catch (e) {
+                    this.setErrorMessages(e.message);
                 }
             });
 
-            if (!(this.nickname && this.summary && this.review && Object.keys(this.ratings).length === props.ratingsCount)) {
-                this.setErrorMessages(['Please verify you\'ve entered all required information']);
+            if (!(this.nickname &&
+                this.summary &&
+                this.review &&
+                Object.keys(this.ratings).length === props.ratings.length
+            )) {
+                this.setErrorMessages(
+                    ['Please verify you\'ve entered all required information']
+                );
                 this.errors = 1;
-            } else {
-                this.errors = 0;
             }
         },
         async placeReview() {
             nProgress.start();
             this.displayErrorMessage = false;
+
+            const query = props.gqlCreateProductReviewMutation;
 
             const variables = {
                 sku: props.sku,
@@ -66,23 +81,24 @@ export function ReviewForm(props: {
                 })),
             };
 
-            const headers: Record<string, string> = {
-                'Content-Type': 'application/json;charset=utf-8',
-                'Store': props.storeCode,
-            };
+            const form = document.querySelector(props.formId);
 
-            if (props.recaptchaFieldName) {
-                const form = document.querySelector(`#${props.formId}`) as HTMLFormElement;
-                headers['X-ReCaptcha'] = (form.elements[props.recaptchaFieldName] as HTMLInputElement)?.value || '';
-            }
+            const fieldName = props.recaptchaFieldName;
+            const recaptchaHeader = fieldName && form && form.elements[fieldName]
+                ? {'X-ReCaptcha': form.elements[fieldName].value}
+                : {};
+
 
             try {
                 const response = await fetch(`${BASE_URL}graphql`, {
                     method: 'POST',
-                    headers,
+                    headers: Object.assign({
+                        'Content-Type': 'application/json;charset=utf-8',
+                        'Store': props.storeCode
+                    }, recaptchaHeader),
                     credentials: 'include',
                     body: JSON.stringify({
-                        query: props.gqlCreateProductReviewMutation,
+                        query,
                         variables
                     })
                 });
