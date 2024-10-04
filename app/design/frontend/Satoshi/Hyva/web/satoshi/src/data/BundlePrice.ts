@@ -181,7 +181,7 @@ export const BundlePrice = ({
         );
 
       if (displayPriceInclAndExclTax) {
-        const basePrice = this.calculatedBasePrice || this.initialBasePrice; // ??? unfinished
+        // const basePrice = this.calculatedBasePrice || this.initialBasePrice; // ??? unfinished
         //this.calculatedBasePriceWithCustomOptions = basePrice +this.getCustomOptionBasePrice();
       }
     },
