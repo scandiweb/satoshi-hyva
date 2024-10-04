@@ -156,12 +156,17 @@ h3 {
   }
 }
 
-.old-price {
-  @apply text-[14px];
-}
-
 .price {
   @apply text-primary-600;
+
+  .old-price & {
+    @apply text-inherit line-through;
+  }
+}
+
+.special-price .price-label,
+.old-price .price-label {
+  @apply sr-only;
 }
 
 @layer components {
