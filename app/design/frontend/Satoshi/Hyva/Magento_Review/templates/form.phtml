@@ -55,53 +55,56 @@ mutation createProductReviewMutation(
 ';
 
 ?>
-<div class="flex flex-col items-center py-7 md:py-8 px-5 md:px-12 rounded-xl bg-secondary-500 content-wrapper mx-auto">
-    <div class="mb-4 text-2xl text-text-500">
-        <?= $escaper->escapeHtml(__('Write Your Own Review')) ?>
-    </div>
-    <?php if ($block->getAllowWriteReviewFlag()): ?>
-        <form
-                class="content-wrapper flex flex-col items-center justify-center"
+<div class="mx-auto content-wrapper md:p-0 my-8">
+    <div
+        class="flex flex-col items-center py-7 md:py-8 px-5 md:px-12 rounded-xl bg-secondary-500">
+        <div class="mb-4 text-2xl text-text-500">
+            <?= $escaper->escapeHtml(__('Write Your Own Review')) ?>
+        </div>
+        <?php if ($block->getAllowWriteReviewFlag()): ?>
+            <form
+                class="w-full max-w-sm"
                 id="<?= $escaper->escapeHtmlAttr($formId) ?>"
                 @submit.prevent="submitForm()"
                 action=""
                 x-data="ReviewForm({
-                formId: '<?= $escaper->escapeJs($formId) ?>',
-                ratingsCount: <?= count($block->getRatings()) ?>,
-                sku: '<?= $escaper->escapeJs($block->getProductInfo()->getSku()) ?>',
-                storeCode: '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>',
-                gqlCreateProductReviewMutation: `<?= $gqlViewModel->query('create_product_review_mutation', $gqlCreateProductReviewMutation) ?>`,
-                recaptchaFieldName: '<?= $recaptcha ? $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId)) : '' ?>'
-            })"
+                    formId: '<?= $escaper->escapeJs($formId) ?>',
+                    sku: '<?= $escaper->escapeJs($block->getProductInfo()->getSku()) ?>',
+                    storeCode: '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>',
+                    gqlCreateProductReviewMutation: `<?= $gqlViewModel->query('create_product_review_mutation', $gqlCreateProductReviewMutation) ?>`,
+                    recaptchaFieldName: '<?= $recaptcha ? $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId)) : '' ?>',
+                    ratings: JSON.parse(`<?= $escaper->escapeJs(json_encode($block->getRatings()->getData())) ?>`),
+                    recaptchaValidation: `<?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>`
+                })"
 
-        >
-            <?= $block->getChildHtml('form_fields_before') ?>
-            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
-            <fieldset class="w-full flex flex-col items-center justify-center">
-                <legend class="mb-4 text-center text-md">
+            >
+                <?= $block->getChildHtml('form_fields_before') ?>
+                <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
+                <fieldset class="w-full flex flex-col items-center justify-center">
+                    <legend class="mb-4 text-center text-md">
                         <span>
                             <?= $escaper->escapeHtml(
                                 __("You're reviewing:")
                             ) ?>
                         </span>
-                    <span class="font-semibold">
+                        <span class="font-semibold">
                             <?= $escaper->escapeHtml($block->getProductInfo()->getName()) ?>
                         </span>
-                </legend>
-                <?php if ($block->getRatings() && $block->getRatings()->getSize()): ?>
-                    <fieldset name="rating-group">
-                        <div class="flex flex-col mb-7">
-                            <div
+                    </legend>
+                    <?php if ($block->getRatings() && $block->getRatings()->getSize()): ?>
+                        <fieldset name="rating-group">
+                            <div class="flex flex-col mb-7">
+                                <div
                                     class="text-md <?php if ($block->getRatings()->getSize() <= 1): ?>hidden<?php endif ?>">
-                                <?= $escaper->escapeHtml(__('Your Rating')) ?>:
-                            </div>
-                            <div id="product-review-table">
-                                <?php foreach ($block->getRatings() as $rating): ?>
-                                    <div class="flex items-center">
-                                        <label
+                                    <?= $escaper->escapeHtml(__('Your Rating')) ?>:
+                                </div>
+                                <div id="product-review-table">
+                                    <?php foreach ($block->getRatings() as $rating): ?>
+                                        <div class="flex items-center">
+                                            <label
                                                 class="table-cell pr-6 align-middle text-left"
                                                 id="<?= $escaper->escapeHtml($rating->getRatingCode()) ?>_rating_label"
-                                        >
+                                            >
                                                     <span>
                                                         <?php if ($block->getRatings()->getSize() <= 1): ?>
                                                             <?= $escaper->escapeHtml(__('Your Rating')) ?>:
@@ -109,19 +112,19 @@ mutation createProductReviewMutation(
                                                             <?= $escaper->escapeHtml($rating->getRatingCode()) ?>
                                                         <?php endif ?>
                                                     </span>
-                                        </label>
-                                        <div
+                                            </label>
+                                            <div
                                                 class="flex grow-0 focus-within:ring-4 ring-primary ring-opacity-50"
                                                 x-data="{ clickedRatingId: 0 }"
-                                        >
-                                            <?php $options = $rating->getOptions(); ?>
-                                            <?php $iterator = 1;
-                                            foreach ($options as $option): ?>
-                                                <div
+                                            >
+                                                <?php $options = $rating->getOptions(); ?>
+                                                <?php $iterator = 1;
+                                                foreach ($options as $option): ?>
+                                                    <div
                                                         class="relative"
                                                         @click="clickedRatingId = <?= (int)$iterator ?> || 0"
-                                                >
-                                                    <label
+                                                    >
+                                                        <label
                                                             class="rating-<?= (int)$iterator ?> m-0 cursor-pointer text-secondary-600"
                                                             for="<?= $escaper
                                                                 ->escapeHtmlAttr(
@@ -131,114 +134,116 @@ mutation createProductReviewMutation(
                                                                 ->escapeHtmlAttr(
                                                                     $rating->getRatingCode() . '_' . $option->getValue()
                                                                 ) ?>_label"
-                                                    >
+                                                        >
                                                                 <span :class="<?= (int)$iterator ?> <= clickedRatingId
                                                                     ? 'text-primary-500'
                                                                     : 'text-secondary-400'"
                                                                 >
                                                                     <?= $hyvaicons->renderHtml('star', 'text-xl') ?>
                                                                 </span>
-                                                        <input
+                                                            <input
                                                                 class="absolute opacity-0 bottom-0 left-0 cursor-pointer"
                                                                 type="radio"
                                                                 <?php if ($iterator === 1): ?>required<?php endif; ?>
                                                                 name="ratings[<?= $escaper->escapeHtmlAttr($rating->getId()) ?>]"
                                                                 id="<?= $escaper->escapeHtmlAttr($rating->getRatingCode() . '_' . $option->getValue()) ?>"
                                                                 value="<?= $escaper->escapeHtmlAttr($option->getId()) ?>"
-                                                            <?php if ($iterator === 1): ?>
-                                                                aria-label="<?= $escaper->escapeHtmlAttr(__('1 star')) ?>"
-                                                            <?php else: ?>
-                                                                aria-label="<?= $escaper->escapeHtmlAttr(__('%1 stars', $iterator)) ?>"
-                                                            <?php endif; ?>
-                                                        />
-                                                    </label>
+                                                                <?php if ($iterator === 1): ?>
+                                                                    aria-label="<?= $escaper->escapeHtmlAttr(__('1 star')) ?>"
+                                                                <?php else: ?>
+                                                                    aria-label="<?= $escaper->escapeHtmlAttr(__('%1 stars', $iterator)) ?>"
+                                                                <?php endif; ?>
+                                                            />
+                                                        </label>
 
-                                                </div>
-                                                <?php $iterator++; ?>
-                                            <?php endforeach; ?>
+                                                    </div>
+                                                    <?php $iterator++; ?>
+                                                <?php endforeach; ?>
+                                            </div>
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </div>
+                                <input type="hidden" name="validate_rating" value=""/>
                             </div>
-                            <input type="hidden" name="validate_rating" value=""/>
-                        </div>
-                    </fieldset>
-                <?php endif ?>
-                <div x-cloak
-                          x-show="displaySuccessMessage"
-                          class="text-primary-700 flex items-center mb-7">
-                    <p>
-                        <?= $escaper->escapeHtml(__('You submitted your review for moderation.')) ?>
-                    </p>
-                </div>
-                <div class="w-full max-w-sm">
-                    <div class="input mb-3">
-                        <label for="nickname_field" class="sr-only tracking-widest">
-                            <span><?= $escaper->escapeHtml(__('Nickname')) ?></span>
-                        </label>
-                        <input class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                               required
-                               placeholder="<?= $escaper->escapeHtmlAttr(__('Nickname') . '*') ?>" type="text"
-                               name="nickname" id="nickname_field"/>
+                        </fieldset>
+                    <?php endif ?>
+                    <div x-cloak
+                         x-show="displaySuccessMessage"
+                         class="text-primary-700 flex items-center mb-7">
+                        <p>
+                            <?= $escaper->escapeHtml(__('You submitted your review for moderation.')) ?>
+                        </p>
                     </div>
-                    <div class="input mb-3">
-                        <label for="summary_field" class="sr-only">
-                            <span><?= $escaper->escapeHtml(__('Summary')) ?></span>
-                        </label>
-                        <div>
+                    <div class="w-full">
+                        <div class="input mb-3">
+                            <label for="nickname_field" class="sr-only tracking-widest">
+                                <span><?= $escaper->escapeHtml(__('Nickname')) ?></span>
+                            </label>
                             <input class="input__field input__field--outline bg-bg-500 px-5 py-4"
                                    required
-                                   placeholder="<?= $escaper->escapeHtml(__('Summary') . '*') ?>" type="text"
-                                   name="title"
-                                   id="summary_field"/>
+                                   placeholder="<?= $escaper->escapeHtmlAttr(__('Nickname') . '*') ?>" type="text"
+                                   name="nickname" id="nickname_field"/>
                         </div>
-                    </div>
-                    <div class="input mb-7">
-                        <label for="review_field" class="sr-only tracking-widest">
-                            <span><?= $escaper->escapeHtml(__('Review')) ?></span>
-                        </label>
-                        <div>
+                        <div class="input mb-3">
+                            <label for="summary_field" class="sr-only">
+                                <span><?= $escaper->escapeHtml(__('Summary')) ?></span>
+                            </label>
+                            <div>
+                                <input class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                                       required
+                                       placeholder="<?= $escaper->escapeHtml(__('Summary') . '*') ?>" type="text"
+                                       name="title"
+                                       id="summary_field"/>
+                            </div>
+                        </div>
+                        <div class="input mb-7">
+                            <label for="review_field" class="sr-only tracking-widest">
+                                <span><?= $escaper->escapeHtml(__('Review')) ?></span>
+                            </label>
+                            <div>
                             <textarea
-                                    required
-                                    placeholder="<?= $escaper->escapeHtml(__('Review') . '*') ?>" name="detail"
-                                    id="review_field" cols="5"
-                                    rows="5"
-                                    class="input__field input__field--outline flex h-36 resize-none bg-bg-500 px-5 py-[10px]"
+                                required
+                                placeholder="<?= $escaper->escapeHtml(__('Review') . '*') ?>" name="detail"
+                                id="review_field" cols="5"
+                                rows="5"
+                                class="input__field input__field--outline flex h-36 resize-none bg-bg-500 px-5 py-[10px]"
                             ></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
-            <div class="w-full max-w-sm">
-                <button type="submit"
-                        class="button button--filled-primary w-full mb-4">
+                </fieldset>
+                <div>
+                    <button type="submit"
+                            class="button button--filled-primary w-full mb-4">
                             <span>
                                 <?= $escaper->escapeHtml(__('Submit Review')) ?>
                             </span>
-                </button>
-                <template x-if="displayErrorMessage">
-                    <template x-for="errorMessage in errorMessages">
-                        <p x-text="errorMessage" class="text-red flex items-center">
-                        </p>
+                    </button>
+                    <template x-if="displayErrorMessage">
+                        <template x-for="errorMessage in errorMessages">
+                            <p x-text="errorMessage" class="text-red flex items-center">
+                            </p>
+                        </template>
                     </template>
-                </template>
-                <?= $block->getChildHtml('form_additional_after') ?>
-                <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
-            </div>
-        </form>
-    <?php else: ?>
-        <div
+                    <?= $block->getChildHtml('form_additional_after') ?>
+                    <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
+                </div>
+            </form>
+        <?php else: ?>
+            <div
                 id="review-form"
                 tabindex="-1"
-        >
-            <?= $escaper->escapeHtml(
-                __(
-                    'Only registered users can write reviews. Please <a href="%1" class="underline">Sign in</a> or <a href="%2" class="underline">create an account</a>',
-                    $block->getLoginLink(),
-                    $block->getRegisterUrl()
-                ),
-                ['a']
-            ) ?>
-        </div>
-    <?php endif ?>
+                class="text-center"
+            >
+                <?= $escaper->escapeHtml(
+                    __(
+                        'Only registered users can write reviews. Please <a x-element-transition-trigger href="%1" class="underline">Sign in</a> or <a href="%2" class="underline">create an account</a>',
+                        $block->getLoginLink(),
+                        $block->getRegisterUrl()
+                    ),
+                    ['a']
+                ) ?>
+            </div>
+        <?php endif ?>
+    </div>
 </div>
