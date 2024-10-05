@@ -27,9 +27,6 @@ $regionLabel = $block->getAttributeData()->getFrontendLabel('region');
 $showOptionalRegions = $block->getConfig('general/region/display_all');
 ?>
 
-<script>
-    const postCodeSpecs = <?= /* @noEscape */ $block->getPostCodeConfig()->getSerializedPostCodes() ?>;
-</script>
 <section>
     <h2 class="text-text-500 text-lg font-bold mb-5">
         <?= $escaper->escapeHtml(__('Customer Address')) ?>
@@ -46,7 +43,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
              x-data="AddressEdit(
                 <?= $showOptionalRegions ? 'true' : 'false' ?>,
                 '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
-                postCodeSpecs,
+                <?= $escaper->escapeQuote($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
                 [
                     '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
                     '<?= $escaper->escapeJs(__(' Example: ')) ?>',
