@@ -8,7 +8,7 @@
     <preference for="Magento\Customer\Controller\Account\LoginPost"
                 type="Satoshi\Theme\Customer\Controller\Account\LoginPost"/>
     <preference for="Magento\Customer\Controller\Account\CreatePost"
-                type="Satoshi\Theme\Plugin\Customer\Controller\Account\CreatePost"/>
+                type="Satoshi\Theme\Customer\Controller\Account\CreatePost"/>
     <preference for="Magento\Customer\Controller\Account\ForgotPasswordPost"
                 type="Satoshi\Theme\Customer\Controller\Account\ForgotPasswordPost"/>
     <preference
