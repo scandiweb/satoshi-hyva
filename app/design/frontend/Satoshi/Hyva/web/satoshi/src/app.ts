@@ -37,6 +37,7 @@ import { TransitionImage } from "./data/TransitionImage";
 import { Authentication } from "./data/Authentication";
 import { Gallery } from "./data/Gallery.ts";
 import { Newsletter } from "./data/Newsletter";
+import { ReviewForm } from "./data/ReviewForm.ts";
 import { ContactForm } from "./data/ContactForm";
 import { Rating } from "./data/Rating";
 import { BundlePrice } from "./data/BundlePrice";
@@ -78,6 +79,7 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("Authentication", Authentication);
   Alpine.data("Gallery", Gallery);
   Alpine.data("Newsletter", Newsletter);
+  Alpine.data("ReviewForm", ReviewForm);
   Alpine.data("ContactForm", ContactForm);
   Alpine.data("Rating", Rating);
   Alpine.data("BundlePrice", BundlePrice);
