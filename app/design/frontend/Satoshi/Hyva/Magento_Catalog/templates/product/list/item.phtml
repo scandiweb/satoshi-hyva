@@ -166,7 +166,7 @@ if ($product) {
                     </p>
 
                     <!-- Quick buy, for simple, virtual, configurable.. TODO: Make it for other types too -->
-                    <?php if ($product && $product->isSaleable() && in_array(['simple', 'virtual', 'configurable'], $product->getTypeId())): ?>
+                    <?php if ($product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
                         <form 
                             method="post"
                             action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
@@ -189,7 +189,7 @@ if ($product) {
                                     'text-primary-50': isLoadingCart,
                                     'text-primary-500': !isLoadingCart
                                 }"
-                                <?php if (in_array(['simple', 'virtual'], $product->getTypeId())): ?>
+                                <?php if (in_array($product->getTypeId(), ['simple', 'virtual'])): ?>
                                     form="quick_buy_form_<?= $product->getId() ?>"
                                     data-addto="cart"
                                     type="submit"
@@ -203,7 +203,7 @@ if ($product) {
                                 <?= $hyvaicons->renderHtml('cart'); ?>
                             </button>
 
-                            <?php if (!in_array(['simple', 'virtual'], $product->getTypeId())): ?>
+                            <?php if (!in_array($product->getTypeId(), ['simple', 'virtual'])): ?>
                                 <!-- Quick buy popup -->
                                 <?= $popup->setData([
                                         'id' => 'quick-buy-' . $product->getId(),
