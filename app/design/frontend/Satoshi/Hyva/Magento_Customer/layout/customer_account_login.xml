@@ -23,5 +23,7 @@
             </action>
         </referenceBlock>
         <referenceBlock name="customer.new" remove="true" />
+        <move element="recaptcha_validation_recaptcha" destination="customer_form_login"
+              as="recaptcha_validation"/>
     </body>
 </page>
