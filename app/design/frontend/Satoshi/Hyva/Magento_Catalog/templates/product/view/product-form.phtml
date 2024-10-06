@@ -14,7 +14,6 @@ $product = $block->getProduct();
 $productType = $product->getTypeId();
 
 /**
- * Add to cart url is set on 'product.info' block by
  * @see \Magento\Checkout\Block\Cart\Item\Configure::_prepareLayout
  */
 $productInfoBlock = $block->getLayout()->getBlock('product.info');
@@ -27,7 +26,7 @@ $isPopup = $block->getData('is_popup') ?? false;
     <form method="post"
           action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
           id="product_addtocart_form"
-      <?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
+          <?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
           @submit.prevent="addToCart($event)"
       <?php if (!$isPopup): ?>
         class="animate-on-transition md:mb-5 max-md:hidden"
