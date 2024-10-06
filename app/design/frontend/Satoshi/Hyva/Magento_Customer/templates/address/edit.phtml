@@ -37,19 +37,22 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
           id="form-validate"
           enctype="multipart/form-data"
           data-hasrequired="<?= $escaper->escapeHtmlAttr(__('* Required Fields')) ?>"
-          @private-content-loaded.window="directoryData = $event.detail.data['directory-data'] || {};"
     >
-        <div @private-content-loaded.window="setCountry($refs['country_id'], '<?= $escaper->escapeJs($block->getRegion()) ?>')"
-             x-data="AddressEdit(
+        <div
+            x-data="AddressEdit(
                 <?= $showOptionalRegions ? 'true' : 'false' ?>,
+                '<?= $block->getCountryId() ?>',
+                '<?= $escaper->escapeJs($block->getRegion()) ?>',
+                '<?= $escaper->escapeJs($block->getRegion() ?: 0) ?>',
                 '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
                 <?= $escaper->escapeQuote($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
                 [
                     '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
                     '<?= $escaper->escapeJs(__(' Example: ')) ?>',
                     '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
-                ]
+                ],
             )"
+            @private-content-loaded.window="onPrivateContentLoaded($event.detail.data);"
         >
             <div class="bg-bg-400 p-5 rounded-xl mb-7 md:mb-8">
                 <h2 class="text-text-500 text-lg font-bold mb-5">
