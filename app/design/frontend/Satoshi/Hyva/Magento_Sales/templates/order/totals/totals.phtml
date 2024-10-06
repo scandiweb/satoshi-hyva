@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Sales\Block\Order\Totals;
+
+/* @var Totals $block */
+/* @var Escaper $escaper */
+
+/**
+ * This template is used to render totals in the storefront.
+ * It is not used for order emails, which use Magento_Sales::order/totals.phtml (not part of the hyva-default-theme).
+ */
+?>
+<?php foreach ($block->getTotals() as $code => $total): ?>
+    <?php if ($total->getBlockName()): ?>
+        <?= $block->getChildHtml($total->getBlockName(), false) ?>
+    <?php else: ?>
+        <div <?= /* @noEscape */ $block->getLabelProperties() ?>>
+            <?php if ($total->getStrong()): ?>
+                <strong><?= $escaper->escapeHtml($total->getLabel()) ?></strong>
+            <?php else: ?>
+                <?= $escaper->escapeHtml($total->getLabel()) ?>
+            <?php endif ?>
+        </div>
+        <div class="mb-4 lg:mb-3" <?= /* @noEscape */ $block->getValueProperties() ?>
+            data-th="<?= $escaper->escapeHtmlAttr($total->getLabel()) ?>">
+            <?php if ($total->getStrong()): ?>
+                <strong><?= /* @noEscape */ $block->formatValue($total) ?></strong>
+            <?php else: ?>
+                <?= /* @noEscape */ $block->formatValue($total) ?>
+            <?php endif?>
+        </div>
+    <?php endif; ?>
+<?php endforeach?>
