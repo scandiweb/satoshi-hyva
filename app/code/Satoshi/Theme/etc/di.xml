@@ -39,5 +39,4 @@
     <preference for="Magento\Customer\Block\Form\Login"
                 type="Satoshi\Theme\Block\Form\Login"
     />
-    <preference for="Magento\Sales\Block\Order\Info" type="Satoshi\Theme\Block\Order\Info" />
 </config>
