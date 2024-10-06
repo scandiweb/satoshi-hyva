@@ -8,8 +8,6 @@ use Magento\Framework\Escaper;
 use Magento\Review\Block\Form;
 use Hyva\Theme\ViewModel\ReCaptcha;
 
-//phpcs:disable Generic.Files.LineLength
-
 /** @var Escaper $escaper */
 /** @var Form $block */
 /** @var ViewModelRegistry $viewModels */
@@ -56,8 +54,7 @@ mutation createProductReviewMutation(
 
 ?>
 <div class="mx-auto content-wrapper md:p-0 my-8">
-    <div
-        class="flex flex-col items-center py-7 md:py-8 px-5 md:px-12 rounded-xl bg-secondary-500">
+    <div class="flex flex-col items-center py-7 md:py-8 px-5 md:px-12 rounded-xl bg-secondary-500">
         <div class="mb-4 text-2xl text-text-500">
             <?= $escaper->escapeHtml(__('Write Your Own Review')) ?>
         </div>
@@ -68,13 +65,17 @@ mutation createProductReviewMutation(
                 @submit.prevent="submitForm()"
                 action=""
                 x-data="ReviewForm({
-                    formId: '<?= $escaper->escapeJs($formId) ?>',
+                    validateRecaptcha: () => '<?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>',
+                    ratings: <?= $escaper->escapeHtmlAttr(json_encode($block->getRatings()->getData())) ?>,
+                    messages: {
+                        required: '<?= $escaper->escapeJs(__('Please verify you\'ve entered all required information')) ?>',
+                        failed: '<?= $escaper->escapeJs(__('Submitting your review failed, please try again.')) ?>'
+                    },
+                    gqlQuery: `<?= $escaper->escapeHtmlAttr($gqlViewModel->query('create_product_review_mutation', $gqlCreateProductReviewMutation)) ?>`,
                     sku: '<?= $escaper->escapeJs($block->getProductInfo()->getSku()) ?>',
-                    storeCode: '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>',
-                    gqlCreateProductReviewMutation: `<?= $gqlViewModel->query('create_product_review_mutation', $gqlCreateProductReviewMutation) ?>`,
-                    recaptchaFieldName: '<?= $recaptcha ? $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId)) : '' ?>',
-                    ratings: JSON.parse(`<?= $escaper->escapeJs(json_encode($block->getRatings()->getData())) ?>`),
-                    recaptchaValidation: `<?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>`
+                    fieldName: '<?= $recaptcha ? $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId)) : '' ?>',
+                    formId: '<?= $escaper->escapeJs($formId) ?>',
+                    storeCode: '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>'
                 })"
 
             >
@@ -114,7 +115,7 @@ mutation createProductReviewMutation(
                                                     </span>
                                             </label>
                                             <div
-                                                class="flex grow-0 focus-within:ring-4 ring-primary ring-opacity-50"
+                                                class="flex grow-0"
                                                 x-data="{ clickedRatingId: 0 }"
                                             >
                                                 <?php $options = $rating->getOptions(); ?>
@@ -126,19 +127,10 @@ mutation createProductReviewMutation(
                                                     >
                                                         <label
                                                             class="rating-<?= (int)$iterator ?> m-0 cursor-pointer text-secondary-600"
-                                                            for="<?= $escaper
-                                                                ->escapeHtmlAttr(
-                                                                    $rating->getRatingCode() . '_' . $option->getValue()
-                                                                ) ?>"
-                                                            id="<?= $escaper
-                                                                ->escapeHtmlAttr(
-                                                                    $rating->getRatingCode() . '_' . $option->getValue()
-                                                                ) ?>_label"
+                                                            for="<?= $escaper->escapeHtmlAttr($rating->getRatingCode() . '_' . $option->getValue()) ?>"
+                                                            id="<?= $escaper->escapeHtmlAttr($rating->getRatingCode() . '_' . $option->getValue()) ?>_label"
                                                         >
-                                                                <span :class="<?= (int)$iterator ?> <= clickedRatingId
-                                                                    ? 'text-primary-500'
-                                                                    : 'text-secondary-400'"
-                                                                >
+                                                                <span :class="<?= (int)$iterator ?> <= clickedRatingId ? 'text-primary-500' : 'text-secondary-400'">
                                                                     <?= $hyvaicons->renderHtml('star', 'text-xl') ?>
                                                                 </span>
                                                             <input
@@ -155,7 +147,6 @@ mutation createProductReviewMutation(
                                                                 <?php endif; ?>
                                                             />
                                                         </label>
-
                                                     </div>
                                                     <?php $iterator++; ?>
                                                 <?php endforeach; ?>
@@ -206,22 +197,27 @@ mutation createProductReviewMutation(
                                 placeholder="<?= $escaper->escapeHtml(__('Review') . '*') ?>" name="detail"
                                 id="review_field" cols="5"
                                 rows="5"
-                                class="input__field input__field--outline flex h-36 resize-none bg-bg-500 px-5 py-[10px]"
+                                class="input__field input__field--outline flex h-36 resize-none bg-bg-500 px-5 py-2.5"
                             ></textarea>
                             </div>
                         </div>
                     </div>
                 </fieldset>
                 <div>
-                    <button type="submit"
-                            class="button button--filled-primary w-full mb-4">
+                    <button
+                        type="submit"
+                        class="button button--filled-primary w-full mb-4"
+                        :class="{
+                            '!bg-primary-100': isLoading
+                        }"
+                    >
                             <span>
                                 <?= $escaper->escapeHtml(__('Submit Review')) ?>
                             </span>
                     </button>
                     <template x-if="displayErrorMessage">
                         <template x-for="errorMessage in errorMessages">
-                            <p x-text="errorMessage" class="text-red flex items-center">
+                            <p x-text="errorMessage" class="text-error items-center">
                             </p>
                         </template>
                     </template>
