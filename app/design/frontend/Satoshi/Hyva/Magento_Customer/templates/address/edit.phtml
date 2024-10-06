@@ -31,7 +31,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
     <h2 class="text-text-500 text-lg font-bold mb-5">
         <?= $escaper->escapeHtml(__('Customer Address')) ?>
     </h2>
-    <form x-data="Object.assign(hyva.formValidation($root))"
+    <form x-data="hyva.formValidation($root)"
           action="<?= $escaper->escapeUrl($block->getSaveUrl()) ?>"
           method="post"
           id="form-validate"
