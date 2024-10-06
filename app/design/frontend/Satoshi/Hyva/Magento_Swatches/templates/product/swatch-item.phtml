@@ -16,6 +16,7 @@ $configurableViewModel = $viewModels->require(ConfigurableViewModel::class);
 
 $productId = $block->getProductId();
 $attributeId = $block->getAttributeId();
+$formId = $block->getFormId();
 
 if (!$productId || !$attributeId) {
   return '';
@@ -59,6 +60,7 @@ if (!$productId || !$attributeId) {
       :required="getAllowedAttributeOptions(<?= (int) $attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
       :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
       aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
+      form="<?= $escaper->escapeHtmlAttr($formId) ?>"
     >
     <template x-if="isTextSwatch(<?= (int) $attributeId ?>, item.id)">
       <span class="line-clamp-2 text-wrap text-sm md:text-md" x-html="getSwatchText(<?= (int) $attributeId ?>, item.id)"></span>

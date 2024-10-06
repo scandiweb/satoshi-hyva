@@ -8,11 +8,17 @@ use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Helper\Image;
 use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+$productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
 
 /** @var AbstractProduct $block */
 /** @var Magento\Catalog\Model\Product $product */
@@ -158,17 +164,55 @@ if ($product) {
                     >
                         <?= $product?->getSku() ?>
                     </p>
-                    <?php if ($product): ?>
-                        <button
-                            class="absolute right-0 text-2xl text-primary-500 md:hidden"
-                            @click.prevent.stop="quickBuy()"
-                            aria-label="<?= __('Add to cart') ?>"
-                            type="button"
+                    <?php if ($product && $product->isSaleable()): ?>
+                        <form 
+                            method="post"
+                            action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
+                            id="quick_buy_form_<?= $product->getId() ?>"
+                            class="absolute right-0 md:hidden"
+                            @submit.prevent="addToCart($event)"
+                            <?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
                         >
-                            <?= $hyvaicons->renderHtml('cart'); ?>
-                        </button>
+                            <?= /** @noEscape */ $block->getBlockHtml('formkey') ?>
+                            <input type="hidden" name="product" value="<?= (int)$product->getId() ?>"/>
+                            <?php foreach ($productOptionsViewmodel->getOptionsData($product) as $optionItem): ?>
+                                <input type="hidden"
+                                    name="<?= $escaper->escapeHtml($optionItem['name']) ?>"
+                                    value="<?= $escaper->escapeHtml($optionItem['value']) ?>">
+                            <?php endforeach; ?>
+
+                            <button
+                                class="text-2xl text-primary-500"
+                                :class="{
+                                    'text-primary-50': isLoadingCart,
+                                    'text-primary-500': !isLoadingCart
+                                }"
+                                <?php if ($product->getTypeId() === 'simple'): ?>
+                                    form="quick_buy_form_<?= $product->getId() ?>"
+                                    data-addto="cart"
+                                    type="submit"
+                                    @click.stop.throttle
+                                <?php else: ?>
+                                    @click.prevent.stop="quickBuy()"
+                                    type="button"
+                                <?php endif; ?>
+                                aria-label="<?= __('Add to cart') ?>"
+                            >
+                                <?= $hyvaicons->renderHtml('cart'); ?>
+                            </button>
+
+                            <?php if ($product->getTypeId() !== 'simple'): ?>
+                                <!-- Quick buy popup -->
+                                <?= $popup->setData([
+                                        'id' => 'quick-buy-' . $product->getId(),
+                                        'isFocused' => true,
+                                    ])
+                                    ->setChildHtml($block->getProductDetailsHtml($product))
+                                    // ->setChildTemplate('Magento_Catalog::product/list/quick-buy-popup.phtml', ['product' => $product])
+                                    ->render() ?>
+                            <?php endif; ?>
+                        </form>
                     <?php endif ?>
-                    <!-- TODO: Implement quick buy popup here -->
                 </div>
 
                 <div class="z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
