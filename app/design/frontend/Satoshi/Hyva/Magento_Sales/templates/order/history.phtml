@@ -1,7 +1,6 @@
 <?php
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Sales\Block\Order\History;
@@ -133,7 +132,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
         </div>
     <?php endif ?>
     <?= $block->getChildHtml('customer.account.link.back'); ?>
-    <?php else: ?>
-        <div class="mb5"><?= $escaper->escapeHtml($block->getEmptyOrdersMessage()) ?></div>
-    <?php endif ?>
 </div>
+<?php else: ?>
+    <div class="mb-5"><?= $escaper->escapeHtml($block->getEmptyOrdersMessage()) ?></div>
+<?php endif ?>
