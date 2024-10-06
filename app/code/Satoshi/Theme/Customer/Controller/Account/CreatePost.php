@@ -246,13 +246,6 @@ class CreatePost extends SourceCreatePost{
             $this->session->setErrorMessage(__('Account already exists.'));
         } catch (InputException $e) {
             $this->session->setErrorMessage($e->getMessage());
-            echo $e->getMessage();
-            echo '<pre>';
-            print_r($e->getErrors());
-            echo '</pre>';
-//            foreach ($e->getErrors() as $error) {
-//                $this->messageManager->addErrorMessage($error->getMessage());
-//            }
         } catch (LocalizedException $e) {
             $this->session->setErrorMessage($e->getMessage());
         } catch (\Exception $e) {
