@@ -12,7 +12,7 @@ class Register extends SourceRegister
      *
      * @return string|null
      */
-    public function getSuccessMessage(): ?string
+    public function getSuccessMessage()
     {
         $successMessage = $this->_customerSession->getSuccessMessage();
         $this->_customerSession->unsSuccessMessage();
@@ -24,7 +24,7 @@ class Register extends SourceRegister
      *
      * @return string|null
      */
-    public function getErrorMessage(): ?string
+    public function getErrorMessage()
     {
         $errorMessage = $this->_customerSession->getErrorMessage();
         $this->_customerSession->unsErrorMessage();
