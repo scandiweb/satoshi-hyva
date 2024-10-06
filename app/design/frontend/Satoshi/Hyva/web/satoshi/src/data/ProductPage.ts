@@ -238,12 +238,6 @@ export const ProductPage = () =>
         );
       }
 
-      // @ts-ignore
-      if (item.item_id == 288) {
-        console.log("checking item in cart", item);
-        console.log("checking selected values", this.selectedValues);
-      }
-
       // Match options / configurable product
       const keys = Object.keys(this.selectedValues);
       if (keys.length !== item.options.length) {
