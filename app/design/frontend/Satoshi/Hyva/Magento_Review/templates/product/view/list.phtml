@@ -70,8 +70,8 @@ $productName = $block->getProduct()->getName();
                                     <span itemprop="name"><?= $escaper->escapeHtml($review->getNickname()) ?></span>
                                 </strong>
                             </div>
-                            <div class="mb-3 text-primary-700">
-                                <span>Created at</span>
+                            <div class="mb-3">
+                                <span><?= $escaper->escapeHtml(__('Created at')) ?></span>
                                 <time
                                         itemprop="datePublished"
                                         datetime="<?= $escaper->escapeHtmlAttr($block->formatDate($review->getCreatedAt(), $format)); ?>"

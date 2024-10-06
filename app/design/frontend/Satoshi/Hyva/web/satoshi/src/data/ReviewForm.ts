@@ -1,119 +1,165 @@
-import nProgress from "nprogress";
+import type { Magics } from "alpinejs";
 
-nProgress.configure({showSpinner: false});
+type Rating = {
+  rating_id: string;
+  entity_id: string;
+  rating_code: string;
+  position: string;
+  is_active: string;
+  entity_code: string;
+};
 
-export function ReviewForm(props: {
-    formId: string;
-    sku: string;
-    storeCode: string;
-    gqlCreateProductReviewMutation: string;
-    recaptchaFieldName: string | null;
-    ratings: { rating_id: number }[],
-    recaptchaValidation: string,
-}) {
-    return {
-        displaySuccessMessage: false,
-        displayErrorMessage: false,
-        errorMessages: [] as string[],
-        errors: false,
-        ratings: [],
-        nickname: '',
-        summary: '',
-        review: '',
-        setErrorMessages(messages: string[]) {
-            this.errorMessages = messages;
-            this.displayErrorMessage = !!messages.length;
-        },
-        submitForm() {
-            const $form = document.querySelector(`#${props.formId}`) as HTMLFormElement;
+type ReviewFormProps = {
+  validateRecaptcha: Function;
+  ratings: Rating[];
+  messages: Record<string, string>;
+  gqlQuery: string;
+  sku: string;
+  fieldName: string;
+  formId: string;
+  storeCode: string;
+};
 
-            this.validate();
+export type ReviewFormType = {
+  isLoading: boolean;
+  displayNickname: boolean;
+  displaySuccessMessage: boolean;
+  displayErrorMessage: boolean;
+  errorMessages: Array<string[]> | [];
+  errors: number;
+  hasCaptchaToken: number;
+  nickname: string | null;
+  summary: string | null;
+  ratings: any;
+  review: string | null;
+  setErrorMessages(messages: string[]): void;
+  submitForm(): void;
+  validate(): void;
+  placeReview(): void;
+} & Magics<{}>;
 
-            eval(props.recaptchaValidation);
+export const ReviewForm = ({
+  validateRecaptcha,
+  ratings,
+  messages,
+  gqlQuery,
+  sku,
+  fieldName,
+  formId,
+  storeCode,
+}: ReviewFormProps) =>
+  <ReviewFormType>{
+    isLoading: false,
+    displayNickname: false,
+    displaySuccessMessage: false,
+    displayErrorMessage: false,
+    errorMessages: [],
+    errors: 0,
+    hasCaptchaToken: 0,
+    nickname: null,
+    summary: null,
+    ratings: [],
+    review: null,
+    setErrorMessages: function (messages) {
+      this.errorMessages = [messages];
+      console.log("errorMessages", this.errorMessages);
+      this.displayErrorMessage = !!this.errorMessages.length;
+    },
+    submitForm: function () {
+      // Do not remove $form. The variable is used in the recaptcha child template.
+      const $form = document.querySelector(`#${formId}`);
+      this.validate();
 
-            if (!this.errors) {
-                this.placeReview();
-            }
-        },
-        validate() {
-            this.nickname = (document.getElementById('nickname_field') as HTMLInputElement).value;
-            this.summary = (document.getElementById('summary_field') as HTMLInputElement).value;
-            this.review = (document.getElementById('review_field') as HTMLInputElement).value;
-            let ratingValue;
-            props.ratings.forEach((rating) => {
-                try {
-                    ratingValue =
-                        document
-                            .querySelector(`input[name="ratings[${rating['rating_id']}]"]:checked`)
-                            .value;
-                    this.ratings[rating['rating_id']] = btoa(ratingValue);
+      validateRecaptcha();
 
-                } catch (e) {
-                    this.setErrorMessages(e.message);
-                }
-            });
+      if (this.errors === 0) {
+        this.placeReview();
+      }
+    },
+    validate: function () {
+      this.nickname = (
+        document.getElementById("nickname_field") as HTMLInputElement
+      ).value;
+      this.summary = (
+        document.getElementById("summary_field") as HTMLInputElement
+      ).value;
+      this.review = (
+        document.getElementById("review_field") as HTMLInputElement
+      ).value;
 
-            if (!(this.nickname &&
-                this.summary &&
-                this.review &&
-                Object.keys(this.ratings).length === props.ratings.length
-            )) {
-                this.setErrorMessages(
-                    ['Please verify you\'ve entered all required information']
-                );
-                this.errors = 1;
-            }
-        },
-        async placeReview() {
-            nProgress.start();
-            this.displayErrorMessage = false;
-
-            const query = props.gqlCreateProductReviewMutation;
-
-            const variables = {
-                sku: props.sku,
-                nick: this.nickname,
-                summary: this.summary,
-                review: this.review,
-                ratings: Object.keys(this.ratings).map(key => ({
-                    id: btoa(key),
-                    value_id: this.ratings[parseInt(key)]
-                })),
-            };
-
-            const form = document.querySelector(props.formId);
-
-            const fieldName = props.recaptchaFieldName;
-            const recaptchaHeader = fieldName && form && form.elements[fieldName]
-                ? {'X-ReCaptcha': form.elements[fieldName].value}
-                : {};
-
-
-            try {
-                const response = await fetch(`${BASE_URL}graphql`, {
-                    method: 'POST',
-                    headers: Object.assign({
-                        'Content-Type': 'application/json;charset=utf-8',
-                        'Store': props.storeCode
-                    }, recaptchaHeader),
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        query,
-                        variables
-                    })
-                });
-                const data = await response.json();
-
-                if (data.errors) {
-                    this.setErrorMessages(['Submitting your review failed, please try again.']);
-                } else {
-                    this.displaySuccessMessage = true;
-                }
-            } catch (error) {
-                this.setErrorMessages(['An error occurred while submitting your review. Please try again.']);
-            } finally {
-                nProgress.done();
-            }
+      let ratingValue;
+      ratings.forEach((rating) => {
+        try {
+          const rating_id = rating.rating_id;
+          ratingValue = (
+            document.querySelector(
+              `input[name="ratings[${rating_id}]"]:checked`,
+            ) as HTMLInputElement
+          ).value;
+          this.ratings[rating_id] = btoa(ratingValue);
+        } catch (e) {
+          console.log(e);
         }
-    }
-}
+      });
+
+      if (
+        !(
+          this.nickname &&
+          this.summary &&
+          this.review &&
+          Object.keys(this.ratings).length === ratings.length
+        )
+      ) {
+        this.setErrorMessages([messages.required]);
+        this.displayErrorMessage = true;
+        this.errors = 1;
+        this.hasCaptchaToken = 0;
+      }
+    },
+    placeReview: function () {
+      this.isLoading = true;
+      this.displayErrorMessage = false;
+
+      const query = gqlQuery;
+      const variables = {
+        sku,
+        nick: this.nickname,
+        summary: this.summary,
+        review: this.review,
+        ratings: Object.keys(this.ratings).map((key) => {
+          return { id: btoa(key), value_id: this.ratings[key] };
+        }),
+      };
+
+      const form = document.querySelector(`#${formId}`) as HTMLFormElement;
+      const elements = form.elements as Record<string, any>;
+
+      const recaptchaHeader =
+        fieldName && form && elements[fieldName]
+          ? { "X-ReCaptcha": elements[fieldName].value }
+          : {};
+
+      fetch(`${BASE_URL}graphql`, {
+        method: "POST",
+        headers: Object.assign(
+          {
+            "Content-Type": "application/json;charset=utf-8",
+            Store: storeCode,
+          },
+          recaptchaHeader,
+        ),
+        credentials: "include",
+        body: JSON.stringify({ query: query, variables: variables }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.isLoading = false;
+          if (data.errors) {
+            this.setErrorMessages([messages.failed]);
+            this.displayErrorMessage = true;
+          } else {
+            this.displaySuccessMessage = true;
+          }
+        });
+    },
+  };
