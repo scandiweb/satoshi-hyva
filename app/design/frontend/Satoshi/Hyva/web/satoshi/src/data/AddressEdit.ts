@@ -22,6 +22,7 @@ export type AddressEditType = {
   postCodeSpecs: CountryPostCodeSpecs;
 
   init(): void;
+  onPrivateContentLoaded(data: Record<string, any>): void;
   setCountry(countrySelectElement: HTMLSelectElement, initialRegion: string): void;
   setRegionInputValue(regionName: string): void;
   changeCountry(event: Event, initialRegion: string): void;
@@ -38,6 +39,9 @@ export type AddressEditType = {
 
 export const AddressEdit = (
     showOptionalRegions: boolean,
+    countryId: string,
+    region: string,
+    selectedRegion: string,
     telephoneErrorMessage: string,
     postCodeSpecs: CountryPostCodeSpecs,
     postcodeWarnings: string[],
@@ -47,7 +51,7 @@ export const AddressEdit = (
       availableRegions: {},
       messageTime: 5000,
       fieldsNames: [] as string[],
-      selectedRegion: '0',
+      selectedRegion: selectedRegion,
       isZipRequired: true,
       isRegionRequired: true,
       showOptionalRegions: showOptionalRegions,
@@ -103,7 +107,25 @@ export const AddressEdit = (
           });
         });
       },
-      setCountry(this: AddressEditType, countrySelectElement: HTMLSelectElement, initialRegion: string) {
+
+      onPrivateContentLoaded(data) {
+        this.directoryData = data['directory-data'] || {};
+
+        if (countryId) {
+          this.setCountry(this.$refs['country_id'] as HTMLSelectElement, region);
+        }
+      },
+
+      setRegionInputValue(regionName: string) {
+        this.$nextTick(() => {
+          const regionInputElement = this.$refs['region'] as HTMLInputElement;
+          if (regionInputElement) {
+            regionInputElement.value = regionName;
+          }
+        });
+      },
+
+      setCountry(countrySelectElement: HTMLSelectElement, initialRegion: string) {
         const selectedOption = countrySelectElement.options[countrySelectElement.selectedIndex];
         const countryCode = countrySelectElement.value;
         const countryData = this.directoryData[countryCode] || false;
@@ -121,35 +143,26 @@ export const AddressEdit = (
             (regionId) => this.availableRegions[regionId].name === initialRegion
         );
         this.selectedRegion = initialRegionId || '0';
-        this.setRegionInputValue(initialRegionId ? this.availableRegions[initialRegionId].name : '');
+        this.setRegionInputValue(initialRegionId && this.availableRegions[initialRegionId].name || '');
       },
 
-      setRegionInputValue(this: AddressEditType, regionName: string) {
-        this.$nextTick(() => {
-          const regionInputElement = this.$refs['region'] as HTMLInputElement;
-          if (regionInputElement) {
-            regionInputElement.value = regionName;
-          }
-        });
-      },
-
-      changeCountry(this: AddressEditType, event: Event, initialRegion: string) {
+      changeCountry(event: Event, initialRegion: string) {
         this.setCountry(event.target as HTMLSelectElement, initialRegion);
         this.validateCountryDependentFields();
         this.onChange(event);
       },
 
-      validateCountryDependentFields(this: AddressEditType) {
+      validateCountryDependentFields() {
         this.$nextTick(() => {
-          if (this.fields['postcode']) this.removeMessages(this.fields['postcode']);
-          if (this.fields['region']) this.removeMessages(this.fields['region']);
+          this.fields['postcode'] && this.removeMessages(this.fields['postcode']);
+          this.fields['region'] && this.removeMessages(this.fields['region']);
           delete this.fields['postcode'];
           delete this.fields['region'];
 
-          this.setupField(this.$refs['country_id'] as HTMLElement);
-          this.setupField(this.$refs['postcode'] as HTMLElement);
-          this.setupField(this.$refs['region'] as HTMLElement);
-          this.setupField(this.$refs['region_id'] as HTMLElement);
+          this.setupField(this.$refs['country_id']);
+          this.setupField(this.$refs['postcode']);
+          this.setupField(this.$refs['region']);
+          this.setupField(this.$refs['region_id']);
 
           if (this.fields['postcode']) this.validateField(this.fields['postcode']);
           if (this.fields['region']) this.validateField(this.fields['region']);
@@ -157,19 +170,22 @@ export const AddressEdit = (
         });
       },
 
-      hasAvailableRegions(this: AddressEditType) {
+      hasAvailableRegions() {
         return Object.keys(this.availableRegions).length > 0;
       },
 
-      onRegionIdChange(this: AddressEditType, event: Event) {
+      onRegionIdChange(event: Event) {
         const regionInput = this.$refs['region'] as HTMLInputElement;
-        regionInput.value =
-            this.selectedRegion.length > 0 ? this.availableRegions[this.selectedRegion].name : '';
+        if (regionInput) {
+          regionInput.value = this.selectedRegion.length > 0 ?
+              this.availableRegions[this.selectedRegion].name || '' :
+              '';
+        }
         this.onChange(event);
         this.validateField(this.fields['region']);
       },
 
-      submitForm(this: AddressEditType, cb: Function) {
+      submitForm(cb: Function) {
         this.validate()
             .then(() => {
               const invalidFields = Object.values(this.fields).filter((field) => !field.state.valid);
