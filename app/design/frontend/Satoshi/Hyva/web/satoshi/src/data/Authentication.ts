@@ -1,8 +1,4 @@
-import {
-  pushStateAndNotify,
-  replaceMainContent,
-  replaceMainContentWithTransition,
-} from "../plugins/Transition";
+import { replaceMainContentWithTransition } from "../plugins/Transition";
 import { MainStoreType } from "../store/Main";
 
 export type AuthenticationType = {
