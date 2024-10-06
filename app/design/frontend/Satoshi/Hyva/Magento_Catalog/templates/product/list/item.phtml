@@ -128,7 +128,7 @@ if ($product) {
                             class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform  md:group-hover:scale-105">
                             <img
                                 :src="product.media_gallery?.[0]?.url"
-                                :alt="product.image.label"
+                                :alt="product.image?.label"
                                 class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
                                 loading="lazy"
                                 width=""
@@ -170,10 +170,36 @@ if ($product) {
                     <?php endif ?>
                     <!-- TODO: Implement quick buy popup here -->
                 </div>
-                <?php if ($product) : ?>
-                    <?= /* @noEscape */
-                    $productListItemViewModel->getProductPriceHtml($product) ?>
-                <?php endif; ?>
+
+                <div class="z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
+                    <?php if ($isSearch) : ?>
+                        <template
+                            x-if="product.price_range.minimum_price.final_price.value < product.price_range.minimum_price.regular_price.value">
+                            <div>
+                                <span class="sr-only"><?= __('Sale Price') ?></span>
+                                <span class="text-primary-500"
+                                    x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                                <s x-text="hyva.formatPrice(product.price_range.minimum_price.regular_price.value)"></s>
+                            </div>
+                        </template>
+                        <template x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value != product.price_range.maximum_price.value">
+                            <div>
+                                <span><?= __('As low as') ?></span>
+                                <span class="text-primary-500" x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                            </div>
+                        </template>
+                        <template
+                            x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value === product.price_range.maximum_price.value">
+                            <div>
+                                <span class="sr-only"><?= __('Regular Price') ?></span>
+                                <span class="text-primary-500"
+                                    x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                            </div>
+                            </template>
+                    <?php else: ?>
+                        <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+                    <?php endif; ?>
+                </div>
             </div>
         </article>
     </a>
