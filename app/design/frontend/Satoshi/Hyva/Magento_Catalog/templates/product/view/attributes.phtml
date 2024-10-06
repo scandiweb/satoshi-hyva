@@ -27,7 +27,7 @@ $product = $block->getProduct();
 <?php if ($attributes = $block->getAdditionalData()): ?>
     <div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion('true', 300)">
         <button
-            class="group flex items-center justify-between"
+            class="group flex items-center justify-between text-start"
             x-ref="AccordionButton"
             type="button"
             :aria-expanded="isExpanded"
