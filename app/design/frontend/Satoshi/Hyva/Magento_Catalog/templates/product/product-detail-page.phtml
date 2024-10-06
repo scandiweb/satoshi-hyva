@@ -3,10 +3,17 @@
 declare(strict_types=1);
 
 use Magento\Catalog\Block\Product\View;
+use Magento\Framework\Escaper;
 
 /** @var View $block */
+/** @var Escaper $escaper */
 
 $product = $block->getProduct();
+
+$groupedIds = [];
+if ($product->getTypeId() === 'grouped') {
+  $groupedIds = array_map(fn($item) => $item['entity_id'], $product->getTypeInstance()->getAssociatedProducts($product));
+}
 ?>
 
 <section
@@ -18,6 +25,7 @@ $product = $block->getProduct();
     () => {
       $data.setProductPageProps({
         productId: <?= $product['entity_id'] ?>,
+        groupedIds: <?= $escaper->escapeHtmlAttr(json_encode($groupedIds)) ?>,
         isScrollingToTop: true,
       })
     }
