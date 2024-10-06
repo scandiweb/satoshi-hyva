@@ -1,4 +1,5 @@
 import type { Magics } from "alpinejs";
+import {navigateWithTransition} from "../plugins/Transition";
 
 export type RecentOrdersType = {
   reorderProducts: {
@@ -9,10 +10,12 @@ export type RecentOrdersType = {
   reorderItems: any[];
   isShowAddToCart: boolean;
   checkboxId: string;
+  isLoading: boolean;
 
   receiveReorderData(data: any): void;
   addToCart(postUrl: string): void;
   reorderSidebarFetchHandler(body: string, postUrl: string): any;
+  onReorder(event: Event): void;
 } & Magics<{}>;
 
 export const RecentOrders = (messageText: string) =>
@@ -22,6 +25,7 @@ export const RecentOrders = (messageText: string) =>
     reorderItems: {},
     isShowAddToCart: false,
     checkboxId: "reorder-item-",
+    isLoading: false,
 
     receiveReorderData(data) {
       if (data["last-ordered-items"]) {
@@ -86,4 +90,28 @@ export const RecentOrders = (messageText: string) =>
           window.dispatchMessages && window.dispatchMessages([message], 5000);
         });
     },
+
+      onReorder(event) {
+        const target = event.target as HTMLElement;
+        const $form = target?.closest("form");
+
+        if (!$form) return;
+
+        const formData = new FormData($form);
+        this.isLoading = true;
+
+        fetch($form.action, {
+          method: "POST",
+          body: formData,
+        }).then((res) => {
+          if (res.ok) {
+          navigateWithTransition('/checkout/cart');
+          }
+        }).catch((error) => {
+          console.error("Error while processing reorder request:", error);
+          location.reload();
+        }).finally(() => {
+            this.isLoading = false;
+        });
+      },
   };
