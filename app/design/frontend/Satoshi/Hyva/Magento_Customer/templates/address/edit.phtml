@@ -45,7 +45,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                 '<?= $escaper->escapeJs($block->getRegion()) ?>',
                 '<?= $escaper->escapeJs($block->getRegion() ?: 0) ?>',
                 '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
-                <?= $escaper->escapeQuote($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
+                <?= $escaper->escapeHtmlAttr($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
                 [
                     '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
                     '<?= $escaper->escapeJs(__(' Example: ')) ?>',
