@@ -1,10 +1,4 @@
 <?php
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
 
 declare(strict_types=1);
 
@@ -74,9 +68,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 <button type="button"
                         @click="<?= /** @noEscape */
                         $confirmation->getShowJs() ?>.then(ok => ok && $refs.form.submit())">
-                    <?= $hyvaicons->renderHtml('trash', 'text-xl text-primary-700'); ?>                </button>
-                <?= /** @noEscape */
-                $confirmation ?>
+                    <?= $hyvaicons->renderHtml('trash', 'text-xl text-primary-700'); ?>
+                </button>
+                <?= /** @noEscape */ $confirmation ?>
             </form>
         </div>
     </div>
