@@ -298,7 +298,7 @@ export const replaceContent = (
 export const replaceMainContent = (rawContent: string) => {
   lastMainContentUpdateUrl = window.location.href;
   replaceMeta(rawContent);
-  return morphContent(
+  return replaceContent(
     rawContent,
     "main-content",
     document.getElementById("MainContent")!,
@@ -359,6 +359,24 @@ export const fetchAndCachePage = async (url: string) => {
   cachePage(url, html);
 
   return html;
+};
+
+export const replaceMainContentWithTransition = async (
+  url: string,
+  content: string,
+) => {
+  const scrollPosition = window.scrollY;
+
+  nProgress.start();
+  Alpine.store("popup").hideAllPopups();
+  Alpine.store("resizable").hideAll();
+
+  history.replaceState({ ...history.state, scrollPosition }, "");
+  pushStateAndNotify({}, "", url!);
+  replaceMainContent(content);
+  window.scrollTo(0, 0);
+
+  nProgress.done();
 };
 
 export const navigateWithTransition = (

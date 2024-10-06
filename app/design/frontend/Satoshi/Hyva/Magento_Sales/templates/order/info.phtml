@@ -1,0 +1,50 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Sales\PaymentInfo;
+use Magento\Framework\Escaper;
+use Magento\Sales\Block\Order\Info;
+
+/** @var Info $block */
+/** @var Escaper $escaper */
+/** @var PaymentInfo $paymentInfo */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$order = $block->getOrder();
+$paymentInfo = $viewModels->require(PaymentInfo::class);
+?>
+<div class="pb-4 md:pb-7 border-b border-container">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="w-full ">
+            <p class="font-bold text-lg mb-4"><?= $escaper->escapeHtml(__('Billing Address')) ?></p>
+            <div class="box-content">
+                <?= /* @noEscape */ $block->getFormattedAddress($order->getBillingAddress()) ?>
+            </div>
+        </div>
+        <?php if (!$order->getIsVirtual()): ?>
+            <div class="w-full ">
+                <p class="font-bold text-lg mb-4"><?= $escaper->escapeHtml(__('Shipping Address')) ?></p>
+                <div class="box-content">
+                    <?= /* @noEscape */ $block->getFormattedAddress($order->getShippingAddress()) ?>
+                </div>
+            </div>
+            <div class="w-full ">
+                <p class="font-bold text-lg mb-4"><?= $escaper->escapeHtml(__('Shipping Method')) ?></p>
+                <div class="box-content">
+                    <?php if ($order->getShippingDescription()): ?>
+                        <?= $escaper->escapeHtml($order->getShippingDescription()) ?>
+                    <?php else: ?>
+                        <?= $escaper->escapeHtml(__('No shipping information available')) ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div class="w-full ">
+            <p class="font-bold text-lg mb-4"><?= $escaper->escapeHtml(__('Payment Method')) ?></p>
+            <div class="box-content">
+                <?= $escaper->escapeHtml($paymentInfo->getPaymentTitle($order)) ?>
+            </div>
+        </div>
+    </div>
+</div>
