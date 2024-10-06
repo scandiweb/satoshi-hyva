@@ -1,0 +1,138 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Magento\Sales\Block\Order\History;
+use Magento\Sales\Model\Order;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var History $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var Order[] $orders */
+$orders = $block->getOrders();
+
+$extraActions = [];
+if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-extra-action-titles')) {
+    foreach ($extraActionTitleBlocks as $alias => $extraActionTitleBlock) {
+        $extraActions[$alias] = $extraActionTitleBlock->toHtml();
+    }
+    $extraActions = array_filter($extraActions, function ($output, string $alias) use ($block): bool {
+        return trim($output) && $block->getLayout()->getChildBlock('order-list-extra-action-buttons', $alias);
+    }, ARRAY_FILTER_USE_BOTH);
+}
+
+?>
+<?= $block->getChildHtml('info') ?>
+<?php if ($orders && count($orders)): ?>
+<div>
+    <div data-content-wrapper>
+        <!-- pagination-content -->
+        <?php foreach ($orders as $order): ?>
+            <div class="overflow-x-auto mb-5 bg-bg-400 p-5 rounded-xl">
+                <?php
+                $date = $order->getCreatedAt();
+                $format = $block->getDateFormat() ?: \IntlDateFormatter::SHORT;
+                $formatLong = $block->getDateFormat() ?: \IntlDateFormatter::LONG;
+                ?>
+                <div
+                        id="my-orders-grid"
+                        class="grid gap-4 grid-cols-1 md:grid-cols-6"
+                >
+                    <div class="flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('Order #')) ?></div>
+                        <div><?= $escaper->escapeHtml($order->getRealOrderId()) ?></div>
+                    </div>
+                    <div class="flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('Date')) ?></div>
+                        <time class="mt-1"
+                              datetime="<?= $escaper->escapeHtmlAttr($block->formatDate($date, $format)); ?>">
+                            <span aria-hidden="true"><?= $escaper->escapeHtml($block->formatDate($date, $format)); ?></span>
+                            <span
+                                    class="sr-only"><?= $escaper->escapeHtml($block->formatDate($date, $formatLong)); ?></span>
+                        </time>
+                    </div>
+                    <?= $block->getChildHtml('extra.column.header') ?>
+                    <div class="flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('Ship To')) ?></div>
+                        <div class="md:mt-1">
+                            <?= $order->getShippingAddress() ? $escaper->escapeHtml($order->getShippingAddress()->getName()) : '&nbsp;' ?>
+                        </div>
+                    </div>
+                    <div class="flex md:block justify-between">
+                        <div class="font-bold"><?= $escaper->escapeHtml(__('Order Total')) ?></div>
+                        <div class="md:mt-1">
+                            <?= $order->formatPrice($order->getGrandTotal()) ?>
+                        </div>
+                    </div>
+                    <div class="flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('Status')) ?></div>
+                        <div class="md:mt-1">
+                            <?= $escaper->escapeHtml($order->getStatusLabel()) ?>
+                        </div>
+                    </div>
+                    <div class="md:text-right flex md:block justify-between">
+                        <div class="font-bold md:mb-2"><?= $escaper->escapeHtml(__('View / Reorder')) ?></div>
+                        <div class="flex items-center justify-end gap-5 md:mt-1">
+                            <a
+                                    href="<?= $escaper->escapeUrl($block->getViewUrl($order)) ?>"
+                                    class="inline-block underline text-secondary-darker"
+                                    title="<?= $escaper->escapeHtmlAttr(__('View Order')) ?>"
+                                    aria-label="<?= $escaper->escapeHtmlAttr(__('View order') . ' ' . ltrim($order->getRealOrderId(), '0')) ?>"
+                            >
+                                <?= $hyvaicons->renderHtml('eye', 'text-xl text-primary-500') ?>
+                            </a>
+                            <?php if ($this->helper(\Magento\Sales\Helper\Reorder::class)->canReorder($order->getEntityId())): ?>
+                                <?php $formData = json_decode(
+                                    $this->helper(\Magento\Framework\Data\Helper\PostHelper::class)->getPostData(
+                                        $block->getReorderUrl($order)
+                                    ),
+                                    true
+                                ) ?>
+                                <form
+                                        action="<?= /* @noEscape */
+                                        $formData['action'] ?>"
+                                        method="post"
+                                        class="inline-flex items-center"
+                                >
+                                    <?= $block->getBlockHtml('formkey'); ?>
+                                    <input type="hidden" name="data"
+                                           value="<?= $escaper->escapeHtmlAttr(json_encode($formData['data'])) ?>">
+                                    <button
+                                            title="<?= $escaper->escapeHtmlAttr(__('Reorder')) ?>"
+                                            type="submit"
+                                            class="inline-block text-sm underline text-secondary-darker"
+                                            aria-label="<?= $escaper->escapeHtmlAttr(__('Reorder') . ' ' . ltrim($order->getRealOrderId(), '0')) ?>"
+                                    >
+                                        <?= $hyvaicons->renderHtml('refresh', 'text-xl text-primary-500') ?>
+                                    </button>
+                                </form>
+                            <?php endif ?>
+                            <?php foreach (array_keys($extraActions) as $alias): ?>
+                                <?php $button = $block->getLayout()->getChildBlock('order-list-extra-action-buttons', $alias) ?>
+                                <?= $button->assign('order', $order)->setData('order', $order)->toHtml() ?>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+        <!-- end-pagination-content -->
+    </div>
+    <?php if ($block->getPagerHtml()): ?>
+        <div>
+            <?= $block->getPagerHtml() ?>
+        </div>
+    <?php endif ?>
+    <?= $block->getChildHtml('customer.account.link.back'); ?>
+</div>
+<?php else: ?>
+    <div class="mb-5"><?= $escaper->escapeHtml($block->getEmptyOrdersMessage()) ?></div>
+<?php endif ?>
