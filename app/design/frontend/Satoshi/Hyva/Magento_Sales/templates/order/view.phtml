@@ -72,8 +72,6 @@ $order = $block->getOrder();
         <?php endif; ?>
     </div>
 </div>
-<div class="ml-5 mt-7">
-    <a class="text-primary-700" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
-        <span><?= $escaper->escapeHtml($block->getBackTitle()) ?></span>
-    </a>
-</div>
+<a class="button button--ghost-primary mt-5" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
+    <span><?= $escaper->escapeHtml($block->getBackTitle()) ?></span>
+</a>
