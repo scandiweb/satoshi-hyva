@@ -5,5 +5,6 @@
         <move element="product.info.quantity" destination="product.actions"/>
         <move element="product.info.addtocart" destination="product.actions"/>
         <move element="addtocart.shortcut.buttons" destination="product.actions"/>
+        <move element="product.info.form" destination="product.info"/>
     </body>
 </page>

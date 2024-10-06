@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Customer\LoginButton;
 use Hyva\Theme\ViewModel\HeroiconsOutline;
-use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Hyva\Theme\ViewModel\ReCaptcha;
 use Magento\Customer\Block\Form\Login;
 use Magento\Framework\Escaper;
@@ -16,10 +15,7 @@ use Magento\Framework\Escaper;
 /** @var ViewModelRegistry $viewModels */
 /** @var ReCaptcha $recaptcha */
 /** @var HeroiconsOutline $heroiconsoutline */
-/** @var HeroiconsSolid $heroiconssolid */
 
-$heroiconsoutline = $viewModels->require(HeroiconsOutline::class);
-$heroiconssolid = $viewModels->require(HeroiconsSolid::class);
 $loginButtonViewModel = $viewModels->require(LoginButton::class);
 
 // Disabling autocomplete on form fields is not recommended,
@@ -28,15 +24,19 @@ $loginButtonViewModel = $viewModels->require(LoginButton::class);
 // Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
 // on the Magento_ReCaptchaCustomer module
 $recaptcha = $block->getData('viewModelRecaptcha');
+
+$errorMessage = $block->getErrorMessage();
+$successMessage = $block->getSuccessMessage();
 ?>
-<div class="mx-auto mb-16 w-[412px] max-w-full">
-    <div class="flex items-center w-full justify-center" aria-labelledby="block-customer-login-heading">
+<div class="mx-auto mb-16 w-[412px] max-w-full" x-data="Authentication">
+    <div aria-labelledby="block-customer-login-heading">
         <form class="w-full"
-                action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
-                method="post"
-                x-data="Authentication()"
-                @submit.prevent="submitForm"
-                id="customer-login-form">
+              action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
+              method="post"
+              x-data="initCustomerLoginForm()"
+              id="customer-login-form"
+              @submit.prevent="submitAuthForm('customer-login-form')"
+            >
             <?= $block->getBlockHtml('formkey') ?>
             <fieldset class="fieldset login">
                 <legend class="flex items-center justify-between sm:text-center">
@@ -44,51 +44,47 @@ $recaptcha = $block->getData('viewModelRecaptcha');
                         <?= $escaper->escapeHtml(__('Login')) ?>
                     </h2>
                 </legend>
-
-                <div class="mt-3 flex flex-col">
-                    <label class="label sr-only" for="email">
-                        <span><?= $escaper->escapeHtml(__('Email')) ?></span>
-                    </label>
-                    <div class="control">
-                        <input name="login[username]"
-                                placeholder="<?= $escaper->escapeHtml(__('Email')) ?>"
-                                class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                                required
-                                value="<?= $escaper->escapeHtmlAttr($block->getUsername()) ?>"
-                                autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'username' ?>"
-                                id="email"
-                                type="email"
-                                title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
-                                @input="clearError('username')"
-                        />
-                        <p class="text-red-600 mt-2" x-show="errorMessages.username"
-                            x-text="errorMessages.username"></p>
+                <?php if ($successMessage): ?>
+                    <div class="text-primary-600">
+                        <?= $successMessage ?>
                     </div>
-                </div>
-                <div class="mt-3 flex flex-col">
-                    <label for="pass" class="label sr-only">
-                        <span><?= $escaper->escapeHtml(__('Password')) ?></span>
-                    </label>
-                    <input name="login[password]"
-                            placeholder="<?= $escaper->escapeHtml(__('Password')) ?>"
-                            class="input__field input__field--outline  bg-bg-500 px-5 py-4"
-                            required
-                            :type="showPassword ? 'text' : 'password'"
-                            autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'current-password' ?>"
-                            id="pass"
-                            title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
-                            @input="clearError('password')"
+                <?php endif; ?>
+                <div class="field email required mt-3">
+                    <input name="login[username]"
+                        placeholder="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                        class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                        required
+                        value="<?= $escaper->escapeHtmlAttr($block->getUsername()) ?>"
+                        autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'username' ?>"
+                        id="email"
+                        type="email"
+                        title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
                     />
-                    <p class="text-red-600 mt-2" x-show="errorMessages.password"
-                        x-text="errorMessages.password"></p>
                 </div>
-
+                <?php if ($errorMessage): ?>
+                    <div class="text-red-600 mt-3">
+                        <?= $errorMessage ?>
+                    </div>
+                <?php endif; ?>
+                <div class="flex items-center mt-3">
+                    <input name="login[password]"
+                           placeholder="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
+                           class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                           required
+                           type="password"
+                           autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'current-password' ?>"
+                           id="pass"
+                           title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
+                    />
+                </div>
                 <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN) : '' ?>
                 <?= $block->getChildHtml('form_additional_info') ?>
                 <a class="link link--primary mt-2 text-sm tracking-widest" href="<?= $escaper->escapeUrl($block->getForgotPasswordUrl()) ?>" x-element-transition-trigger>
                     <span><?= $escaper->escapeHtml(__('Forgot Your Password?')) ?></span>
                 </a>
-                <button type="submit" class="button button--filled-primary mt-7 w-full py-4 " name="send" <?php if ($loginButtonViewModel->disabled()): ?> disabled data-recaptcha-btn<?php endif; ?>>
+                <button type="submit" class="button button--filled-primary mt-7 w-full py-4 " name="send"
+                    <?php if ($loginButtonViewModel->disabled()): ?> disabled data-recaptcha-btn<?php endif; ?>
+                >
                     <span><?= $escaper->escapeHtml(__('Sign In')) ?></span>
                 </button>
                 <div x-show="displayErrorMessage" class="mt-3">
@@ -101,5 +97,8 @@ $recaptcha = $block->getData('viewModelRecaptcha');
                 </div>
             </fieldset>
         </form>
+    </div>
+    <div class="w-full">
+        <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN) : '' ?>
     </div>
 </div>

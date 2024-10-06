@@ -16,7 +16,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 <div x-data="Accordion(!$store.main.isMobile, 300)" class="max-md:mt-3 bg-bg-400 p-5 md:p-4 rounded-md overflow-hidden">
   <button
-        class="group flex items-center justify-between w-full text-primary-600 md:hidden"
+        class="group flex items-center justify-between text-start w-full text-primary-600 md:hidden"
         x-ref="AccordionButton"
         type="button"
         :aria-expanded="isExpanded"
