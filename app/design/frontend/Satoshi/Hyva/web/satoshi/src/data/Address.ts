@@ -18,7 +18,6 @@ export type AddressType = {
   _updateProvince(country: HTMLSelectElement): void;
   _onKeyDown(e: KeyboardEvent): void;
   _focusOnForm(popup_id: string): void;
-  fetchAndReplaceContent(url: string): void;
   deleteAddress(address_id: string, confirm_message: string): void;
   createOrUpdateAddress(): void;
 } & Magics<{}>;
@@ -91,12 +90,6 @@ export const Address = () =>
       });
     },
 
-    fetchAndReplaceContent(url: string) {
-      if (!url) return;
-
-      navigateWithTransition(url);
-    },
-
     deleteAddress(address_id, confirm_message) {
         if (window.confirm(confirm_message)) {
             this.isLoading = true;
@@ -133,13 +126,13 @@ export const Address = () =>
             body: formData,
         }).then((res) => {
             if (res.ok) {
-                this.fetchAndReplaceContent('/customer/address/');
+                navigateWithTransition('/customer/address/');
             }
         }).catch((error) => {
             console.error("Error while creating or updating address:", error);
             location.reload();
         }).finally(() => {
-            this.isLoading = false
+            this.isLoading = false;
         });
     },
   };
