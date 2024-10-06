@@ -73,7 +73,7 @@ class CreatePost extends SourceCreatePost{
      * @param DataObjectHelper $dataObjectHelper
      * @param AccountRedirect $accountRedirect
      * @param CustomerRepository $customerRepository
-     * @param Validator $formKeyValidator
+     * @param Validator|null $formKeyValidator
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -118,7 +118,28 @@ class CreatePost extends SourceCreatePost{
         $this->accountRedirect = $accountRedirect;
         $this->formKeyValidator = $formKeyValidator ?: ObjectManager::getInstance()->get(Validator::class);
         $this->customerRepository = $customerRepository;
-        parent::__construct($context);
+
+        parent::__construct(
+            $context,
+            $customerSession,
+            $scopeConfig,
+            $storeManager,
+            $accountManagement,
+            $addressHelper,
+            $urlFactory,
+            $formFactory,
+            $subscriberFactory,
+            $regionDataFactory,
+            $addressDataFactory,
+            $customerDataFactory,
+            $customerUrl,
+            $registration,
+            $escaper,
+            $customerExtractor,
+            $dataObjectHelper,
+            $accountRedirect,
+            $customerRepository,
+            $formKeyValidator);
     }
 
     /**
