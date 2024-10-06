@@ -6,6 +6,7 @@ export type ProductPageType = {
   [key: string | symbol]: any;
 
   isVariantInCart: boolean;
+  isLoadingCart: boolean;
   variantQty: number;
   selectedValues: string[];
   selectedDownloadableLinks: string[];
@@ -13,7 +14,6 @@ export type ProductPageType = {
   linksPurchasedSeparately: boolean;
   productId: string;
   groupedIds: string[];
-  contentId: string;
   isScrollingToTop: boolean;
   cartItemKey: string | undefined;
   productActionsPopup: string;
@@ -125,6 +125,7 @@ const POPUP_BOTTOM_ACTIONS = "product_bottom_actions";
 export const ProductPage = () =>
   <ProductPageType>{
     isVariantInCart: false,
+    isLoadingCart: false,
     variantQty: 1,
     selectedValues: [],
     selectedDownloadableLinks: [],
@@ -132,7 +133,6 @@ export const ProductPage = () =>
     selectedBundleOptions: [],
     productId: "",
     groupedIds: [],
-    contentId: "product-page",
     isScrollingToTop: true,
     cartItemKey: undefined,
     productActionsPopup: "product_actions",
@@ -357,7 +357,7 @@ export const ProductPage = () =>
         { once: true },
       );
 
-      this.hideProductActions();
+      this.isLoadingCart = true;
       fetch(formEl.action, {
         method: formEl.method,
         body: formData,
@@ -374,6 +374,8 @@ export const ProductPage = () =>
           Alpine.store("cart").addingItemIds = Alpine.store(
             "cart",
           ).addingItemIds.filter((itemId) => itemId !== this.productId);
+          this.hideProductActions();
+          this.isLoadingCart = false;
         });
     },
 
@@ -401,7 +403,7 @@ export const ProductPage = () =>
     },
 
     quickBuy() {
-      this.contentId = "product-options";
+      this.productActionsPopup = "quick-buy-" + this.productId;
       this.showProductActions();
     },
 
