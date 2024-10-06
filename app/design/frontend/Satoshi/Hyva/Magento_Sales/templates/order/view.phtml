@@ -1,0 +1,77 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\GiftMessage\Helper\Message;
+use Magento\Sales\Block\Order\View;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var View $block */
+/** @var Escaper $escaper */
+
+$giftMessageHelper = $this->helper(Message::class);
+
+$order = $block->getOrder();
+?>
+<div class="md:flex md:justify-between md:flex-wrap md:gap-4 items-center mb-5">
+    <div class="lg:flex items-center md:text-left">
+        <div>
+            <div class="text-lg font-bold mb-2"><?= $escaper->escapeHtml(__('Order # %1', $order->getRealOrderId())) ?></div>
+            <?= $block->getChildHtml('order.date') ?>
+        </div>
+        <div class="mt-7 md:mt-0 lg:ml-7">
+            <?= $block->getChildHtml('order.status') ?>
+        </div>
+    </div>
+    <?php if (!$block->getData('is_context_shipment')): ?>
+        <?= $block->getChildHtml('sales.order.buttons') ?>
+    <?php else: ?>
+        <?= $block->getChildHtml('sales.shipment.buttons') ?>
+    <?php endif; ?>
+</div>
+<div class="order-details-items ordered bg-white rounded-xl p-5 md:p-7">
+    <div class="card">
+        <div>
+            <?= $block->getChildHtml('sales.order.info') ?>
+        </div>
+
+        <?= $block->getChildHtml('order.comments') ?>
+
+        <?= $block->getChildHtml('order_items') ?>
+
+        <?php if ($giftMessageHelper->isMessagesAllowed('order', $order) && $order->getGiftMessageId()): ?>
+            <div class="block block-order-details-gift-message">
+                <div class="block-title"><strong><?= $escaper->escapeHtml(__('Gift Message for This Order')) ?></strong>
+                </div>
+                <?php
+                $giftMessage =
+                    $giftMessageHelper->getGiftMessageForEntity($order);
+                ?>
+                <div class="block-content">
+                    <dl class="item-options">
+                        <dt class="item-sender">
+                            <strong class="label">
+                                <?= $escaper->escapeHtml(__('From')) ?>
+                            </strong>
+                            <?= $escaper->escapeHtml($giftMessage->getSender()) ?>
+                        </dt>
+                        <dt class="item-recipient">
+                            <strong class="label">
+                                <?= $escaper->escapeHtml(__('To')) ?>
+                            </strong>
+                            <?= $escaper->escapeHtml($giftMessage->getRecipient()) ?>
+                        </dt>
+                        <dd class="item-message">
+                            <?= /* @noEscape */
+                            $giftMessageHelper->getEscapedGiftMessage($order) ?>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+<a class="button button--ghost-primary mt-5" href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
+    <span><?= $escaper->escapeHtml($block->getBackTitle()) ?></span>
+</a>
