@@ -164,7 +164,9 @@ if ($product) {
                     >
                         <?= $product?->getSku() ?>
                     </p>
-                    <?php if ($product && $product->isSaleable()): ?>
+
+                    <!-- Quick buy, for simple, virtual, configurable.. TODO: Make it for other types too -->
+                    <?php if ($product && $product->isSaleable() && in_array(['simple', 'virtual', 'configurable'], $product->getTypeId())): ?>
                         <form 
                             method="post"
                             action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
@@ -187,7 +189,7 @@ if ($product) {
                                     'text-primary-50': isLoadingCart,
                                     'text-primary-500': !isLoadingCart
                                 }"
-                                <?php if ($product->getTypeId() === 'simple'): ?>
+                                <?php if (in_array(['simple', 'virtual'], $product->getTypeId())): ?>
                                     form="quick_buy_form_<?= $product->getId() ?>"
                                     data-addto="cart"
                                     type="submit"
@@ -201,14 +203,13 @@ if ($product) {
                                 <?= $hyvaicons->renderHtml('cart'); ?>
                             </button>
 
-                            <?php if ($product->getTypeId() !== 'simple'): ?>
+                            <?php if (!in_array(['simple', 'virtual'], $product->getTypeId())): ?>
                                 <!-- Quick buy popup -->
                                 <?= $popup->setData([
                                         'id' => 'quick-buy-' . $product->getId(),
                                         'isFocused' => true,
                                     ])
                                     ->setChildHtml($block->getProductDetailsHtml($product))
-                                    // ->setChildTemplate('Magento_Catalog::product/list/quick-buy-popup.phtml', ['product' => $product])
                                     ->render() ?>
                             <?php endif; ?>
                         </form>
