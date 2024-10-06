@@ -1,0 +1,81 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Satoshi\Theme\Block\Template;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$filters = $block->getData('filters') ?? [];
+$selectedSort = $block->getData('selected_sort') ?? [];
+?>
+<div>
+    <div class="min-h-9"></div>
+
+    <template x-portal="document.getElementById('popup-fixed-content-portal')">
+        <div class="overflow-x-scroll overscroll-x-contain pl-3" x-show="$store.main.isMobile && $store.popup.currentPopup === 'bottom-filters'">
+            <div class="flex items-center gap-3">
+                <button
+                    type="button"
+                    class="button button--filled-primary button--size-sm shrink-0"
+                    @click="showFilters"
+                >
+                    <?= $escaper->escapeHtml(__('Filter')) ?>
+                    <span class="ml-3 text-lg">
+                        <?= $hyvaicons->renderHtml('filter'); ?>
+                    </span>
+                </button>
+
+                <?php if (!count($filters) && !count($selectedSort)): ?>
+                    <p class="pr-3 text-center">
+                        <?= $escaper->escapeHtml(__('The selected filters will appear here.')) ?>
+                    </p>
+                <?php else: ?>
+                    <div class="flex gap-3">
+                        <?php if (count($selectedSort)): ?>
+                            <a
+                                @click="removeSort()"
+                                class="button button--outline-secondary button--size-sm shrink-0"
+                                title="<?= /* @noEscape */ $escaper->escapeHtmlAttr(__('Remove sort %1 by: %2', $selectedSort['name'], $selectedSort['dir'])) ?>"
+                            >
+                                <span class="mr-2"><?= $escaper->escapeHtml(__('Sort')) ?>:</span>
+                                <span><?= $escaper->escapeHtml($selectedSort['name']) ?></span>
+                                <span class="ml-3 text-lg">
+                                    <?= $hyvaicons->renderHtml('close'); ?>
+                                </span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php foreach ($filters as $filter): ?>
+                            <?php if ($filter->getItemsCount()): ?>
+                                <?php
+                                    $filterName = $filter->getName();
+                                    $filterLabel = $block->stripTags($filter->getLabel());
+                                ?>
+                                <a
+                                    href="<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>"
+                                    class="button button--outline-secondary button--size-sm shrink-0"
+                                    title="<?= /* @noEscape */ $escaper->escapeHtmlAttr(__('Remove active %1 filter: %2', $filterName, $filterLabel)) ?>"
+                                    x-element-transition-trigger
+                                >
+                                    <span class="mr-2"><?= $escaper->escapeHtml(__($filterName)) ?>:</span>
+                                    <span><?= $escaper->escapeHtml($filterLabel) ?></span>
+                                    <span class="ml-3 text-lg">
+                                        <?= $hyvaicons->renderHtml('close'); ?>
+                                    </span>
+                                </a>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </template>
+</div>
