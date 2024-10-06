@@ -1,0 +1,39 @@
+<?php
+
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Vault\Block\Customer\CreditCards;
+
+/** @var CreditCards $block */
+/** @var Escaper $escaper */
+
+$tokens = $block->getPaymentTokens();
+
+?>
+<?php if (count($tokens) > 0): ?>
+    <?php foreach ($tokens as $token): ?>
+        <div class="card grid md:grid-cols-4 p-5 bg-white rounded-xl mb-5">
+            <div class="hidden md:block font-bold">
+                <?= $escaper->escapeHtml(__('Card Number')) ?>
+            </div>
+            <div class="hidden md:block font-bold">
+                <?= $escaper->escapeHtml(__('Expiration Date')) ?>
+            </div>
+            <div class="hidden md:block font-bold">
+                <?= $escaper->escapeHtml(__('Type')) ?>
+            </div>
+            <div class="hidden md:block font-bold text-right">
+                <?= $escaper->escapeHtml(__('Actions')) ?>
+            </div>
+            <div class="col-span-full mt-2">
+                <?= $block->renderTokenHtml($token) ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+<?php elseif (!$block->isExistsCustomerTokens()): ?>
+    <div class="message info empty">
+        <span><?= $escaper->escapeHtml(__('You have no stored payment methods.')) ?></span>
+    </div>
+<?php endif ?>

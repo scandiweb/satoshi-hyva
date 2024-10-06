@@ -33,6 +33,7 @@ $swatchItemBlock->setData('product_id', $productId);
 
 $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
 
+
 $index = 0;
 ?>
 <?php if ($product->isSaleable() && count($attributes)): ?>
@@ -51,9 +52,9 @@ $index = 0;
           <?php if ($swatchRendererViewModel->isSwatchAttribute($productAttribute)): ?>
             <div class="contents">
               <div class="relative flex h-full w-full flex-row items-center justify-between">
-              <span class="font-semibold text-text-500" id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>">
-                <?= $escaper->escapeHtml(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>
-              </span>
+                <span class="font-semibold text-text-500" id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>">
+                  <?= $escaper->escapeHtml(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>
+                </span>
 
                 <?php if ($index === 1): ?>
                   <button
@@ -73,7 +74,10 @@ $index = 0;
                   :key="item.id"
                 >
                   <?= /* @noEscape */
-                  $swatchItemBlock->setData('attribute_id', $attributeId)->toHtml() ?>
+                  $swatchItemBlock
+                    ->setData('attribute_id', $attributeId)
+                    ->setData('form_id', 'product_addtocart_form')
+                    ->toHtml() ?>
                 </template>
               </article>
             </div>
