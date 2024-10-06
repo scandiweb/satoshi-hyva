@@ -6,33 +6,18 @@ use Hyva\Theme\ViewModel\SvgIcons;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Customer\Block\Newsletter;
 use Magento\Framework\Escaper;
-use Hyva\Theme\ViewModel\ReCaptcha;
 
 /** @var Newsletter $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 $hyvaicons = $viewModels->require(SvgIcons::class);
-
-// Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
-// on the Magento_ReCaptchaNewsletter module
-$recaptcha = $block->getData('viewModelRecaptcha');
 ?>
-
 <?= $block->getChildHtml('form_before') ?>
-    <form class="form form-newsletter-manage"
-          action="<?= $escaper->escapeUrl($block->getAction()) ?>"
-          method="post"
-          id="newsletter-validate-detail"
-          x-data="Newsletter({
-            recaptchaValidationCode: '<?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '') ?>',
-            isCaptchaEnabled: Boolean(<?= $recaptcha ? $recaptcha->isCaptchaEnabledFor(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>),
-            recaptchaSiteKey: '<?= $recaptcha ? $recaptcha->getSiteKey(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>',
-            recaptchaFormIdNewsletter: '<?= ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER ?>',
-            recaptchaType: '<?= $recaptcha ? $recaptcha->getSelectedTypeForForm(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>',
-            recaptchaV2InvisibleBadgePosition: '<?= $recaptcha ? $recaptcha->getRecaptchaV2InvisibleBadgePosition() : '' ?>',
-            defaultErrorMessage: '<?= __('Something went wrong with the subscription.') ?>'
-        })"
-          @submit.prevent="submitForm('/customer/account')"
+    <form
+        class="form form-newsletter-manage"
+        action="<?= $escaper->escapeUrl($block->getAction()) ?>"
+        method="post"
+        id="form-validate"
     >
         <h2 class="text-text-500 text-lg font-bold mb-5">
             <?= $escaper->escapeHtml(__('Subscription Option')) ?>
@@ -59,24 +44,20 @@ $recaptcha = $block->getData('viewModelRecaptcha');
             <?php /* Extensions placeholder */ ?>
             <?= $block->getChildHtml('customer.form.newsletter.extra') ?>
         </div>
+
         <div class="flex flex-col md:flex-row gap-4">
-            <button type="submit"
-                    title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
-                    class="button button--filled-primary"
-                    :class="isLoading && 'button--disabled'"
-                    :disabled="isLoading"
+            <button
+                type="submit"
+                title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
+                class="button button--filled-primary"
             >
-                <span x-text="isLoading ?
-                '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
-                '<?= $escaper->escapeHtml(__('Save')) ?>'">Save</span>
+                <?= $escaper->escapeHtmlAttr(__('Save')) ?>
             </button>
             <a class="button button--ghost-primary"
                href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
                x-element-transition-trigger
             >
-            <span>
                 <?= $escaper->escapeHtml(__('Go back')) ?>
-            </span>
             </a>
         </div>
     </form>
