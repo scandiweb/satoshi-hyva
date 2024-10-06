@@ -22,6 +22,7 @@ use Magento\Framework\Escaper;
                value="<?= $escaper->escapeHtmlAttr($block->getTaxvat()) ?>"
                title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('taxvat')) ?>"
                class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your VAT number')) ?>"
             <?= $block->isRequired() ? ' required' : '' ?>
         >
     </div>
