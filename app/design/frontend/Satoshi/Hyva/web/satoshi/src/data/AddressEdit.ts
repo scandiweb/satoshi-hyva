@@ -31,13 +31,13 @@ export type AddressEditType = {
   validateCountryDependentFields(): void;
   hasAvailableRegions(): boolean;
   onRegionIdChange(event: Event): void;
-  submitForm(): void;
   validate(): Promise<void>;
   setupField(field: HTMLElement): void;
   validateField(field: any): void;
   removeMessages(field: any): void;
   onChange(event: Event): void;
-  createOrUpdateAddress(): void;
+  createOrUpdateAddress(event: Event): void;
+  submitForm(event: Event): void;
 } & Magics<{}>;
 
 export const AddressEdit = (
@@ -189,8 +189,8 @@ export const AddressEdit = (
         this.validateField(this.fields['region']);
       },
 
-      createOrUpdateAddress() {
-        const $form = document.getElementById("form-validate") as HTMLFormElement;
+      createOrUpdateAddress(event) {
+        const $form = event.target as HTMLFormElement;
         if (!$form) return;
 
         this.isLoading = true;
@@ -214,12 +214,12 @@ export const AddressEdit = (
             });
       },
 
-      submitForm() {
+      submitForm(event) {
         this.validate()
             .then(() => {
               const invalidFields = Object.values(this.fields).filter((field) => !field.state.valid);
               if (invalidFields.length === 0) {
-                this.createOrUpdateAddress();
+                this.createOrUpdateAddress(event);
               }
             })
             .catch((invalid) => {
