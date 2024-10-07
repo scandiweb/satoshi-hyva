@@ -97,15 +97,7 @@ if ($product) {
                     loading="lazy"
                     src="<?= $mainImageUrl ?>"
                 >
-                <div>
-                    <?=
-                    $template
-                        ->setData([
-                            'product' => $product,
-                        ])
-                        ->render('Magento_Catalog::/product/list/discount-badge.phtml')
-                    ?>
-                </div>
+                <?= $template->setData(['product' => $product, 'class' => 'md:hidden bottom left'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
 
                 <?php if($mainImage && $mainImage->getData('media_type') && str_contains($mainImage->getData('media_type'), 'video')): ?>
                     <template x-if="$store.main.isMobile">
