@@ -1,35 +1,42 @@
 <?php
 
 use Magento\Catalog\Block\Product\AbstractProduct;
+use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
+/** @var Escaper $escaper */
 /** @var AbstractProduct $block */
-$product = $block->getData('product');
 
-$price = $product?->getPrice();
-$finalPrice = $product?->getData('final_price');
-if ($price && $finalPrice) {
-    $difference = $price - $finalPrice;
-    $discountPercentage = round(($difference * 100.0) / $price);
-}
+$product = $block->getData('product');
+$class = $block->getData('class');
 
 ?>
-<?php if ($product && isset($discountPercentage) && $discountPercentage > 0) : ?>
-    <div class="absolute bottom-4 left-0 rounded-full">
-        <span class="card-product__badge bg-white px-3 py-2 text-sm font-bold rounded-r-full">
-            -<?php echo $discountPercentage; ?>% OFF
-        </span>
-    </div>
-<?php elseif (!$product): ?>
-    <div x-data="{
-         finalPrice: product.price_range.minimum_price.final_price.value,
-         regularPrice: product.price_range.minimum_price.regular_price.value}"
-         class="absolute bottom-4 left-0 rounded-full"
-         x-show="regularPrice>finalPrice && regularPrice"
-    >
-            <span x-text="Math.round(((regularPrice - finalPrice) * 100.0) / regularPrice) + '%'"
-                  class="card-product__badge bg-white px-3 py-2 text-sm font-bold rounded-r-full">
+
+<?php if ($product): ?>
+    <?php
+        $price = $product->getPrice();
+        $finalPrice = $product->getFinalPrice();
+    ?>
+    <?php if ($price !== $finalPrice): ?>
+        <div class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm <?= $class ?>">
+            <span class="font-semibold">
+                -<?= round((($price - $finalPrice) * 100.0) / $price) ?>% <?= $escaper->escapeHtml(__('OFF')) ?>
             </span>
+        </div>
+    <?php endif; ?>
+<?php else: ?>
+    <div
+        x-data="
+            {
+                finalPrice: product.price_range.minimum_price.final_price.value,
+                regularPrice: product.price_range.minimum_price.regular_price.value
+            }
+        "
+        class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm <?= $class ?>"
+        x-show="regularPrice>finalPrice && regularPrice"
+    >
+        <span x-text="Math.round(((regularPrice - finalPrice) * 100.0) / regularPrice) + '%'" class="font-semibold">
+        </span>
     </div>
 <?php endif; ?>
