@@ -65,7 +65,7 @@ $productName = $block->getProduct()->getName();
             >
         </div>
 
-        <div class="flex items-center justify-center size-full <?= $isContain ? 'p-[4%]' : '' ?>">
+        <div class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
             <img
                 class="object-center no-fade <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
                 src="<?= $mainImageUrl ?>"
@@ -93,7 +93,7 @@ $productName = $block->getProduct()->getName();
                         </button>
 
                         <!-- Youtube container -->
-                        <div class="absolute inset-0 hidden size-full bg-white"
+                        <div class="absolute inset-0 hidden size-full bg-bg-400"
                             :class="{ 'hidden': activeVideoType !== 'youtube' }"
                             x-transition.opacity.duration.500ms
                             x-show="activeVideoType === 'youtube'"
@@ -102,7 +102,7 @@ $productName = $block->getProduct()->getName();
                         </div>
 
                         <!-- Video container -->
-                        <div class="absolute inset-0 hidden size-full bg-white"
+                        <div class="absolute inset-0 hidden size-full bg-bg-400"
                             :class="{ 'hidden': activeVideoType !== 'vimeo' }"
                             x-transition.opacity.duration.500ms
                             x-show="activeVideoType === 'vimeo'"
@@ -118,7 +118,7 @@ $productName = $block->getProduct()->getName();
     <!-- Other images  -->
     <template x-for="(image, index) in images.filter(img => img.img !== '<?= $mainImageUrl ?>')" :key="index">
         <div class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl">
-            <div class="flex items-center justify-center size-full <?= $isContain ? 'p-[4%]' : '' ?>">
+            <div class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
                 <img
                     :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
                     :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
@@ -145,7 +145,7 @@ $productName = $block->getProduct()->getName();
                 </button>
 
                 <!-- Youtube container -->
-                <div class="absolute inset-0 hidden size-full bg-white"
+                <div class="absolute inset-0 hidden size-full bg-bg-400"
                     :class="{ 'hidden': activeVideoType !== 'youtube' }"
                     x-transition.opacity.duration.500ms
                     x-show="image.type === 'video' && activeVideoType === 'youtube'"
@@ -154,7 +154,7 @@ $productName = $block->getProduct()->getName();
                 </div>
 
                 <!-- Video container -->
-                <div class="absolute inset-0 hidden size-full bg-white"
+                <div class="absolute inset-0 hidden size-full bg-bg-400"
                     :class="{ 'hidden': activeVideoType !== 'vimeo' }"
                     x-transition.opacity.duration.500ms
                     x-show="image.type === 'video' && activeVideoType === 'vimeo'"
