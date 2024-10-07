@@ -35,10 +35,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 <div id="content"
      x-data="ReviewList({
-         baseUrl: '<?= $escaper->escapeJs($baseUrl) ?>',
-         productUrlSuffix: '<?= $escaper->escapeJs($productUrlSuffix) ?>',
-         storeCode: '<?= $escaper->escapeJs($storeCode) ?>',
-         customerReviewsQuery: '<?= $escaper->escapeJs('{customer {' . $customerReviewsQuery . '}}') ?>'
+         baseUrl: '<?= $escaper->escapeHtmlAttr($baseUrl) ?>',
+         productUrlSuffix: '<?= $escaper->escapeHtmlAttr($productUrlSuffix) ?>',
+         storeCode: '<?= $escaper->escapeHtmlAttr($viewModelStore->getStoreCode()) ?>',
+         customerReviewsQuery: `<?= $escaper->escapeHtmlAttr('{customer {' . $customerReviewsQuery . '}}'); ?>`
      })"
      @private-content-loaded.window="onPrivateContentLoaded(event.detail.data)">
     <template x-if="errors.length" x-for="(error, index) in errors" :key="index">
@@ -67,7 +67,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                    x-text="review.product && review.product.name">
                                 </a>
                             </p>
-                            <p class="mb-3 text-primary-600">
+                            <p class="mb-3">
                                 <?= $escaper->escapeHtml(__('Created at')) ?>
                                 <span x-text="review &&
                                 review.created_at &&
@@ -89,7 +89,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                         </template>
                                     </div>
                                     <div>
-                                        <p x-text="item.value + '.0'" class="text-primary-600"></p>
+                                        <p x-text="Number(item.value).toFixed(1)" class="text-primary-600"></p>
                                     </div>
                                 </div>
                             </template>
@@ -107,18 +107,18 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             </template>
         </div>
     </template>
-    <template x-if="pageInfo && pageInfo.page_size && pageInfo.total_pages">
-        <div>
-            <template x-if="totalPagesObject.length > 1">
-                <div class="my-7 flex flex-col items-center">
-                    <a @click.prevent="setPageSize()"
-                       class="button btn--size-lg button--ghost-primary w-full cursor-pointer text-center lg:w-auto"
-                       href="#" title="<?= $escaper->escapeHtmlAttr(__('Load more')) ?>">
-                        <?= __('Load more') ?>
-                        <?= $hyvaicons->renderHtml('chevron', 'button__icon button__icon--right top-[1px] text-lg rotate-90'); ?>
-                    </a>
-                </div>
-            </template>
-        </div>
+    <template x-if="pageInfo && pageInfo.page_size && pageInfo.total_pages && pageInfo.total_pages > currentPage">
+        <template x-if="totalPagesObject.length > 1">
+            <div class="my-7 flex flex-col items-center">
+                <a
+                    @click.prevent="setCurrentPage(currentPage + 1)"
+                    class="button btn--size-lg button--ghost-primary w-full cursor-pointer text-center lg:w-auto"
+                    href="#" title="<?= $escaper->escapeHtmlAttr(__('Load more')) ?>"
+                >
+                    <?= __('Load more') ?>
+                    <?= $hyvaicons->renderHtml('chevron', 'button__icon button__icon--right top-[1px] text-lg rotate-90'); ?>
+                </a>
+            </div>
+        </template>
     </template>
 </div>
