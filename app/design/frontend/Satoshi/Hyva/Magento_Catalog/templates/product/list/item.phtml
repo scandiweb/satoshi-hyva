@@ -70,10 +70,12 @@ if ($product) {
                 <?php endif ?>
                 'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>',
                 'mediaCount': <?= $product?->getMediaGalleryImages()->count() ?? 3 ?>,
-                'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>
+                'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
+                'finalPrice': <?= $product->getFinalPrice() ?>,
+                'regularPrice': <?= $product->getPrice() ?>,
             }
         "
-          href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
+        href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
         <?php else: ?>
           :href="`/${product.url_rewrites?.[0].url}`"
           x-element-transition-trigger:product<?= !$isSearch ? '.preview' : '' ?>.animate="
@@ -143,7 +145,7 @@ if ($product) {
                         </div>
                     </template>
                 <?php endif ?>
-                <?= $template->setData(['product' => $product, 'class' => 'py-1 bottom left'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
+                <?= $template->setData(['product' => $product, 'class' => 'py-1 bottom left', 'is_search' => $isSearch])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
             </div>
 
             <div class="relative flex flex-1 flex-col">
