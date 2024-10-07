@@ -11,11 +11,16 @@ use Magento\Sales\Block\Widget\Guest\Form;
 $errorMessage = $block->getErrorMessage();
 ?>
 <div class="mx-auto mb-16 w-[412px] px-4 h-full flex items-center md:px-0 max-w-full">
-    <form class="w-full"
-          id="oar-widget-orders-and-returns-form"
-          action="<?= $escaper->escapeUrl($block->getActionUrl()) ?>"
-          method="post" name="guest_post"
-          x-data="initForm()">
+    <form
+            x-data="{
+                authenticateBy: 'email'
+            }"
+            class="w-full"
+            id="oar-widget-orders-and-returns-form"
+            action="<?= $escaper->escapeUrl($block->getActionUrl()) ?>"
+            method="post" name="guest_post"
+            x-data="initForm()"
+    >
         <fieldset class="fieldset">
             <?= $block->getBlockHtml('formkey') ?>
             <legend class="flex items-center justify-between sm:text-center">
@@ -29,12 +34,12 @@ $errorMessage = $block->getErrorMessage();
                         <span><?= $escaper->escapeHtml(__('Order ID')) ?></span>
                     </label>
                     <input
-                        type="text"
-                        class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                        id="oar-order-id"
-                        name="oar_order_id"
-                        placeholder="<?= $escaper->escapeHtml(__('Order ID')) ?>"
-                        required
+                            type="text"
+                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                            id="oar-order-id"
+                            name="oar_order_id"
+                            placeholder="<?= $escaper->escapeHtml(__('Order ID')) ?>"
+                            required
                     />
                 </div>
                 <div class="mt-3">
@@ -56,12 +61,12 @@ $errorMessage = $block->getErrorMessage();
                             <span><?= $escaper->escapeHtml(__('Email')) ?></span>
                         </label>
                         <input
-                            type="email"
-                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                            id="oar_email"
-                            name="oar_email"
-                            placeholder="<?= $escaper->escapeHtml(__('Email')) ?>"
-                            :required="authenticateBy !== 'zip'"
+                                type="email"
+                                class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                                id="oar_email"
+                                name="oar_email"
+                                placeholder="<?= $escaper->escapeHtml(__('Email')) ?>"
+                                :required="authenticateBy !== 'zip'"
                         />
                     </div>
                 </div>
@@ -71,12 +76,12 @@ $errorMessage = $block->getErrorMessage();
                             <span><?= $escaper->escapeHtml(__('Billing ZIP Code')) ?></span>
                         </label>
                         <input
-                            type="text"
-                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                            id="oar_zip"
-                            name="oar_zip"
-                            placeholder="<?= $escaper->escapeHtml(__('Billing ZIP Code')) ?>"
-                            :required="authenticateBy === 'zip'"
+                                type="text"
+                                class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                                id="oar_zip"
+                                name="oar_zip"
+                                placeholder="<?= $escaper->escapeHtml(__('Billing ZIP Code')) ?>"
+                                :required="authenticateBy === 'zip'"
                         />
                     </div>
                 </div>
@@ -86,12 +91,12 @@ $errorMessage = $block->getErrorMessage();
                             <span><?= $escaper->escapeHtml(__('Billing Last Name')) ?></span>
                         </label>
                         <input
-                            type="text"
-                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                            id="oar-billing-lastname"
-                            name="oar_billing_lastname"
-                            placeholder="<?= $escaper->escapeHtml(__('Billing Last Name')) ?>"
-                            required
+                                type="text"
+                                class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                                id="oar-billing-lastname"
+                                name="oar_billing_lastname"
+                                placeholder="<?= $escaper->escapeHtml(__('Billing Last Name')) ?>"
+                                required
                         />
                     </div>
                 </div>
@@ -107,11 +112,4 @@ $errorMessage = $block->getErrorMessage();
             <span><?= $escaper->escapeHtml(__('Continue')) ?></span>
         </button>
     </form>
-    <script>
-        function initForm() {
-            return {
-                authenticateBy: 'email'
-            }
-        }
-    </script>
 </div>
