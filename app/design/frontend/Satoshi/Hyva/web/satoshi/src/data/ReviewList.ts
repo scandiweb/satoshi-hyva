@@ -118,7 +118,7 @@ export const ReviewList = (props: {
                 this.pageInfo.total_pages &&
                 Array.from(
                   { length: this.pageInfo.total_pages },
-                  (v, i) => i + 1,
+                  (_v, i) => i + 1,
                 )) ||
               [];
           }
