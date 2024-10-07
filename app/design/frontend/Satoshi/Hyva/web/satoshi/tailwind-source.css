@@ -1,4 +1,3 @@
-
 /* purgecss start ignore */
 @import "tailwindcss/base";
 @import "tailwindcss/components";
@@ -9,8 +8,6 @@
 @import url(components/cart.css);
 @import url(components/customer.css);
 @import url(components/messages.css);
-@import url(components/product-list.css);
-@import url(components/product-page.css);
 @import url(components/wishlist.css);
 @import url(components/modal.css);
 @import url(components/slider.css);

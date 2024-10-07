@@ -1,0 +1,156 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\ProductPrice;
+use Magento\Catalog\Block\Product\AbstractProduct;
+use Magento\Catalog\Model\Product;
+use Magento\Catalog\Pricing\Price\FinalPrice;
+use Magento\Catalog\Pricing\Price\RegularPrice;
+use Magento\Catalog\Pricing\Price\TierPrice;
+use Magento\Framework\Escaper;
+use Magento\Framework\Pricing\Render;
+use Magento\Msrp\Pricing\Price\MsrpPrice;
+use Magento\Tax\Model\Config;
+
+/** @var AbstractProduct $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var Product $product */
+$product = $block->getProduct();
+
+/** @var ProductPrice $productPriceViewModel */
+$productPriceViewModel = $viewModels->require(ProductPrice::class);
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+$regularPrice = $productPriceViewModel->getPriceValue(RegularPrice::PRICE_CODE, $product);
+$finalPrice = $productPriceViewModel->getPriceValue(FinalPrice::PRICE_CODE, $product);
+$tierPrices = $productPriceViewModel->getTierPrices(TierPrice::PRICE_CODE, $product);
+
+if ($productPriceViewModel->displayPriceInclAndExclTax()) {
+    $regularPriceExclTax = $productPriceViewModel->getPriceValueExclTax(RegularPrice::PRICE_CODE, $product);
+    $finalPriceExclTax = $productPriceViewModel->getPriceValueExclTax(FinalPrice::PRICE_CODE, $product);
+}
+
+$displayTax = $productPriceViewModel->displayPriceIncludingTax();
+
+// We expect to refactor MSRP Support on the product detail page, which is why we put this code here
+// and not in a view model. Once it is a method on a view model, it is part of the public API and
+// removing it is a backward compatibility-breaking change.
+// So we won't do that. Removing it from the template, however, is backward compatible, so here it is.
+if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPrice::PRICE_CODE] ?? null) {
+    if ($msrpPrice->canApplyMsrp($product) && $msrpPrice->isMinimalPriceLessMsrp($product)) {
+        if (! ($priceRender = $block->getLayout()->getBlock('product.price.render.default'))) {
+            $priceRender = $block->getLayout()->createBlock(
+                Render::class,
+                'product.price.render.default',
+                ['data' => ['price_render_handle' => 'catalog_product_prices']]
+            );
+        }
+        echo /** @noEscape */ $priceRender->render(FinalPrice::PRICE_CODE, $product);
+        return;
+    }
+}
+?>
+<div x-data="CatalogPrice({
+        productId: <?= (int)$product->getId() ?>,
+        displayTax: <?= $displayTax ? 'true' : 'false' ?>,
+        finalPrice: <?= (float)$finalPrice ?>,
+        tierPrices: <?= /** @noEscape */ json_encode($tierPrices) ?>,
+        showRegularPriceLabel: <?= ($finalPrice < $regularPrice) ? 'true' : 'false' ?>,
+        <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+            finalPriceExclTax: <?= (float)$finalPriceExclTax ?>,
+            calculatedBasePrice: false,
+            customOptionBasePrices: [],
+            calculatedBasePriceWithCustomOptions: false,
+        <?php endif; ?>
+        displayPriceInclAndExclTax: <?= $productPriceViewModel->displayPriceInclAndExclTax() ? 'true' : 'false' ?>,
+        configurableAndExclTax: <?= ($product->getTypeId() === 'configurable' && $productPriceViewModel->getPriceDisplayType() === Config::DISPLAY_TYPE_EXCLUDING_TAX) ? 'true' : 'false' ?>,
+        isSaleable: <?= $product->isSaleable() ? 'false' : 'true' ?>
+    })" x-bind="eventListeners">
+    <div x-show="!activeProductsPriceData && !isPriceHidden()" class="flex flex-col gap-2">
+        <div class="flex items-end gap-2 md:text-lg">
+            <!-- Final price -->
+            <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+                <?php if ($product->canConfigure() && is_int($product->getPrice())): ?>
+                    <span class="price-label block">
+                        <?= $escaper->escapeHtml(__('As low as')) . ':' ?>
+                    </span>
+                <?php endif; ?>
+                <span id="product-price-<?= (int)$product->getId() ?>">
+                    <span class="price" x-html="getFormattedFinalPrice()">
+                        <?= /** @noEscape */ $productViewModel->format($finalPrice) ?>
+                    </span>
+                </span>
+                <meta itemprop="price" content="<?= $escaper->escapeHtmlAttr($finalPrice) ?>">
+                <meta itemprop="priceCurrency" content="<?= $escaper->escapeHtmlAttr($productViewModel->getCurrencyData()['code']) ?>">
+            </div>
+
+            <?php if ($finalPrice < $regularPrice): ?>
+                <!-- Discount, Old Price -->
+                <div class="flex flex-col gap-2 old-price">
+                    <span id="product-price-<?= (int)$product->getId() ?>">
+                        <span class="price" x-html="hyva.formatPrice(<?= (float)$regularPrice ?> + getCustomOptionPrice())">
+                            <?= /** @noEscape */ $productViewModel->format($regularPrice) ?>
+                        </span>
+                    </span>
+                    <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+                        <div class="text-[14px]">
+                            <span><?= $escaper->escapeHtml(__('Excl. Tax')) ?>:</span>
+                            <span x-html="hyva.formatPrice(<?= (float)$regularPriceExclTax ?> + getCustomOptionBasePrice())">
+                                <?= /** @noEscape */ $productViewModel->format($regularPriceExclTax) ?>
+                            </span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+            <span class="text-[14px]">
+                <span><?= $escaper->escapeHtml(__('Excl. Tax')) ?>:</span>
+                <span x-html="getFormattedBasePrice()">
+                    <?= /** @noEscape */ $productViewModel->format($finalPriceExclTax) ?>
+                </span>
+            </span>
+        <?php endif; ?>
+    </div>
+
+    <div class="flex flex-col gap-2">
+        <div class="flex items-end gap-2 md:text-lg">
+            <!-- Final price -->
+            <template x-if="activeProductsPriceData">
+                <div>
+                    <?php if ($product->canConfigure() && is_int($product->getPrice())): ?>
+                        <span class="block" :class="{ 'hidden' : !showRegularPriceLabel }">
+                            <?= $escaper->escapeHtml(__('As low as')) ?>:
+                        </span>
+                    <?php endif; ?>
+                    <span id="product-price-<?= (int)$product->getId() ?>">
+                        <span class="price" x-html="getFormattedFinalPrice()"></span>
+                    </span>
+                </div>
+            </template>
+
+            <template x-if="activeProductsPriceData && activeProductsPriceData.oldPrice && activeProductsPriceData[finalPriceKey].amount < activeProductsPriceData[regularPriceKey].amount">
+                <!-- Old price -->
+                <span id="product-price-<?= (int)$product->getId() ?>" class="old-price">
+                    <span class="price" x-html="hyva.formatPrice(activeProductsPriceData[regularPriceKey].amount + getCustomOptionPrice())"></span>
+                </span>
+            </template>
+        </div>
+
+        <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+            <template x-if="activeProductsPriceData">
+                <span class="text-[14px]">
+                    <span><?= $escaper->escapeHtml(__('Excl. Tax')) ?>:</span>
+                    <span x-html="getFormattedBasePrice()"></span>
+                </span>
+            </template>
+        <?php endif; ?>
+    </div>
+</div>

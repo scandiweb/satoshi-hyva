@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<div x-data="Accordion(!$store.main.isMobile, 300)" class="max-md:mt-3 bg-bg-400 p-5 md:p-4 rounded-md overflow-hidden">
+  <button
+        class="group flex items-center justify-between text-start w-full text-primary-600 md:hidden"
+        x-ref="AccordionButton"
+        type="button"
+        :aria-expanded="isExpanded"
+        :disabled="!$store.main.isMobile"
+    >
+        <span class="font-bold">
+            <?= $escaper->escapeHtml(__($block->getData('block_title'))) ?>
+        </span>
+        <span
+            x-ref="AccordionIcon"
+            class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable border-primary-600"
+        >
+            <?= $hyvaicons->renderHtml('chevron', 'rotate-90'); ?>
+        </span>
+    </button>
+
+    <div
+        x-ref="AccordionPanel"
+        :inert="!isExpanded"
+        role="region"
+        class="text-text-700 [&_.current]:text-text-500 [&_a:hover]:underline"
+    >
+        <?= $block->getChildHtml() ?>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Magento\Sales\Block\Order\Info\Buttons;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var Escaper $escaper */
+/** @var Buttons $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsOutline $heroicons */
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+<div class="flex items-center flex-wrap gap-4 md:gap-x-3 mt-7 md:my-0">
+    <?php $order = $block->getOrder() ?>
+    <?php if ($this->helper(\Magento\Sales\Helper\Reorder::class)->canReorder($order->getEntityId())): ?>
+        <?php $formData = json_decode(
+            $this->helper(\Magento\Framework\Data\Helper\PostHelper::class)->getPostData(
+                $block->getReorderUrl($order)
+            ),
+            true
+        ) ?>
+        <form id="reorder-form"
+              action="<?= $escaper->escapeUrl($formData['action']) ?>"
+              method="post"
+              class="inline-flex items-center"
+        >
+            <?= $block->getBlockHtml('formkey'); ?>
+            <input type="hidden" name="data" value='<?= /** @noEscape */ json_encode($formData['data']) ?>'/>
+            <button type="submit" class="border border-primary-700 px-6 py-4 rounded-sm text-primary-700 flex items-center gap-3">
+                <?= $hyvaicons->renderHtml('refresh', 'text-lg') ?>
+                <span><?= $escaper->escapeHtml(__('Reorder')) ?></span>
+            </button>
+        </form>
+    <?php endif ?>
+    <a href="<?= $escaper->escapeUrl($block->getPrintUrl($order)) ?>"
+       class="border border-primary-700 px-6 py-4 rounded-sm text-primary-700 flex items-center gap-3"
+       target="_blank"
+       rel="noopener">
+        <?= $hyvaicons->renderHtml('print', 'text-lg') ?>
+        <span><?= $escaper->escapeHtml(__('Print Order')) ?></span>
+    </a>
+    <?= $block->getChildHtml() ?>
+</div>
