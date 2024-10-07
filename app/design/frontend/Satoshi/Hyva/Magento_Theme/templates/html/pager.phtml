@@ -15,19 +15,20 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $lastPage = $block->getLastPageNum();
 $currentPage = $block->getCurrentPage();
+
 ?>
 
 <?php if ($lastPage > 1 && $currentPage < $lastPage): ?>
-    <div class="flex justify-center [&>*]:mt-5">
+    <div class="my-7 flex flex-col items-center">
         <a
             href="#"
             x-pagination-trigger="{ 'lastPage': <?= $lastPage ?> }"
-            class="button button--ghost-primary"
+            class="button btn--size-md button--ghost-primary w-full cursor-pointer text-center md:w-auto"
         >
-            <?= __('Load more') ?>
-            <span class="button__icon button__icon--right top-[1px] text-lg">
-                <?= $hyvaicons->renderHtml('chevron', 'rotate-90') ?>
-            </span>
+            <?= __('Load more products') ?>
+            <span class="button__icon button__icon--right top-[1px] text-lg rotate-90">
+            <?= $hyvaicons->renderHtml('chevron'); ?>
+        </span>
         </a>
     </div>
 <?php endif ?>
