@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var Term $block */
+
+/** @var Escaper $escaper */
+
+use Magento\Framework\Escaper;
+use Magento\Search\Block\Term;
+
+?>
+<div class="content-wrapper h-full mx-auto">
+    <?= $block->getChildHtml('page.main.title') ?>
+    <?php if (count($block->getTerms()) > 0): ?>
+        <div class="flex flex-wrap gap-3 mt-4">
+            <?php foreach ($block->getTerms() as $term): ?>
+                <a href="<?= $escaper->escapeUrl($block->getSearchUrl($term)) ?>"
+                   class="button button--outline-secondary"
+                   style="font-size: <?= /** @noEscape */
+                   ($term->getRatio() * 70 + 75) ?>%"
+                >
+                    <?= $escaper->escapeHtml($term->getQueryText()) ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <div>
+            <?= $escaper->escapeHtml(__('There are no search terms available.')) ?>
+        </div>
+    <?php endif; ?>
+</div>
+
