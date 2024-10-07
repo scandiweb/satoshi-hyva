@@ -50,7 +50,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 </div>
 
 <div class="flex flex-col-reverse md:flex-col">
-  <div>
+  <div class="animate-on-transition max-md:px-4">
     <!-- Short Description -->
     <?php if ($shortDescription = $productViewModel->getShortDescription()): ?>
       <div class="mb-4"><?= $shortDescription ?></div>
