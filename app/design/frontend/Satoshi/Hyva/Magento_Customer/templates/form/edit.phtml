@@ -23,6 +23,8 @@ $minimumPasswordLength = $block->getMinimumPasswordLength();
 $passwordMinCharacterSets = $block->getRequiredCharacterClassesNumber();
 $storeConfig = $viewModels->require(StoreConfig::class);
 $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocomplete_on_storefront');
+$errorMessage = $block->getErrorMessage();
+$successMessage = $block->getSuccessMessage();
 ?>
 
 <section class="w-full xl:w-1/2">
@@ -189,7 +191,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
 
         <?php if($recaptcha): ?>
             <div class="mt-3">
-                <?= $recaptcha->getHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
+                <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
 
                 <ul class="text-red-500 mt-1" v-show="Boolean(recaptchaError)">
                     <li x-text="recaptchaError"></li>
