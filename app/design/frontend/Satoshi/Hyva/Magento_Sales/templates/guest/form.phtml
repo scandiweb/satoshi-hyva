@@ -2,11 +2,15 @@
 
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;
+use Magento\Sales\Block\Widget\Guest\Form;
 
 /** @var Escaper $escaper */
 /** @var SecureHtmlRenderer $secureRenderer */
+/** @var Form $block */
+
+$errorMessage = $block->getErrorMessage();
 ?>
-<div class="mx-auto mb-16 w-[412px] px-4 md:px-0 max-w-full">
+<div class="mx-auto mb-16 w-[412px] px-4 h-full flex items-center md:px-0 max-w-full">
     <form class="w-full"
           id="oar-widget-orders-and-returns-form"
           action="<?= $escaper->escapeUrl($block->getActionUrl()) ?>"
@@ -91,6 +95,11 @@ use Magento\Framework\View\Helper\SecureHtmlRenderer;
                         />
                     </div>
                 </div>
+                <?php if ($errorMessage): ?>
+                    <div class="text-red-600 mt-3">
+                        <?= $errorMessage ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </fieldset>
         <button type="submit" title="<?= $escaper->escapeHtml(__('Continue')) ?>"
