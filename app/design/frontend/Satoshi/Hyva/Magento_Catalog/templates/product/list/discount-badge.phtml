@@ -41,7 +41,7 @@ $isSearch = $block->getData('is_search') ?? false;
         class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm <?= $class ?>"
         x-show="regularPrice>finalPrice && regularPrice"
     >
-        <span x-text="Math.round(((regularPrice - finalPrice) * 100.0) / regularPrice) + '% OFF'" class="font-semibold">
+        <span x-text="'-' + Math.round(((regularPrice - finalPrice) * 100.0) / regularPrice) + '% OFF'" class="font-semibold">
         </span>
     </div>
 <?php endif; ?>
