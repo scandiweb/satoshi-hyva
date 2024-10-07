@@ -1,4 +1,4 @@
-import {replaceMainContentWithTransition} from "../plugins/Transition";
+import {replaceMainContent, replaceMainContentWithTransition} from "../plugins/Transition";
 import {MainStoreType} from "../store/Main";
 
 export type AuthenticationType = {
@@ -12,7 +12,7 @@ export type AuthenticationType = {
     submitAuthForm(formId: string): void;
 } & MainStoreType;
 
-export const Authentication = () => {
+export const Authentication = (recaptchaValidation?: string) => {
     return <AuthenticationType>{
         displayErrorMessage: false,
         errorMessages: {},
@@ -56,9 +56,9 @@ export const Authentication = () => {
                 });
         },
 
-        submitAuthForm(formId, recaptchaValidationHtml?: string) {
+        submitAuthForm(formId) {
             const $form = document.getElementById(formId) as HTMLFormElement;
-            eval(recaptchaValidationHtml);
+            eval(recaptchaValidation);
             if (this.errors === 0) {
                 this.errorMessages = {};
                 const formData = new FormData($form);
@@ -71,14 +71,12 @@ export const Authentication = () => {
                 })
                     .then((response) => {
                         return response.text().then(async (content) => {
-                            await replaceMainContentWithTransition(response.url, content);
+                            await replaceMainContent(content);
                         });
                     })
                     .catch((error) => {
                         this.setErrorMessages({'request error': error.message});
                     });
-            } else {
-                this.setErrorMessages({'recaptcha-error': 'Please check the box to verify you are not a robot'});
             }
         },
     };
