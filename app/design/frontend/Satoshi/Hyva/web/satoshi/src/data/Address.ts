@@ -5,8 +5,8 @@ export type AddressType = {
   isLoading: boolean;
 
   deleteAddress(
-    address_id: string,
-    confirm_message: string,
+    addressId: string,
+    confirmMessage: string,
     deleteUrl: string,
   ): void;
   createOrUpdateAddress(): void;
@@ -16,13 +16,13 @@ export const Address = () =>
   <AddressType>{
     isLoading: false,
 
-    deleteAddress(address_id, confirm_message, deleteUrl) {
-      if (window.confirm(confirm_message)) {
+    deleteAddress(addressId, confirmMessage, deleteUrl) {
+      if (window.confirm(confirmMessage)) {
         this.isLoading = true;
         const formData = new FormData();
         formData.append("form_key", window.hyva.getFormKey());
         formData.append("uenc", window.hyva.getUenc());
-        formData.append("id", address_id);
+        formData.append("id", addressId);
 
         fetch(deleteUrl, {
           method: "POST",
