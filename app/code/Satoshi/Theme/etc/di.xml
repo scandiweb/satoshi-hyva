@@ -36,7 +36,13 @@
     <preference for="Magento\Customer\Block\Account\Forgotpassword"
                 type="Satoshi\Theme\Block\Account\ForgotPassword"
     />
+    <preference for="Magento\Sales\Block\Widget\Guest\Form"
+                type="Satoshi\Theme\Block\Widget\Guest\Form"
+    />
     <preference for="Magento\Customer\Block\Form\Login"
                 type="Satoshi\Theme\Block\Form\Login"
+    />
+    <preference for="Magento\Sales\Helper\Guest"
+                type="Satoshi\Theme\Helper\Guest"
     />
 </config>
