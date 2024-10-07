@@ -1,0 +1,108 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
+/** @var Escaper $escaper */
+/** @var SecureHtmlRenderer $secureRenderer */
+?>
+<div class="mx-auto mb-16 w-[412px] px-4 md:px-0 max-w-full">
+    <form class="w-full"
+          id="oar-widget-orders-and-returns-form"
+          action="<?= $escaper->escapeUrl($block->getActionUrl()) ?>"
+          method="post" name="guest_post"
+          x-data="initForm()">
+        <fieldset class="fieldset">
+            <?= $block->getBlockHtml('formkey') ?>
+            <legend class="flex items-center justify-between sm:text-center">
+                <h2 class="mb-7 w-full text-2xl">
+                    <?= $escaper->escapeHtml(__('Order Information')) ?>
+                </h2>
+            </legend>
+            <div class="mt-3">
+                <div class="control">
+                    <label for="oar-order-id" class="sr-only">
+                        <span><?= $escaper->escapeHtml(__('Order ID')) ?></span>
+                    </label>
+                    <input
+                        type="text"
+                        class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                        id="oar-order-id"
+                        name="oar_order_id"
+                        placeholder="<?= $escaper->escapeHtml(__('Order ID')) ?>"
+                        required
+                    />
+                </div>
+                <div class="mt-3">
+                    <label for="quick-search-type-id" class="sr-only">
+                        <span><?= $escaper->escapeHtml(__('Find Order By')) ?></span>
+                    </label>
+                    <div class="w-full input__field flex justify-between items-center">
+                        <select name="oar_type" id="quick-search-type-id"
+                                class="bg-transparent w-full h-full focus:shadow-none focus-ring-0"
+                                @change="authenticateBy = event.target.value">
+                            <option value="email"><?= $escaper->escapeHtml(__('Email')) ?></option>
+                            <option value="zip"><?= $escaper->escapeHtml(__('ZIP Code')) ?></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-3" x-show="authenticateBy !== 'zip'">
+                    <div class="control">
+                        <label for="oar_email" class="sr-only">
+                            <span><?= $escaper->escapeHtml(__('Email')) ?></span>
+                        </label>
+                        <input
+                            type="email"
+                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                            id="oar_email"
+                            name="oar_email"
+                            placeholder="<?= $escaper->escapeHtml(__('Email')) ?>"
+                            :required="authenticateBy !== 'zip'"
+                        />
+                    </div>
+                </div>
+                <div class="mt-3" x-show="authenticateBy === 'zip'">
+                    <div class="control">
+                        <label for="oar_zip" class="sr-only">
+                            <span><?= $escaper->escapeHtml(__('Billing ZIP Code')) ?></span>
+                        </label>
+                        <input
+                            type="text"
+                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                            id="oar_zip"
+                            name="oar_zip"
+                            placeholder="<?= $escaper->escapeHtml(__('Billing ZIP Code')) ?>"
+                            :required="authenticateBy === 'zip'"
+                        />
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="control">
+                        <label for="oar-billing-lastname" class="sr-only">
+                            <span><?= $escaper->escapeHtml(__('Billing Last Name')) ?></span>
+                        </label>
+                        <input
+                            type="text"
+                            class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                            id="oar-billing-lastname"
+                            name="oar_billing_lastname"
+                            placeholder="<?= $escaper->escapeHtml(__('Billing Last Name')) ?>"
+                            required
+                        />
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <button type="submit" title="<?= $escaper->escapeHtml(__('Continue')) ?>"
+                class="button button--filled-primary mt-7 w-full py-4" name="send">
+            <span><?= $escaper->escapeHtml(__('Continue')) ?></span>
+        </button>
+    </form>
+    <script>
+        function initForm() {
+            return {
+                authenticateBy: 'email'
+            }
+        }
+    </script>
+</div>
