@@ -35,8 +35,8 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
         method="post"
         id="form-validate"
         enctype="multipart/form-data"
-        x-data="Object.assign(AccountInformation(), hyva.formValidation($el), initForm())"
-        @submit.prevent="submitForm(() => handleFormSubmit())"
+        x-data="Object.assign(hyva.formValidation($el), AccountInformation(), initForm())"
+        @submit.prevent="submitForm((e) => handleFormSubmit(e))"
         autocomplete="off"
     >
         <div class="bg-bg-400 p-5 rounded-xl">
