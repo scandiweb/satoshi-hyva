@@ -23,9 +23,7 @@ $productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
 /** @var AbstractProduct $block */
 /** @var Magento\Catalog\Model\Product $product */
 $product = $block->getData('product');
-$imageUrl = $this->helper(Image::class)
-                 ->init($product, 'product_base_image')
-                 ->resize(600)
+$imageUrl = $this->helper(Image::class)->init($product, 'product_page_image_medium')
                  ->getUrl();
 $breadcrumbs = $block->getData('breadcrumbs') ?? [];
 

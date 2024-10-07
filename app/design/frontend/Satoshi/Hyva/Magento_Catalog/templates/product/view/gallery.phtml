@@ -38,7 +38,7 @@ $mainImageUrl = $mainImage ?
 
 
 $isContain = false;
-$mixBackground = false;
+$mixBackground = true;
 $productName = $block->getProduct()->getName();
 ?>
 
@@ -67,7 +67,7 @@ $productName = $block->getProduct()->getName();
 
         <div class="flex items-center justify-center size-full <?= $isContain ? 'p-[4%]' : '' ?>">
             <img
-                class="object-center no-fade <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
+                class="object-center no-fade <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
                 src="<?= $mainImageUrl ?>"
                 alt="<?= $mainImage ? $escaper->escapeHtmlAttr($mainImage->getData('label')) : '' ?>"
                 id="<?= $mainImage ? 'main-image-' . $mainImage->getData('position') : 'main-image' ?>"
@@ -122,7 +122,7 @@ $productName = $block->getProduct()->getName();
                 <img
                     :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
                     :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
-                    class="object-center <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
+                    class="object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
                     :src="image.img"
                 />
 
