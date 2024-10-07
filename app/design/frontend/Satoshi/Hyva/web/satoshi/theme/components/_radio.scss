@@ -27,7 +27,7 @@
       @apply focus-ring;
     }
 
-    &:checked + .radio__control {
+    &[checked] + .radio__control {
       @apply border-primary-500 bg-primary-500;
 
       &::before {
@@ -35,7 +35,7 @@
       }
     }
 
-    &:checked ~ .radio__label {
+    &[checked] ~ .radio__label {
       @apply font-semibold text-primary-500;
     }
   }

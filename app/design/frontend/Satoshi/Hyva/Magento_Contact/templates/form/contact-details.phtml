@@ -1,0 +1,62 @@
+<?php
+
+declare(strict_types=1);
+
+use Satoshi\Contact\Block\ContactDetails;
+use Magento\Framework\Escaper;
+
+/** @var ContactDetails $block */
+/** @var Escaper $escaper */
+
+$storeName = $block->getStoreName();
+$storePhoneNumber = $block->getStorePhoneNumber();
+$storeEmail = $block->getStoreEmail();
+$storeAddress = $block->getStoreAddress();
+$storeVatNumber = $block->getStoreVatNumber();
+?>
+<p class="text-[#797979]">
+  <?php if ($storeName): ?>
+    <span>
+      <?= $escaper->escapeHtml(__('Company:')) ?>
+      <?= $escaper->escapeHtml($storeName) ?>
+    </span>
+    <br />
+  <?php endif; ?>
+  <?php if ($storePhoneNumber): ?>
+    <span>
+      <?= $escaper->escapeHtml(__('Phone number:')) ?>
+      <a
+        href="tel:<?= $escaper->escapeHtmlAttr(preg_replace("/[^0-9+]/", "", $storePhoneNumber)) ?>"
+        title="<?= $escaper->escapeHtmlAttr($storePhoneNumber) ?>"
+      >
+        <?= $escaper->escapeHtml($storePhoneNumber) ?>
+      </a>
+    </span>
+    <br />
+  <?php endif; ?>
+  <?php if ($storeEmail): ?>
+    <span>
+      <?= $escaper->escapeHtml(__('Email:')) ?>
+      <a
+        href="mailto:<?= $escaper->escapeHtmlAttr($storeEmail) ?>"
+        title="<?= $escaper->escapeHtmlAttr($storeEmail) ?>"
+      >
+        <?= $escaper->escapeHtml($storeEmail) ?>
+      </a>
+    </span>
+    <br />
+  <?php endif; ?>
+  <?php if ($storeAddress): ?>
+    <span>
+      <?= $escaper->escapeHtml(__('Physical address:')) ?>
+      <?= $escaper->escapeHtml($storeAddress) ?>
+    </span>
+    <br />
+  <?php endif; ?>
+  <?php if ($storeVatNumber): ?>
+    <span>
+      <?= $escaper->escapeHtml(__('VAT number:')) ?>
+      <?= $escaper->escapeHtml($storeVatNumber) ?>
+    </span>
+  <?php endif; ?>
+</p>

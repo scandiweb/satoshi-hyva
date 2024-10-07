@@ -1,0 +1,15 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Sales\Block\Order\Info;
+
+/** @var Info $block */
+/** @var Escaper $escaper */
+?>
+
+<span class="order-status inline-block px-6 py-4 border rounded-sm border-container">
+    <span class="sr-only">
+        <?= $escaper->escapeHtml(__('Status')) ?>:&nbsp;
+    </span>
+    <?= $escaper->escapeHtml($block->getOrder()->getStatusLabel()) ?>
+</span>
