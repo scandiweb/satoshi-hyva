@@ -8,6 +8,7 @@ export type AccountInformationType = {
   errorMessages: string[];
   displayErrorMessage: boolean;
   errors: number;
+  recaptchaError: string | undefined;
   validate(): Promise<void>;
   handleCheckboxChange(checkboxId: string): void;
   setErrorMessages(messages: string[]): void;
@@ -26,6 +27,7 @@ export const AccountInformation = (
       errorMessages: [] as string[],
       displayErrorMessage: false,
       errors: 0,
+      recaptchaError: undefined,
 
       handleCheckboxChange(checkboxId) {
         if (checkboxId === 'email-fields') {
@@ -77,6 +79,7 @@ export const AccountInformation = (
 
               if (recaptchaValidationScript) {
                 eval(recaptchaValidationScript);
+                this.recaptchaError = this.errorMessages.find(message => message.includes('ReCaptcha'));
               }
 
               if (this.errors === 0) {
