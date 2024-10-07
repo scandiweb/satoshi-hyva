@@ -65,10 +65,8 @@ class Guest extends SourceGuest
     ) {
         $this->session = $customerSession;
         $this->storeManager = $storeManager;
-        $this->orderRepository = $orderRepository ?: ObjectManager::getInstance()
-            ->get(OrderRepositoryInterface::class);
-        $this->searchCriteriaBuilder = $searchCriteria?: ObjectManager::getInstance()
-            ->get(SearchCriteriaBuilder::class);
+        $this->orderRepository = $orderRepository ?: ObjectManager::getInstance()->get(OrderRepositoryInterface::class);
+        $this->searchCriteriaBuilder = $searchCriteria ?: ObjectManager::getInstance()->get(SearchCriteriaBuilder::class);
 
         parent::__construct(
             $context,
@@ -95,7 +93,7 @@ class Guest extends SourceGuest
      * @throws CookieSizeLimitReachedException
      * @throws FailureToSendException|NoSuchEntityException
      */
-    public function loadValidOrder(App\RequestInterface $request): bool|Redirect
+    public function loadValidOrder(App\RequestInterface $request)
     {
         if ($this->customerSession->isLoggedIn()) {
             return $this->resultRedirectFactory->create()->setPath('sales/order/history');
@@ -129,7 +127,7 @@ class Guest extends SourceGuest
      * @throws CookieSizeLimitReachedException
      * @throws FailureToSendException
      */
-    private function setGuestViewCookie(string $cookieValue): void
+    private function setGuestViewCookie(string $cookieValue)
     {
         $metadata = $this->cookieMetadataFactory->createPublicCookieMetadata()
             ->setPath(self::COOKIE_PATH)
@@ -147,7 +145,7 @@ class Guest extends SourceGuest
      * @throws CookieSizeLimitReachedException
      * @throws FailureToSendException|NoSuchEntityException
      */
-    private function loadFromCookie($fromCookie): OrderInterface
+    private function loadFromCookie($fromCookie)
     {
         if (!is_string($fromCookie)) {
             throw new InputException(__($this->inputExceptionMessage));
@@ -175,7 +173,7 @@ class Guest extends SourceGuest
      * @throws CookieSizeLimitReachedException
      * @throws FailureToSendException|NoSuchEntityException
      */
-    private function loadFromPost(array $postData): Order
+    private function loadFromPost(array $postData)
     {
         /** @var $order Order */
         $order = $this->getOrderRecord($postData['oar_order_id']);
@@ -194,7 +192,7 @@ class Guest extends SourceGuest
      * @param array $postData
      * @return bool
      */
-    private function compareStoredBillingDataWithInput(Order $order, array $postData): bool
+    private function compareStoredBillingDataWithInput(Order $order, array $postData)
     {
         $type = $postData['oar_type'];
         $email = $postData['oar_email'];
@@ -212,7 +210,7 @@ class Guest extends SourceGuest
      * @param string $str
      * @return string
      */
-    private function normalizeStr(string $str): string
+    private function normalizeStr(string $str)
     {
         return trim(strtolower($str));
     }
@@ -224,7 +222,7 @@ class Guest extends SourceGuest
      * @return bool
      * @throws NoSuchEntityException
      */
-    private function hasPostDataEmptyFields(array $postData): bool
+    private function hasPostDataEmptyFields(array $postData)
     {
         return empty($postData['oar_order_id']) || empty($postData['oar_billing_lastname']) ||
             empty($postData['oar_type']) || empty($this->storeManager->getStore()->getId()) ||
@@ -240,7 +238,7 @@ class Guest extends SourceGuest
      * @return OrderInterface
      * @throws InputException|NoSuchEntityException
      */
-    private function getOrderRecord(string $incrementId): OrderInterface
+    private function getOrderRecord(string $incrementId)
     {
         $records = $this->orderRepository->getList(
             $this->searchCriteriaBuilder

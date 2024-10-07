@@ -36,7 +36,7 @@ class Form extends SourceForm
      *
      * @return string|null
      */
-    public function getErrorMessage(): ?string
+    public function getErrorMessage()
     {
         $errorMessage = $this->customerSession->getErrorMessage();
         $this->customerSession->unsErrorMessage();
