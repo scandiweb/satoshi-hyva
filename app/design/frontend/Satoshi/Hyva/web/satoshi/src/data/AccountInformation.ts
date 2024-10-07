@@ -11,12 +11,13 @@ export type AccountInformationType = {
   validate(): Promise<void>;
   handleCheckboxChange(checkboxId: string): void;
   setErrorMessages(messages: string[]): void;
-  saveChanges(event: Event): void;
+  saveChanges(form: HTMLFormElement): void;
   submitForm(event: Event): void;
 } & Magics<{}>;
 
 export const AccountInformation = (
     initialShowPasswordFields: boolean,
+    recaptchaValidationScript: string,
 ) =>
     <AccountInformationType>{
       isLoading: false,
@@ -47,8 +48,7 @@ export const AccountInformation = (
         this.displayErrorMessage = messages.length > 0;
       },
 
-      saveChanges(event) {
-        const $form = event.target as HTMLFormElement;
+      saveChanges($form) {
         if (!$form) return;
 
         const formData = new FormData($form);
@@ -73,11 +73,14 @@ export const AccountInformation = (
         this.validate()
             .then(() => {
               // Do not rename $form, the variable is expected to be declared in the recaptcha output
-              // const $form = event.target;
-              // <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>
+              const $form = event.target as HTMLFormElement;
+
+              if (recaptchaValidationScript) {
+                eval(recaptchaValidationScript);
+              }
 
               if (this.errors === 0) {
-                this.saveChanges(event);
+                this.saveChanges($form);
               }
             })
             .catch((invalid) => {
