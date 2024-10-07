@@ -186,7 +186,17 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
             <?= $block->getChildHtml('fieldset_edit_info_additional') ?>
             <?= $block->getChildHtml('form_additional_info') ?>
         </div>
-        <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>
+
+        <?php if($recaptcha): ?>
+            <div class="mt-3">
+                <?= $recaptcha->getHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
+
+                <ul class="text-red-500 mt-1" v-show="Boolean(recaptchaError)">
+                    <li x-text="recaptchaError"></li>
+                </ul>
+            </div>
+        <?php endif; ?>
+
         <div class="flex gap-x-4 flex-col md:flex-row mt-5">
             <button type="submit"
                     class="button button--filled-primary"
