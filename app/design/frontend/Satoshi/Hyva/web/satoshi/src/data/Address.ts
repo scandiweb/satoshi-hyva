@@ -1,9 +1,7 @@
 import { Magics } from "alpinejs";
 import { ESC_KEY } from "../utils/keyboard-keys";
-import { navigateWithTransition } from "../plugins/Transition";
 
 export type AddressType = {
-  isLoading: boolean;
   renderedPage: string;
   address: Record<string, any>;
   province: string | null;
@@ -18,13 +16,10 @@ export type AddressType = {
   _updateProvince(country: HTMLSelectElement): void;
   _onKeyDown(e: KeyboardEvent): void;
   _focusOnForm(popup_id: string): void;
-  deleteAddress(address_id: string, confirm_message: string): void;
-  createOrUpdateAddress(): void;
 } & Magics<{}>;
 
 export const Address = () =>
   <AddressType>{
-    isLoading: false,
     renderedPage: "",
     address: {},
     province: null,
@@ -88,51 +83,5 @@ export const Address = () =>
           country?.selectedOptions[0].dataset.provinces || "[]",
         );
       });
-    },
-
-    deleteAddress(address_id, confirm_message) {
-        if (window.confirm(confirm_message)) {
-            this.isLoading = true;
-            const formData = new FormData();
-            formData.append("form_key", window.hyva.getFormKey());
-            formData.append("uenc", window.hyva.getUenc());
-            formData.append("id", address_id);
-
-            fetch('/customer/address/delete', {
-                method: "POST",
-                body: formData,
-            }).then((result) => {
-                return result.text();
-            }) .then((content) => {
-                window.hyva.replaceDomElement("#address-list-wrapper", content);
-            }).catch((error) => {
-                console.error("Error while deleting address:", error);
-                location.reload();
-            }).finally(() => {
-                this.isLoading = false
-            });
-        }
-    },
-
-    createOrUpdateAddress() {
-        const $form = document.getElementById('form-validate') as HTMLFormElement;
-        if (!$form) return;
-
-        this.isLoading = true;
-        const formData = new FormData($form);
-
-        fetch($form.action, {
-            method: "POST",
-            body: formData,
-        }).then((res) => {
-            if (res.ok) {
-                navigateWithTransition('/customer/address/');
-            }
-        }).catch((error) => {
-            console.error("Error while creating or updating address:", error);
-            location.reload();
-        }).finally(() => {
-            this.isLoading = false;
-        });
     },
   };
