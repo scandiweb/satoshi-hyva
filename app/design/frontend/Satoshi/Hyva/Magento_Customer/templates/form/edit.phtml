@@ -34,8 +34,11 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
           action="<?= $escaper->escapeUrl($block->getUrl('customer/account/editPost')) ?>"
           method="post"
           enctype="multipart/form-data"
-          x-data="Object.assign(hyva.formValidation($el), AccountInformation(<?= $block->getChangePassword() ? $escaper->escapeJs('true') : $escaper->escapeJs('false') ?>))"
-          @submit.prevent="submitForm"
+          x-data="Object.assign(hyva.formValidation($el),
+              AccountInformation(<?= $block->getChangePassword() ? 'true' : 'false' ?>,
+              '<?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '') ?>'),
+          )"
+          @submit.prevent="submitForm(event)"
           autocomplete="off"
     >
         <div class="bg-bg-400 p-5 rounded-xl">
