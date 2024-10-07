@@ -286,7 +286,7 @@ $cartMessage = $block->getCartMessage();
       <?php if (!$isProductInCart): ?>
         style="display: none"
       <?php endif; ?>
-      x-show="isVariantInCart && contentId !== 'product-options'"
+      x-show="isVariantInCart"
       class="animate-on-transition button button--disabled button--outline-secondary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= $hasVariants ? 'max-md:hidden' : '' ?>"
       @click.prevent="$store.cart.showCart()"
       x-a11y-trap-target.end="$store.popup.currentPopup === productActionsPopup"
