@@ -73,7 +73,7 @@ if ($sorter) {
         >
             <template x-portal="document.getElementById($store.main.isMobile ? 'selected-filters-mobile' : 'filters-sidebar')">
                 <div
-                    x-data="Filters('<?= $escaper->escapeUrl($block->getClearUrl()) ?>')"
+                    x-data="Filters('<?= $escaper->escapeUrl($block->getClearUrl()) ?>', { key: '<?= $sorter->getCurrentOrder() ?>', dir: '<?= $sorter->getCurrentDirection() ?>' })"
                     role="region"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Product filters')) ?>"
                 >
@@ -82,7 +82,7 @@ if ($sorter) {
                     <template x-if="!$store.main.isMobile">
                         <div class="contents">
                             <!-- Desktop Sort -->
-                            <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(false, 300)">
+                            <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(true, 300)">
                                 <div class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2" x-ref="AccordionButton">
                                     <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__('Sort by')) ?></h2>
                                     <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
@@ -113,6 +113,7 @@ if ($sorter) {
                                                                     class="radio__input"
                                                                     aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>"
                                                                     @change="selectSort('<?= $sortOption['value'] ?>', '<?= $sortOption['dir'] ?>')"
+                                                                    :checked="selectedSort.key === '<?= $sortOption['value'] ?>' && selectedSort.dir === '<?= $sortOption['dir'] ?>'"
                                                                     <?php if($sorter->isOrderCurrent($sortOption['value']) && $sorter->getCurrentDirection() === $sortOption['dir']): ?>
                                                                         checked="checked"
                                                                     <?php endif; ?>
