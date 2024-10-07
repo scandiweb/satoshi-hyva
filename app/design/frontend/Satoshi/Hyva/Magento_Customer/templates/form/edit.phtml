@@ -30,14 +30,13 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
         <?= $escaper->escapeHtml(__('Account Information')) ?>
     </h2>
 
-    <form
-        action="<?= $escaper->escapeUrl($block->getUrl('customer/account/editPost')) ?>"
-        method="post"
-        id="form-validate"
-        enctype="multipart/form-data"
-        x-data="Object.assign(hyva.formValidation($el), AccountInformation(), initForm())"
-        @submit.prevent="submitForm((e) => handleFormSubmit(e))"
-        autocomplete="off"
+    <form id="form-validate"
+          action="<?= $escaper->escapeUrl($block->getUrl('customer/account/editPost')) ?>"
+          method="post"
+          enctype="multipart/form-data"
+          x-data="Object.assign(hyva.formValidation($el), AccountInformation())"
+          @submit.prevent="submitForm"
+          autocomplete="off"
     >
         <div class="bg-bg-400 p-5 rounded-xl">
             <?= $block->getBlockHtml('formkey') ?>
@@ -58,15 +57,14 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
             <?php endif ?>
 
             <label class="flex items-center gap-x-3 mt-5 mb-3 mx-4" for="change-email">
-                <input
-                    type="checkbox"
-                    name="change_email"
-                    id="change-email"
-                    value="1"
-                    title="<?= $escaper->escapeHtmlAttr(__('Change email')) ?>"
-                    @change="handleCheckboxChange('email-fields')"
-                    class="checkbox__input"
-                    aria-describedby="change_email_description"
+                <input type="checkbox"
+                       name="change_email"
+                       id="change-email"
+                       value="1"
+                       title="<?= $escaper->escapeHtmlAttr(__('Change email')) ?>"
+                       @change="handleCheckboxChange('email-fields')"
+                       class="checkbox__input"
+                       aria-describedby="change_email_description"
                 />
                 <span class="checkbox__control w-5 h-5" aria-hidden="true">
                 <?= $hyvaicons->renderHtml('checkmark') ?>
@@ -77,16 +75,15 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
             </label>
 
             <label class="flex items-center gap-x-3 mt-3 mx-4" for="change-password">
-                <input
-                    type="checkbox"
-                    name="change_password"
-                    id="change-password"
-                    value="1"
-                    title="<?= $escaper->escapeHtmlAttr(__('Change password')) ?>"
-                    @change="handleCheckboxChange('password-fields')"
+                <input type="checkbox"
+                       name="change_password"
+                       id="change-password"
+                       value="1"
+                       title="<?= $escaper->escapeHtmlAttr(__('Change password')) ?>"
+                       @change="handleCheckboxChange('password-fields')"
                     <?php if ($block->getChangePassword()): ?> checked<?php endif; ?>
-                    class="checkbox__input"
-                    aria-describedby="change_password_description"
+                       class="checkbox__input"
+                       aria-describedby="change_password_description"
                 />
                 <span class="checkbox__control w-5 h-5" aria-hidden="true">
                 <?= $hyvaicons->renderHtml('checkmark') ?>
@@ -96,10 +93,9 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                       id="change_password_description"><?= $escaper->escapeHtml(__('form appears when field is selected')) ?></span>
             </label>
 
-            <div
-                x-cloak x-transition x-show="showEmailField"
-                class="field field-reserved mt-7"
-                id="email-fields"
+            <div id="email-fields"
+                 x-cloak x-transition x-show="showEmailField"
+                 class="field field-reserved mt-7"
             >
                 <label class="sr-only tracking-widest" for="email">
                     <span><?= $escaper->escapeHtml(__('Email')) ?></span>
@@ -114,10 +110,10 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                 </div>
             </div>
 
-            <div
-                x-cloak x-transition x-show="showEmailField || showPasswordFields"
-                class="field field-reserved mt-3 mb-5" :class="{'!mt-7': !showEmailField, '!mb-0': showPasswordFields}"
-                id="password-fields"
+            <div id="password-fields"
+                 x-cloak x-transition x-show="showEmailField || showPasswordFields"
+                 class="field field-reserved mt-3 mb-5"
+                 :class="{'!mt-7': !showEmailField, '!mb-0': showPasswordFields}"
             >
                 <label class="sr-only tracking-widest" for="current-password">
                     <span><?= $escaper->escapeHtml(__('Current Password')) ?></span>
@@ -141,18 +137,17 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                             <?= $escaper->escapeHtml(__('New Password')) ?>
                     </span></label>
                     <div>
-                        <input
-                            type="password"
-                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-                            name="password"
-                            id="password"
-                            placeholder="<?= $escaper->escapeHtmlAttr(__('New password')) ?>"
-                            required
-                            data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
-                            @input="onChange"
-                            minlength="<?= $escaper->escapeHtmlAttr($minimumPasswordLength) ?>"
-                            autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
-                            aria-describedby="password-strength-meter"
+                        <input type="password"
+                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                               name="password"
+                               id="password"
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('New password')) ?>"
+                               required
+                               data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
+                               @input="onChange"
+                               minlength="<?= $escaper->escapeHtmlAttr($minimumPasswordLength) ?>"
+                               autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
+                               aria-describedby="password-strength-meter"
                         />
                         <div id="password-strength-meter-container" class="mt-2 text-sm"
                              data-role="password-strength-meter" aria-live="polite">
@@ -172,15 +167,14 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
                         <span><?= $escaper->escapeHtml(__('Confirm New Password')) ?></span>
                     </label>
                     <div>
-                        <input
-                            type="password"
-                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-                            name="password_confirmation" id="password-confirmation"
-                            placeholder="<?= $escaper->escapeHtml(__('Confirm new password')) ?>"
-                            data-validate='{"equalTo": "password"}'
-                            title="<?= $escaper->escapeHtmlAttr(__('Confirm Password')) ?>"
-                            @input="onChange"
-                            autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
+                        <input type="password"
+                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                               name="password_confirmation" id="password-confirmation"
+                               placeholder="<?= $escaper->escapeHtml(__('Confirm new password')) ?>"
+                               data-validate='{"equalTo": "password"}'
+                               title="<?= $escaper->escapeHtmlAttr(__('Confirm Password')) ?>"
+                               @input="onChange"
+                               autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                         />
                     </div>
                 </div>
@@ -191,21 +185,19 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
         </div>
         <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>
         <div class="flex gap-x-4 flex-col md:flex-row mt-5">
-            <button
-                type="submit"
-                class="button button--filled-primary"
-                :class="isLoading && 'button--disabled'"
-                title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
-                :disabled="isLoading"
+            <button type="submit"
+                    class="button button--filled-primary"
+                    :class="isLoading && 'button--disabled'"
+                    title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
+                    :disabled="isLoading"
             >
             <span x-text="isLoading ?
                 '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
                 '<?= $escaper->escapeHtml(__('Save')) ?>'">Save</span>
             </button>
-            <a
-                class="button button--ghost-primary"
-                href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-                x-element-transition-trigger
+            <a class="button button--ghost-primary"
+               href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+               x-element-transition-trigger
             >
                 <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
             </a>
@@ -216,55 +208,3 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
         <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>
     </div>
 </section>
-
-<script>
-    function initForm() {
-        return {
-            errors: 0,
-            hasCaptchaToken: 0,
-            displayErrorMessage: false,
-            errorMessages: [],
-            showEmailField: false,
-            showPasswordFields: <?= $block->getChangePassword() ? $escaper->escapeJs('true') : $escaper->escapeJs('false') ?>,
-            setErrorMessages(messages) {
-                this.errorMessages = [messages]
-                this.displayErrorMessage = this.errorMessages.length
-            },
-            submitForm(cb) {
-                this.validate()
-                    .then(() => {
-                        // Do not rename $form, the variable is expected to be declared in the recaptcha output
-                        const $form = document.querySelector('#form-validate');
-                        <?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>
-
-                        if (this.errors === 0) {
-                            cb();
-                        }
-                    })
-                    .catch((invalid) => {
-                        if (invalid.length > 0) {
-                            invalid[0].focus();
-                        }
-                    })
-            },
-            handleCheckboxChange(checkboxId) {
-                if (checkboxId === 'email-fields') {
-                    this.showEmailField = !this.showEmailField
-                }
-                if (checkboxId === 'password-fields') {
-                    this.showPasswordFields = !this.showPasswordFields
-                }
-
-                this.$nextTick(() => {
-                    const firstFocusableElement = document.querySelector(`
-                        #${checkboxId} input,
-                        #${checkboxId} textarea,
-                        #${checkboxId} select
-                    `)
-
-                    firstFocusableElement && firstFocusableElement.focus()
-                })
-            }
-        }
-    }
-</script>
