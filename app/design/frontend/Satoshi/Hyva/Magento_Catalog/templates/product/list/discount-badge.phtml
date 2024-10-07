@@ -8,9 +8,9 @@ use Satoshi\Theme\Block\Template;
 /** @var Escaper $escaper */
 /** @var AbstractProduct $block */
 
-$product = $block->getData('product');
-$class = $block->getData('class');
-
+$product = $block->getData('product') ?? null;
+$class = $block->getData('class') ?? '';
+$isSearch = $block->getData('is_search') ?? false;
 ?>
 
 <?php if ($product): ?>
@@ -18,8 +18,8 @@ $class = $block->getData('class');
         $price = $product->getPrice();
         $finalPrice = $product->getFinalPrice();
     ?>
-    <?php if ($price !== $finalPrice): ?>
-        <div class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm <?= $class ?>">
+    <?php if ($price > $finalPrice): ?>
+        <div class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm <?= $class ?>" x-element-transition-skip='{"transformOrigin": "left bottom"}'>
             <span class="font-semibold">
                 -<?= round((($price - $finalPrice) * 100.0) / $price) ?>% <?= $escaper->escapeHtml(__('OFF')) ?>
             </span>
@@ -29,14 +29,19 @@ $class = $block->getData('class');
     <div
         x-data="
             {
-                finalPrice: product.price_range.minimum_price.final_price.value,
-                regularPrice: product.price_range.minimum_price.regular_price.value
+                <?php if($isSearch): ?>
+                    finalPrice: product.price_range.minimum_price.final_price.value,
+                    regularPrice: product.price_range.minimum_price.regular_price.value
+                <?php else: ?>
+                    finalPrice: $store['transition'].pageData?.finalPrice,
+                    regularPrice: $store['transition'].pageData?.regularPrice
+                <?php endif; ?>
             }
         "
         class="card-product__badge-container z-10 rounded-[40px] bg-bg-500 px-3 text-sm <?= $class ?>"
         x-show="regularPrice>finalPrice && regularPrice"
     >
-        <span x-text="Math.round(((regularPrice - finalPrice) * 100.0) / regularPrice) + '%'" class="font-semibold">
+        <span x-text="Math.round(((regularPrice - finalPrice) * 100.0) / regularPrice) + '% OFF'" class="font-semibold">
         </span>
     </div>
 <?php endif; ?>

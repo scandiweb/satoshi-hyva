@@ -70,9 +70,9 @@ if ($product) {
     >
         <!-- Mobile main image -->
         <div class="mb-4 md:hidden">
-            <div class="relative flex aspect-product min-h-0 justify-center">
+            <div class="relative flex aspect-product min-h-0 justify-center bg-[--fade-in-bg]">
                 <div
-                    class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center transition-opacity delay-1000 duration-300"
+                    class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center transition-opacity delay-1000 duration-300 bg-[--fade-in-bg]"
                     x-data="TransitionImage({
                         src: '<?= $mainImageUrl ?>',
                         imageId: 'mobile-image'

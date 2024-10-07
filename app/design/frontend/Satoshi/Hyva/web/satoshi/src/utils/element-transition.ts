@@ -21,6 +21,9 @@ export const doElementTransitionFromSrcToDest = async ({
   } = srcElem.getBoundingClientRect();
 
   const clonedElement: HTMLElement = srcElem.cloneNode(true) as HTMLElement;
+  const skipEl = clonedElement.querySelector(
+    "[x-element-transition-skip]",
+  ) as HTMLElement;
 
   if (isCopyCssProperties) {
     const styles = window.getComputedStyle(srcElem);
@@ -38,6 +41,9 @@ export const doElementTransitionFromSrcToDest = async ({
     });
   }
 
+  clonedElement
+    .querySelector('[loading="lazy"]')
+    ?.setAttribute("loading", "eager");
   clonedElement.style.top = `${st}px`;
   clonedElement.style.left = `${sl}px`;
   clonedElement.style.width = `${sw}px`;
@@ -74,6 +80,19 @@ export const doElementTransitionFromSrcToDest = async ({
     width: tw,
     height: th,
   } = destEl!.getBoundingClientRect();
+
+  if (skipEl) {
+    skipEl.style.transform = `scale(${sw / tw}, ${sh / th})`;
+    skipEl.style.bottom = `${8 / (th / sh)}px`;
+
+    const styles = skipEl.getAttribute("x-element-transition-skip");
+    if (styles) {
+      const styleRules = JSON.parse(styles);
+      Object.keys(styleRules).forEach((key: any) => {
+        skipEl.style[key] = styleRules[key];
+      });
+    }
+  }
 
   clonedElement.style.transform = `translate3d(${tl - sl}px, ${
     tt - st
