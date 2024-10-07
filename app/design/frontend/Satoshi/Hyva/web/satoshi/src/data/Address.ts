@@ -1,5 +1,4 @@
 import { Magics } from "alpinejs";
-import { replaceMainContentWithTransition } from "../plugins/Transition";
 
 export type AddressType = {
   isLoading: boolean;
@@ -9,7 +8,6 @@ export type AddressType = {
     confirmMessage: string,
     deleteUrl: string,
   ): void;
-  createOrUpdateAddress(): void;
 } & Magics<{}>;
 
 export const Address = () =>
@@ -42,30 +40,5 @@ export const Address = () =>
             this.isLoading = false;
           });
       }
-    },
-
-    createOrUpdateAddress() {
-      const $form = document.getElementById("form-validate") as HTMLFormElement;
-      if (!$form) return;
-
-      this.isLoading = true;
-      const formData = new FormData($form);
-
-      fetch($form.action, {
-        method: "POST",
-        body: formData,
-      })
-        .then(async (res) => {
-          if (res.ok) {
-            replaceMainContentWithTransition(res.url, await res.text());
-          }
-        })
-        .catch((error) => {
-          console.error("Error while creating or updating address:", error);
-          location.reload();
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
     },
   };

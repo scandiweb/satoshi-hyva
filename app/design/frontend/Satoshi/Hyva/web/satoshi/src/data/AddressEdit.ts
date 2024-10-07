@@ -1,4 +1,5 @@
 import type {Magics} from 'alpinejs';
+import {replaceMainContentWithTransition} from "../plugins/Transition.ts";
 
 interface PostCodeSpec {
   pattern: string;
@@ -10,6 +11,7 @@ interface CountryPostCodeSpecs {
 }
 
 export type AddressEditType = {
+  isLoading: boolean;
   directoryData: Record<string, any>;
   availableRegions: Record<string, any>;
   messageTime: number;
@@ -29,12 +31,13 @@ export type AddressEditType = {
   validateCountryDependentFields(): void;
   hasAvailableRegions(): boolean;
   onRegionIdChange(event: Event): void;
-  submitForm(cb: Function): void;
+  submitForm(): void;
   validate(): Promise<void>;
   setupField(field: HTMLElement): void;
   validateField(field: any): void;
   removeMessages(field: any): void;
   onChange(event: Event): void;
+  createOrUpdateAddress(): void;
 } & Magics<{}>;
 
 export const AddressEdit = (
@@ -47,6 +50,7 @@ export const AddressEdit = (
     postcodeWarnings: string[],
 ) =>
     <AddressEditType>{
+      isLoading: false,
       directoryData: {},
       availableRegions: {},
       messageTime: 5000,
@@ -185,12 +189,37 @@ export const AddressEdit = (
         this.validateField(this.fields['region']);
       },
 
-      submitForm(cb: Function) {
+      createOrUpdateAddress() {
+        const $form = document.getElementById("form-validate") as HTMLFormElement;
+        if (!$form) return;
+
+        this.isLoading = true;
+        const formData = new FormData($form);
+
+        fetch($form.action, {
+          method: "POST",
+          body: formData,
+        })
+            .then(async (res) => {
+              if (res.ok) {
+                await replaceMainContentWithTransition(res.url, await res.text());
+              }
+            })
+            .catch((error) => {
+              console.error("Error while creating or updating address:", error);
+              location.reload();
+            })
+            .finally(() => {
+              this.isLoading = false;
+            });
+      },
+
+      submitForm() {
         this.validate()
             .then(() => {
               const invalidFields = Object.values(this.fields).filter((field) => !field.state.valid);
               if (invalidFields.length === 0) {
-                cb();
+                this.createOrUpdateAddress();
               }
             })
             .catch((invalid) => {
