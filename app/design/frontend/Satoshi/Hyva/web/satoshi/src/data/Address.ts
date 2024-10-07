@@ -1,5 +1,5 @@
 import { Magics } from "alpinejs";
-import { navigateWithTransition } from "../plugins/Transition";
+import { replaceMainContentWithTransition } from "../plugins/Transition";
 
 export type AddressType = {
   isLoading: boolean;
@@ -55,9 +55,9 @@ export const Address = () =>
         method: "POST",
         body: formData,
       })
-        .then((res) => {
+        .then(async (res) => {
           if (res.ok) {
-            navigateWithTransition("/customer/address/");
+            replaceMainContentWithTransition(res.url, await res.text());
           }
         })
         .catch((error) => {
