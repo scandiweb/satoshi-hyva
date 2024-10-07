@@ -34,7 +34,7 @@ $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocom
           action="<?= $escaper->escapeUrl($block->getUrl('customer/account/editPost')) ?>"
           method="post"
           enctype="multipart/form-data"
-          x-data="Object.assign(hyva.formValidation($el), AccountInformation())"
+          x-data="Object.assign(hyva.formValidation($el), AccountInformation(<?= $block->getChangePassword() ? $escaper->escapeJs('true') : $escaper->escapeJs('false') ?>))"
           @submit.prevent="submitForm"
           autocomplete="off"
     >
