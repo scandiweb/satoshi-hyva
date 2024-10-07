@@ -281,6 +281,21 @@ export const morphContent = (
   replaceElement(target, newContent);
 };
 
+const reExecuteJs = (target: HTMLElement) => {
+  Array.from(target.querySelectorAll("script")).forEach((oldScriptEl) => {
+    const newScriptEl = document.createElement("script");
+
+    Array.from(oldScriptEl.attributes).forEach((attr) => {
+      newScriptEl.setAttribute(attr.name, attr.value);
+    });
+
+    const scriptText = document.createTextNode(oldScriptEl.innerHTML);
+    newScriptEl.appendChild(scriptText);
+
+    oldScriptEl.parentNode!.replaceChild(newScriptEl, oldScriptEl);
+  });
+};
+
 export const replaceContent = (
   rawContent: string,
   lookup: string,
@@ -293,6 +308,7 @@ export const replaceContent = (
   const content = rawContent.match(regex);
   const newContent = content ? content[0] : "";
   target.innerHTML = newContent;
+  reExecuteJs(target);
 };
 
 export const replaceMainContent = (rawContent: string) => {
