@@ -49,7 +49,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
           id="form-validate"
           enctype="multipart/form-data"
           data-hasrequired="<?= $escaper->escapeHtmlAttr(__('* Required Fields')) ?>"
-          @submit.prevent="submitForm()"
+          @submit.prevent="submitForm"
           @private-content-loaded.window="onPrivateContentLoaded($event.detail.data);"
     >
         <div class="bg-bg-400 p-5 rounded-xl mb-7 md:mb-8">
