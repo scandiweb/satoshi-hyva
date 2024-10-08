@@ -358,6 +358,11 @@ return [
         'ReadyMage_Logger' => 1,
         'ReadyMage_Maintenance' => 1,
         'Satoshi_CatalogGraphQl' => 1,
+        'Satoshi_Checkout' => 1,
+        'Satoshi_Contact' => 1,
+        'Satoshi_Framework' => 1,
+        'Satoshi_LayeredNavigation' => 1,
+        'Satoshi_Migration' => 1,
         'Satoshi_SatoshiUi' => 1,
         'Satoshi_Theme' => 1,
         'Temando_ShippingRemover' => 1

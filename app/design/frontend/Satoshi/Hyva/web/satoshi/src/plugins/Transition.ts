@@ -281,6 +281,21 @@ export const morphContent = (
   replaceElement(target, newContent);
 };
 
+const reExecuteJs = (target: HTMLElement) => {
+  Array.from(target.querySelectorAll("script")).forEach((oldScriptEl) => {
+    const newScriptEl = document.createElement("script");
+
+    Array.from(oldScriptEl.attributes).forEach((attr) => {
+      newScriptEl.setAttribute(attr.name, attr.value);
+    });
+
+    const scriptText = document.createTextNode(oldScriptEl.innerHTML);
+    newScriptEl.appendChild(scriptText);
+
+    oldScriptEl.parentNode!.replaceChild(newScriptEl, oldScriptEl);
+  });
+};
+
 export const replaceContent = (
   rawContent: string,
   lookup: string,
@@ -293,12 +308,13 @@ export const replaceContent = (
   const content = rawContent.match(regex);
   const newContent = content ? content[0] : "";
   target.innerHTML = newContent;
+  reExecuteJs(target);
 };
 
-const replaceMainContent = (rawContent: string) => {
+export const replaceMainContent = (rawContent: string) => {
   lastMainContentUpdateUrl = window.location.href;
   replaceMeta(rawContent);
-  return morphContent(
+  return replaceContent(
     rawContent,
     "main-content",
     document.getElementById("MainContent")!,
@@ -359,6 +375,24 @@ export const fetchAndCachePage = async (url: string) => {
   cachePage(url, html);
 
   return html;
+};
+
+export const replaceMainContentWithTransition = async (
+  url: string,
+  content: string,
+) => {
+  const scrollPosition = window.scrollY;
+
+  nProgress.start();
+  Alpine.store("popup").hideAllPopups();
+  Alpine.store("resizable").hideAll();
+
+  history.replaceState({ ...history.state, scrollPosition }, "");
+  pushStateAndNotify({}, "", url!);
+  replaceMainContent(content);
+  window.scrollTo(0, 0);
+
+  nProgress.done();
 };
 
 export const navigateWithTransition = (

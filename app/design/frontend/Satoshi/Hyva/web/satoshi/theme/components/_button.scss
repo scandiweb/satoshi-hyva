@@ -21,7 +21,7 @@
 
   &--filled {
     &-primary {
-      @apply bg-primary-500 text-bg-500;
+      @apply bg-primary-800 text-text-on-primary-bg;
 
       &:not(.button--disabled) {
         @apply md:hover:bg-primary-700;
@@ -29,7 +29,7 @@
     }
 
     &-secondary {
-      @apply bg-bg-500 text-primary-500;
+      @apply bg-bg-400 text-primary-600;
 
       &:not(.button--disabled) {
         @apply md:hover:bg-bg-600;
