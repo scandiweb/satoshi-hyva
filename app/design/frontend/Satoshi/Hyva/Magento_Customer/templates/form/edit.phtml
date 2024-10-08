@@ -113,6 +113,11 @@ $successMessage = $block->getSuccessMessage();
                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                     />
                 </div>
+                <?php if($errorMessage['email'] ?? false): ?>
+                    <div class="field-error mt-1">
+                        <span class="messages"><?= $escaper->escapeHtml($errorMessage['email']) ?></span>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div id="password-fields"
@@ -134,6 +139,11 @@ $successMessage = $block->getSuccessMessage();
                            aria-describedby="password-strength-meter"
                     />
                 </div>
+                <?php if($errorMessage['current_password'] ?? false): ?>
+                    <div class="field-error mt-1">
+                        <span class="messages"><?= $escaper->escapeHtml($errorMessage['current_password']) ?></span>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div x-cloak x-transition x-show="showPasswordFields">
@@ -165,6 +175,11 @@ $successMessage = $block->getSuccessMessage();
                             </div>
                         </div>
                     </div>
+                    <?php if($errorMessage['password'] ?? false): ?>
+                        <div class="field-error mt-1">
+                            <span class="messages"><?= $escaper->escapeHtml($errorMessage['password']) ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="field field-reserved mt-3 mb-5">
@@ -182,6 +197,11 @@ $successMessage = $block->getSuccessMessage();
                                autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                         />
                     </div>
+                    <?php if($errorMessage['password_confirmation'] ?? false): ?>
+                        <div class="field-error mt-1">
+                            <span class="messages"><?= $escaper->escapeHtml($errorMessage['password_confirmation']) ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -189,13 +209,22 @@ $successMessage = $block->getSuccessMessage();
             <?= $block->getChildHtml('form_additional_info') ?>
         </div>
 
+        <?php if($successMessage): ?>
+            <div class="field-success mt-3">
+                <span class="messages"><?= $escaper->escapeHtml($successMessage) ?></span>
+            </div>
+        <?php endif; ?>
+
+        <?php if($errorMessage['general'] ?? false): ?>
+            <div class="field-error mt-3">
+                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general']) ?></span>
+            </div>
+        <?php endif; ?>
+
         <?php if($recaptcha): ?>
             <div class="mt-3">
                 <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
-
-                <ul class="text-red-500 mt-1" v-show="Boolean(recaptchaError)">
-                    <li x-text="recaptchaError"></li>
-                </ul>
+                <p class="text-red-500 mt-1" x-text="recaptchaError" v-show="Boolean(recaptchaError)"></p>
             </div>
         <?php endif; ?>
 
