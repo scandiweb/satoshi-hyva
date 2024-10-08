@@ -214,7 +214,7 @@ $errorMessage = $block->getErrorMessage();
 
         <?php if(!empty($errorMessage)): ?>
             <div class="field-error mt-3">
-                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please check your input and try again.')) ?></span>
+                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please check your input.')) ?></span>
             </div>
         <?php endif; ?>
 
