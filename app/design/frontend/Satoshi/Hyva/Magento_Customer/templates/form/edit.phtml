@@ -208,9 +208,9 @@ $errorMessage = $block->getErrorMessage();
             <?= $block->getChildHtml('form_additional_info') ?>
         </div>
 
-        <?php if($errorMessage['general'] ?? false): ?>
+        <?php if(!empty($errorMessage)): ?>
             <div class="field-error mt-3">
-                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general']) ?></span>
+                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please check your input and try again.')) ?></span>
             </div>
         <?php endif; ?>
 
