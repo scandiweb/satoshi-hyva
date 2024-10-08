@@ -11,4 +11,22 @@
             </argument>
         </arguments>
     </virtualType>
+
+    <virtualType name="AppearanceSourceImageWithText" type="Magento\PageBuilder\Model\Source\VisualSelect">
+        <arguments>
+            <argument name="optionsSize" xsi:type="string">large</argument>
+            <argument name="optionsData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="value" xsi:type="string">image-first</item>
+                    <item name="title" xsi:type="string" translate="true">Image first</item>
+                    <item name="icon" xsi:type="string">Satoshi_SatoshiUi::images/content-type/satoshi-image-with-text/appearance/image-first.png</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="value" xsi:type="string">text-first</item>
+                    <item name="title" xsi:type="string" translate="true">Text first</item>
+                    <item name="icon" xsi:type="string">Satoshi_SatoshiUi::images/content-type/satoshi-image-with-text/appearance/text-first.png</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
 </config>
