@@ -30,6 +30,7 @@ $catalogHelper = $this->helper(Data::class);
                             id="filter-item-<?= $filterItem->getName() ?>-<?= $filterItem->getValueString() ?>"
                             class="radio__input"
                             @change="selectFilter('<?= $escaper->escapeJs($filter->getName()) ?>', '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>')"
+                            :checked="selectedFilters['<?= $escaper->escapeJs($filter->getName()) ?>'] === '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>'"
                             <?php if ((int) $filterItem->getCount() === 1): ?>
                                 aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, 1 available product', strip_tags((string)$filterItem->getLabel()))) ?>"
                             <?php else: ?>
