@@ -99,7 +99,7 @@ $errorMessage = $block->getErrorMessage();
 
             <div id="email-fields"
                  x-cloak x-transition x-show="showEmailField"
-                 class="field field-reserved mt-7"
+                 class="field field-reserved mt-7<?= !empty($errorMessage['email']) ? ' field-error' : '' ?>"
             >
                 <label class="sr-only tracking-widest" for="email">
                     <span><?= $escaper->escapeHtml(__('Email')) ?></span>
@@ -113,15 +113,15 @@ $errorMessage = $block->getErrorMessage();
                     />
                 </div>
                 <?php if($errorMessage['email'] ?? false): ?>
-                    <div class="field-error mt-1">
-                        <span class="messages"><?= $escaper->escapeHtml($errorMessage['email']) ?></span>
+                    <div class="messages mt-1">
+                        <span><?= $escaper->escapeHtml($errorMessage['email']) ?></span>
                     </div>
                 <?php endif; ?>
             </div>
 
             <div id="password-fields"
                  x-cloak x-transition x-show="showEmailField || showPasswordFields"
-                 class="field field-reserved mt-3 mb-5"
+                 class="field field-reserved mt-3 mb-5<?= !empty($errorMessage['current_password']) ? ' field-error' : '' ?>"
                  :class="{'!mt-7': !showEmailField, '!mb-0': showPasswordFields}"
             >
                 <label class="sr-only tracking-widest" for="current-password">
@@ -139,14 +139,14 @@ $errorMessage = $block->getErrorMessage();
                     />
                 </div>
                 <?php if($errorMessage['current_password'] ?? false): ?>
-                    <div class="field-error mt-1">
-                        <span class="messages"><?= $escaper->escapeHtml($errorMessage['current_password']) ?></span>
+                    <div class="messages mt-1">
+                        <span><?= $escaper->escapeHtml($errorMessage['current_password']) ?></span>
                     </div>
                 <?php endif; ?>
             </div>
 
             <div x-cloak x-transition x-show="showPasswordFields">
-                <div class="field field-reserved mt-3">
+                <div class="field field-reserved mt-3<?= !empty($errorMessage['password']) ? ' field-error' : '' ?>">
                     <label class="sr-only tracking-widest" for="password"><span>
                             <?= $escaper->escapeHtml(__('New Password')) ?>
                     </span></label>
@@ -175,13 +175,13 @@ $errorMessage = $block->getErrorMessage();
                         </div>
                     </div>
                     <?php if($errorMessage['password'] ?? false): ?>
-                        <div class="field-error mt-1">
-                            <span class="messages"><?= $escaper->escapeHtml($errorMessage['password']) ?></span>
+                        <div class="messages mt-1">
+                            <span><?= $escaper->escapeHtml($errorMessage['password']) ?></span>
                         </div>
                     <?php endif; ?>
                 </div>
 
-                <div class="field field-reserved mt-3 mb-5">
+                <div class="field field-reserved mt-3 mb-5<?= !empty($errorMessage['password_confirmation']) ? ' field-error' : '' ?>">
                     <label class="sr-only tracking-widest" for="password-confirmation">
                         <span><?= $escaper->escapeHtml(__('Confirm New Password')) ?></span>
                     </label>
@@ -197,8 +197,8 @@ $errorMessage = $block->getErrorMessage();
                         />
                     </div>
                     <?php if($errorMessage['password_confirmation'] ?? false): ?>
-                        <div class="field-error mt-1">
-                            <span class="messages"><?= $escaper->escapeHtml($errorMessage['password_confirmation']) ?></span>
+                        <div class="messages mt-1">
+                            <span><?= $escaper->escapeHtml($errorMessage['password_confirmation']) ?></span>
                         </div>
                     <?php endif; ?>
                 </div>
