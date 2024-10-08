@@ -12,28 +12,28 @@
     <preference for="Magento\Customer\Controller\Account\ForgotPasswordPost"
                 type="Satoshi\Theme\Customer\Controller\Account\ForgotPasswordPost"/>
     <preference
-        for="Magento\Checkout\Controller\Cart\CouponPost"
-        type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
+            for="Magento\Checkout\Controller\Cart\CouponPost"
+            type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
     />
     <preference
-        for="Magento\Checkout\Block\Cart\Coupon"
-        type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
+            for="Magento\Checkout\Block\Cart\Coupon"
+            type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
     />
     <preference
-        for="Hyva\Theme\Service\Navigation"
-        type="Satoshi\Theme\Service\Navigation"
+            for="Hyva\Theme\Service\Navigation"
+            type="Satoshi\Theme\Service\Navigation"
     />
     <preference
-        for="Hyva\Theme\ViewModel\ReCaptcha"
-        type="Satoshi\Theme\ViewModel\ReCaptcha"
+            for="Hyva\Theme\ViewModel\ReCaptcha"
+            type="Satoshi\Theme\ViewModel\ReCaptcha"
     />
     <preference
-        for="Magento\Newsletter\Controller\Subscriber\NewAction"
-        type="Satoshi\Theme\Newsletter\Controller\Subscriber\NewAction"
+            for="Magento\Newsletter\Controller\Subscriber\NewAction"
+            type="Satoshi\Theme\Newsletter\Controller\Subscriber\NewAction"
     />
     <preference
-        for="Hyva\Theme\ViewModel\ProductListItem"
-        type="Satoshi\Theme\ViewModel\ProductListItem"
+            for="Hyva\Theme\ViewModel\ProductListItem"
+            type="Satoshi\Theme\ViewModel\ProductListItem"
     />
     <preference for="Magento\Customer\Block\Account\Forgotpassword"
                 type="Satoshi\Theme\Block\Account\ForgotPassword"
@@ -43,5 +43,9 @@
     />
     <preference for="Magento\Customer\Block\Form\Edit"
                 type="Satoshi\Theme\Block\Form\Edit"
+    />
+    <preference
+            for="Magento\Theme\Block\Html\Footer"
+            type="Satoshi\Theme\Block\Html\Footer"
     />
 </config>

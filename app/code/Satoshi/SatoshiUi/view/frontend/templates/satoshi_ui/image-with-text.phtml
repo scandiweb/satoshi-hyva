@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Satoshi\SatoshiUi\Helper\Link as LinkHelper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+/** @var LinkHelper */
+$linkHelper = $this->helper(LinkHelper::class);
+
+/** @var DecodeHelper $decodeHelper */
+$decodeHelper = $this->helper(DecodeHelper::class);
+$link_url = $decodeHelper->decodeJSONHTMLEntity($block->getData('button_link'));
+$linkHref = $linkHelper->getLinkHref($block, $link_url);
+$appearance = $block->getData('appearance');
+?>
+<div class="content-wrapper m-auto flex flex-col items-center md:grid md:grid-cols-2 xl:gap-20 2xl:gap-28 max-md:gap-7">
+    <?php if ($block->getData('image')): ?>
+        <div class="relative overflow-hidden rounded-md">
+            <img src="<?= $escaper->escapeUrl($block->getData('image')) ?>" alt="<?= $escaper->escapeHtmlAttr($block->getData('heading')) ?>">
+        </div>
+    <?php endif; ?>
+
+    <div class="flex flex-col items-start gap-5 md:gap-7 md:py-12 md:pl-12 md:self-center" style="<?= $appearance === 'text-first' ? 'order: -1' : '' ?>">
+        <h2 class="heading text-3xl text-text-500 md:text-4xl"><?= $escaper->escapeHtml($block->getData('heading')) ?></h2>
+        <div><?= $block->getData('description') ?></div>
+
+        <a
+            <?php if ($linkHref): ?>
+                href="<?= $escaper->escapeUrl($linkHref); ?>"
+                target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
+            <?php endif; ?>
+            class="button button--filled-primary"
+            x-element-transition-trigger
+        >
+            <?= $escaper->escapeHtml($block->getData('button_label')) ?>
+            <span class="button__icon ml-2">
+                <?= $hyvaicons->renderHtml('button-link'); ?>
+            </span>
+        </a>
+    </div>
+</div>
