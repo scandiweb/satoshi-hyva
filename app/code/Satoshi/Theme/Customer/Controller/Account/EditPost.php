@@ -221,7 +221,9 @@ class EditPost extends SourceEditPost
                 }
                 return $resultRedirect->setPath('customer/account');
             } catch (InvalidEmailOrPasswordException $e) {
-                $this->session->setErrorMessage($this->escaper->escapeHtml($e->getMessage()));
+                $this->session->setErrorMessage([
+                    'current_password' => $this->escaper->escapeHtml($e->getMessage())
+                ]);
             } catch (UserLockedException $e) {
                 $message = __(
                     'The account sign-in was incorrect or your account is disabled temporarily. '
@@ -229,18 +231,22 @@ class EditPost extends SourceEditPost
                 );
                 $this->session->logout();
                 $this->session->start();
-                $this->session->setErrorMessage($message);
+                $this->session->setErrorMessage(['general' => $message]);
 
                 return $resultRedirect->setPath('customer/account/login');
             } catch (InputException $e) {
-                $this->session->setErrorMessage($this->escaper->escapeHtml($e->getMessage()));
+                $this->session->setErrorMessage(['general' => $this->escaper->escapeHtml($e->getMessage())]);
                 foreach ($e->getErrors() as $error) {
-                    $this->session->setErrorMessage($this->escaper->escapeHtml($error->getMessage()));
+                    $this->session->setErrorMessage([
+                        $error->getFieldName() => $this->escaper->escapeHtml($error->getMessage())
+                    ]);
                 }
             } catch (LocalizedException $e) {
-                $this->session->setErrorMessage($e->getMessage());
+                $this->session->setErrorMessage(['general' => $e->getMessage()]);
             } catch (\Exception $e) {
-                $this->session->setErrorMessage(__('We can\'t save the customer.'));
+                $this->session->setErrorMessage([
+                    'general' => __('We can\'t save the customer.')
+                ]);
             }
 
             $this->session->setCustomerFormData($this->getRequest()->getPostValue());
