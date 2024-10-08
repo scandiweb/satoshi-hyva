@@ -60,7 +60,7 @@ $errorMessage = $block->getErrorMessage();
                 <?= $gender->setGender($block->getCustomer()->getGender())->toHtml() ?>
             <?php endif ?>
 
-            <label class="flex items-center gap-x-3 mt-5 mb-3 mx-4" for="change-email">
+            <label class="flex items-center gap-x-3 mx-4 mb-3 mt-5" for="change-email">
                 <input type="checkbox"
                        name="change_email"
                        id="change-email"
@@ -70,15 +70,16 @@ $errorMessage = $block->getErrorMessage();
                        class="checkbox__input"
                        aria-describedby="change_email_description"
                 />
-                <span class="checkbox__control w-5 h-5" aria-hidden="true">
-                <?= $hyvaicons->renderHtml('checkmark') ?>
-            </span>
+                <span class="checkbox__control" aria-hidden="true">
+                    <?= $hyvaicons->renderHtml('checkmark') ?>
+                </span>
                 <span class="checkbox__label ml-0"><?= $escaper->escapeHtml(__('Change email')) ?></span>
-                <span class="sr-only"
-                      id="change_email_description"><?= $escaper->escapeHtml(__('form appears when field is selected')) ?></span>
+                <span class="sr-only" id="change_email_description">
+                    <?= $escaper->escapeHtml(__('form appears when field is selected')) ?>
+                </span>
             </label>
 
-            <label class="flex items-center gap-x-3 mt-3 mx-4" for="change-password">
+            <label class="flex items-center gap-x-3 mx-4 mt-3" for="change-password">
                 <input type="checkbox"
                        name="change_password"
                        id="change-password"
@@ -89,12 +90,13 @@ $errorMessage = $block->getErrorMessage();
                        class="checkbox__input"
                        aria-describedby="change_password_description"
                 />
-                <span class="checkbox__control w-5 h-5" aria-hidden="true">
-                <?= $hyvaicons->renderHtml('checkmark') ?>
-            </span>
+                <span class="checkbox__control" aria-hidden="true">
+                    <?= $hyvaicons->renderHtml('checkmark') ?>
+                </span>
                 <span class="checkbox__label ml-0"><?= $escaper->escapeHtml(__('Change password')) ?></span>
-                <span class="sr-only"
-                      id="change_password_description"><?= $escaper->escapeHtml(__('form appears when field is selected')) ?></span>
+                <span class="sr-only" id="change_password_description">
+                    <?= $escaper->escapeHtml(__('form appears when field is selected')) ?>
+                </span>
             </label>
 
             <div id="email-fields"
@@ -204,8 +206,10 @@ $errorMessage = $block->getErrorMessage();
                 </div>
             </div>
 
-            <?= $block->getChildHtml('fieldset_edit_info_additional') ?>
-            <?= $block->getChildHtml('form_additional_info') ?>
+            <div class="pt-3">
+                <?= $block->getChildHtml('fieldset_edit_info_additional') ?>
+                <?= $block->getChildHtml('form_additional_info') ?>
+            </div>
         </div>
 
         <?php if(!empty($errorMessage)): ?>
