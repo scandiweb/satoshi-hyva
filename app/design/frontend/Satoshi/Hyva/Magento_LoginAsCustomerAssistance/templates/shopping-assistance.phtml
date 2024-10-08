@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
@@ -38,10 +37,8 @@ if (!$shoppingAssistanceViewModel->isLoginAsCustomerEnabled()) {
         }
     }
 </script>
-<div class="flex mt-3"
-     x-data="initAllowShippingAssistence()"
->
-    <label class="flex items-center gap-x-3 ml-4"
+<div class="flex" x-data="initAllowShippingAssistence()">
+    <label class="flex items-center gap-x-3 mx-4"
            for="assistance_allowed_checkbox"
            x-data="initAllowShippingAssistence()"
     >
@@ -57,10 +54,12 @@ if (!$shoppingAssistanceViewModel->isLoginAsCustomerEnabled()) {
                 checked
             <?php endif; ?>
         />
-        <span class="checkbox__control w-5 h-5" aria-hidden="true">
+        <span class="checkbox__control" aria-hidden="true">
             <?= $hyvaicons->renderHtml('checkmark') ?>
         </span>
-        <span class="checkbox__label ml-0"><?= $escaper->escapeHtml(__($shoppingAssistanceViewModel->getAssistanceCheckboxTitle())) ?></span>
+        <span class="checkbox__label ml-0">
+            <?= $escaper->escapeHtml(__($shoppingAssistanceViewModel->getAssistanceCheckboxTitle())) ?>
+        </span>
     </label>
     <input type="hidden"
            name="assistance_allowed"
@@ -68,28 +67,24 @@ if (!$shoppingAssistanceViewModel->isLoginAsCustomerEnabled()) {
            value="<?= (int) $shoppingAssistanceViewModel->isAssistanceAllowed() + 1 ?>"
     />
 
-    <div class="inline-flex px-4">
-        <button
-            type="button"
-            @mouseover.prevent.stop="showTooltip = true"
-            @mouseleave.prevent.stop="showTooltip = false"
-            @focus="showTooltip = true"
-            @focusout="showTooltip = false"
-            @keydown.escape="showTooltip = false"
-            aria-labelledby="assistance_allowed_checkbox_tooltip"
-            aria-disabled="true"
-            class="text-primary-500 h-full w-full"
+    <div class="inline-flex">
+        <button type="button"
+                @mouseover.prevent.stop="showTooltip = true"
+                @mouseleave.prevent.stop="showTooltip = false"
+                @focus="showTooltip = true"
+                @focusout="showTooltip = false"
+                @keydown.escape="showTooltip = false"
+                aria-labelledby="assistance_allowed_checkbox_tooltip"
+                aria-disabled="true"
+                class="text-primary-500 h-full w-full"
         >
             <?= $hyvaicons->renderHtml('info') ?>
         </button>
         <div class="relative" x-cloak x-show="showTooltip">
             <div class="shadow-lg">
-                <div class="absolute top-0 left-0 z-10 w-64 p-2 -mt-6 text-sm leading-tight text-black transform
+                <div class="absolute top-0 left-0 z-10 w-64 -mt-6 text-sm leading-tight text-black transform
                     -translate-x-full md:-translate-x-1/3 -translate-y-full bg-bg-400 rounded-lg shadow-lg p-4">
-                    <span
-                        class="subtitle text-base"
-                        id="assistance_allowed_checkbox_tooltip"
-                    >
+                    <span class="subtitle text-base" id="assistance_allowed_checkbox_tooltip">
                         <?= $escaper->escapeHtml(__($shoppingAssistanceViewModel->getAssistanceCheckboxTooltip())) ?>
                     </span>
                 </div>
