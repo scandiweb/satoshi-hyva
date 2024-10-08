@@ -7,6 +7,8 @@
             <block class="Magento\Framework\View\Element\Template" name="product-grid-container" template="Magento_Catalog::category/grid-container.phtml" after="category.banner" />
         </referenceContainer>
 
+        <referenceContainer name="columns" htmlClass="grid-columns md:flex md:flex-row md:gap-8"/>
+
         <move element="preview.content" destination="product-grid-container"/>
         <move element="main" destination="columns" before="-" />
         <move element="page.main.title" destination="category.banner" />
