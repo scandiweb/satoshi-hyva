@@ -1,0 +1,23 @@
+<div
+  attr="data.main.attributes"
+  ko-style="data.main.style"
+  css="data.main.css"
+>
+  <div data-is-page-builder-ignored-element="true">
+    <if
+      args="data.guarantees_columns.attributes().guarantees.length > 0 && data.guarantees_columns.attributes().guarantees !== '[]'"
+    >
+      <div
+        data-bind="attr: { guarantees: JSON.stringify(data.guarantees_columns.attributes().guarantees) }"
+        ko-style="data.guarantees_columns.style"
+        data-element="guarantees_columns"
+        css="data.guarantees_columns.css"
+        hidden
+      ></div>
+    </if>
+  </div>
+  <div
+    attr="data.block_directive.attributes"
+    html="data.block_directive.html"
+  ></div>
+</div>
