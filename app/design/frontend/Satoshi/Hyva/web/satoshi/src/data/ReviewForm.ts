@@ -67,6 +67,7 @@ export const ReviewForm = ({
     },
     submitForm: function () {
       // Do not remove $form. The variable is used in the recaptcha child template.
+      // @ts-ignore
       const $form = document.querySelector(`#${formId}`);
       this.validate();
 
@@ -146,7 +147,7 @@ export const ReviewForm = ({
             "Content-Type": "application/json;charset=utf-8",
             Store: storeCode,
           },
-          recaptchaHeader,
+          recaptchaHeader as Record<string, string>,
         ),
         credentials: "include",
         body: JSON.stringify({ query: query, variables: variables }),

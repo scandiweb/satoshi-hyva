@@ -112,6 +112,7 @@ $sorter = $block->getData('sorter') ?? [];
                                             class="radio__input"
                                             aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>"
                                             @change="selectSort('<?= $sortOption['value'] ?>', '<?= $sortOption['dir'] ?>')"
+                                            :checked="selectedSort.key === '<?= $sortOption['value'] ?>' && selectedSort.dir === '<?= $sortOption['dir'] ?>'"
                                             <?php if($sorter->isOrderCurrent($sortOption['value']) && $sorter->getCurrentDirection() === $sortOption['dir']): ?>
                                                 checked="checked"
                                             <?php endif; ?>

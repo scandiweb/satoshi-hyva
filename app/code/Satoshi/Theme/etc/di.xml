@@ -45,4 +45,8 @@
     <preference for="Magento\Sales\Helper\Guest"
                 type="Satoshi\Theme\Helper\Guest"
     />
+    <preference
+        for="Magento\Theme\Block\Html\Footer"
+        type="Satoshi\Theme\Block\Html\Footer"
+    />
 </config>
