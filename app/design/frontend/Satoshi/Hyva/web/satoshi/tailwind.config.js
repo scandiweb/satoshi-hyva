@@ -104,7 +104,10 @@ module.exports = hyvaModules.mergeTailwindConfig({
         "max-md": { max: "767px" },
         "max-sm": { max: "639px" },
       },
-      width: defaultWidthHeight,
+        width: {
+            defaultWidthHeight,
+            'plp-main': 'calc(100% - 307px)',
+        },
       height: defaultWidthHeight,
       minWidth: defaultWidthHeight,
       minHeight: defaultWidthHeight,

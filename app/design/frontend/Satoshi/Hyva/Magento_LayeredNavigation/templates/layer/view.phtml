@@ -22,7 +22,7 @@ if ($sorter) {
     foreach ($sorter->getAvailableOrders() as $key => $option) {
         $sortOptions[] = ['value' => $key, 'name' => "{$option}, asc", 'dir' => 'asc'];
         $sortOptions[] = ['value' => $key, 'name' => "{$option}, desc", 'dir' => 'desc'];
-    
+
         if ($sorter->isOrderCurrent($key) && ($index !== 0 || $sorter->getCurrentDirection() !== 'asc')) {
             $selectedSort = ['value' => $key, 'name' => $option, 'dir' => $sorter->getCurrentDirection()];
         }
@@ -31,31 +31,10 @@ if ($sorter) {
 }
 
 ?>
-<!-- Show / Hide filters button -->
-<div class="absolute right-0 top-[-68px] ml-8 md:pl-2 max-md:hidden">
-    <button
-        type="button"
-        class="button button--filled-primary w-[275px] min-w-[275px]"
-        @click="$store.productList.toggleFiltersSidebar()"
-    >
-        <span
-            x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
-        >
-            <?= __('Hide filter') ?>
-        </span>
-        <span class="button__icon ml-3 text-xl">
-            <?= $hyvaicons->renderHtml('filter'); ?>
-        </span>
-    </button>
-</div>
 
 <!-- Desktop filters -->
 <div
     class="hidden w-[275px] min-w-[275px] overflow-hidden transition-[width,min-width] motion-reduce:transition-none md:sticky md:top-[--scroll-top] md:block"
-    :class="{
-        'w-[275px] min-w-[275px]': $store.productList.isFiltersSidebarExpanded,
-        'w-0 min-w-0 ml-0': !$store.productList.isFiltersSidebarExpanded
-    }"
     x-sticky-scroll="{
         top: 90,
         bottom: 24,
@@ -64,11 +43,6 @@ if ($sorter) {
     <div
         id="filters-sidebar"
         class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"
-        :class="{
-            'translate-x-full': !$store.productList.isFiltersSidebarExpanded,
-            'translate-x-0': $store.productList.isFiltersSidebarExpanded
-        }"
-        :inert="!$store.productList.isFiltersSidebarExpanded"
     >
         <template x-portal="document.getElementById($store.main.isMobile ? 'selected-filters-mobile' : 'filters-sidebar')">
             <div
