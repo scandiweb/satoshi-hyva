@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\StoreConfig;
-use Magento\Catalog\Block\Product\View;
+use Magento\Catalog\Block\Product\View\Gallery;
 use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
 use Magento\Catalog\Helper\Image;
@@ -12,7 +12,7 @@ use Hyva\Theme\ViewModel\HeroiconsSolid;
 
 /** @var Template $template */
 /** @var Escaper $escaper */
-/** @var View $block */
+/** @var Gallery $block */
 /** @var ViewModelRegistry $viewModels */
 
 /** @var StoreConfig $storeConfig */
@@ -48,7 +48,7 @@ if ($product) {
 
 <div
     class="md:content-wrapper relative z-30 mx-auto flex w-full flex-col justify-center gap-4 md:grid md:grid-cols-[1fr_250px] md:items-start md:gap-8 lg:grid-cols-[1fr_330px] xl:grid-cols-[1fr_400px] xl:gap-16"
-    x-data='Gallery(<?= json_encode($block->getGalleryImagesJson()) ?>, <?= (int) !!($block->getVar('gallery_switch_strategy', 'Magento_ConfigurableProduct') === 'append') ?>, <?= (int) !!$galleryOptionVideoLoop ?>)'
+    x-data="Gallery(<?= $escaper->escapeHtmlAttr(json_encode($block->getGalleryImagesJson())) ?>, <?= (int) !!($block->getVar('gallery_switch_strategy', 'Magento_ConfigurableProduct') === 'append') ?>, <?= (int) !!$galleryOptionVideoLoop ?>)"
     x-bind="eventListeners"
 >
     <!-- Desktop gallery -->
@@ -70,9 +70,9 @@ if ($product) {
     >
         <!-- Mobile main image -->
         <div class="mb-4 md:hidden">
-            <div class="relative flex aspect-product min-h-0 justify-center">
+            <div class="relative flex aspect-product min-h-0 justify-center bg-[--fade-in-bg]">
                 <div
-                    class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center transition-opacity delay-1000 duration-300"
+                    class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center transition-opacity delay-1000 duration-300 bg-[--fade-in-bg]"
                     x-data="TransitionImage({
                         src: '<?= $mainImageUrl ?>',
                         imageId: 'mobile-image'
@@ -97,15 +97,7 @@ if ($product) {
                     loading="lazy"
                     src="<?= $mainImageUrl ?>"
                 >
-                <div>
-                    <?=
-                    $template
-                        ->setData([
-                            'product' => $product,
-                        ])
-                        ->render('Magento_Catalog::/product/list/discount-badge.phtml')
-                    ?>
-                </div>
+                <?= $template->setData(['product' => $product, 'class' => 'md:hidden bottom left'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
 
                 <?php if($mainImage && $mainImage->getData('media_type') && str_contains($mainImage->getData('media_type'), 'video')): ?>
                     <template x-if="$store.main.isMobile">
