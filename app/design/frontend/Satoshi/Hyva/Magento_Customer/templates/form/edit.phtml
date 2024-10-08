@@ -24,7 +24,6 @@ $passwordMinCharacterSets = $block->getRequiredCharacterClassesNumber();
 $storeConfig = $viewModels->require(StoreConfig::class);
 $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocomplete_on_storefront');
 $errorMessage = $block->getErrorMessage();
-$successMessage = $block->getSuccessMessage();
 ?>
 
 <section class="w-full xl:w-1/2">
@@ -208,12 +207,6 @@ $successMessage = $block->getSuccessMessage();
             <?= $block->getChildHtml('fieldset_edit_info_additional') ?>
             <?= $block->getChildHtml('form_additional_info') ?>
         </div>
-
-        <?php if($successMessage): ?>
-            <div class="field-success mt-3">
-                <span class="messages"><?= $escaper->escapeHtml($successMessage) ?></span>
-            </div>
-        <?php endif; ?>
 
         <?php if($errorMessage['general'] ?? false): ?>
             <div class="field-error mt-3">
