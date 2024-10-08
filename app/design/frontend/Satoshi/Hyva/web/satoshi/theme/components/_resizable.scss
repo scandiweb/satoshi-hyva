@@ -69,7 +69,7 @@
       /* @apply bg-red-500; */
 
       transition-property: transform, border-radius;
-      @apply absolute bg-bg-500 motion-reduce:transition-none;
+      @apply absolute bg-bg-400 motion-reduce:transition-none;
       width: var(--corner-size);
       height: var(--corner-size);
 
@@ -126,7 +126,7 @@
     }
 
     &__side {
-      @apply absolute bg-bg-500;
+      @apply absolute bg-bg-400;
 
       /* @apply bg-blue-500; */
 
@@ -181,9 +181,7 @@
     }
 
     &__bg {
-      @apply absolute z-10 bg-bg-500;
-
-      /* @apply bg-green-500; */
+      @apply absolute z-10 bg-bg-400;
 
       inset: calc(var(--bg-extension-unitless) * 1px);
       transform: scale(var(--bg-scale-x), var(--bg-scale-y));
@@ -228,17 +226,16 @@
     &__fixed {
       @apply pointer-events-none absolute top-0 z-30 opacity-0 motion-reduce:transition-none;
 
-      transition: width 0ms 600ms ease-in-out,
-      opacity 300ms ease-in-out,
-      transform 300ms var(--t-delay) ease-in-out,
-      border-radius 300ms var(--b-delay) ease-in-out;
+      transition: width 0ms 600ms ease-in-out, opacity 300ms ease-in-out,
+        transform 300ms var(--t-delay) ease-in-out,
+        border-radius 300ms var(--b-delay) ease-in-out;
 
       width: calc(var(--target-width) * 1px);
       transform: translateY(
-          calc(
-            -100% + min(calc(var(--target-height) * 1px), calc(100dvh - 16px * 2 -
-            34px))
-          )
+        calc(
+          -100% + min(calc(var(--target-height) * 1px), calc(100dvh - 16px * 2 -
+                  34px))
+        )
       );
 
       .resizable--right & {
@@ -253,8 +250,8 @@
         @apply opacity-100;
 
         transition: opacity 300ms calc(var(--t-delay) * 2) ease-in-out,
-        transform 300ms var(--t-delay) ease-in-out,
-        border-radius 300ms var(--b-delay) ease-in-out;
+          transform 300ms var(--t-delay) ease-in-out,
+          border-radius 300ms var(--b-delay) ease-in-out;
       }
 
       > * {

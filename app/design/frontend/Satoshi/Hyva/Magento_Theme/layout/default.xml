@@ -29,9 +29,9 @@
         <move element="columns" destination="preview.content" before="-"/>
         <!-- END: Wrap content within preview-content comment -->
 
-        <!-- Add h-full classes to columns and main -->
-        <referenceContainer name="columns" htmlClass="h-full"/>
-        <referenceContainer name="main" htmlClass="h-full"/>
+        <referenceContainer name="columns" htmlClass="grid-columns"/>
+        <referenceContainer name="main" htmlClass="h-full row-span-2 col-span-3 only:col-span-full"/>
+        <referenceContainer name="div.sidebar.main" htmlClass="relative col-span-1"/>
 
         <referenceContainer name="header.container" htmlClass="page-header contents"/>
         <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-bg-500">
@@ -87,6 +87,32 @@
         <move element="top.container" destination="main.content" before="-" />
 
         <move element="footer-container" destination="root" after="page.wrapper" />
+
+        <referenceContainer name="footer">
+            <!-- Add "footer-wrapper" block so we can teleport footer inside it -->
+            <block name="footer-wrapper" template="Magento_Theme::html/footer/wrapper.phtml"/>
+            <!-- Add a custom class and 3 CMS blocks to the "footer-content" block -->
+            <referenceBlock name="footer-content" class="Satoshi\Theme\Block\Html\Footer">
+                <block class="Magento\Cms\Block\Block" name="footer-cms-content-1">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">footer-content-1</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Cms\Block\Block" name="footer-cms-content-2">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">footer-content-2</argument>
+                    </arguments>
+                </block>
+                <block class="Magento\Cms\Block\Block" name="footer-cms-content-3">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">footer-content-3</argument>
+                    </arguments>
+                </block>
+            </referenceBlock>
+        </referenceContainer>
+
+        <!-- Render footer inside main so it can be removed/added when navigating between pages -->
+        <move element="footer-content" destination="main.content" after="-" />
 
         <!-- Render popup wrapper -->
         <referenceContainer name="before.body.end">

@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Checkout\Block\Onepage\Success;
+
+/** @var Success $block */
+/** @var Escaper $escaper */
+?>
+<div class="flex h-full flex-col items-center justify-center gap-5 text-center px-5">
+    <h1 class="heading text-2xl text-text-500"><?=__('Thank you for your purchase!')?></h1>
+    <?php if ($block->getOrderId()): ?>
+    <div class="flex flex-col items-center gap-3">
+        <?php if ($block->getCanViewOrder()): ?>
+            <p>
+                <?= $escaper->escapeHtml(
+                    __(
+                        'Your order number is: %1.',
+                        sprintf(
+                            '<a href="%s" x-element-transition-trigger><strong>%s</strong></a>',
+                            $escaper->escapeUrl($block->getViewOrderUrl()),
+                            $block->getOrderId()
+                        )
+                    ),
+                    ['a', 'strong']
+                ) ?>
+            </p>
+        <?php else: ?>
+            <p><?= $escaper->escapeHtml(__('Your order # is: <span>%1</span>.', $block->getOrderId()), ['span']) ?></p>
+        <?php endif; ?>
+        <p>
+            <?= $escaper->escapeHtml(
+                __('We\'ll email you an order confirmation with details and tracking info.')
+            ) ?>
+        </p>
+    </div>
+    <?php endif; ?>
+
+    <?= $block->getAdditionalInfoHtml() ?>
+
+    <div class="flex gap-6">
+        <?= $block->getChildBlock('checkout.success.print.button')->toHtml() ?>
+
+        <a class="button btn--size-md button--ghost-primary w-full cursor-pointer text-center md:w-auto" href="<?= $escaper->escapeUrl($block->getContinueUrl()) ?>" x-element-transition-trigger>
+            <?= $escaper->escapeHtml(__('Continue Shopping')) ?>
+        </a>
+    </div>
+</div>

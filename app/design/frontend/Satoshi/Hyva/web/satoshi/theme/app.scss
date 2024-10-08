@@ -143,6 +143,32 @@ h3 {
   @apply max-md:pb-10;
 }
 
+.grid-columns {
+  @apply h-full flex flex-col md:grid grid-rows-[auto_minmax(0,1fr)] gap-x-8 gap-y-5;
+  grid-template-columns: 275px repeat(2, minmax(0, 1fr)) 275px;
+}
+
+.price-box {
+  @apply flex flex-col gap-1 md:gap-2;
+
+  .sticky-actions & {
+    @apply text-[14px];
+  }
+}
+
+.price {
+  @apply text-primary-600;
+
+  .old-price & {
+    @apply text-inherit line-through;
+  }
+}
+
+.special-price .price-label,
+.old-price .price-label {
+  @apply sr-only;
+}
+
 @layer components {
   @import "components/content-wrapper";
   @import "components/checkbox";
@@ -171,9 +197,4 @@ h3 {
   ::after {
     @apply border-bg-600;
   }
-}
-
-.sidebar-main {
-  // TODO: Remove from here when applied in side bar template
-  @apply flex-shrink-0 w-[275px] ml-[2rem];
 }
