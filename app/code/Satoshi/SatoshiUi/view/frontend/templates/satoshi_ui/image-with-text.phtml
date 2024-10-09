@@ -24,7 +24,7 @@ $link_url = $decodeHelper->decodeJSONHTMLEntity($block->getData('button_link'));
 $linkHref = $linkHelper->getLinkHref($block, $link_url);
 $appearance = $block->getData('appearance');
 ?>
-<div class="content-wrapper m-auto flex flex-col items-center md:grid md:grid-cols-2 xl:gap-20 2xl:gap-28 max-md:gap-7">
+<div class="flex flex-col items-center md:grid md:grid-cols-2 xl:gap-20 2xl:gap-28 max-md:gap-7">
     <?php if ($block->getData('image')): ?>
         <div class="relative overflow-hidden rounded-md">
             <img src="<?= $escaper->escapeUrl($block->getData('image')) ?>" alt="<?= $escaper->escapeHtmlAttr($block->getData('heading')) ?>">

@@ -18,7 +18,7 @@
     }
 
     &[data-appearance='contained'] {
-        @apply container;
+        @apply container px-5;
         @apply box-border ml-auto mr-auto;
 
         [data-element='inner'] {
@@ -35,7 +35,7 @@
         background-attachment: scroll !important;
 
         > .row-full-width-inner {
-            @apply container;
+            @apply container px-5;
         }
     }
 }
