@@ -32,6 +32,7 @@ $title = $block->getLayout()->getBlock('page.main.title')->getPageHeading();
     <div class="ml-8 md:pl-2">
       <button
         type="button"
+        id="sidebar-button"
         class="button button--filled-primary hidden w-[275px] min-w-[275px] md:inline-flex"
         @click="$store.productList.toggleFiltersSidebar()"
       >
