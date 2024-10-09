@@ -1,0 +1,204 @@
+<?php
+
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Cart\Items as CartItems;
+use Hyva\Theme\ViewModel\ProductCompare;
+use Satoshi\Theme\ViewModel\ProductList;
+use Hyva\Theme\ViewModel\Slider;
+use Hyva\Theme\ViewModel\Store;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var Slider $sliderViewModel */
+/** @var ProductList $productListViewModel */
+/** @var Wishlist $wishlistViewModel */
+/** @var ProductCompare $compareViewModel */
+/** @var Store $storeViewModel */
+
+$sliderViewModel      = $viewModels->require(Slider::class);
+$productListViewModel = $viewModels->require(ProductList::class);
+$wishlistViewModel    = $viewModels->require(Wishlist::class);
+$compareViewModel     = $viewModels->require(ProductCompare::class);
+$storeViewModel       = $viewModels->require(Store::class);
+
+$sliderName        = str_replace('.', '_', $block->getNameInLayout());
+$categoryIds       = $block->getData('category_ids') ?: '';
+$isAnchorCategory  = $block->getData('include_child_category_products');
+$pageSize          = $block->getData('page_size') ?: 8;
+$priceFrom         = $block->getData('price_from');
+$priceTo           = $block->getData('price_to');
+$sortAttribute     = $block->getData('sort_attribute') ?: '';
+$sortDirection     = $block->getData('sort_direction') ?: 'ASC';
+$title             = $block->getData('title') ?: '';
+$headingTag        = $block->getData('heading_tag') ?: 'h3';
+$hideDetails       = $block->getData('hide_details') ?? false;
+$hideRatingSummary = $block->getData('hide_rating_summary') ?? false;
+$type              = $block->getData('type');
+$skusFilter        = $block->getData('product_skus') ? explode(',', $block->getData('product_skus')) : [];
+$additionalFilters = (array) $block->getData('additional_filters');
+$itemTemplate      = $block->getData('item_template') ?? 'Magento_Catalog::product/list/item.phtml';
+$containerTemplate = $block->getData('container_template')
+    ?? 'Magento_Catalog::product/slider/product-slider-container.phtml';
+
+// The number of slides visible on the xl breakpoint
+$maxVisibleSlides = $block->getData('max_visible'); // default to null
+// Passed to the product slider container
+$slideSectionClasses = $block->getData('maybe_purged_tailwind_section_classes'); // default to null
+$slideItemClasses = $block->getData('maybe_purged_tailwind_slide_item_classes'); // default to null
+
+
+// In case $type is not set on the block, it will default the block class name, which is not what we need in this template.
+$type = is_string($type) && strpos($type, '\\') === false  ? $type : 'generic';
+
+if ($categoryIds) {
+    $productListViewModel->addFilter('category_id', $categoryIds, 'in');
+}
+
+if ($isAnchorCategory) {
+    // Only has an effect if a single category ID filter is set, and that category is an anchor category
+    $productListViewModel->includeChildCategoryProducts();
+}
+
+if ($priceFrom) {
+    $productListViewModel->addFilter('price', $priceFrom, 'gteq');
+}
+if ($priceTo) {
+    $productListViewModel->addFilter('price', $priceTo, 'lteq');
+}
+
+if ($hideRatingSummary) {
+    $productListViewModel->excludeReviewSummary();
+}
+
+if ($skusFilter) {
+    $productListViewModel->addFilter('sku', array_map('trim', $skusFilter), 'in');
+}
+
+foreach ($additionalFilters as $filter) {
+    $productListViewModel->addFilter($filter['field'], $filter['value'], $filter['conditionType'] ?? 'eq');
+}
+
+$productListViewModel->setPageSize($pageSize);
+$productListViewModel->addFilter('website_id', $storeViewModel->getWebsiteId());
+$productListViewModel->addFilter('visibility', [
+    ProductVisibility::VISIBILITY_IN_CATALOG,
+    ProductVisibility::VISIBILITY_BOTH,
+], 'in');
+if ($sortAttribute) {
+    $sortDirection === 'ASC'
+        ? $productListViewModel->addAscendingSortOrder($sortAttribute)
+        : $productListViewModel->addDescendingSortOrder($sortAttribute);
+}
+
+
+if (in_array($type, ['related', 'upsell', 'crosssell'], true)) {
+
+    $items = $type === 'crosssell'
+        ? $productListViewModel->getCrosssellItems(...$viewModels->require(CartItems::class)->getCartItems())
+        : $productListViewModel->getLinkedItems($type, $block->getProduct());
+
+} else {
+    $items = $productListViewModel->getItems();
+}
+
+$sliderHtml = $sliderViewModel->getSliderForItems($itemTemplate, $items, $containerTemplate)
+    ->setData('hide_details', $hideDetails)
+    ->setData('hide_rating_summary', $hideRatingSummary)
+    ->setData('name', $sliderName)
+    ->setData('title', $title)
+    ->setData('item_relation_type', $type)
+    ->setData('heading_tag', $headingTag)
+    ->setData('max_visible', $maxVisibleSlides)
+    ->setData('maybe_purged_tailwind_section_classes', $slideSectionClasses)
+    ->setData('maybe_purged_tailwind_slide_item_classes', $slideItemClasses)
+    ->toHtml();
+
+if (empty($sliderHtml)) {
+    return '';
+}
+?>
+<div class="product-slider <?= $escaper->escapeHtmlAttr($type) ?>-product-slider">
+    <div>
+        <?= /* @noEscape */ $sliderHtml ?>
+    </div>
+    <script>
+        'use strict';
+        window.addEventListener('DOMContentLoaded', function() {
+            if (! window.productSliderEventHandlerInitialized) {
+                window.productSliderEventHandlerInitialized = true;
+
+                <?php if ($wishlistViewModel->isEnabled()): ?>
+                window.addEventListener('product-add-to-wishlist', (event) => {
+                    const formKey = hyva.getFormKey();
+                    const postUrl = BASE_URL + 'wishlist/index/add/';
+                    const productId = event.detail.productId;
+
+                    fetch(postUrl, {
+                        "headers": {
+                            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                        },
+                        "body": "form_key=" + formKey + "&product=" + productId + "&uenc=" + hyva.getUenc(),
+                        "method": "POST",
+                        "mode": "cors",
+                        "credentials": "include"
+                    }).then(function (response) {
+                        if (response.redirected) {
+                            window.location.href = response.url;
+                        } else if (response.ok) {
+                            return response.json();
+                        } else {
+                            typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                                [{
+                                    type: "warning",
+                                    text: "<?= $escaper->escapeHtml(__('Could not add item to wishlist.')) ?>"
+                                }], 5000
+                            );
+                        }
+                    }).then(function (result) {
+                        if (!result) {
+                            return
+                        }
+                        typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                            [{
+                                type: (result.success) ? "success" : "error",
+                                text: (result.success)
+                                    ? "<?=
+                                        $escaper->escapeHtml(
+                                            __("%1 has been added to your Wish List.", __("Product"))
+                                        )
+                                        ?>" : result.error_message
+                            }], 5000
+                        );
+                        window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+                    }).catch(function (error) {
+                        typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                            [{
+                                type: "error",
+                                text: error
+                            }], 5000
+                        );
+                    });
+                })
+                <?php endif; ?>
+
+                <?php if ($compareViewModel->showInProductList()): ?>
+                window.addEventListener('product-add-to-compare', (event) => {
+                    const productId = event.detail.productId;
+                    hyva.postForm({
+                        action: BASE_URL + 'catalog/product_compare/add/',
+                        data: {product: productId}
+                    })
+                })
+                <?php endif; ?>
+            }
+        });
+    </script>
+</div>

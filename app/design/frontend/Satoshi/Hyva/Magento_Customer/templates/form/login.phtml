@@ -33,7 +33,6 @@ $successMessage = $block->getSuccessMessage();
         <form class="w-full"
               action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
               method="post"
-              x-data="initCustomerLoginForm()"
               id="customer-login-form"
               @submit.prevent="submitAuthForm('customer-login-form')"
             >
