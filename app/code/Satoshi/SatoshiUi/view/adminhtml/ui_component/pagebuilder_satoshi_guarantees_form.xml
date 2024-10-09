@@ -59,7 +59,7 @@
             <formElements>
                 <select>
                     <settings>
-                        <options class="AppearanceSourceGuarantees"/>
+                        <options class="AppearanceSourceSatoshi"/>
                     </settings>
                 </select>
             </formElements>
