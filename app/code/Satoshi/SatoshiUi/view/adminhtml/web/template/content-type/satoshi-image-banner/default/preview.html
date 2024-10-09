@@ -1,0 +1,60 @@
+<div
+    attr="data.main.attributes"
+    ko-style="data.main.style"
+    class="pagebuilder-content-type image-banner"
+    css="data.main.css"
+    event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+    <div
+        class="image-banner__overlay"
+        data-bind="attr: {style: 'opacity: ' + (+data.overlay_opacity.html() / 100)}"
+    ></div>
+    <div>
+        <img
+            css="data.image.css"
+            attr="data.image.attributes"
+            ko-style="data.image.style"
+            width="100%"
+            height="100%"
+            loading="lazy"
+            class="image-banner__img"
+        />
+    </div>
+    <div
+        class="image-banner__container"
+        data-bind="css: 'image-banner__container-' + data.banner_height.html() + ' image-banner__container-' + data.desktop_content_position.html() + ' image-banner__container-' + data.mobile_content_alignment.html()"
+    >
+        <div
+            class="image-banner__content"
+            data-bind="css: 'image-banner__content-' + data.desktop_content_position.html() + ' image-banner__content-' + data.mobile_content_alignment.html()"
+        >
+            <h2
+                class="image-banner__title"
+                attr="data.heading.attributes"
+                ko-style="data.heading.style"
+                css="data.heading.css"
+                data-bind="liveEdit: { field: 'heading', placeholder: $t('Enter heading') }"
+            ></h2>
+            <p
+                attr="data.description.attributes"
+                ko-style="data.description.style"
+                css="data.description.css"
+                data-bind="liveEdit: { field: 'description', placeholder: $t('Enter description') }"
+                class="image-banner__description"
+            ></p>
+            <div
+                class="image-banner__btn"
+                attr="data.button_link.attributes"
+                ko-style="data.button_link.style"
+                css="data.button_link.css"
+            >
+                <span
+                    attr="data.button_label.attributes"
+                    data-bind="liveEdit: { field: 'button_label', placeholder: $t('Enter label'), selectAll: true }"
+                >
+                </span>
+            </div>
+        </div>
+    </div>
+    <render args="getOptions().template" />
+</div>
