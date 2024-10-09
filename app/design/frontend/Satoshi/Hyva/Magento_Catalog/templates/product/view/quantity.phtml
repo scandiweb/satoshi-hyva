@@ -104,6 +104,7 @@ $isSmall = $block->getData('is_small') ?? false;
       aria-label="<?= __('Quantity') ?>"
       id="quantity"
       :disabled="!<?= $product->isSaleable() ?>"
+      form="product_addtocart_form"
     >
 
     <button

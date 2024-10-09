@@ -94,7 +94,9 @@ $isCartPage = $block->getData('isCartPage');
           </div>
         </template>
       </div>
-      <hr class="divider -mx-4">
+      <?php if (!$isCartPage): ?>
+        <hr class="divider -mx-4">
+      <?php endif; ?>
     </div>
   </div>
 
@@ -145,7 +147,6 @@ $isCartPage = $block->getData('isCartPage');
     <div class="mt-2 flex flex-col gap-4 rounded-b-xl bg-bg-500 max-md:px-3">
       <a
         href="<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>"
-        x-element-transition-trigger
         class="button button--filled-primary h-11 w-full"
         :class="{ 'button--disabled': $store.cart.isLoading }"
       >

@@ -24,7 +24,7 @@ $selectedSort = $block->getData('selected_sort') ?? [];
         <h2 class="text-text-500"><?= $escaper->escapeHtml(__('Selected filters')) ?></h2>
 
         <?php if ($block->getLayer()->getState()->getFilters() || count($selectedSort)): ?>
-            <a href="<?= $escaper->escapeUrl($block->getClearUrl()) ?>" class="link link--primary" x-element-transition-trigger>
+            <a href="#" @click.prevent="clearAllFilters()" class="link link--primary">
                 <?= $escaper->escapeHtml(__('Clear All')) ?>
             </a>
         <?php endif; ?>
