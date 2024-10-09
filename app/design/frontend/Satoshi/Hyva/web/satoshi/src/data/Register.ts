@@ -189,7 +189,6 @@ export const Register = (
 
               if (recaptchaValidationScript) {
                 eval(recaptchaValidationScript);
-                // this.recaptchaError = this.errorMessages.find(message => message.includes('ReCaptcha'));
               }
 
               if (this.errors === 0) {
