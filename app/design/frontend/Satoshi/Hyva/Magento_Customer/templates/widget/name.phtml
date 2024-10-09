@@ -10,7 +10,6 @@ use Magento\Framework\Escaper;
 $prefix = $block->showPrefix();
 $middle = $block->showMiddlename();
 $suffix = $block->showSuffix();
-$fieldMessages = $block->getFieldMessages();
 ?>
 <?php if ($prefix): ?>
     <div class="field field-reserved">
@@ -45,9 +44,6 @@ $fieldMessages = $block->getFieldMessages();
                 </select>
             <?php endif; ?>
         </div>
-        <?php if (!empty($fieldMessages['prefix'])): ?>
-            <div class="text-error"><?= $escaper->escapeHtml($fieldMessages['prefix']) ?></div>
-        <?php endif; ?>
     </div>
 <?php endif; ?>
     <div class="field field-reserved">
@@ -68,9 +64,6 @@ $fieldMessages = $block->getFieldMessages();
                 <?= ($block->getAttributeValidationClass('firstname') == 'required-entry') ? ' required' : '' ?>
             >
         </div>
-        <?php if (!empty($fieldMessages['firstname'])): ?>
-            <div class="text-error"><?= $escaper->escapeHtml($fieldMessages['firstname']) ?></div>
-        <?php endif; ?>
     </div>
 <?php if ($middle): ?>
     <?php $isMiddlenameRequired = $block->isMiddlenameRequired(); ?>
@@ -91,9 +84,6 @@ $fieldMessages = $block->getFieldMessages();
                 <?= $isMiddlenameRequired ? ' required' : '' ?>
             >
         </div>
-        <?php if (!empty($fieldMessages['middlename'])): ?>
-            <div class="text-error"><?= $escaper->escapeHtml($fieldMessages['middlename']) ?></div>
-        <?php endif; ?>
     </div>
 <?php endif; ?>
     <div class="field field-reserved">
@@ -114,9 +104,6 @@ $fieldMessages = $block->getFieldMessages();
                 <?= ($block->getAttributeValidationClass('lastname') == 'required-entry') ? ' required' : '' ?>
             >
         </div>
-        <?php if (!empty($fieldMessages['lastname'])): ?>
-            <div class="text-error"><?= $escaper->escapeHtml($fieldMessages['lastname']) ?></div>
-        <?php endif; ?>
     </div>
 <?php if ($suffix): ?>
     <div class="field field-reserved">
