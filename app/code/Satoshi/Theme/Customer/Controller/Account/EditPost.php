@@ -9,13 +9,10 @@ use Magento\Customer\Api\SessionCleanerInterface;
 use Magento\Customer\Model\AccountConfirmation;
 use Magento\Customer\Model\AddressRegistry;
 use Magento\Customer\Model\Url;
-use Magento\Framework\App\Action\HttpPostActionInterface as HttpPostActionInterface;
 use Magento\Customer\Model\AuthenticationInterface;
 use Magento\Customer\Model\Customer\Mapper;
 use Magento\Customer\Model\EmailNotificationInterface;
-use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Data\Form\FormKey\Validator;
@@ -32,8 +29,6 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\SessionException;
 use Magento\Framework\Exception\State\UserLockedException;
-use Magento\Customer\Controller\AbstractAccount;
-use Magento\Framework\Phrase;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
 
@@ -215,7 +210,9 @@ class EditPost extends SourceEditPost
                 if ($isPasswordChanged || $isEmailChanged) {
                     $this->session->logout();
                     $this->session->start();
-                    $this->addComplexSuccessMessage($customer, $updatedCustomer);
+                    $this->session->setSuccessMessage(
+                        __('You have updated your account information. Please sign in again.')
+                    );
 
                     return $resultRedirect->setPath('customer/account/login');
                 }
@@ -225,13 +222,11 @@ class EditPost extends SourceEditPost
                     'current_password' => $this->escaper->escapeHtml($e->getMessage())
                 ]);
             } catch (UserLockedException $e) {
-                $message = __(
-                    'The account sign-in was incorrect or your account is disabled temporarily. '
-                    . 'Please wait and try again later.'
-                );
                 $this->session->logout();
                 $this->session->start();
-                $this->session->setErrorMessage(['general' => $message]);
+                $this->session->setErrorMessage(['general' => __('The account sign-in was incorrect or your account is disabled temporarily. '
+                    . 'Please wait and try again later.')
+                ]);
 
                 return $resultRedirect->setPath('customer/account/login');
             } catch (InputException $e) {
@@ -256,26 +251,6 @@ class EditPost extends SourceEditPost
         $resultRedirect->setPath('*/*/edit');
 
         return $resultRedirect;
-    }
-
-    /**
-     * Adds a complex success message if email confirmation is required
-     *
-     * @param CustomerInterface $outdatedCustomer
-     * @param CustomerInterface $updatedCustomer
-     * @throws LocalizedException
-     */
-    private function addComplexSuccessMessage(
-        CustomerInterface $outdatedCustomer,
-        CustomerInterface $updatedCustomer
-    ): void {
-        if (($outdatedCustomer->getEmail() !== $updatedCustomer->getEmail())
-            && $this->accountConfirmation->isCustomerEmailChangedConfirmRequired($updatedCustomer)) {
-            $this->messageManager->addComplexSuccessMessage(
-                'confirmAccountSuccessMessage',
-                ['url' => $this->customerUrl->getEmailConfirmationUrl($updatedCustomer->getEmail())]
-            );
-        }
     }
 
     /**
