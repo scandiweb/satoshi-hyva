@@ -222,9 +222,9 @@ export const AddressEdit = (
                 this.createOrUpdateAddress(event);
               }
             })
-            .catch((invalid) => {
+            .catch((invalid: HTMLElement[]) => {
               if (invalid.length > 0) {
-                (invalid[0] as HTMLElement).focus();
+                (invalid[0]).focus();
               }
             });
       },
