@@ -39,4 +39,8 @@
     <preference for="Magento\Customer\Block\Form\Login"
                 type="Satoshi\Theme\Block\Form\Login"
     />
+    <preference
+        for="Magento\Theme\Block\Html\Footer"
+        type="Satoshi\Theme\Block\Html\Footer"
+    />
 </config>
