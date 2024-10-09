@@ -180,6 +180,10 @@ class EditPost extends SourceEditPost
             $customer = $this->getCustomerDataObject($this->session->getCustomerId());
             $customerCandidate = $this->populateNewCustomerDataObject($this->_request, $customer);
 
+            // Capture if the user is attempting to change email or password
+            $isChangingEmail = $this->getRequest()->getParam('change_email') ? true : false;
+            $isChangingPassword = $this->getRequest()->getParam('change_password') ? true : false;
+
             $attributeToDelete = $this->_request->getParam('delete_attribute_value');
             if ($attributeToDelete !== null) {
                 $this->deleteCustomerFileAttribute($customerCandidate, $attributeToDelete);
@@ -247,6 +251,10 @@ class EditPost extends SourceEditPost
             $this->session->setCustomerFormData($this->getRequest()->getPostValue());
         }
 
+        $this->session->setErrorMessage([
+            'isChangingEmail' => $isChangingEmail,
+            'isChangingPassword' => $isChangingPassword,
+        ]);
         $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setPath('*/*/edit');
 
