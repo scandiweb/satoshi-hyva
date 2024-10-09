@@ -24,6 +24,8 @@ $passwordMinCharacterSets = $block->getRequiredCharacterClassesNumber();
 $storeConfig = $viewModels->require(StoreConfig::class);
 $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocomplete_on_storefront');
 $errorMessage = $block->getErrorMessage();
+$isChangingEmail = $errorMessage['isChangingEmail'] ?? false;
+$isChangingPassword = $errorMessage['isChangingPassword'] ?? false;
 ?>
 
 <section class="w-full xl:w-1/2">
@@ -36,8 +38,11 @@ $errorMessage = $block->getErrorMessage();
           method="post"
           enctype="multipart/form-data"
           x-data="Object.assign(hyva.formValidation($el),
-              AccountInformation(<?= $block->getChangePassword() ? 'true' : 'false' ?>,
-              '<?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '') ?>'),
+              AccountInformation(
+                  '<?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '') ?>',
+                  <?= $isChangingEmail ? 'true' : 'false' ?>,
+                  <?= ($isChangingPassword || $block->getChangePassword()) ? 'true' : 'false' ?>,
+              ),
           )"
           @submit.prevent="submitForm(event)"
           autocomplete="off"
@@ -65,6 +70,7 @@ $errorMessage = $block->getErrorMessage();
                        name="change_email"
                        id="change-email"
                        value="1"
+                       x-model="showEmailField"
                        title="<?= $escaper->escapeHtmlAttr(__('Change email')) ?>"
                        @change="handleCheckboxChange('email-fields')"
                        class="checkbox__input"
@@ -84,6 +90,7 @@ $errorMessage = $block->getErrorMessage();
                        name="change_password"
                        id="change-password"
                        value="1"
+                       x-model="showPasswordFields"
                        title="<?= $escaper->escapeHtmlAttr(__('Change password')) ?>"
                        @change="handleCheckboxChange('password-fields')"
                     <?php if ($block->getChangePassword()): ?> checked<?php endif; ?>
@@ -114,7 +121,7 @@ $errorMessage = $block->getErrorMessage();
                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                     />
                 </div>
-                <?php if($errorMessage['email'] ?? false): ?>
+                <?php if ($errorMessage['email'] ?? false): ?>
                     <div class="messages mt-1">
                         <span><?= $escaper->escapeHtml($errorMessage['email']) ?></span>
                     </div>
@@ -140,7 +147,7 @@ $errorMessage = $block->getErrorMessage();
                            aria-describedby="password-strength-meter"
                     />
                 </div>
-                <?php if($errorMessage['current_password'] ?? false): ?>
+                <?php if ($errorMessage['current_password'] ?? false): ?>
                     <div class="messages mt-1">
                         <span><?= $escaper->escapeHtml($errorMessage['current_password']) ?></span>
                     </div>
@@ -176,7 +183,7 @@ $errorMessage = $block->getErrorMessage();
                             </div>
                         </div>
                     </div>
-                    <?php if($errorMessage['password'] ?? false): ?>
+                    <?php if ($errorMessage['password'] ?? false): ?>
                         <div class="messages mt-1">
                             <span><?= $escaper->escapeHtml($errorMessage['password']) ?></span>
                         </div>
@@ -198,7 +205,7 @@ $errorMessage = $block->getErrorMessage();
                                autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                         />
                     </div>
-                    <?php if($errorMessage['password_confirmation'] ?? false): ?>
+                    <?php if ($errorMessage['password_confirmation'] ?? false): ?>
                         <div class="messages mt-1">
                             <span><?= $escaper->escapeHtml($errorMessage['password_confirmation']) ?></span>
                         </div>
@@ -212,13 +219,13 @@ $errorMessage = $block->getErrorMessage();
             </div>
         </div>
 
-        <?php if(!empty($errorMessage)): ?>
+        <?php if ($errorMessage['general'] ?? false): ?>
             <div class="field-error mt-3">
-                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please check your input.')) ?></span>
+                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general']) ?></span>
             </div>
         <?php endif; ?>
 
-        <?php if($recaptcha): ?>
+        <?php if ($recaptcha): ?>
             <div class="mt-3">
                 <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
                 <p class="text-red-500 mt-1" x-text="recaptchaError" v-show="Boolean(recaptchaError)"></p>

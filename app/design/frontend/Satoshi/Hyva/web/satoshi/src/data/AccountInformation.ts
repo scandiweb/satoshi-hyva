@@ -17,26 +17,20 @@ export type AccountInformationType = {
 } & Magics<{}>;
 
 export const AccountInformation = (
-    initialShowPasswordFields: boolean,
     recaptchaValidationScript: string,
+    initialShowEmailField: boolean,
+    initialShowPasswordFields: boolean,
 ) =>
     <AccountInformationType>{
       isLoading: false,
-      showEmailField: false,
-      showPasswordFields: initialShowPasswordFields,
+      showEmailField: initialShowEmailField || false,
+      showPasswordFields: initialShowPasswordFields || false,
       errorMessages: [] as string[],
       displayErrorMessage: false,
       errors: 0,
       recaptchaError: undefined,
 
       handleCheckboxChange(checkboxId) {
-        if (checkboxId === 'email-fields') {
-          this.showEmailField = !this.showEmailField;
-        }
-        if (checkboxId === 'password-fields') {
-          this.showPasswordFields = !this.showPasswordFields;
-        }
-
         this.$nextTick(() => {
           const firstFocusableElement = document.querySelector(`#${checkboxId} input, #${checkboxId} textarea, #${checkboxId} select`) as HTMLElement;
           if (firstFocusableElement) {
