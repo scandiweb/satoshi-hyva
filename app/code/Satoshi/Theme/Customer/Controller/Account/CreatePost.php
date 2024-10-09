@@ -36,7 +36,8 @@ use Magento\Customer\Controller\Account\CreatePost as SourceCreatePost;
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class CreatePost extends SourceCreatePost{
+class CreatePost extends SourceCreatePost
+{
     /**
      * @var AccountRedirect
      */
@@ -77,43 +78,28 @@ class CreatePost extends SourceCreatePost{
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        Context $context,
-        Session $customerSession,
-        ScopeConfigInterface $scopeConfig,
-        StoreManagerInterface $storeManager,
+        Context                    $context,
+        Session                    $customerSession,
+        ScopeConfigInterface       $scopeConfig,
+        StoreManagerInterface      $storeManager,
         AccountManagementInterface $accountManagement,
-        Address $addressHelper,
-        UrlFactory $urlFactory,
-        FormFactory $formFactory,
-        SubscriberFactory $subscriberFactory,
-        RegionInterfaceFactory $regionDataFactory,
-        AddressInterfaceFactory $addressDataFactory,
-        CustomerInterfaceFactory $customerDataFactory,
-        CustomerUrl $customerUrl,
-        Registration $registration,
-        Escaper $escaper,
-        CustomerExtractor $customerExtractor,
-        DataObjectHelper $dataObjectHelper,
-        AccountRedirect $accountRedirect,
-        CustomerRepository $customerRepository,
-        Validator $formKeyValidator = null
-    ) {
-        $this->session = $customerSession;
-        $this->scopeConfig = $scopeConfig;
-        $this->storeManager = $storeManager;
-        $this->accountManagement = $accountManagement;
-        $this->addressHelper = $addressHelper;
-        $this->formFactory = $formFactory;
-        $this->subscriberFactory = $subscriberFactory;
-        $this->regionDataFactory = $regionDataFactory;
-        $this->addressDataFactory = $addressDataFactory;
-        $this->customerDataFactory = $customerDataFactory;
-        $this->customerUrl = $customerUrl;
-        $this->registration = $registration;
-        $this->escaper = $escaper;
-        $this->customerExtractor = $customerExtractor;
-        $this->urlModel = $urlFactory->create();
-        $this->dataObjectHelper = $dataObjectHelper;
+        Address                    $addressHelper,
+        UrlFactory                 $urlFactory,
+        FormFactory                $formFactory,
+        SubscriberFactory          $subscriberFactory,
+        RegionInterfaceFactory     $regionDataFactory,
+        AddressInterfaceFactory    $addressDataFactory,
+        CustomerInterfaceFactory   $customerDataFactory,
+        CustomerUrl                $customerUrl,
+        Registration               $registration,
+        Escaper                    $escaper,
+        CustomerExtractor          $customerExtractor,
+        DataObjectHelper           $dataObjectHelper,
+        AccountRedirect            $accountRedirect,
+        CustomerRepository         $customerRepository,
+        Validator                  $formKeyValidator = null
+    )
+    {
         $this->accountRedirect = $accountRedirect;
         $this->formKeyValidator = $formKeyValidator ?: ObjectManager::getInstance()->get(Validator::class);
         $this->customerRepository = $customerRepository;
@@ -144,8 +130,8 @@ class CreatePost extends SourceCreatePost{
     /**
      * Retrieve cookie manager
      *
-     * @deprecated 100.1.0
      * @return \Magento\Framework\Stdlib\Cookie\PhpCookieManager
+     * @deprecated 100.1.0
      */
     private function getCookieManager()
     {
@@ -160,8 +146,8 @@ class CreatePost extends SourceCreatePost{
     /**
      * Retrieve cookie metadata factory
      *
-     * @deprecated 100.1.0
      * @return \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory
+     * @deprecated 100.1.0
      */
     private function getCookieMetadataFactory()
     {
@@ -242,13 +228,20 @@ class CreatePost extends SourceCreatePost{
 
             return $resultRedirect;
         } catch (StateException $e) {
-            $this->session->setErrorMessage(__('Account already exists.'));
+            $this->session->setErrorMessage(['email' => __('Account already exists.')]);
         } catch (InputException $e) {
-            $this->session->setErrorMessage($e->getMessage());
+            $this->session->setErrorMessage(['general' => $this->escaper->escapeHtml($e->getMessage())]);
+            foreach ($e->getErrors() as $error) {
+                $this->session->setErrorMessage([
+                    $error->getFieldName() => $this->escaper->escapeHtml($error->getMessage())
+                ]);
+            }
         } catch (LocalizedException $e) {
-            $this->session->setErrorMessage($e->getMessage());
+            $this->session->setErrorMessage(['general' => $e->getMessage()]);
         } catch (\Exception $e) {
-            $this->session->setErrorMessage(__('We can\'t save the customer.'));
+            $this->session->setErrorMessage([
+                'general' => __('We can\'t save the customer.')
+            ]);
         }
 
         $this->session->setCustomerFormData($this->getRequest()->getPostValue());

@@ -42,19 +42,20 @@ $errorMessage = $block->getErrorMessage();
 
 <div class="container mx-auto flex h-full items-center px-5">
     <div class="mx-auto w-[412px] max-w-full">
+
+        <?php if ($successMessage): ?>
+            <?= $successMessage ?>
+        <?php endif; ?>
+
+        <?php if($errorMessage['general'] ?? false): ?>
+            <div class="field-error mt-3">
+                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
+            </div>
+        <?php endif; ?>
+
         <header class="flex items-center justify-between sm:text-center mb-7">
             <h2 class="w-full text-2xl" tabindex="-1"><?= __('Create account') ?></h2>
         </header>
-
-        <?php if ($successMessage): ?>
-            <div class="text-green-600">
-                <?= $successMessage ?>
-            </div>
-        <?php elseif ($errorMessage): ?>
-            <div class="text-red-500">
-                <?= $errorMessage ?>
-            </div>
-        <?php endif; ?>
 
         <?php /* Extensions placeholder */ ?>
         <?= $block->getChildHtml('customer.form.register.extra') ?>
@@ -104,7 +105,7 @@ $errorMessage = $block->getErrorMessage();
                 <?php if ($gender->isEnabled()): ?>
                     <?= $gender->setGender($block->getFormData()->getGender())->toHtml() ?>
                 <?php endif ?>
-                <div class="field field-reserved">
+                <div class="field field-reserved<?= !empty($errorMessage['email']) ? ' field-error' : '' ?>">
                     <label for="email_address" class="sr-only tracking-widest">
                         <?= __('Email') ?>
                     </label>
@@ -119,9 +120,14 @@ $errorMessage = $block->getErrorMessage();
                                required
                         />
                     </div>
+                    <?php if ($errorMessage['email'] ?? false): ?>
+                        <div class="messages mt-1">
+                            <span><?= $escaper->escapeHtml($errorMessage['email']) ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
-                <div class="field field-reserved">
+                <div class="field field-reserved<?= !empty($errorMessage['password']) ? ' field-error' : '' ?>">
                     <label class="sr-only tracking-widest" for="password">
                             <span>
                                 <?= $escaper->escapeHtml(__('Password')) ?>
@@ -151,9 +157,14 @@ $errorMessage = $block->getErrorMessage();
                             </div>
                         </div>
                     </div>
+                    <?php if ($errorMessage['password'] ?? false): ?>
+                        <div class="messages mt-1">
+                            <span><?= $escaper->escapeHtml($errorMessage['password']) ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
-                <div class="field field-reserved">
+                <div class="field field-reserved<?= !empty($errorMessage['password_confirmation']) ? ' field-error' : '' ?>">
                     <label class="sr-only tracking-widest" for="password-confirmation">
                         <span><?= $escaper->escapeHtml(__('Confirm New Password')) ?></span>
                     </label>
@@ -169,6 +180,11 @@ $errorMessage = $block->getErrorMessage();
                                autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                         />
                     </div>
+                    <?php if ($errorMessage['password_confirmation'] ?? false): ?>
+                        <div class="messages mt-1">
+                            <span><?= $escaper->escapeHtml($errorMessage['password_confirmation']) ?></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <?php if ($block->getShowAddressFields()): ?>
@@ -193,7 +209,7 @@ $errorMessage = $block->getErrorMessage();
                             $this->helper(Address::class)->getAttributeValidationClass('street');
                         ?>
 
-                        <div class="field field-reserved">
+                        <div class="field field-reserved<?= !empty($errorMessage['street[]']) ? ' field-error' : '' ?>">
                             <label for="street_1" class="sr-only tracking-widest">
                                     <span><?= /* @noEscape */
                                         $block->getAttributeData()->getFrontendLabel('street') ?>
@@ -212,6 +228,11 @@ $errorMessage = $block->getErrorMessage();
                                        @input.debounce="onChange"
                                 />
                             </div>
+                            <?php if ($errorMessage['street[]'] ?? false): ?>
+                                <div class="messages mt-1">
+                                    <span><?= $escaper->escapeHtml($errorMessage['street[]']) ?></span>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <?php for ($i = 2, $n = $this->helper(Address::class)->getStreetLines(); $i <= $n; $i++): ?>
@@ -221,7 +242,8 @@ $errorMessage = $block->getErrorMessage();
                                     <span><?= $escaper->escapeHtml(__('Street Address %1', $i)) ?></span>
                                 </label>
                                 <div>
-                                    <input type="text" name="street[]"
+                                    <input type="text"
+                                           name="street[]"
                                            value="<?= $escaper->escapeHtmlAttr($block
                                                ->getFormData()
                                                ->getStreet($i - 1)) ?>"
@@ -236,7 +258,7 @@ $errorMessage = $block->getErrorMessage();
                             </div>
                         <?php endfor; ?>
 
-                        <div class="field field-reserved">
+                        <div class="field field-reserved<?= !empty($errorMessage['postcode']) ? ' field-error' : '' ?>">
                             <label class="sr-only tracking-widest" for="zip">
                                     <span><?= /* @noEscape */
                                         $block->getAttributeData()->getFrontendLabel('postcode') ?>
@@ -254,11 +276,17 @@ $errorMessage = $block->getErrorMessage();
                                        @input.debounce="onChange"
                                        data-validate='{"postcode": true}'
                                        class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-                                       placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your postcode')) ?>">
+                                       placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your postcode')) ?>"
+                                />
                             </div>
+                            <?php if ($errorMessage['postcode'] ?? false): ?>
+                                <div class="messages mt-1">
+                                    <span><?= $escaper->escapeHtml($errorMessage['postcode']) ?></span>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
-                        <div class="field field-reserved">
+                        <div class="field field-reserved<?= !empty($errorMessage['city']) ? ' field-error' : '' ?>">
                             <label class="sr-only tracking-widest" for="city">
                                     <span><?= /* @noEscape */
                                         $block->getAttributeData()->getFrontendLabel('city') ?>
@@ -274,8 +302,14 @@ $errorMessage = $block->getErrorMessage();
                                        placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your city')) ?>"
                                        class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                        id="city"
-                                       @input.debounce="onChange">
+                                       @input.debounce="onChange"
+                                />
                             </div>
+                            <?php if ($errorMessage['city'] ?? false): ?>
+                                <div class="messages mt-1">
+                                    <span><?= $escaper->escapeHtml($errorMessage['city']) ?></span>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div x-cloak
@@ -288,7 +322,7 @@ $errorMessage = $block->getErrorMessage();
                                 $regionLabel ?>
                             </span>
                             </label>
-                            <div class="field field-reserved">
+                            <div class="field field-reserved<?= !empty($errorMessage['region']) ? ' field-error' : '' ?>">
                                 <template x-if="hasAvailableRegions() && (isRegionRequired || showOptionalRegions)">
                                     <div class="relative">
                                         <select id="region_id" name="region_id"
@@ -333,6 +367,11 @@ $errorMessage = $block->getErrorMessage();
                                        @input.debounce="onChange"
                                 />
                             </div>
+                            <?php if ($errorMessage['region'] ?? false): ?>
+                                <div class="messages mt-1">
+                                    <span><?= $escaper->escapeHtml($errorMessage['region']) ?></span>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="field field-reserved">

@@ -22,7 +22,7 @@ class Register extends SourceRegister
     /**
      * Retrieve and clear the error message from the session
      *
-     * @return string|null
+     * @return array|null
      */
     public function getErrorMessage()
     {
