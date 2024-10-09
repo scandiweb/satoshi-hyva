@@ -45,9 +45,7 @@ $errorMessage = $block->getErrorMessage();
 
         <?php if ($successMessage): ?>
             <?= $successMessage ?>
-        <?php endif; ?>
-
-        <?php if($errorMessage['general'] ?? false): ?>
+        <?php elseif($errorMessage['general'] ?? false): ?>
             <div class="field-error mt-3">
                 <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
             </div>
