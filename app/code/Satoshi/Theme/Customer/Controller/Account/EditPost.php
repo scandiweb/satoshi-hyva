@@ -94,19 +94,20 @@ class EditPost extends SourceEditPost
      * @param Url|null $customerUrl
      */
     public function __construct(
-        Context $context,
-        Session $customerSession,
-        AccountManagementInterface $accountManagement,
+        Context                     $context,
+        Session                     $customerSession,
+        AccountManagementInterface  $accountManagement,
         CustomerRepositoryInterface $customerRepository,
-        Validator $formKeyValidator,
-        CustomerExtractor $customerExtractor,
-        ?Escaper $escaper = null,
-        ?AddressRegistry $addressRegistry = null,
-        ?Filesystem $filesystem = null,
-        ?SessionCleanerInterface $sessionCleaner = null,
-        ?AccountConfirmation $accountConfirmation = null,
-        ?Url $customerUrl = null
-    ) {
+        Validator                   $formKeyValidator,
+        CustomerExtractor           $customerExtractor,
+        ?Escaper                    $escaper = null,
+        ?AddressRegistry            $addressRegistry = null,
+        ?Filesystem                 $filesystem = null,
+        ?SessionCleanerInterface    $sessionCleaner = null,
+        ?AccountConfirmation        $accountConfirmation = null,
+        ?Url                        $customerUrl = null
+    )
+    {
         $this->session = $customerSession;
         $this->accountManagement = $accountManagement;
         $this->customerRepository = $customerRepository;
@@ -136,32 +137,17 @@ class EditPost extends SourceEditPost
     }
 
     /**
-     * Get authentication
+     * Add error messages to session without overriding existing ones.
      *
-     * @return AuthenticationInterface
+     * @param array $newErrorMessages
+     * @return void
      */
-    private function getAuthentication()
+    private function addSessionErrorMessages(array $newErrorMessages): void
     {
+        $currentErrorMessages = $this->session->getErrorMessage() ?? [];
+        $mergedErrorMessages = array_merge($currentErrorMessages, $newErrorMessages);
 
-        if (!($this->authentication instanceof AuthenticationInterface)) {
-            return ObjectManager::getInstance()->get(AuthenticationInterface::class);
-        } else {
-            return $this->authentication;
-        }
-    }
-
-    /**
-     * Get email notification
-     *
-     * @return EmailNotificationInterface
-     */
-    private function getEmailNotification()
-    {
-        if (!($this->emailNotification instanceof EmailNotificationInterface)) {
-            return ObjectManager::getInstance()->get(EmailNotificationInterface::class);
-        } else {
-            return $this->emailNotification;
-        }
+        $this->session->setErrorMessage($mergedErrorMessages);
     }
 
     /**
@@ -251,7 +237,7 @@ class EditPost extends SourceEditPost
             $this->session->setCustomerFormData($this->getRequest()->getPostValue());
         }
 
-        $this->session->setErrorMessage([
+        $this->addSessionErrorMessages([
             'isChangingEmail' => $isChangingEmail,
             'isChangingPassword' => $isChangingPassword,
         ]);
@@ -259,6 +245,35 @@ class EditPost extends SourceEditPost
         $resultRedirect->setPath('*/*/edit');
 
         return $resultRedirect;
+    }
+
+    /**
+     * Get authentication
+     *
+     * @return AuthenticationInterface
+     */
+    private function getAuthentication()
+    {
+
+        if (!($this->authentication instanceof AuthenticationInterface)) {
+            return ObjectManager::getInstance()->get(AuthenticationInterface::class);
+        } else {
+            return $this->authentication;
+        }
+    }
+
+    /**
+     * Get email notification
+     *
+     * @return EmailNotificationInterface
+     */
+    private function getEmailNotification()
+    {
+        if (!($this->emailNotification instanceof EmailNotificationInterface)) {
+            return ObjectManager::getInstance()->get(EmailNotificationInterface::class);
+        } else {
+            return $this->emailNotification;
+        }
     }
 
     /**
@@ -297,9 +312,10 @@ class EditPost extends SourceEditPost
      * @return CustomerInterface
      */
     private function populateNewCustomerDataObject(
-        RequestInterface $inputData,
+        RequestInterface  $inputData,
         CustomerInterface $currentCustomerData
-    ) {
+    )
+    {
         $attributeValues = $this->getCustomerMapper()->toFlatArray($currentCustomerData);
         $customerDto = $this->customerExtractor->extract(
             self::FORM_DATA_EXTRACTOR_CODE,
@@ -358,7 +374,7 @@ class EditPost extends SourceEditPost
                     $currentCustomerDataObject->getId(),
                     $this->getRequest()->getPost('current_password')
                 );
-                $this->sessionCleaner->clearFor((int) $currentCustomerDataObject->getId());
+                $this->sessionCleaner->clearFor((int)$currentCustomerDataObject->getId());
                 return true;
             } catch (InvalidEmailOrPasswordException $e) {
                 throw new InvalidEmailOrPasswordException(
@@ -406,8 +422,9 @@ class EditPost extends SourceEditPost
      */
     private function deleteCustomerFileAttribute(
         CustomerInterface $customerCandidateDataObject,
-        string $attributeToDelete
-    ) : void {
+        string            $attributeToDelete
+    ): void
+    {
         if ($attributeToDelete !== '') {
             if (strpos($attributeToDelete, ',') !== false) {
                 $attributes = explode(',', $attributeToDelete);
@@ -416,7 +433,7 @@ class EditPost extends SourceEditPost
             }
             foreach ($attributes as $attr) {
                 $attributeValue = $customerCandidateDataObject->getCustomAttribute($attr);
-                if ($attributeValue!== null) {
+                if ($attributeValue !== null) {
                     if ($attributeValue->getValue() !== '') {
                         $mediaDirectory = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
                         $fileName = $attributeValue->getValue();
