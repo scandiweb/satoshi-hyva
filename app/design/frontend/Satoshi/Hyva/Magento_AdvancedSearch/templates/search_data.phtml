@@ -1,0 +1,48 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\AdvancedSearch\Block\SearchData;
+use Magento\Framework\Escaper;
+use Magento\Framework\Locale\LocaleFormatter;
+use Magento\Search\Model\QueryResult;
+
+/** @var Escaper $escaper */
+/** @var LocaleFormatter $localeFormatter */
+/** @var QueryResult[] $data */
+/** @var SearchData $block */
+
+// The translated title "Related search terms" returned by the \Magento\AdvancedSearch\Block\Suggestions::getTitle() originates in magento/module-advanced-search/etc/di.xml
+// It can be adjusted with di.xml or in the theme with layout XML by declaring `title` argument on the `search_recommendations` block.
+
+$title = $block->getData('title') ? __($block->getData('title')) : $block->getTitle();
+
+?>
+<?php if (count($block->getItems())): ?>
+    <dl class="my-6">
+        <dt class="mb-2 font-bold"><?= $escaper->escapeHtml($title) ?></dt>
+        <div class="flex gap-3 overflow-x-auto">
+            <?php foreach ($block->getItems() as $additionalInfo): ?>
+                <dd>
+                    <a
+                        class="button button--outline-secondary"
+                        href="<?= $escaper->escapeUrl($block->getLink($additionalInfo->getQueryText())) ?>"
+                        x-element-transition-trigger
+                    >
+                        <span><?= $escaper->escapeHtml($additionalInfo->getQueryText()) ?></span>
+                        <?php if ($block->isShowResultsCount()): ?>
+                            <?php $resultsCount = $localeFormatter->formatNumber((int)$additionalInfo->getResultsCount()) ?>
+                            <span
+                                class="count"
+                                aria-label="<?= $escaper->escapeHtmlAttr($resultsCount > 1
+                                    ? __('%1 search results', $resultsCount)
+                                    : __('1 search result')) ?>"
+                            >(<?= /* @noEscape */
+                                $resultsCount ?>)</span>
+                        <?php endif; ?>
+                    </a>
+                </dd>
+            <?php endforeach; ?>
+        </div>
+    </dl>
+<?php endif; ?>
