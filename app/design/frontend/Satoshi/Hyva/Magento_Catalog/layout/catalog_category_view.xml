@@ -14,9 +14,7 @@
         <referenceContainer name="main"
                             htmlClass="plp-main-content flex-shrink-0 md:w-plp-main transition-width duration-300 row-span-2 col-span-3 only:col-span-full"/>
 
-
         <move element="div.sidebar.additional" destination="sidebar.main" after="catalog.navigation.renderer"/>
-
         <move element="preview.content" destination="product-grid-container"/>
         <move element="main" destination="columns" before="-" />
         <move element="page.main.title" destination="category.banner" />

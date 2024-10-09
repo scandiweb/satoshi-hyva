@@ -7,6 +7,14 @@
             <block class="Magento\Framework\View\Element\Template" name="product-grid-container" template="Magento_Catalog::category/grid-container.phtml" after="search.banner" />
         </referenceContainer>
 
+        <referenceContainer name="div.sidebar.additional" htmlClass="sidebar sidebar-additional md:mt-8"/>
+
+        <referenceContainer name="columns" htmlClass="grid-columns overflow-hidden md:flex md:flex-row md:gap-8"/>
+
+        <referenceContainer name="main"
+                            htmlClass="search-main-content flex-shrink-0 md:w-plp-main transition-width duration-300 row-span-2 col-span-3 only:col-span-full"/>
+
+        <move element="div.sidebar.additional" destination="sidebar.main" after="catalog.navigation.renderer"/>
         <move element="preview.content" destination="product-grid-container"/>
         <move element="main" destination="columns" before="-" />
         <move element="page.main.title" destination="search.banner" />
