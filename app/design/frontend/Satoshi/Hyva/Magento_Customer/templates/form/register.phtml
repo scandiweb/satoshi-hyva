@@ -451,10 +451,8 @@ $errorMessage = $block->getErrorMessage();
 
                 <?= $block->getChildHtml('form_additional_info') ?>
                 <?php if($recaptcha): ?>
-                    <div class="mt-3">
-                        <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
-                        <?= $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) ?>
-                    </div>
+                    <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
+                    <?= $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) ?>
                 <?php endif; ?>
             </div>
 
