@@ -83,7 +83,7 @@ $errorMessage = $block->getErrorMessage();
             <?= /* @noEscape */
             $block->getBlockHtml('formkey'); ?>
             <?= $block->getChildHtml('form_fields_before') ?>
-            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>
+
             <div class="flex flex-col gap-3">
                 <input type="hidden" name="success_url"
                        value="<?= $escaper->escapeUrl($block->getSuccessUrl()) ?>">
@@ -450,7 +450,12 @@ $errorMessage = $block->getErrorMessage();
                 <?php endif; ?>
 
                 <?= $block->getChildHtml('form_additional_info') ?>
-                <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>
+                <?php if($recaptcha): ?>
+                    <div class="mt-3">
+                        <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
+                        <?= $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="flex flex-col gap-6 mt-7">
