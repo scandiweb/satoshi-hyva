@@ -19,12 +19,9 @@
         <!-- Set the main content transition and dynamic class plp-main-content -->
         <referenceContainer name="main"
                             htmlClass="plp-main-content md:w-full transition-width duration-300 row-span-2 col-span-3 only:col-span-full"/>
-
-        <referenceContainer name="div.sidebar.additional" htmlClass="sidebar sidebar-additional md:mt-8"/>
-
+        
         <!-- Implement container for sidebars on search results page -->
-        <container name="div.sidebar" htmlTag="div">
-        </container>
+        <container name="div.sidebar" htmlTag="div" htmlClass="flex flex-col gap-8"/>
         <move element="div.sidebar.main" destination="div.sidebar" after="-"/>
         <move element="div.sidebar.additional" destination="div.sidebar" after="div.sidebar.main"/>
         <move element="div.sidebar" destination="columns" after="main"/>
