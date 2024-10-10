@@ -22,10 +22,9 @@
                             htmlClass="plp-main-content md:w-full transition-width duration-300 row-span-2 col-span-3 only:col-span-full"/>
 
         <!-- Implement container for sidebars on PLP -->
-        <container name="div.sidebar" htmlTag="div"/>
+        <container name="div.sidebar" htmlTag="div" htmlClass="flex flex-col gap-8"/>
         <move element="div.sidebar.main" destination="div.sidebar" after="-"/>
         <move element="div.sidebar.additional" destination="div.sidebar" after="div.sidebar.main"/>
         <move element="div.sidebar" destination="columns" after="main"/>
-
     </body>
 </page>
