@@ -1,0 +1,27 @@
+<?php
+
+use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\Model\ViewModelRegistry;
+
+/** @var ViewModelRegistry $viewModels */
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+?>
+
+<button
+    type="button"
+    id="sidebar-button"
+    class="button button--filled-primary hidden w-[275px] min-w-[275px] md:inline-flex"
+    @click="$store.productList.toggleFiltersSidebar()"
+>
+        <span
+            x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
+        >
+          <?= __('Hide filter') ?>
+        </span>
+    <span class="button__icon ml-3 text-xl">
+          <?= $hyvaicons->renderHtml('filter'); ?>
+        </span>
+</button>
+

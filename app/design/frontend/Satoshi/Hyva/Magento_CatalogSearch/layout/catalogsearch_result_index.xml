@@ -3,7 +3,10 @@
     <update handle="catalog_list_item" />
     <body>
         <referenceContainer name="main.content">
-            <block class="Magento\Framework\View\Element\Template" name="search.banner" template="Magento_Catalog::search/banner.phtml" before="-" />
+            <block class="Magento\Framework\View\Element\Template" name="search.banner"
+                   template="Magento_Catalog::search/banner.phtml" before="-">
+                <block name="filter-button" as="filterButton" template="Magento_Theme::custom/filter_button.phtml"/>
+            </block>
             <block class="Magento\Framework\View\Element\Template" name="product-grid-container" template="Magento_Catalog::category/grid-container.phtml" after="search.banner" />
         </referenceContainer>
 
@@ -20,7 +23,8 @@
         <referenceContainer name="div.sidebar.additional" htmlClass="sidebar sidebar-additional md:mt-8"/>
 
         <!-- Implement container for sidebars on search results page -->
-        <container name="div.sidebar" htmlTag="div"/>
+        <container name="div.sidebar" htmlTag="div">
+        </container>
         <move element="div.sidebar.main" destination="div.sidebar" after="-"/>
         <move element="div.sidebar.additional" destination="div.sidebar" after="div.sidebar.main"/>
         <move element="div.sidebar" destination="columns" after="main"/>

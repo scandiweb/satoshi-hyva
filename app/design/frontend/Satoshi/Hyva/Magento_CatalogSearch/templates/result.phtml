@@ -28,12 +28,7 @@ $productList = $block->getProductListHtml();
     </div>
 <?php else : ?>
 
-    <div class="message notice"
-         x-init="
-            document.getElementById('sidebar-button').style.display = 'none';
-            document.querySelector('.sidebar-main').style.display = 'none';
-        "
-    >
+    <div class="message notice">
         <div>
             <?= $block->escapeHtml($block->getNoResultText() ? $block->getNoResultText() : __('Your search returned no results.')) ?>
             <?= /* @noEscape */
