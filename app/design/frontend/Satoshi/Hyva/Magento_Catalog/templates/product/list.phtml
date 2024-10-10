@@ -34,7 +34,9 @@ $breadcrumbs = $catalogData->getBreadcrumbPath();
     <?= $block->getToolbarHtml() ?>
     <?= $block->getAdditionalHtml() ?>
 
-    <div class="flex md:items-start">
+    <div class="flex md:items-start"
+         :class="!$store.productList.isFiltersSidebarExpanded && 'expanded'"
+    >
         <div class="flex-grow">
             <div
                 data-content-wrapper

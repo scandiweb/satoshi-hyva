@@ -135,6 +135,11 @@ h3 {
   @apply opacity-100 #{!important};
 }
 
+.plp-main-content:has(div.expanded) {
+    @apply flex-shrink-0;
+}
+
+
 .page-wrapper {
   @apply -mt-[88px] flex-1 max-md:overflow-hidden;
 }
