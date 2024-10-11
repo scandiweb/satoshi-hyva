@@ -365,6 +365,7 @@ return [
         'Satoshi_Migration' => 1,
         'Satoshi_SatoshiUi' => 1,
         'Satoshi_Theme' => 1,
+        'Satoshi_Wishlist' => 1,
         'Temando_ShippingRemover' => 1
     ],
     'scopes' => [
