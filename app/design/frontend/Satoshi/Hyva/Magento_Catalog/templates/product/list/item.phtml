@@ -112,22 +112,13 @@ if ($product) {
                  style="transform: translateZ(0)">
 
                 <?php if ($product): ?>
-                    <?php if ($product->getImage()): ?>
-
-                        <div
-                            class="aspect-product w-full h-full flex items-center justify-center transition-transform bg-[--fade-in-bg]">
-                            <img
-                                class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
-                                src="<?= $escaper->escapeUrl($imageUrl) ?>"
-                                alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>" loading="lazy">
-                        </div>
-                    <?php else: ?>
-                        <div
-                            class="flex aspect-product w-full items-center justify-center bg-secondary-400 text-center">
-                            <?= __('Missing image') ?>
-                        </div>
-                    <?php endif ?>
-
+                    <div
+                        class="aspect-product w-full h-full flex items-center justify-center transition-transform bg-[--fade-in-bg]">
+                        <img
+                            class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
+                            src="<?= $escaper->escapeUrl($imageUrl) ?>"
+                            alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>" loading="lazy">
+                    </div>
                 <?php else: ?>
                     <template x-if="product.media_gallery?.[0]?.url">
                         <div
@@ -167,7 +158,7 @@ if ($product) {
 
                     <!-- Quick buy, for simple, virtual, configurable.. TODO: Make it for other types too -->
                     <?php if ($product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
-                        <form 
+                        <form
                             method="post"
                             action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
                             id="quick_buy_form_<?= $product->getId() ?>"
