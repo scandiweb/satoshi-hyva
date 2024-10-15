@@ -108,7 +108,7 @@ if ($product) {
             <img width="0" height="0" class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
                  src="<?= $escaper->escapeUrl($imageUrl) ?>" alt="">
 
-            <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg]" x-element-transition-src="img"
+            <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg] h-full" x-element-transition-src="img"
                  style="transform: translateZ(0)">
 
                 <?php if ($product): ?>
@@ -133,7 +133,7 @@ if ($product) {
                         <div
                             class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform  md:group-hover:scale-105">
                             <img
-                                :src="product.media_gallery?.[0]?.url"
+                                :src="product.media_gallery?.[0]?.url || '<?= $escaper->escapeUrl($imageUrl) ?>'"
                                 :alt="product.image?.label"
                                 class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
                                 loading="lazy"
