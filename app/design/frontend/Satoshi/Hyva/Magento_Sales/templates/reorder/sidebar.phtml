@@ -81,7 +81,10 @@ if (! $customer->customerLoggedIn()) {
         <template x-if="isShowAddToCart">
             <button
                 type="button"
-                @click.prevent="addToCart('<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>')"
+                @click.prevent="async () => { 
+                    await addToCart('<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>'); 
+                    $store.cart.showCart(); 
+                }"
                 class="button button--filled-primary max-md:w-full"
                 aria-label="<?= $escaper->escapeHtmlAttr(__('Add to cart selected products from list')) ?>"
                 data-addto="cart"

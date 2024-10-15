@@ -1,5 +1,5 @@
 import type { Magics } from "alpinejs";
-import {navigateWithTransition} from "../plugins/Transition";
+import {replaceMainContentWithTransition, navigateWithTransition} from "../plugins/Transition";
 
 export type RecentOrdersType = {
   reorderProducts: {
@@ -13,7 +13,7 @@ export type RecentOrdersType = {
   isLoading: boolean;
 
   receiveReorderData(data: any): void;
-  addToCart(postUrl: string): void;
+  addToCart(postUrl: string): Promise<void>;
   reorderSidebarFetchHandler(body: string, postUrl: string): any;
   onReorder(event: Event): void;
 } & Magics<{}>;
@@ -38,7 +38,7 @@ export const RecentOrders = (messageText: string) =>
       }
     },
 
-    addToCart(postUrl) {
+    async addToCart(postUrl) {
       let params = "";
       const checkboxes: any = document.getElementsByName("order_items[]");
       for (let i = 0; i < checkboxes.length; i++) {
@@ -47,10 +47,9 @@ export const RecentOrders = (messageText: string) =>
         }
       }
       params = "form_key=" + window.hyva.getFormKey() + params;
-      this.reorderSidebarFetchHandler(params, postUrl);
+      await this.reorderSidebarFetchHandler(params, postUrl);
     },
 
-    // TODO: Make this without page reload, after merging product actions
     reorderSidebarFetchHandler(body, postUrl) {
       const postHeaders: Record<string, any> = {
         headers: {
@@ -63,10 +62,9 @@ export const RecentOrders = (messageText: string) =>
       };
 
       return fetch(postUrl, postHeaders)
-        .then((response) => {
+        .then(async (response) => {
           if (response.redirected) {
-            // This is the regular path, regardless if the items could be reordered or not
-            window.location.href = response.url;
+            await replaceMainContentWithTransition(response.url, await response.text());
           } else if (response.ok) {
             return response.json();
           } else {
