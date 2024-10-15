@@ -241,7 +241,9 @@ $isChangingPassword = $errorMessage['isChangingPassword'] ?? false;
             >
             <span x-text="isLoading ?
                 '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
-                '<?= $escaper->escapeHtml(__('Save')) ?>'">Save</span>
+                '<?= $escaper->escapeHtml(__('Save')) ?>'">
+                <?= $escaper->escapeHtml(__('Save')) ?>
+            </span>
             </button>
             <a class="button button--ghost-primary"
                href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
