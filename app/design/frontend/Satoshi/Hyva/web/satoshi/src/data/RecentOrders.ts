@@ -39,6 +39,7 @@ export const RecentOrders = (messageText: string) =>
     },
 
     async addToCart(postUrl) {
+      this.isLoading = true;
       let params = "";
       const checkboxes: any = document.getElementsByName("order_items[]");
       for (let i = 0; i < checkboxes.length; i++) {
@@ -48,6 +49,7 @@ export const RecentOrders = (messageText: string) =>
       }
       params = "form_key=" + window.hyva.getFormKey() + params;
       await this.reorderSidebarFetchHandler(params, postUrl);
+      this.isLoading = false;
     },
 
     reorderSidebarFetchHandler(body, postUrl) {

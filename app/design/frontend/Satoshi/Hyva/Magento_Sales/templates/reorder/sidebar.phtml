@@ -86,10 +86,14 @@ if (! $customer->customerLoggedIn()) {
                     $store.cart.showCart(); 
                 }"
                 class="button button--filled-primary max-md:w-full"
+                :class="isLoading && 'button--disabled'"
+                :disabled="isLoading"
                 aria-label="<?= $escaper->escapeHtmlAttr(__('Add to cart selected products from list')) ?>"
                 data-addto="cart"
             >
-                <?= $escaper->escapeHtml(__('Add to Cart')) ?>
+            <span x-text="isLoading ?
+                '<?= $escaper->escapeHtml(__('Adding...')) ?>' :
+                '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'"><?= $escaper->escapeHtml(__('Add to Cart')) ?></span>
             </button>
         </template>
         <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>#recentOrders"
