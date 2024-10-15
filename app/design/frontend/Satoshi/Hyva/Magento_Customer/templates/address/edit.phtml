@@ -333,8 +333,11 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
                     title="<?= $escaper->escapeHtmlAttr(__('Save Address')) ?>"
             >
                 <span x-text="isLoading ?
-                '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
-                '<?= $escaper->escapeHtml(__('Save Address')) ?>'">Save Address</span>
+                    '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
+                    '<?= $escaper->escapeHtml(__('Save Address')) ?>'"
+                >
+                    <?= $escaper->escapeHtml(__('Save Address')) ?>
+                </span>
             </button>
             <a class="button button--ghost-primary"
                href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
