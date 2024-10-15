@@ -329,7 +329,7 @@ export const ProductPage = () =>
         (event: any) => {
           // In app/design/frontend/Satoshi/Hyva/Magento_Theme/layout/default.xml file we have the below code:
           // <attribute name="@private-content-loaded.window" value="$store.cart.setCartItems($event.detail.data.cart?.items || []);" />
-          // which is responsible for saving the cart items inside store.
+          // which is responsible for saving cart items inside the store.
           // here I use setTimeout to ensure the code inside this event listener gets executed after the above event listener in default.xml file.
           // when user adds a product to cart, an animation gets triggered inside cart popup. this animation happens inside this event listener.
           setTimeout(() => {
