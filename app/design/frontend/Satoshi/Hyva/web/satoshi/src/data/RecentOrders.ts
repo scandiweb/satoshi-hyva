@@ -91,7 +91,19 @@ export const RecentOrders = (messageText: string) =>
           window.dispatchMessages && window.dispatchMessages([message], 5000);
         }).finally(() => {
           this.isLoading = false;
-          this.$store.cart.showCart();
+          const cartItems = Alpine.store("cart").cartItems;
+          const itemIds = this.reorderItems
+            .map((reorderItem: any) => 
+              cartItems.find((cartItem: any) => cartItem.product_id === reorderItem.product_id)?.item_id
+            )
+            .filter((itemId): itemId is string => !!itemId);
+
+          if(itemIds.length) {
+            Alpine.store("cart").focusInCart(itemIds);
+          } else {
+            // When the cart is empty, the newly added items will be displayed once it opens.
+            Alpine.store("cart").showCart();
+          }
         });
     },
 
