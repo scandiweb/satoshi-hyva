@@ -1,5 +1,5 @@
 import type { Magics } from "alpinejs";
-import {replaceMainContentWithTransition, navigateWithTransition} from "../plugins/Transition";
+import { navigateWithTransition } from "../plugins/Transition";
 
 export type RecentOrdersType = {
   reorderProducts: {
@@ -65,7 +65,9 @@ export const RecentOrders = (messageText: string) =>
       return fetch(postUrl, postHeaders)
         .then(async (response) => {
           if (response.redirected) {
-            await replaceMainContentWithTransition(response.url, await response.text());
+            const content = await response.text();
+            window.hyva.replaceDomElement("#cart-button", content);
+            window.hyva.replaceDomElement("#recent-orders-sidebar", content);
           } else if (response.ok) {
             return response.json();
           } else {
