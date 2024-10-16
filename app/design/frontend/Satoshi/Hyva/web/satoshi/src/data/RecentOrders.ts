@@ -13,7 +13,7 @@ export type RecentOrdersType = {
   isLoading: boolean;
 
   receiveReorderData(data: any): void;
-  addToCart(postUrl: string): Promise<void>;
+  addToCart(postUrl: string): void;
   reorderSidebarFetchHandler(body: string, postUrl: string): any;
   onReorder(event: Event): void;
 } & Magics<{}>;
@@ -38,8 +38,7 @@ export const RecentOrders = (messageText: string) =>
       }
     },
 
-    async addToCart(postUrl) {
-      this.isLoading = true;
+    addToCart(postUrl) {
       let params = "";
       const checkboxes: any = document.getElementsByName("order_items[]");
       for (let i = 0; i < checkboxes.length; i++) {
@@ -48,8 +47,7 @@ export const RecentOrders = (messageText: string) =>
         }
       }
       params = "form_key=" + window.hyva.getFormKey() + params;
-      await this.reorderSidebarFetchHandler(params, postUrl);
-      this.isLoading = false;
+      this.reorderSidebarFetchHandler(params, postUrl);
     },
 
     reorderSidebarFetchHandler(body, postUrl) {
@@ -63,6 +61,7 @@ export const RecentOrders = (messageText: string) =>
         credentials: "include",
       };
 
+      this.isLoading = true;
       return fetch(postUrl, postHeaders)
         .then(async (response) => {
           if (response.redirected) {
@@ -88,30 +87,33 @@ export const RecentOrders = (messageText: string) =>
         .catch((error) => {
           const message = { type: "error", text: error };
           window.dispatchMessages && window.dispatchMessages([message], 5000);
+        }).finally(() => {
+          this.isLoading = false;
+          this.$store.cart.showCart();
         });
     },
 
-      onReorder(event) {
-        const target = event.target as HTMLElement;
-        const $form = target?.closest("form");
+    onReorder(event) {
+      const target = event.target as HTMLElement;
+      const $form = target?.closest("form");
 
-        if (!$form) return;
+      if (!$form) return;
 
-        const formData = new FormData($form);
-        this.isLoading = true;
+      const formData = new FormData($form);
+      this.isLoading = true;
 
-        fetch($form.action, {
-          method: "POST",
-          body: formData,
-        }).then((res) => {
-          if (res.ok) {
-          navigateWithTransition('/checkout/cart');
-          }
-        }).catch((error) => {
-          console.error("Error while processing reorder request:", error);
-          location.reload();
-        }).finally(() => {
-            this.isLoading = false;
-        });
-      },
+      fetch($form.action, {
+        method: "POST",
+        body: formData,
+      }).then((res) => {
+        if (res.ok) {
+        navigateWithTransition('/checkout/cart');
+        }
+      }).catch((error) => {
+        console.error("Error while processing reorder request:", error);
+        location.reload();
+      }).finally(() => {
+          this.isLoading = false;
+      });
+    },
   };
