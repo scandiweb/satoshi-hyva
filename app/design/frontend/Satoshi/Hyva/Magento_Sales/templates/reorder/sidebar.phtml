@@ -41,7 +41,7 @@ if (! $customer->customerLoggedIn()) {
                 <template x-if="itemCount">
                     <div>
                         <ol id="cart-sidebar-reorder" class="px-4 flex flex-col gap-3">
-                            <template x-for="product in reorderItems">
+                            <template x-for="product in reorderItems" :key="product.id">
                                 <li>
                                     <label class="flex items-center gap-3" :for="checkboxId + product.id">
                                         <input

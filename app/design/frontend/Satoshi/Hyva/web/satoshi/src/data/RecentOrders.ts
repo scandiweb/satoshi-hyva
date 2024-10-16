@@ -66,7 +66,6 @@ export const RecentOrders = (messageText: string) =>
         .then(async (response) => {
           if (response.redirected) {
             const content = await response.text();
-            window.hyva.replaceDomElement("#cart-button", content);
             window.hyva.replaceDomElement("#recent-orders-sidebar", content);
           } else if (response.ok) {
             return response.json();
