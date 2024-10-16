@@ -1,0 +1,141 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Wishlist $wishlistViewModel */
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+
+/** @var HeroiconsSolid $heroicons */
+$heroicons = $viewModels->require(HeroiconsSolid::class);
+
+/** @var CurrentProduct $currentProduct */
+$currentProduct = $viewModels->require(CurrentProduct::class);
+
+/** @var Product $product */
+$product = $currentProduct->get();
+
+if (!$product->getId() || !$wishlistViewModel->isEnabled()) {
+    return;
+}
+/**
+ * When visiting wishlist/index/configure, the current class is Magento\Wishlist\Block\Item\Configure
+ * In that case we take the form parameters from the existing wishlist item
+ */
+$updateParams = $block->getUpdateParams() ?: null;
+$uniqueId = '_' . uniqid();
+?>
+<script>
+    function initWishlist<?= /** @noEscape */ $uniqueId ?>() {
+        return {
+            isAdded: false,
+            addToWishlist(productId) {
+                const postParams = <?php if ($updateParams): ?>
+                    <?= /* @noEscape */ $updateParams ?>
+                <?php else: ?>
+                {
+                    action: BASE_URL + "wishlist/index/add/",
+                        data: {
+                    product: productId,
+                        uenc: hyva.getUenc()
+                }
+                }
+                <?php endif; ?>
+
+                postParams.data['form_key'] = hyva.getFormKey();
+                postParams.data['qty'] = document.getElementById(`qty[${productId}]`)
+                    ? document.getElementById(`qty[${productId}]`).value || 1
+                    : 1;
+
+                let postData = Object.keys(postParams.data).map(key => {
+                    return `${key}=${postParams.data[key]}`;
+                }).join('&');
+
+                // take the all the input fields that configure this product
+                // includes custom, configurable, grouped and bundled options
+                Array.from(document.querySelectorAll(
+                    '[name^=options], [name^=super_attribute], [name^=bundle_option], [name^=super_group], [name^=links]')
+                ).map(input => {
+                    if (input.type === "select-multiple") {
+                        Array.from(input.selectedOptions).forEach(option => {
+                            postData += `&${input.name}=${option.value}`
+                        })
+                    } else {
+                        // skip "checkable inputs" that are not checked
+                        if(!(['radio', 'checkbox', 'select'].includes(input.type) && !input.checked)) {
+                            postData += `&${input.name}=${input.value}`
+                        }
+                    }
+                });
+                fetch(postParams.action, {
+                    "headers": {
+                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    },
+                    "body": postData,
+                    "method": "POST",
+                    "mode": "cors",
+                    "credentials": "include"
+                }).then((response) => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else if (response.ok) {
+                        return response.json();
+                    }
+                }).then((response) => {
+                    if (!response) {
+                        return;
+                    }
+
+                    if (response.success) {
+                        this.isAdded = true;
+                    }
+
+                    typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                        [{
+                            type: (response.success) ? "success" : "error",
+                            text: response.message
+                        }], 5000
+                    );
+                    const reloadCustomerDataEvent = new CustomEvent("reload-customer-section-data");
+                    window.dispatchEvent(reloadCustomerDataEvent);
+                }).catch((error) => {
+                    typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                        [{
+                            type: "error",
+                            text: error
+                        }], 5000
+                    );
+                });
+            }
+        }
+    }
+</script>
+
+<button x-data="initWishlist<?= /** @noEscape */ $uniqueId ?>()"
+        x-defer="intersect"
+        @click.prevent="addToWishlist(<?= (int)$product->getId() ?>)"
+        title="<?= $escaper->escapeHtmlAttr(
+            ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
+        ) ?>"
+        aria-label="<?= $escaper->escapeHtmlAttr(
+            ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
+        ) ?>"
+        id="add-to-wishlist"
+        class="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex
+                items-center justify-center text-gray-500 hover:text-red-600 ml-4"
+        data-addto="wishlist"
+        :class="{ 'text-red-600': isAdded }"
+>
+    <?= $heroicons->heartHtml("w-5 h-5", 25, 25) ?>
+</button>
