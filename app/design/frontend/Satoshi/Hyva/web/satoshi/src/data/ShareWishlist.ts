@@ -1,20 +1,20 @@
 import {Magics} from "alpinejs";
 
 export type ShareWishlistType = {
+  isLoading: boolean;
   isValid: boolean;
   validateEmailsRegex: RegExp;
   validateForm(): boolean;
-  emailSharingLimit: number;
-  invalidEmailMessage: string;
-  emailLimitMessage: string;
+  submitForm(event: Event): void;
 } & Magics<{}>;
 
 export const ShareWishlist = (
     emailSharingLimit: number,
     invalidEmailMessage: string,
-    emailLimitMessage: string
+    emailLimitMessage: string,
 ) =>
     <ShareWishlistType>{
+      isLoading: false,
       isValid: true,
       validateEmailsRegex:
           /^([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9,!\#\$%&'\*\+\/=\?\^_`\{\|\}~-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*@([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z0-9-]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*\.(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]){2,})$/i,
@@ -39,5 +39,31 @@ export const ShareWishlist = (
         this.isValid = true;
         emailField.setCustomValidity("");
         return true;
+      },
+
+      submitForm(event) {
+        const $form = event.target as HTMLFormElement;
+        if (!$form || !this.validateForm()) return;
+
+        const formData = new FormData($form);
+        this.isLoading = true;
+
+        fetch($form.action, {
+          method: "POST",
+          body: formData,
+        })
+            .then(async (res) => {
+              if (res.ok) {
+                const content = await res.text();
+                window.hyva.replaceDomElement("#form-validate", content);
+              }
+            })
+            .catch((error) => {
+              console.error("Error while sharing wishlist:", error);
+              location.reload();
+            })
+            .finally(() => {
+              this.isLoading = false;
+            });
       },
     };
