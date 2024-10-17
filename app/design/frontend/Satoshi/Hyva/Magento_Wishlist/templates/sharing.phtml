@@ -1,0 +1,75 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Sharing;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Escaper $escaper */
+/** @var Sharing $block */
+?>
+<form class="form wishlist share"
+      x-data="ShareWishlist(
+        emailSharingLimit: <?= (int) $block->getEmailSharingLimit() ?>,
+        invalidEmailMessage: '<?= $escaper->escapeJs(__('Please enter valid email addresses, separated by commas. For example, johndoe@domain.com, johnsmith@domain.com.')) ?>',
+        emailLimitMessage: '<?= $escaper->escapeJs(__('Maximum of %1 emails can be sent.', $block->getEmailSharingLimit())) ?>'
+      )"
+      @submit="validateForm()"
+      action="<?= $escaper->escapeUrl($block->getSendUrl()) ?>"
+      id="form-validate"
+      method="post"
+>
+    <fieldset class="fieldset">
+        <?= $block->getBlockHtml('formkey') ?>
+        <legend class="legend">
+            <span>
+                <?= $escaper->escapeHtml(__('Sharing Information')) ?>
+            </span>
+        </legend>
+        <div class="field emails required">
+            <label class="label"
+                   for="email_address">
+                <span>
+                    <?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?>
+                </span>
+            </label>
+            <div class="control max-w-xl">
+                <!-- required -->
+                <textarea name="emails"
+                          class="w-full"
+                          :class=" { 'border-red-500 focus:border-red-500 focus:ring-red-500': !isValid }"
+                          rows="5"
+                          id="email_address"
+                          @blur="validateForm()"
+                          @input.debounce="validateForm()"
+                          x-ref="emails"
+                ><?= /* @noEscape */ $block->getEnteredData('emails') ?></textarea>
+            </div>
+        </div>
+        <div class="field text">
+            <label class="label" for="message"><span><?= $escaper->escapeHtml(__('Message')) ?></span></label>
+            <div class="control max-w-xl">
+                <textarea id="message" name="message" class="w-full" rows="5" maxlength="<?= (int) $block->getTextSharingLimit() ?>"><?= /* @noEscape */ $block->getEnteredData('message') ?></textarea>
+            </div>
+        </div>
+    </fieldset>
+    <?= $block->getChildHtml('captcha'); ?>
+    <div class="actions-toolbar">
+        <div class="primary">
+            <button type="submit" title="<?= $escaper->escapeHtmlAttr(__('Share Wish List')) ?>"
+                    class="action submit primary">
+                <span><?= $escaper->escapeHtml(__('Share Wish List')) ?></span>
+            </button>
+        </div>
+        <div class="secondary">
+            <a class="action back"
+               href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
+                <span>
+                    <?= $escaper->escapeHtml(__('Back')) ?>
+                </span>
+            </a>
+        </div>
+    </div>
+</form>
