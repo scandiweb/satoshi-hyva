@@ -12,64 +12,79 @@ use Magento\Wishlist\Block\Customer\Sharing;
 ?>
 <form class="form wishlist share"
       x-data="ShareWishlist(
-        emailSharingLimit: <?= (int) $block->getEmailSharingLimit() ?>,
-        invalidEmailMessage: '<?= $escaper->escapeJs(__('Please enter valid email addresses, separated by commas. For example, johndoe@domain.com, johnsmith@domain.com.')) ?>',
-        emailLimitMessage: '<?= $escaper->escapeJs(__('Maximum of %1 emails can be sent.', $block->getEmailSharingLimit())) ?>'
+        <?= (int)$block->getEmailSharingLimit() ?>,
+        '<?= $escaper->escapeJs(__('Please enter valid email addresses, separated by commas. For example, johndoe@domain.com, johnsmith@domain.com.')) ?>',
+        '<?= $escaper->escapeJs(__('Maximum of %1 emails can be sent.', $block->getEmailSharingLimit())) ?>',
       )"
-      @submit="validateForm()"
+      @submit.prevent="submitForm"
       action="<?= $escaper->escapeUrl($block->getSendUrl()) ?>"
       id="form-validate"
       method="post"
 >
     <fieldset class="fieldset">
         <?= $block->getBlockHtml('formkey') ?>
-        <legend class="legend">
-            <span>
-                <?= $escaper->escapeHtml(__('Sharing Information')) ?>
-            </span>
-        </legend>
-        <div class="field emails required">
-            <label class="label"
-                   for="email_address">
-                <span>
-                    <?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?>
-                </span>
+
+        <h2 class="text-text-500 text-lg font-bold mb-5">
+            <?= $escaper->escapeHtml(__('Sharing Information')) ?>
+        </h2>
+
+        <div class="field field-reserved" :class="{ 'field-error': !isValid }">
+            <label class="sr-only tracking-widest" for="email_address">
+                <span><?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?></span>
             </label>
-            <div class="control max-w-xl">
-                <!-- required -->
-                <textarea name="emails"
-                          class="w-full"
-                          :class=" { 'border-red-500 focus:border-red-500 focus:ring-red-500': !isValid }"
-                          rows="5"
-                          id="email_address"
+            <div>
+                <textarea id="email_address"
+                          name="emails"
+                          class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 w-full"
+                          rows="1"
+                          placeholder="<?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?>"
                           @blur="validateForm()"
                           @input.debounce="validateForm()"
                           x-ref="emails"
-                ><?= /* @noEscape */ $block->getEnteredData('emails') ?></textarea>
+                          required
+                ><?= /* @noEscape */
+                    $block->getEnteredData('emails') ?></textarea>
             </div>
         </div>
-        <div class="field text">
-            <label class="label" for="message"><span><?= $escaper->escapeHtml(__('Message')) ?></span></label>
-            <div class="control max-w-xl">
-                <textarea id="message" name="message" class="w-full" rows="5" maxlength="<?= (int) $block->getTextSharingLimit() ?>"><?= /* @noEscape */ $block->getEnteredData('message') ?></textarea>
+
+        <div class="field field-reserved">
+            <label class="sr-only tracking-widest" for="message">
+                <span><?= $escaper->escapeHtml(__('Message')) ?></span>
+            </label>
+            <div>
+                <textarea id="message"
+                          name="message"
+                          class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 w-full"
+                          rows="5"
+                          maxlength="<?= (int)$block->getTextSharingLimit() ?>"
+                          placeholder="<?= $escaper->escapeHtml(__('Message')) ?>"
+                ><?= /* @noEscape */
+                    $block->getEnteredData('message') ?></textarea>
             </div>
         </div>
     </fieldset>
+
     <?= $block->getChildHtml('captcha'); ?>
-    <div class="actions-toolbar">
-        <div class="primary">
-            <button type="submit" title="<?= $escaper->escapeHtmlAttr(__('Share Wish List')) ?>"
-                    class="action submit primary">
-                <span><?= $escaper->escapeHtml(__('Share Wish List')) ?></span>
-            </button>
-        </div>
-        <div class="secondary">
-            <a class="action back"
-               href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>">
-                <span>
-                    <?= $escaper->escapeHtml(__('Back')) ?>
-                </span>
-            </a>
-        </div>
+
+    <div class="flex gap-x-4 flex-col md:flex-row mt-5">
+        <button type="submit"
+                class="button button--filled-primary"
+                :class="isLoading && 'button--disabled'"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Share Wish List')) ?>"
+                title="<?= $escaper->escapeHtmlAttr(__('Share Wish List')) ?>"
+                :disabled="isLoading"
+        >
+            <span x-text="isLoading ?
+                '<?= $escaper->escapeHtml(__('Submitting...')) ?>' :
+                '<?= $escaper->escapeHtml(__('Share Wish List')) ?>'">
+                <?= $escaper->escapeHtml(__('Share Wish List')) ?>
+            </span>
+        </button>
+        <a class="button button--ghost-primary"
+           href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+           x-element-transition-trigger
+        >
+            <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
+        </a>
     </div>
 </form>
