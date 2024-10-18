@@ -1,0 +1,25 @@
+<div
+  attr="data.main.attributes"
+  ko-style="data.main.style"
+  class="pagebuilder-content-type image-with-text"
+  css="data.main.css"
+  event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+  <div style="height: 100px"></div>
+
+  <if args="data.collage_items.attributes().items.length > 0 && data.collage_items.attributes().items !== '[]'">
+    <div
+      data-bind="attr: { items: JSON.stringify(data.collage_items.attributes().items) }"
+      ko-style="data.collage_items.style"
+      data-element="collage_items"
+      css="data.collage_items.css"
+      class="items"
+    >
+      <div
+        class="rendered-content"
+        html="data.block_directive"
+      ></div>
+  </if>
+
+  <render args="getOptions().template" />
+</div>
