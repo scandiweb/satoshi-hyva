@@ -23,9 +23,10 @@ $minimumPasswordLength = $block->getMinimumPasswordLength();
 $passwordMinCharacterSets = $block->getRequiredCharacterClassesNumber();
 $storeConfig = $viewModels->require(StoreConfig::class);
 $isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocomplete_on_storefront');
-$errorMessage = $block->getErrorMessage();
 $isChangingEmail = $errorMessage['isChangingEmail'] ?? false;
 $isChangingPassword = $errorMessage['isChangingPassword'] ?? false;
+$successMessage = $block->getSuccessMessage();
+$errorMessage = $block->getErrorMessage();
 ?>
 
 <section class="w-full xl:w-1/2">
@@ -47,6 +48,16 @@ $isChangingPassword = $errorMessage['isChangingPassword'] ?? false;
           @submit.prevent="submitForm(event)"
           autocomplete="off"
     >
+        <?php if ($successMessage): ?>
+            <div class="text-green-700 -mt-3 mb-3">
+                <span><?= $successMessage ?></span>
+            </div>
+        <?php elseif ($errorMessage['general'] ?? false): ?>
+            <div class="field-error -mt-3 mb-3">
+                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
+            </div>
+        <?php endif; ?>
+
         <div class="bg-bg-400 p-5 rounded-xl">
             <?= $block->getBlockHtml('formkey') ?>
             <div class="space-y-3">
