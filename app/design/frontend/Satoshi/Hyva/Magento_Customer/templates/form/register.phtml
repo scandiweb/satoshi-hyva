@@ -42,24 +42,14 @@ $errorMessage = $block->getErrorMessage();
 
 <div class="container mx-auto flex h-full items-center px-5">
     <div class="mx-auto w-[412px] max-w-full">
-
-        <?php if ($successMessage): ?>
-            <?= $successMessage ?>
-        <?php elseif($errorMessage['general'] ?? false): ?>
-            <div class="field-error mt-3">
-                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
-            </div>
-        <?php endif; ?>
-
         <header class="flex items-center justify-between sm:text-center mb-7">
             <h2 class="w-full text-2xl" tabindex="-1"><?= __('Create account') ?></h2>
         </header>
 
         <?php /* Extensions placeholder */ ?>
         <?= $block->getChildHtml('customer.form.register.extra') ?>
-        <form
-                action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
-                x-data="Object.assign(hyva.formValidation($el),
+        <form action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
+              x-data="Object.assign(hyva.formValidation($el),
                 Register(
                     '<?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '') ?>',
                     '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
@@ -74,10 +64,20 @@ $errorMessage = $block->getErrorMessage();
             <?php if ($block->getShowAddressFields()): ?>
                 @private-content-loaded.window="onPrivateContentLoaded(event.detail.data)"
             <?php endif; ?>
-                id="form-validate"
-                @submit.prevent="submitForm"
-                method="post" id="form-validate" enctype="multipart/form-data" autocomplete="off"
+              id="form-validate"
+              @submit.prevent="submitForm"
+              method="post" id="form-validate" enctype="multipart/form-data" autocomplete="off"
         >
+            <?php if ($successMessage): ?>
+                <div class="text-green-700 -mt-3 mb-3">
+                    <span><?= $successMessage ?></span>
+                </div>
+            <?php elseif ($errorMessage['general'] ?? false): ?>
+                <div class="field-error -mt-3 mb-3">
+                    <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
+                </div>
+            <?php endif; ?>
+
             <?= /* @noEscape */
             $block->getBlockHtml('formkey'); ?>
             <?= $block->getChildHtml('form_fields_before') ?>
@@ -448,7 +448,7 @@ $errorMessage = $block->getErrorMessage();
                 <?php endif; ?>
 
                 <?= $block->getChildHtml('form_additional_info') ?>
-                <?php if($recaptcha): ?>
+                <?php if ($recaptcha): ?>
                     <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
                     <?= $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) ?>
                 <?php endif; ?>
