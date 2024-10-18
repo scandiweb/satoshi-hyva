@@ -7,6 +7,15 @@
             <block class="Magento\Framework\View\Element\Template" name="product-grid-container" template="Magento_Catalog::category/grid-container.phtml" after="category.banner" />
         </referenceContainer>
 
+        <referenceContainer name="content">
+            <block class="Magento\Catalog\Block\Product\ListProduct" name="category.products.list" as="product_list"
+                   template="Magento_Catalog::product/list.phtml">
+                <action method="setToolbarBlockName">
+                    <argument name="name" xsi:type="string">product_list_toolbar</argument>
+                </action>
+            </block>
+        </referenceContainer>
+
         <move element="preview.content" destination="product-grid-container"/>
         <move element="main" destination="columns" before="-" />
         <move element="page.main.title" destination="category.banner" />
