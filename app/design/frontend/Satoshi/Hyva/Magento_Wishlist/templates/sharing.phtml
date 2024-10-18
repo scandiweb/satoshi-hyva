@@ -3,14 +3,17 @@
 declare(strict_types=1);
 
 use Magento\Framework\Escaper;
-use Magento\Wishlist\Block\Customer\Sharing;
+use Satoshi\Theme\Block\Customer\Sharing;
 
 // phpcs:disable Generic.Files.LineLength.TooLong
 
 /** @var Escaper $escaper */
 /** @var Sharing $block */
+
+$successMessage = $block->getSuccessMessage();
+$errorMessage = $block->getErrorMessage();
 ?>
-<form class="form wishlist share"
+<form id="form-validate"
       x-data="ShareWishlist(
         <?= (int)$block->getEmailSharingLimit() ?>,
         '<?= $escaper->escapeJs(__('Please enter valid email addresses, separated by commas. For example, johndoe@domain.com, johnsmith@domain.com.')) ?>',
@@ -18,53 +21,60 @@ use Magento\Wishlist\Block\Customer\Sharing;
       )"
       @submit.prevent="submitForm"
       action="<?= $escaper->escapeUrl($block->getSendUrl()) ?>"
-      id="form-validate"
       method="post"
 >
-    <fieldset class="fieldset">
-        <?= $block->getBlockHtml('formkey') ?>
+    <?= $block->getBlockHtml('formkey') ?>
 
-        <h2 class="text-text-500 text-lg font-bold mb-5">
-            <?= $escaper->escapeHtml(__('Sharing Information')) ?>
-        </h2>
+    <h2 class="text-text-500 text-lg font-bold mb-5">
+        <?= $escaper->escapeHtml(__('Sharing Information')) ?>
+    </h2>
 
-        <div class="field field-reserved" :class="{ 'field-error': !isValid }">
-            <label class="sr-only tracking-widest" for="email_address">
-                <span><?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?></span>
-            </label>
-            <div>
-                <textarea id="email_address"
-                          name="emails"
-                          class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 w-full"
-                          rows="1"
-                          placeholder="<?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?>"
-                          @blur="validateForm()"
-                          @input.debounce="validateForm()"
-                          x-ref="emails"
-                          required
-                ><?= /* @noEscape */
-                    $block->getEnteredData('emails') ?></textarea>
-            </div>
+    <div class="field field-reserved" :class="{ 'field-error': !isValid }">
+        <label class="sr-only tracking-widest" for="email_address">
+            <span><?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?></span>
+        </label>
+        <div>
+            <textarea id="email_address"
+                      name="emails"
+                      class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 w-full"
+                      rows="2"
+                      placeholder="<?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?>"
+                      @blur="validateForm()"
+                      @input.debounce="validateForm()"
+                      x-ref="emails"
+                      required
+            ><?= /* @noEscape */
+                $block->getEnteredData('emails') ?></textarea>
         </div>
-
-        <div class="field field-reserved">
-            <label class="sr-only tracking-widest" for="message">
-                <span><?= $escaper->escapeHtml(__('Message')) ?></span>
-            </label>
-            <div>
-                <textarea id="message"
-                          name="message"
-                          class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 w-full"
-                          rows="5"
-                          maxlength="<?= (int)$block->getTextSharingLimit() ?>"
-                          placeholder="<?= $escaper->escapeHtml(__('Message')) ?>"
-                ><?= /* @noEscape */
-                    $block->getEnteredData('message') ?></textarea>
+        <?php if ($errorMessage['emails'] ?? false): ?>
+            <div class="messages mt-1">
+                <span><?= $escaper->escapeHtml($errorMessage['emails']) ?></span>
             </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="field field-reserved">
+        <label class="sr-only tracking-widest" for="message">
+            <span><?= $escaper->escapeHtml(__('Message')) ?></span>
+        </label>
+        <div>
+            <textarea id="message"
+                      name="message"
+                      class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 w-full"
+                      rows="5"
+                      maxlength="<?= (int)$block->getTextSharingLimit() ?>"
+                      placeholder="<?= $escaper->escapeHtml(__('Message')) ?>"
+            ><?= /* @noEscape */
+                $block->getEnteredData('message') ?></textarea>
         </div>
-    </fieldset>
+    </div>
 
     <?= $block->getChildHtml('captcha'); ?>
+    <?php if ($errorMessage['captcha'] ?? false): ?>
+        <div class="field-error mt-1">
+            <span class="messages"><?= $escaper->escapeHtml($errorMessage['captcha']) ?></span>
+        </div>
+    <?php endif; ?>
 
     <div class="flex gap-x-4 flex-col md:flex-row mt-5">
         <button type="submit"
@@ -87,4 +97,12 @@ use Magento\Wishlist\Block\Customer\Sharing;
             <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
         </a>
     </div>
+
+    <?php if ($successMessage): ?>
+        <?= $successMessage ?>
+    <?php elseif ($errorMessage['general'] ?? false): ?>
+        <div class="field-error mt-3">
+            <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
+        </div>
+    <?php endif; ?>
 </form>
