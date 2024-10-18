@@ -17,6 +17,7 @@ declare global {
       strf: function;
       getBrowserStorage: function;
       releaseFocus: function;
+      postForm: function;
     };
     grecaptchaInstanceNewsletter?: number;
     googleRecaptchaCallbackNewsletter?: function;
