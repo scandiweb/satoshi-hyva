@@ -1,0 +1,60 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Wishlist;
+use Magento\Wishlist\Helper\Data as WishlistHelper;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var Escaper $escaper */
+/** @var Wishlist $block */
+
+$wishlistHelper = $this->helper(WishlistHelper::class);
+?>
+
+<?php if ($wishlistHelper->isAllow()): ?>
+    <div class="toolbar wishlist-toolbar"><?= $block->getChildHtml('wishlist_item_pager'); ?></div>
+    <?= ($block->getChildHtml('wishlist.rss.link')) ?>
+    <form class="form-wishlist-items mt-4"
+          id="wishlist-view-form"
+          x-data="MyWishList(
+              <?= $escaper->escapeHtmlAttr($block->getAddAllToCartParams()) ?>
+          )"
+          action="
+          <?= $escaper->escapeUrl(
+              $block->getUrl(
+                  'wishlist/index/update',
+                  ['wishlist_id' => $block->getWishlistInstance()->getId()]
+              )
+          ) ?>"
+          method="post">
+        <?= $block->getChildHtml('top') ?>
+        <?php if ($block->hasWishlistItems()): ?>
+            <?= $block->getBlockHtml('formkey') ?>
+            <?php $block->getChildBlock('items')->setItems($block->getWishlistItems()); ?>
+            <?= $block->getChildHtml('items') ?>
+        <?php else: ?>
+            <div class="message info empty">
+                <span>
+                    <?= $escaper->escapeHtml(__('You have no items in your wish list.')) ?>
+                </span>
+            </div>
+        <?php endif ?>
+        <?= $block->getChildHtml('bottom') ?>
+        <div class="actions-toolbar my-4">
+            <div class="flex flex-wrap gap-2">
+                <?= $block->getChildHtml('control_buttons') ?>
+            </div>
+            <div class="secondary mr-10">
+                <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>" class="action back">
+                    <span><?= $escaper->escapeHtml(__('Back')) ?></span>
+                </a>
+            </div>
+        </div>
+    </form>
+    <div class="toolbar wishlist-toolbar">
+        <?= $block->getChildHtml('wishlist_item_pager') ?>
+    </div>
+<?php endif ?>
