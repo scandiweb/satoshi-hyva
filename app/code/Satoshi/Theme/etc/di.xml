@@ -17,6 +17,9 @@
         for="Magento\Checkout\Block\Cart\Coupon"
         type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
     />
+    <preference for="Magento\Wishlist\Controller\Index\Send"
+                type="Satoshi\Wishlist\Controller\Index\Send"
+    />
     <preference
         for="Hyva\Theme\Service\Navigation"
         type="Satoshi\Theme\Service\Navigation"
@@ -42,5 +45,8 @@
     <preference
         for="Magento\Theme\Block\Html\Footer"
         type="Satoshi\Theme\Block\Html\Footer"
+    />
+    <preference for="Magento\Wishlist\Block\Customer\Sharing"
+                type="Satoshi\Theme\Block\Customer\Sharing"
     />
 </config>
