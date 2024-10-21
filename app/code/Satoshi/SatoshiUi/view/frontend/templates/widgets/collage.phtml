@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+use Satoshi\SatoshiUi\Block\Widget\Collage;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Magento\Framework\Escaper;
+use Hyva\Theme\Model\ViewModelRegistry;
+
+/** @var Escaper $escaper */
+/** @var Collage $block */
+$collage_items = $block->getCollage();
+
+/** @var ViewModelRegistry $viewModels */
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+
+?>
+<div class="collage grid grid-cols-2 gap-5 md:grid-cols-3">
+    <?php foreach ($collage_items as $i => $item): ?>
+        <?php $entity_type = $item['item_type'] === 'item_category' ? 'category' : 'product'; ?>
+        <?php if($item['item_type'] === 'item_category'): ?>
+            <?php $data = $block->getCategory($item['item_category']) ?>
+        <?php else: ?>
+            <?php $product = $block->getProduct($item['item_product']) ?>
+            <?php $data = $block->getProductData($product) ?>
+        <?php endif; ?>
+        <a
+            class="collage-item contrast-border card-hover group relative flex items-end justify-stretch rounded-md p-5 font-semibold <?= $i === 0 ? 'collage--featured col-span-2 row-span-2 md:p-7 max-md:min-h-[300px]' : 'collage--item md:col-start-3 md:p-5 md:min-h-[250px] min-h-[200px]' ?>"
+            x-element-transition-trigger:<?= $entity_type ?>
+            href="<?= $escaper->escapeUrl($data['url']) ?>"
+        >
+            <div class="collage-image absolute left-0 top-0 h-full w-full overflow-hidden rounded-md">
+                <?php if($data['image']): ?>
+                    <div class="transition-transform md:group-hover:scale-105 size-full bg-[--fade-in-bg]">
+                        <img src="<?= $escaper->escapeUrl($data['image']) ?>" alt="<?= $escaper->escapeHtmlAttr($data['name']) ?>" class="object-cover object-center size-full mix-blend-darken">
+                    </div>
+                <?php else: ?>
+                    <svg class="bg-secondary-400 transition-transform md:group-hover:scale-105 size-full object-cover object-center" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 525.5 525.5"><path d="M324.5 212.7H203c-1.6 0-2.8 1.3-2.8 2.8V308c0 1.6 1.3 2.8 2.8 2.8h121.6c1.6 0 2.8-1.3 2.8-2.8v-92.5c0-1.6-1.3-2.8-2.9-2.8zm1.1 95.3c0 .6-.5 1.1-1.1 1.1H203c-.6 0-1.1-.5-1.1-1.1v-92.5c0-.6.5-1.1 1.1-1.1h121.6c.6 0 1.1.5 1.1 1.1V308z"/><path d="M210.4 299.5H240v.1s.1 0 .2-.1h75.2v-76.2h-105v76.2zm1.8-7.2 20-20c1.6-1.6 3.8-2.5 6.1-2.5s4.5.9 6.1 2.5l1.5 1.5 16.8 16.8c-12.9 3.3-20.7 6.3-22.8 7.2h-27.7v-5.5zm101.5-10.1c-20.1 1.7-36.7 4.8-49.1 7.9l-16.9-16.9 26.3-26.3c1.6-1.6 3.8-2.5 6.1-2.5s4.5.9 6.1 2.5l27.5 27.5v7.8zm-68.9 15.5c9.7-3.5 33.9-10.9 68.9-13.8v13.8h-68.9zm68.9-72.7v46.8l-26.2-26.2c-1.9-1.9-4.5-3-7.3-3s-5.4 1.1-7.3 3l-26.3 26.3-.9-.9c-1.9-1.9-4.5-3-7.3-3s-5.4 1.1-7.3 3l-18.8 18.8V225h101.4z"/><path d="M232.8 254c4.6 0 8.3-3.7 8.3-8.3s-3.7-8.3-8.3-8.3-8.3 3.7-8.3 8.3 3.7 8.3 8.3 8.3zm0-14.9c3.6 0 6.6 2.9 6.6 6.6s-2.9 6.6-6.6 6.6-6.6-2.9-6.6-6.6 3-6.6 6.6-6.6z"/></svg>
+                <?php endif; ?>
+            </div>
+
+            <div class="collage-info flex w-full flex-grow justify-between gap-7" style="filter:url(#border)">
+                <h2 class="flex-grow-1 truncate <?= $i === 0 ? 'text-2xl' : 'text-lg' ?>"><?= $escaper->escapeHtml($data['name']) ?></h2>
+                <?php if($entity_type === 'product'): ?>
+                    <span class="font-medium">
+                        <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+                    </span>
+                <?php endif; ?>
+            </div>
+        </a>
+    <?php endforeach; ?>
+</div>
