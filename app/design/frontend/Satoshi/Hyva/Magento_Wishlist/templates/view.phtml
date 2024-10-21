@@ -29,7 +29,9 @@ $wishlistHelper = $this->helper(WishlistHelper::class);
                   ['wishlist_id' => $block->getWishlistInstance()->getId()]
               )
           ) ?>"
-          method="post">
+          method="post"
+          @submit.prevent="updateWishList(event)"
+    >
         <?= $block->getChildHtml('top') ?>
         <?php if ($block->hasWishlistItems()): ?>
             <?= $block->getBlockHtml('formkey') ?>
