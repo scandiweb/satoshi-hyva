@@ -1,0 +1,36 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Remove;
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Model\Item;
+
+/** @var Remove $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HeroiconsOutline $heroicons */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+
+/** @var Item $item */
+$item = $block->getItem();
+$product = $item->getProduct();
+?>
+
+<a href="#"
+   data-role="remove"
+   @click.prevent='postFormWithRedirect(<?= /* @noEscape */ $block->getItemRemoveParams($block->getItem()) ?>)'
+   title="<?= $escaper->escapeHtmlAttr(__('Remove Item')) ?>"
+   class="btn-remove action delete btn btn-secondary inline-flex p-2">
+    <?= $heroicons->trashHtml('', 20, 20); ?>
+    <span class="sr-only">
+        <?= $escaper->escapeHtml(__('Remove item %1', $product->getName())) ?>
+    </span>
+</a>

@@ -15,7 +15,6 @@ export type MyWishListType = {
   postFormWithRedirect(postParams: PostParams): void;
   setActionBtnText(text?: string): void;
   updateWishList(event: Event): void;
-  shareWishList(event: Event): void;
 } & Magics<{}>;
 
 export const MyWishList = (
@@ -113,7 +112,7 @@ export const MyWishList = (
                   await replaceMainContentWithTransition(res.url, content);
                   return;
                 }
-                
+
                 window.hyva.replaceDomElement($form.id, content);
               }
             })
