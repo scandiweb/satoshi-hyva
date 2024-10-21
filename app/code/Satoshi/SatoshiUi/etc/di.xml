@@ -2,4 +2,11 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Magento\PageBuilder\Model\Filter\Template" type="Satoshi\SatoshiUi\Model\Filter\Template"/>
+        <type name="Magento\PageBuilder\Model\Stage\RendererPool">
+        <arguments>
+            <argument name="renderers" xsi:type="array">
+                <item name="satoshi_collage" xsi:type="object">Magento\PageBuilder\Model\Stage\Renderer\WidgetDirective</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
