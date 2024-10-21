@@ -1,5 +1,5 @@
-import {Magics} from "alpinejs";
-import {replaceMainContentWithTransition} from "../plugins/Transition";
+import { Magics } from "alpinejs";
+import { replaceMainContentWithTransition } from "../plugins/Transition";
 
 export type AccountInformationType = {
   isLoading: boolean;
