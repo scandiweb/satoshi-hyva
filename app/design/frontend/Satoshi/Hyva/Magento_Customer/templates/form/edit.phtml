@@ -250,11 +250,11 @@ $errorMessage = $block->getErrorMessage();
                     title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
                     :disabled="isLoading"
             >
-            <span x-text="isLoading ?
-                '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
-                '<?= $escaper->escapeHtml(__('Save')) ?>'">
-                <?= $escaper->escapeHtml(__('Save')) ?>
-            </span>
+                <span x-text="isLoading ?
+                    '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
+                    '<?= $escaper->escapeHtml(__('Save')) ?>'">
+                    <?= $escaper->escapeHtml(__('Save')) ?>
+                </span>
             </button>
             <a class="button button--ghost-primary"
                href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
