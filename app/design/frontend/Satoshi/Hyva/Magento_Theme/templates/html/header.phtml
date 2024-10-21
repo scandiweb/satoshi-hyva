@@ -49,7 +49,7 @@ $cartItemsCount = $cart->getCartItemsQty();
   ></div>
 
   <div
-    class="content-wrapper col-start-1 m-auto grid w-full grid-cols-header items-center rounded-md bg-bg-500 py-3 md:flex md:bg-transparent md:px-3"
+      class="content-wrapper col-start-1 m-auto grid w-full items-center rounded-md bg-bg-500 py-3 md:flex md:bg-transparent md:px-3"
     x-data="{n:0}"
   >
     <div
@@ -81,7 +81,7 @@ $cartItemsCount = $cart->getCartItemsQty();
     </div>
     <div class="contents md:flex md:flex-grow md:justify-end">
       <div
-        class="col-start-5 transition-all md:flex md:items-center"
+          class="col-start-5 transition-all flex justify-end md:items-center"
         :class="{ 'md:drop-shadow-lg': $store.main.isHeaderShadowVisible }"
       >
         <?=
