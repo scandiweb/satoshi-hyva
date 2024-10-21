@@ -13,6 +13,8 @@ export type MyWishListType = {
   addAllItemsToCart(): void;
   postFormWithRedirect(postParams: PostParams): void;
   setBtnText(text?: string): void;
+  updateWishList(event: Event): void;
+  shareWishList(): void;
 } & Magics<{}>;
 
 export const MyWishList = (
@@ -84,5 +86,35 @@ export const MyWishList = (
 
       setBtnText(text) {
         this.btnText = text || '';
+      },
+
+      updateWishList(event) {
+        const $form = event.target as HTMLFormElement;
+        if (!$form) return;
+
+        const formData = new FormData($form);
+        this.isLoading = true;
+
+        fetch($form.action, {
+          method: "POST",
+          body: formData,
+        })
+            .then(async (res) => {
+              if (res.ok) {
+                window.hyva.replaceDomElement($form.id, await res.text());
+              }
+            })
+            .catch((error) => {
+              console.error("Error while updating wishlist:", error);
+              location.reload();
+            })
+            .finally(() => {
+              this.isLoading = false;
+              this.setBtnText();
+            });
+      },
+
+      shareWishList() {
+        console.log('shareWishList');
       },
     };
