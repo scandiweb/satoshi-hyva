@@ -39,7 +39,7 @@
                 <link name="hideLabel">${$.name}.appearance:options</link>
             </imports>
         </settings>
-        <field name="appearance" formElement="select" sortOrder="10" component="Magento_PageBuilder/js/form/element/dependent-visual-select">
+        <field name="appearance" formElement="select" component="Magento_PageBuilder/js/form/element/dependent-visual-select">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="default" xsi:type="string">default</item>
@@ -125,7 +125,6 @@
                     </formElements>
                 </field>
 
-                <!-- TODO: Fix sort orders -->
                 <field name="item_category">
                     <argument name="data" xsi:type="array">
                         <item name="options" xsi:type="object">Magento\Catalog\Ui\Component\Product\Form\Categories\Options</item>
@@ -143,7 +142,6 @@
                             <item name="disableLabel" xsi:type="boolean">true</item>
                             <item name="multiple" xsi:type="boolean">false</item>
                             <item name="levelsVisibility" xsi:type="number">1</item>
-                            <item name="sortOrder" xsi:type="number">70</item>
                             <item name="required" xsi:type="boolean">true</item>
                             <item name="validation" xsi:type="array">
                                 <item name="required-entry" xsi:type="boolean">true</item>
@@ -159,7 +157,6 @@
                     <argument name="data" xsi:type="array">
                         <item name="config" xsi:type="array">
                             <item name="visible" xsi:type="boolean">false</item>
-
                             <item name="filterOptions" xsi:type="boolean">true</item>
                             <item name="multiple" xsi:type="boolean">false</item>
                             <item name="showCheckbox" xsi:type="boolean">false</item>
@@ -174,7 +171,7 @@
                             <item name="elementTmpl" xsi:type="string">ui/grid/filters/elements/ui-select</item>
                             <item name="dataScope" xsi:type="string">item_product</item>
                             <item name="emptyOptionsHtml" xsi:type="string" translate="true">No results found. Please enter a search term or try a different one.</item>
-                            <item name="sortOrder" xsi:type="number">70</item>
+                            <item name="missingValuePlaceholder" xsi:type="string" translate="true">Product ID: %s</item>
                             <item name="required" xsi:type="boolean">true</item>
                             <item name="searchOptions" xsi:type="boolean">true</item>
                             <item name="filterRateLimit" xsi:type="number">20</item>
