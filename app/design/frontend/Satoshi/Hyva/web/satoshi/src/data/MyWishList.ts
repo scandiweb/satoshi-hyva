@@ -8,9 +8,11 @@ export type PostParams = {
 
 export type MyWishListType = {
   isLoading: boolean;
+  btnText: string;
   addToCart(productId: string, postParams: any): void;
   addAllItemsToCart(): void;
   postFormWithRedirect(postParams: PostParams): void;
+  setBtnText(text?: string): void;
 } & Magics<{}>;
 
 export const MyWishList = (
@@ -18,9 +20,10 @@ export const MyWishList = (
 ) =>
     <MyWishListType>{
       isLoading: false,
+      btnText: '',
       addToCart(productId, postParams) {
         const qtyInput = this.$refs[`product-qty-${productId}`] as HTMLInputElement | null;
-        postParams.data.qty = qtyInput ? qtyInput.value : postParams.data.qty;
+        postParams.data.qty = qtyInput?.value ?? postParams.data.qty;
 
         this.postFormWithRedirect(postParams);
       },
@@ -38,6 +41,7 @@ export const MyWishList = (
       },
 
       postFormWithRedirect(postParams) {
+        this.isLoading = true;
         const form = document.createElement("form");
 
         let data = postParams.data;
@@ -72,6 +76,13 @@ export const MyWishList = (
         }).catch((error) => {
           console.error("Error while form submission", error);
           location.reload();
+        }).finally(() => {
+          this.isLoading = false;
+          this.setBtnText();
         });
+      },
+
+      setBtnText(text) {
+        this.btnText = text || '';
       },
     };

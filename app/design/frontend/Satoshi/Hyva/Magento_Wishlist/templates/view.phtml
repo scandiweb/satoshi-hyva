@@ -43,15 +43,15 @@ $wishlistHelper = $this->helper(WishlistHelper::class);
             </div>
         <?php endif ?>
         <?= $block->getChildHtml('bottom') ?>
-        <div class="actions-toolbar my-4">
-            <div class="flex flex-wrap gap-2">
-                <?= $block->getChildHtml('control_buttons') ?>
-            </div>
-            <div class="secondary mr-10">
-                <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>" class="action back">
-                    <span><?= $escaper->escapeHtml(__('Back')) ?></span>
-                </a>
-            </div>
+        <div class="flex gap-4 flex-col md:flex-row flex-wrap mt-5">
+            <?= $block->getChildHtml('control_buttons') ?>
+
+            <a class="button button--ghost-primary"
+               href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+               x-element-transition-trigger
+            >
+                <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
+            </a>
         </div>
     </form>
     <div class="toolbar wishlist-toolbar">
