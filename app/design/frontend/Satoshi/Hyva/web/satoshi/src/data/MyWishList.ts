@@ -1,4 +1,5 @@
 import { Magics } from "alpinejs";
+import { replaceMainContentWithTransition } from "../plugins/Transition";
 
 export type PostParams = {
   action: string;
@@ -8,13 +9,13 @@ export type PostParams = {
 
 export type MyWishListType = {
   isLoading: boolean;
-  btnText: string;
+  actionBtnText: string;
   addToCart(productId: string, postParams: any): void;
   addAllItemsToCart(): void;
   postFormWithRedirect(postParams: PostParams): void;
-  setBtnText(text?: string): void;
+  setActionBtnText(text?: string): void;
   updateWishList(event: Event): void;
-  shareWishList(): void;
+  shareWishList(event: Event): void;
 } & Magics<{}>;
 
 export const MyWishList = (
@@ -22,7 +23,7 @@ export const MyWishList = (
 ) =>
     <MyWishListType>{
       isLoading: false,
-      btnText: '',
+      actionBtnText: '',
       addToCart(productId, postParams) {
         const qtyInput = this.$refs[`product-qty-${productId}`] as HTMLInputElement | null;
         postParams.data.qty = qtyInput?.value ?? postParams.data.qty;
@@ -80,20 +81,25 @@ export const MyWishList = (
           location.reload();
         }).finally(() => {
           this.isLoading = false;
-          this.setBtnText();
+          this.setActionBtnText();
         });
       },
 
-      setBtnText(text) {
-        this.btnText = text || '';
+      setActionBtnText(text) {
+        this.actionBtnText = text || '';
       },
 
       updateWishList(event) {
         const $form = event.target as HTMLFormElement;
         if (!$form) return;
 
-        const formData = new FormData($form);
         this.isLoading = true;
+        const formData = new FormData($form);
+
+        const isShareBtnClicked = this.actionBtnText.includes('shar');
+        if (isShareBtnClicked) {
+          formData.append('save_and_share', '');
+        }
 
         fetch($form.action, {
           method: "POST",
@@ -101,20 +107,23 @@ export const MyWishList = (
         })
             .then(async (res) => {
               if (res.ok) {
-                window.hyva.replaceDomElement($form.id, await res.text());
+                const content = await res.text();
+
+                if (isShareBtnClicked) {
+                  await replaceMainContentWithTransition(res.url, content);
+                  return;
+                }
+                
+                window.hyva.replaceDomElement($form.id, content);
               }
             })
             .catch((error) => {
-              console.error("Error while updating wishlist:", error);
+              console.error("Error while updating wish list:", error);
               location.reload();
             })
             .finally(() => {
               this.isLoading = false;
-              this.setBtnText();
+              this.setActionBtnText();
             });
-      },
-
-      shareWishList() {
-        console.log('shareWishList');
       },
     };

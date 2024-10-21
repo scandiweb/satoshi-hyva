@@ -51,7 +51,7 @@ $allowedQty = $viewModel->setItem($item)->getMinMaxQty();
             <div class="flex gap-4 flex-col md:flex-row mt-2">
                 <button type="button"
                         data-role="tocart"
-                        @click.prevent='setBtnText("add-to-cart-<?= $item->getId() ?>"); addToCart("<?= $escaper->escapeHtmlAttr($item->getId()) ?>",
+                        @click.prevent='setActionBtnText("add-to-cart-<?= $item->getId() ?>"); addToCart("<?= $escaper->escapeHtmlAttr($item->getId()) ?>",
                         <?= /* @noEscape */
                         $block->getItemAddToCartParams($item) ?>)'
                         title="<?= $escaper->escapeHtmlAttr(__('Add %1 to Cart', $product->getName())) ?>"
@@ -61,7 +61,7 @@ $allowedQty = $viewModel->setItem($item)->getMinMaxQty();
                         :disabled="isLoading"
                         data-addto="cart"
                 >
-                    <span x-text="isLoading && btnText === 'add-to-cart-<?= $item->getId() ?>' ?
+                    <span x-text="isLoading && actionBtnText === 'add-to-cart-<?= $item->getId() ?>' ?
                         '<?= $escaper->escapeHtml(__('Adding...')) ?>' :
                         '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'">
                         <?= $escaper->escapeHtml(__('Add to Cart')) ?>
