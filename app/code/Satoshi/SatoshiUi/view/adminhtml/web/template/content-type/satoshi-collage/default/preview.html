@@ -1,25 +1,27 @@
 <div
-  attr="data.main.attributes"
-  ko-style="data.main.style"
-  class="pagebuilder-content-type image-with-text"
-  css="data.main.css"
-  event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+  class="pagebuilder-content-type pagebuilder-products"
+  data-bind="event: { mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
 >
-  <div style="height: 100px"></div>
-
-  <if args="data.collage_items.attributes().items.length > 0 && data.collage_items.attributes().items !== '[]'">
+  <div
+    attr="data.main.attributes"
+    ko-style="data.main.style"
+    css="data.main.css"
+  >
     <div
-      data-bind="attr: { items: JSON.stringify(data.collage_items.attributes().items) }"
-      ko-style="data.collage_items.style"
-      data-element="collage_items"
-      css="data.collage_items.css"
-      class="items"
+      if="displayPreview"
+      class="rendered-content"
+      html="widgetUnsanitizedHtml"
+      afterRender="onAfterRender"
+    ></div>
+    <div
+      ifnot="displayPreview"
+      class="pagebuilder-products-placeholder"
     >
-      <div
-        class="rendered-content"
-        html="data.block_directive"
-      ></div>
-  </if>
-
-  <render args="getOptions().template" />
+      <span
+        class="placeholder-text"
+        text="placeholderText"
+      ></span>
+    </div>
+  </div>
+  <render args="getOptions().template"></render>
 </div>

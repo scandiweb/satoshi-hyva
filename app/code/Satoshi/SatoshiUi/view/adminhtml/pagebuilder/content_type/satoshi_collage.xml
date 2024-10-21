@@ -4,7 +4,7 @@
         label="Collage"
         menu_section="satoshi_components"
         component="Magento_PageBuilder/js/content-type"
-        preview_component="Magento_PageBuilder/js/content-type/preview"
+        preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-collage/preview"
         master_component="Magento_PageBuilder/js/content-type/master"
         form="pagebuilder_satoshi_collage_form"
         icon="icon-pagebuilder-heading"
@@ -35,12 +35,8 @@
                         <style name="display" source="display" converter="Magento_PageBuilder/js/converter/style/display" preview_converter="Magento_PageBuilder/js/converter/style/preview/display"/>
                         <attribute name="name" source="data-content-type"/>
                         <attribute name="appearance" source="data-appearance"/>
+                        <html name="html" preview_converter="Magento_PageBuilder/js/converter/attribute/preview/store-id"/>
                         <css name="css_classes"/>
-                    </element>
-
-                    <!-- Map form elements here -->
-                    <element name="collage_items">
-                        <attribute name="collage_items" source="items" converter="Satoshi_SatoshiUi/js/content-type/map/converter/attribute/array" />
                     </element>
 
                     <element name="block_directive">
@@ -48,10 +44,9 @@
                     </element>
                 </elements>
                 <converters>
-                    <converter component="Satoshi_SatoshiUi/js/content-type/satoshi-collage/block-directive" name="block_directive">
+                    <converter component="Satoshi_SatoshiUi/js/content-type/satoshi-collage/widget-directive" name="widget_directive">
                         <config>
-                            <item name="html_variable" value="block_directive"/>
-                            <item name="block_class" value="Satoshi\SatoshiUi\Block\Collage"/>
+                            <item name="html_variable" value="html"/>
                         </config>
                     </converter>
                 </converters>

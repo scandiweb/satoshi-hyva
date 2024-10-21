@@ -2,21 +2,6 @@
   attr="data.main.attributes"
   ko-style="data.main.style"
   css="data.main.css"
+  data-bind="html: data.main.html"
 >
-  <div data-is-page-builder-ignored-element="true">
-    <if args="data.collage_items.attributes().items.length > 0 && data.collage_items.attributes().items !== '[]'">
-      <div
-        data-bind="attr: { items: JSON.stringify(data.collage_items.attributes().items) }"
-        ko-style="data.collage_items.style"
-        data-element="collage_items"
-        css="data.collage_items.css"
-        hidden
-      ></div>
-    </if>
-  </div>
-
-  <div
-    attr="data.block_directive.attributes"
-    html="data.block_directive.html"
-  ></div>
 </div>
