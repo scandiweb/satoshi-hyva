@@ -1,0 +1,131 @@
+.collage-item-label {
+  color: #303030;
+  font-size: 1.4rem;
+  font-weight: 600;
+  background-color: #efefef;
+  border: 0;
+  padding: 1.3rem 1rem 1.3rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.collage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.collage-item {
+  font-weight: 600;
+  padding: 16px;
+  border-radius: 12px;
+  justify-content: stretch;
+  align-items: flex-end;
+  display: flex;
+  position: relative;
+  cursor: pointer;
+}
+
+.collage-item::before {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+  overflow: hidden;
+  border-radius: 1rem;
+  background-color: #e6ede9;
+  padding: 8px;
+  opacity: 0;
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.2s;
+  content: "";
+}
+
+.collage--featured {
+  grid-row: span 2;
+  grid-column: span 2;
+}
+
+.collage--item {
+  min-height: 200px;
+}
+
+.collage-image {
+  border-radius: 12px;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+.collage-image > div {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.15s;
+  background-color: #f3f3f3;
+  width: 100%;
+  height: 100%;
+}
+
+.collage-image img {
+  mix-blend-mode: darken;
+  object-position: center;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.collage-image > svg {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.15s;
+  object-position: center;
+  object-fit: cover;
+  background-color: #d0d2cc;
+  width: 100%;
+  height: 100%;
+}
+
+.collage-info {
+  gap: 24px;
+  justify-content: space-between;
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+}
+
+.collage-info > h2 {
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .collage {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .collage--featured {
+    padding: 24px;
+  }
+
+  .collage--item {
+    padding: 16px;
+    min-height: 250px;
+    grid-column-start: 3;
+  }
+
+  .collage--item:hover .collage-image > div,
+  .collage--item:hover .collage-image > svg {
+    transform: scaleX(1.05) scaleY(1.05);
+  }
+}
