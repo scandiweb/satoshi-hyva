@@ -13,6 +13,9 @@
         for="Magento\Checkout\Controller\Cart\CouponPost"
         type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
     />
+    <preference for="Magento\Wishlist\Controller\Index\Update"
+                type="Satoshi\Theme\Wishlist\Controller\Index\Update"
+    />
     <preference
         for="Magento\Checkout\Block\Cart\Coupon"
         type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
@@ -38,6 +41,9 @@
     />
     <preference for="Magento\Customer\Block\Form\Login"
                 type="Satoshi\Theme\Block\Form\Login"
+    />
+    <preference for="Magento\Wishlist\Block\Customer\Wishlist"
+                type="Satoshi\Theme\Block\Customer\Wishlist"
     />
     <preference
         for="Magento\Theme\Block\Html\Footer"
