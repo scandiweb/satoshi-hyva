@@ -98,6 +98,8 @@ export const MyWishList = (
         const isShareBtnClicked = this.actionBtnText.includes('shar');
         if (isShareBtnClicked) {
           formData.append('save_and_share', '');
+        } else {
+          formData.append('do', '');
         }
 
         fetch($form.action, {
@@ -113,11 +115,11 @@ export const MyWishList = (
                   return;
                 }
 
-                window.hyva.replaceDomElement($form.id, content);
+                window.hyva.replaceDomElement("#maincontent", content);
               }
             })
             .catch((error) => {
-              console.error("Error while updating wish list:", error);
+              console.error(`Error while ${isShareBtnClicked ? 'sharing' : 'updating'} wish list:`, error);
               location.reload();
             })
             .finally(() => {
