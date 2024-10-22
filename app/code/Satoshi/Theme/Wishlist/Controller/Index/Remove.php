@@ -14,9 +14,7 @@ use Magento\Wishlist\Model\Product\AttributeValueProvider;
 use Magento\Wishlist\Controller\Index\Remove as SourceRemove;
 
 /**
- * Wishlist Remove Controller
- *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * Implement session-based message.
  */
 class Remove extends SourceRemove
 {

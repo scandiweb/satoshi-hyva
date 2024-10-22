@@ -10,7 +10,7 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Wishlist\Controller\Index\Update as SourceUpdate;
 
 /**
- * Controller for updating wishlists
+ * Implement session-based message.
  */
 class Update extends SourceUpdate
 {
