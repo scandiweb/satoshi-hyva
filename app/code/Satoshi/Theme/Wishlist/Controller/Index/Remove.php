@@ -43,6 +43,7 @@ class Remove extends SourceRemove
         Validator $formKeyValidator,
         AttributeValueProvider $attributeValueProvider = null,
         \Magento\Customer\Model\Session $customerSession,
+        protected \Psr\Log\LoggerInterface $logger
     ) {
         $this->_customerSession = $customerSession;
         $this->attributeValueProvider = $attributeValueProvider
@@ -83,8 +84,10 @@ class Remove extends SourceRemove
         try {
             $item->delete();
             $wishlist->save();
+            // Cast the product ID to an integer to ensure the correct type is passed.
+            // This resolves a TypeError that occurs when getRawAttributeValue expects an int but receives a string.
             $productName = $this->attributeValueProvider
-                ->getRawAttributeValue($item->getProductId(), 'name');
+                ->getRawAttributeValue((int)$item->getProductId(), 'name');
             $this->_customerSession->setSuccessMessage(
                 __('%1 has been removed from your Wish List.', $productName)
             );

@@ -16,6 +16,9 @@
     <preference for="Magento\Wishlist\Controller\Index\Update"
                 type="Satoshi\Theme\Wishlist\Controller\Index\Update"
     />
+    <preference for="Magento\Wishlist\Controller\Index\Remove"
+                type="Satoshi\Theme\Wishlist\Controller\Index\Remove"
+    />
     <preference
         for="Magento\Checkout\Block\Cart\Coupon"
         type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
