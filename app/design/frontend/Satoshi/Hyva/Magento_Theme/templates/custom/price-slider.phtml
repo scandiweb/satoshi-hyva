@@ -1,0 +1,191 @@
+<?php
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+?>
+
+
+<fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(false, 300)">
+    <div class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2"
+         x-ref="AccordionButton">
+        <h2 class="grow text-left text-text-500"><?= $block->getData('name') ?></h2>
+        <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button"
+                aria-label="<?= $block->getData('name') ?>">
+                                            <span x-ref="AccordionIcon">
+                                                <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
+                                            </span>
+        </button>
+    </div>
+
+    <div
+        class="overflow-hidden md:px-2"
+        x-ref="AccordionPanel"
+        :class="{
+                                            'transition-none': $store.main.isReducedMotion,
+                                            'transition': $store.main.isReducedMotion
+                                        }"
+    >
+        <div class="md:pb-3 md:pt-2">
+            <div class="flex flex-col gap-4 py-3">
+                <div
+                    class="range-slider relative flex w-full flex-col gap-5 py-4"
+                    x-data="RangeSlider(0, 100, 20, 30)"
+                    x-morph-ignore
+                    @reset-filters.window="resetValues"
+                >
+                    <div class="grid grid-cols-2 gap-5">
+                        <label for="Filter-{{ minInputName }}" class="range-slider-input">
+                            <div class="range-slider-input-label ">
+                                <p><?= __('From') ?></p>
+                            </div>
+                            <input
+                                name="{{ minInputName }}"
+                                id="Filter-{{ minInputName }}"
+                                class="input__field range-slider-input-field"
+                                x-model.debounce.300ms="minValue"
+                                type="number"
+                                min="{{ min }}"
+                                max="{{ max }}"
+                                inputmode="numeric"
+                                value="{{ value_min }}"
+                                @blur="onValueChange"
+                                aria-label="{{ 'products.facets.from' | t }}"
+                            >
+                            <div class="range-slider-input-suffix">
+                                <p>$</p>
+                            </div>
+                        </label>
+                        <label for="Filter-{{ maxInputName }}" class="range-slider-input">
+                            <div class="range-slider-input-label ">
+                                <p><?= __('To') ?></p>
+                            </div>
+                            <input
+                                name="{{ maxInputName }}"
+                                id="Filter-{{ maxInputName }}"
+                                class="input__field range-slider-input-field"
+                                x-model.debounce.300ms="maxValue"
+                                type="number"
+                                min="{{ min }}"
+                                max="{{ max }}"
+                                inputmode="numeric"
+                                value="{{ value_max }}"
+                                @blur="onValueChange"
+                                aria-label="{{ 'products.facets.to' | t }}"
+                            >
+                            <div class="range-slider-input-suffix">
+                                <p>$</p>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="relative h-8">
+                        <div
+                            tabindex="-1"
+                            class="relative inline-block h-full w-full cursor-pointer touch-none select-none py-4 outline-0"
+                            @click="onTrackClick"
+                        >
+                            <label for="Range-{{ minInputName }}" class="sr-only tracking-widest">
+                                <?= __('From') ?>
+                            </label>
+                            <input
+                                type="range"
+                                step="1"
+                                min="{{ min }}"
+                                max="{{ max }}"
+                                class="range-slider-hidden-input"
+                                @input="onMinValueInput"
+                                @change="onValueChange"
+                                x-model.debounce.300ms="minValue"
+                                value="{{ value_min }}"
+                                aria-label="{{ 'products.facets.from' | t }}"
+                                id="Range-{{ minInputName }}"
+                                tabindex="-1"
+                            >
+
+                            <label for="Range-{{ maxInputName }}" class="sr-only tracking-widest">
+                                <?= __('From') ?>
+                            </label>
+                            <input
+                                type="range"
+                                step="1"
+                                min="{{ min }}"
+                                max="{{ max }}"
+                                class="range-slider-hidden-input"
+                                @input="onMaxValueInput"
+                                @change="onValueChange"
+                                x-model.debounce.300ms="maxValue"
+                                value="{{ value_max }}"
+                                aria-label="{{ 'products.facets.to' | t }}"
+                                id="Range-{{ maxInputName }}"
+                                tabindex="-1"
+                            >
+
+                            <div class="range-slider-track">
+                                <div
+                                    class="range-slider-track-filled"
+                                    :class="{ 'transitioning': isResetting }"
+                                    :style="
+            {
+              left: `${ ((minValue - min) * 100) / (max - min) }%`,
+              right: `${ ((max - maxValue) * 100) / (max - min) }%`
+            }
+          "
+                                ></div>
+                            </div>
+                        </div>
+                        <div
+                            role="slider"
+                            tabindex="0"
+                            class="range-slider-thumb range-slider-thumb_left"
+                            :class="{ 'transitioning': isResetting, 'active': isLeftThumbActive }"
+                            :style="
+        {
+          left: `calc(${((minValue - min) * 100) / (max - min) }% - (32px * ${ ((minValue - min) ) / (max - min)}))`,
+        }
+      "
+                            @keydown.left="minValue > {{ min }} ? minValue-- : null"
+                            @keydown.right="minValue < {{ max }} ? minValue++ : null"
+                            @keydown.down="minValue = {{ min }}"
+                            @keydown.up="minValue = {{ max }}"
+                            @keydown.enter="onValueChange()"
+                            :aria-valuemin="min"
+                            :aria-valuemax="max"
+                            :aria-valuenow="minValue"
+                            :aria-valuetext="`${minValue}`"
+                            aria-label="{{- 'products.facets.from' | t -}}"
+                        ></div>
+                        <div
+                            role="slider"
+                            tabindex="0"
+                            class="range-slider-thumb range-slider-thumb_right"
+                            :class="{ 'transitioning': isResetting, 'active': isRightThumbActive }"
+                            :style="
+        {
+          right: `calc(${((max - maxValue) * 100) / (max - min) }% - (32px * ${ ((max - maxValue) ) / (max - min)}))`,
+        }
+      "
+                            @keydown.left="maxValue > {{ min }} ? maxValue-- : null"
+                            @keydown.right="maxValue < {{ max }} ? maxValue++ : null"
+                            @keydown.down="maxValue = {{ min }}"
+                            @keydown.up="maxValue = {{ max }}"
+                            @keydown.enter="onValueChange()"
+                            :aria-valuemin="min"
+                            :aria-valuemax="max"
+                            :aria-valuenow="maxValue"
+                            :aria-valuetext="`${maxValue}`"
+                            aria-label="{{- 'products.facets.to' | t -}}"
+                        ></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
