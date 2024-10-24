@@ -62,6 +62,7 @@ export const BundleOptions = (
       calculateTotalPrice() {
         let selectedProductsPerOption: Record<string, any[]> = {};
 
+        // Iterate over all options
         Object.entries(this.optionConfig.options).forEach(([optionId, option]) => {
           const optionElement = document.querySelector(
               `[data-option-id="${optionId}"]`
@@ -73,6 +74,7 @@ export const BundleOptions = (
           let selectedOption = selectedProductsPerOption[optionId] || [];
 
           if (optionElement) {
+            // Ensure type safety for `checked` and `selected` properties
             if (('checked' in optionElement && optionElement.checked) || ('selected' in optionElement && optionElement.selected)) {
               const selectionId = optionElement.dataset.selectionId;
               if (selectionId) {
@@ -84,6 +86,7 @@ export const BundleOptions = (
               }
             }
           } else {
+            // Handle multi-option selections
             Object.entries(option.selections).forEach(([selectionId, selection]) => {
               const selectionElement = document.querySelector(
                   `[data-option-id="${optionId}-${selectionId}"]`
@@ -100,6 +103,7 @@ export const BundleOptions = (
           selectedProductsPerOption[optionId] = [...(selectedProductsPerOption[optionId] || []), ...selectedOption];
         });
 
+        // Calculate the lowest price for each selected product in each option
         const gatherLowestPriceForOptionProduct = (
             accPrice: Record<string, number>,
             product: any
@@ -123,6 +127,7 @@ export const BundleOptions = (
           };
         };
 
+        // Sum up all selected options prices
         this.productFinalPrice = Object.values(selectedProductsPerOption).reduce(
             (totalPrice, option) => {
               const totalOptionPrice = option.reduce(
@@ -138,6 +143,7 @@ export const BundleOptions = (
             {oldPrice: 0, finalPrice: 0, basePrice: 0}
         );
 
+        // Update the selected bundle options
         this.selectedBundleOptions = Object.keys(selectedProductsPerOption).map((optionId) => {
           return {
             label: this.optionConfig.options[optionId].title,
@@ -152,30 +158,36 @@ export const BundleOptions = (
         this.dispatchOptionSelection();
       },
 
+      // Dispatch the final price event to update the UI
       dispatchFinalPrice() {
         window.dispatchEvent(new CustomEvent('update-bundle-option-prices', {detail: this.productFinalPrice}));
       },
 
+      // Dispatch the selected bundle options event
       dispatchOptionSelection() {
         window.dispatchEvent(new CustomEvent('update-bundle-option-selection', {detail: this.selectedBundleOptions}));
       },
 
+      // Get the quantity of a selected option
       getQtyValue(optionId) {
         const selectionConfig = this.getSelectionOptionConfig(optionId);
         return selectionConfig ? selectionConfig.qty : '0';
       },
 
+      // Get the configuration of the selected option
       getSelectionOptionConfig(optionId) {
         const activeSelectOption = this.activeSelectOptions[optionId];
         if (!activeSelectOption) return false;
         return this.optionConfig.options[optionId].selections[activeSelectOption[0] ?? activeSelectOption];
       },
 
+      // Check if the quantity input should be disabled for a specific option
       getQtyDisabled(optionId) {
         const selectionConfig = this.getSelectionOptionConfig(optionId);
         return !selectionConfig || selectionConfig.customQty === '0';
       },
 
+      // Set the quantity of a selected option
       setQtyValue(optionId, value) {
         const selectionConfig = this.getSelectionOptionConfig(optionId);
         if (selectionConfig) selectionConfig.qty = value;
