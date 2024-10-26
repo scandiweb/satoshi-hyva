@@ -76,6 +76,13 @@ export const Shipping = () =>
     availableShippingMethods: [],
 
     init() {
+      const browserStorage = window.hyva.getBrowserStorage();
+      const privateContent = browserStorage.getItem('mage-cache-storage');
+      if (privateContent) {
+        const data = JSON.parse(privateContent);
+        this.receiveCustomerData(data);
+      }
+
       const selectedShippingMethod =
         Alpine.store("cart").cartTotals.selected_shipping_method;
       if (selectedShippingMethod) {

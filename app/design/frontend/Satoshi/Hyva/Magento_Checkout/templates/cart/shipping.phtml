@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
 
+/** @var ViewModelRegistry $viewModels */
 /** @var SvgIcons $hyvaicons */
-$hyvaicons = $viewModels->require(SvgIcons::class);
 
+$hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
 <div x-data="Shipping()">
-  <div
-    @private-content-loaded.window="receiveCustomerData($event.detail.data)"
-    x-data="Accordion(showEstimateShipping, 700)"
-  >
+    <div x-data="Accordion(showEstimateShipping, 700)">
     <button
       class="group flex w-full justify-between"
       x-ref="AccordionButton"
