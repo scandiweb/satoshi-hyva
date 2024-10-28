@@ -34,7 +34,7 @@ $errorMessage = $block->getErrorMessage();
           method="post"
           @submit.prevent="updateWishList(event)"
     >
-        <?php if ($successMessage): ?>
+        <?php if ($successMessage && !str_contains((string)$successMessage, 'added to your cart')): ?>
             <div class="text-green-700 mb-3">
                 <span><?= $successMessage; ?></span>
             </div>
