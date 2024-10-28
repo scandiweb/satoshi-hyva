@@ -3,36 +3,40 @@ declare(strict_types=1);
 
 use Magento\Store\Block\Switcher;
 use Satoshi\Theme\Block\Template;
+use Magento\Store\ViewModel\SwitcherUrlProvider;
+use Magento\Framework\Escaper;
 
+/** @var Escaper $escaper */
 /** @var Switcher $block */
 /** @var Template $template */
+
+/** @var SwitcherUrlProvider $switcherUrlProvider */
+$switcherUrlProvider = $viewModels->require(SwitcherUrlProvider::class);
 
 if (count($block->getGroups()) > 1):
     $currentGroupId = $block->getCurrentGroupId();
     $id = 'switcher-store';
     $currentLabel = '';
 
-    $options = array_map(static function ($group) use ($block, $currentGroupId, &$currentLabel) {
+    $options = array_map(static function ($group) use ($switcherUrlProvider, $currentGroupId, &$currentLabel, $escaper) {
         $isCurrent = $group->getId() === $currentGroupId;
         if ($isCurrent) {
-            $currentLabel = $block->escapeHtml($group->getName());
+            $currentLabel = $group->getName();
         }
         return [
-            'value' => $block->escapeHtml($group->getId()),
-            'label' => $block->escapeHtml($group->getName()),
-            'on_click' => $isCurrent ? "'return false;'" : $block->escapeUrl($block->getTargetStoreUrl($group->getDefaultStore())),
+            'value' => $group->getId(),
+            'label' => $escaper->escapeHtml($group->getName()),
+            'url' => $switcherUrlProvider->getTargetStoreRedirectUrl($group->getDefaultStore()),
             'is_active' => $isCurrent,
         ];
     }, $block->getGroups());
     ?>
 
-    <div class="switcher store switcher-store" id="<?= $block->escapeHtmlAttr($id) ?>">
-        <?= $template->setData([
-                'id' => $block->escapeHtmlAttr($id),
-                'label' => $currentLabel,
-                'options' => $options,
-                'placement' => 'top',
-            ])->render('Magento_Theme::html/components/dropdown.phtml'); ?>
-    </div>
+    <?= $template->setData([
+            'id' => $id,
+            'label' => $currentLabel,
+            'options' => $options,
+            'placement' => 'top',
+        ])->render('Magento_Theme::html/components/dropdown.phtml'); ?>
 
 <?php endif; ?>

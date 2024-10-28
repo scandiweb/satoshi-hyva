@@ -24,28 +24,11 @@ foreach ($currencies as $code => $currency) {
         <span>{$escaper->escapeHtml("$code $symbol")}</span>
     ";
 
-    $postData = json_decode($currencyViewModel->getSwitchCurrencyPostData($code), true);
-    $url = "{$postData['action']}?currency={$postData['data']['currency']}&uenc={$postData['data']['uenc']}";
-    $switchUrl = "navigateAndReplaceContent('{$escaper->escapeUrl($url)}')";
-    $isCurrent = $code === $currentCurrencyCode;
-
     $options[] = [
         'value' => $escaper->escapeHtml($code),
         'label' => $label,
-        // Clear all cached GraphQL search queries before executing the currency switch.
-        // This ensures that outdated search results are not displayed after switching currencies.
-        'on_click' => $isCurrent ? "'return false;'" : "
-            caches.open('graphql').then(function(cache) {
-                cache.keys().then(function(keys) {
-                    keys.forEach(function(request) {
-                        if (request.url.includes('/graphql?query=')) {
-                            cache.delete(request);
-                        }
-                    });
-                });
-            });
-            {$escaper->escapeHtml($switchUrl)}",
-        'is_active' => $isCurrent,
+        'on_click' => "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})",
+        'is_active' => $code === $currentCurrencyCode,
     ];
 }
 
