@@ -15,12 +15,7 @@
                 <block class="Magento\Store\Block\Switcher"
                        name="store-language-switcher"
                        template="Magento_Store::switch/languages.phtml"
-                >
-                    <arguments>
-                        <argument name="view_model" xsi:type="object">Magento\Store\ViewModel\SwitcherUrlProvider
-                        </argument>
-                    </arguments>
-                </block>
+                />
             </referenceBlock>
         </referenceBlock>
     </body>
