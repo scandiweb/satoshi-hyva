@@ -49,6 +49,7 @@ export type ShippingType = {
   receiveCustomerData: (data: Data) => void;
   getSortedCountries: () => Country[];
   populateCartData: () => void;
+  resetAddress: () => void;
   setCountry: (countryId: string) => void;
   saveToCustomerSectionData: () => void;
   fetchShippingMethods: () => void;
@@ -157,7 +158,31 @@ export const Shipping = () =>
         });
     },
 
+    resetAddress() {
+      this.cartData.address = {
+        countryId: null,
+        region: "",
+        postcode: null,
+        regionCode: "",
+        regionId: 0,
+      };
+      this.checkoutData.shippingAddressFromData = {
+        country_id: null,
+        region: "",
+        postcode: null,
+        region_code: "",
+        region_id: 0,
+      };
+      this.availableShippingMethods = [];
+      this.saveToCustomerSectionData();
+    },
+
     setCountry(countryId) {
+      if (!countryId) {
+        this.resetAddress();
+        return;
+      }
+
       this.cartData.address = {
         countryId: countryId,
         region: "",
