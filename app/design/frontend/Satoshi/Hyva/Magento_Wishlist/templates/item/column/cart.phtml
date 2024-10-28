@@ -37,6 +37,7 @@ $allowedQty = $viewModel->setItem($item)->getMinMaxQty();
                     <input type="number"
                            x-ref="product-qty-<?= $escaper->escapeHtmlAttr($item->getId()) ?>"
                            data-role="qty"
+                           data-product-id="<?= $escaper->escapeHtmlAttr($product->getId()) ?>"
                            id="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
                            class="form-input qty"
                            name="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
@@ -53,7 +54,8 @@ $allowedQty = $viewModel->setItem($item)->getMinMaxQty();
                         data-role="tocart"
                         @click.prevent='setActionBtnText("add-to-cart-<?= $item->getId() ?>"); addToCart("<?= $escaper->escapeHtmlAttr($item->getId()) ?>",
                         <?= /* @noEscape */
-                        $block->getItemAddToCartParams($item) ?>)'
+                        $block->getItemAddToCartParams($item) ?>,
+                        "<?= $escaper->escapeHtmlAttr($product->getId()) ?>")'
                         title="<?= $escaper->escapeHtmlAttr(__('Add %1 to Cart', $product->getName())) ?>"
                         aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Cart %1', $product->getName())) ?>"
                         class="button button--filled-primary"

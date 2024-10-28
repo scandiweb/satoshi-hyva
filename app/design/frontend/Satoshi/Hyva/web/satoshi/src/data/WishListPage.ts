@@ -1,5 +1,6 @@
 import { Magics } from "alpinejs";
 import { replaceMainContentWithTransition } from "../plugins/Transition";
+import { CartItem } from "../store/Cart.ts";
 
 export type PostParams = {
   action: string;
@@ -10,9 +11,10 @@ export type PostParams = {
 export type WishListPageType = {
   isLoading: boolean;
   actionBtnText: string;
-  addToCart(productId: string, postParams: any): void;
+  addToCart(itemId: string, postParams: any, productId: string): void;
   addAllItemsToCart(): void;
-  postFormWithRedirect(postParams: PostParams): void;
+  postFormWithRedirect(postParams: PostParams, addedProductIds: string[]): void;
+  focusOnCartAddedItems(addedProductIds: string[]): void;
   setActionBtnText(text?: string): void;
   updateWishList(event: Event): void;
 } & Magics<{}>;
@@ -20,29 +22,36 @@ export type WishListPageType = {
 export const WishListPage = (
     urlParams: { action: string, data: any },
 ) =>
-  <WishListPageType>{
+    <WishListPageType>{
       isLoading: false,
       actionBtnText: '',
-      addToCart(productId, postParams) {
-        const qtyInput = this.$refs[`product-qty-${productId}`] as HTMLInputElement | null;
+
+      addToCart(itemId, postParams, productId) {
+        const qtyInput = this.$refs[`product-qty-${itemId}`] as HTMLInputElement | null;
         postParams.data.qty = qtyInput?.value ?? postParams.data.qty;
 
-        this.postFormWithRedirect(postParams);
+        this.postFormWithRedirect(postParams, [productId]);
       },
 
       addAllItemsToCart() {
         let separator = urlParams.action.indexOf('?') >= 0 ? '&' : '?';
+        const addedProductIds = [] as string[];
 
-        Array.from(document.querySelectorAll('input[name^=qty]')).map((qty) => {
-          const inputElement = qty as HTMLInputElement;
-          urlParams.action += separator + inputElement.name + '=' + encodeURIComponent(inputElement.value);
+        document.querySelectorAll('input[name^=qty]').forEach((inputElement) => {
+          const input = inputElement as HTMLInputElement;
+          urlParams.action += separator + input.name + '=' + encodeURIComponent(input.value);
           separator = '&';
+
+          const productId = input.getAttribute('data-product-id') as string;
+          if (productId) {
+            addedProductIds.push(productId);
+          }
         });
 
-        this.postFormWithRedirect(urlParams);
+        this.postFormWithRedirect(urlParams, addedProductIds);
       },
 
-      postFormWithRedirect(postParams) {
+      postFormWithRedirect(postParams, addedProductIds = [] as string[]) {
         this.isLoading = true;
         const form = document.createElement("form");
 
@@ -74,6 +83,7 @@ export const WishListPage = (
         }).then(async (res) => {
           if (res.ok) {
             window.hyva.replaceDomElement("#MainContent", await res.text());
+            this.focusOnCartAddedItems(addedProductIds);
           }
         }).catch((error) => {
           console.error("Error while form submission", error);
@@ -82,6 +92,20 @@ export const WishListPage = (
           this.isLoading = false;
           this.setActionBtnText();
         });
+      },
+
+      focusOnCartAddedItems(addedProductIds = [] as string[]) {
+        const cartItems = Alpine.store("cart").cartItems;
+
+        const itemIds = cartItems
+            .filter((item: CartItem) => addedProductIds.includes(item.product_id))
+            .map((item) => item.item_id);
+
+        if (itemIds.length) {
+          Alpine.store("cart").focusInCart(itemIds);
+        } else {
+          Alpine.store("cart").showCart();
+        }
       },
 
       setActionBtnText(text) {
