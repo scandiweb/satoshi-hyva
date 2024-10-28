@@ -7,7 +7,7 @@ export type PostParams = {
   skipUenc?: boolean;
 };
 
-export type MyWishListType = {
+export type WishListPageType = {
   isLoading: boolean;
   actionBtnText: string;
   addToCart(productId: string, postParams: any): void;
@@ -17,10 +17,10 @@ export type MyWishListType = {
   updateWishList(event: Event): void;
 } & Magics<{}>;
 
-export const MyWishList = (
+export const WishListPage = (
     urlParams: { action: string, data: any },
 ) =>
-    <MyWishListType>{
+  <WishListPageType>{
       isLoading: false,
       actionBtnText: '',
       addToCart(productId, postParams) {

@@ -21,7 +21,7 @@ $errorMessage = $block->getErrorMessage();
     <div class="toolbar wishlist-toolbar"><?= $block->getChildHtml('wishlist_item_pager'); ?></div>
     <?= ($block->getChildHtml('wishlist.rss.link')) ?>
     <form id="wishlist-view-form"
-          x-data="MyWishList(
+          x-data="WishListPage(
               <?= $escaper->escapeHtmlAttr($block->getAddAllToCartParams()) ?>
           )"
           action="
