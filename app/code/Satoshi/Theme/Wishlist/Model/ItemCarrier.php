@@ -160,7 +160,7 @@ class ItemCarrier extends SourceItemCarrier
             }
 
             $this->customerSession->setSuccessMessage(
-                __('%1 product(s) have been added to shopping cart: %2.', count($addedProducts), join(', ', $products))
+                __('%1 product(s) have been added to your cart: %2.', count($addedProducts), join(', ', $products))
             );
 
             // save cart and collect totals
