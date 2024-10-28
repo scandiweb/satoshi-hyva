@@ -8,18 +8,22 @@ use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Helper\Image;
 use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+$productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
+
 /** @var AbstractProduct $block */
 /** @var Magento\Catalog\Model\Product $product */
 $product = $block->getData('product');
-$imageUrl = $this->helper(Image::class)
-                 ->init($product, 'product_base_image')
-                 ->resize(600)
+$imageUrl = $this->helper(Image::class)->init($product, 'product_page_image_medium')
                  ->getUrl();
 $breadcrumbs = $block->getData('breadcrumbs') ?? [];
 
@@ -64,10 +68,12 @@ if ($product) {
                 <?php endif ?>
                 'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>',
                 'mediaCount': <?= $product?->getMediaGalleryImages()->count() ?? 3 ?>,
-                'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>
+                'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
+                'finalPrice': <?= $product->getFinalPrice() ?>,
+                'regularPrice': <?= $product->getPrice() ?>,
             }
         "
-          href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
+        href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
         <?php else: ?>
           :href="`/${product.url_rewrites?.[0].url}`"
           x-element-transition-trigger:product<?= !$isSearch ? '.preview' : '' ?>.animate="
@@ -137,7 +143,7 @@ if ($product) {
                         </div>
                     </template>
                 <?php endif ?>
-                <?= $template->setData(['product' => $product])->render('Magento_Catalog::/product/list/discount-badge.phtml') ?>
+                <?= $template->setData(['product' => $product, 'class' => 'py-1 bottom left', 'is_search' => $isSearch])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
             </div>
 
             <div class="relative flex flex-1 flex-col">
@@ -158,22 +164,87 @@ if ($product) {
                     >
                         <?= $product?->getSku() ?>
                     </p>
-                    <?php if ($product): ?>
-                        <button
-                            class="absolute right-0 text-2xl text-primary-500 md:hidden"
-                            @click.prevent.stop="quickBuy()"
-                            aria-label="<?= __('Add to cart') ?>"
-                            type="button"
+
+                    <!-- Quick buy, for simple, virtual, configurable.. TODO: Make it for other types too -->
+                    <?php if ($product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
+                        <form 
+                            method="post"
+                            action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
+                            id="quick_buy_form_<?= $product->getId() ?>"
+                            class="absolute right-0 md:hidden"
+                            @submit.prevent="addToCart($event)"
+                            <?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
                         >
-                            <?= $hyvaicons->renderHtml('cart'); ?>
-                        </button>
+                            <?= /** @noEscape */ $block->getBlockHtml('formkey') ?>
+                            <input type="hidden" name="product" value="<?= (int)$product->getId() ?>"/>
+                            <?php foreach ($productOptionsViewmodel->getOptionsData($product) as $optionItem): ?>
+                                <input type="hidden"
+                                    name="<?= $escaper->escapeHtml($optionItem['name']) ?>"
+                                    value="<?= $escaper->escapeHtml($optionItem['value']) ?>">
+                            <?php endforeach; ?>
+
+                            <button
+                                class="text-2xl text-primary-500"
+                                :class="{
+                                    'text-primary-50': isLoadingCart,
+                                    'text-primary-500': !isLoadingCart
+                                }"
+                                <?php if (in_array($product->getTypeId(), ['simple', 'virtual'])): ?>
+                                    form="quick_buy_form_<?= $product->getId() ?>"
+                                    data-addto="cart"
+                                    type="submit"
+                                    @click.stop.throttle
+                                <?php else: ?>
+                                    @click.prevent.stop="quickBuy()"
+                                    type="button"
+                                <?php endif; ?>
+                                aria-label="<?= __('Add to cart') ?>"
+                            >
+                                <?= $hyvaicons->renderHtml('cart'); ?>
+                            </button>
+
+                            <?php if (!in_array($product->getTypeId(), ['simple', 'virtual'])): ?>
+                                <!-- Quick buy popup -->
+                                <?= $popup->setData([
+                                        'id' => 'quick-buy-' . $product->getId(),
+                                        'isFocused' => true,
+                                    ])
+                                    ->setChildHtml($block->getProductDetailsHtml($product))
+                                    ->render() ?>
+                            <?php endif; ?>
+                        </form>
                     <?php endif ?>
-                    <!-- TODO: Implement quick buy popup here -->
                 </div>
-                <?php if ($product) : ?>
-                    <?= /* @noEscape */
-                    $productListItemViewModel->getProductPriceHtml($product) ?>
-                <?php endif; ?>
+
+                <div class="z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
+                    <?php if ($isSearch) : ?>
+                        <template
+                            x-if="product.price_range.minimum_price.final_price.value < product.price_range.minimum_price.regular_price.value">
+                            <div>
+                                <span class="sr-only"><?= __('Sale Price') ?></span>
+                                <span class="text-primary-500"
+                                    x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                                <s x-text="hyva.formatPrice(product.price_range.minimum_price.regular_price.value)"></s>
+                            </div>
+                        </template>
+                        <template x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value != product.price_range.maximum_price.value">
+                            <div>
+                                <span><?= __('As low as') ?></span>
+                                <span class="text-primary-500" x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                            </div>
+                        </template>
+                        <template
+                            x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value === product.price_range.maximum_price.value">
+                            <div>
+                                <span class="sr-only"><?= __('Regular Price') ?></span>
+                                <span class="text-primary-500"
+                                    x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                            </div>
+                            </template>
+                    <?php else: ?>
+                        <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+                    <?php endif; ?>
+                </div>
             </div>
         </article>
     </a>

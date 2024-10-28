@@ -24,5 +24,9 @@
                 <argument name="css_class" xsi:type="string">content-wrapper mx-auto max-md:hidden my-8</argument>
             </arguments>
         </referenceBlock>
+
+        <!-- Remove footer-content block from customer account pages -->
+        <referenceBlock name="footer-content" remove="true" />
+
     </body>
 </page>

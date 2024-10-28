@@ -1,4 +1,4 @@
-import { replaceMainContent } from "../plugins/Transition";
+import { replaceMainContentWithTransition } from "../plugins/Transition";
 import { MainStoreType } from "../store/Main";
 
 export type AuthenticationType = {
@@ -13,7 +13,7 @@ export type AuthenticationType = {
   clearError(field: string): void;
   setErrorMessages(messages: Record<string, string>): void;
   submitForm(event: Event, formId: string): void;
-  submitForgotPasswordForm(formId: string): void;
+  submitAuthForm(formId: string): void;
 } & MainStoreType;
 
 export const Authentication = () => {
@@ -63,7 +63,7 @@ export const Authentication = () => {
         });
     },
 
-    submitForgotPasswordForm(formId) {
+    submitAuthForm(formId) {
       const form = document.getElementById(formId) as HTMLFormElement;
       const formData = new FormData(form);
 
@@ -71,12 +71,12 @@ export const Authentication = () => {
         method: "POST",
         body: formData,
         headers: {
-          "X-Requested-With": "XMLHttpRequest", // Optional if you want to handle it as an AJAX request
+          "X-Requested-With": "XMLHttpRequest",
         },
       })
         .then((response) => {
-          return response.text().then((content) => {
-            replaceMainContent(content);
+          return response.text().then(async (content) => {
+            await replaceMainContentWithTransition(response.url, content);
           });
         })
         .catch((error) => {
