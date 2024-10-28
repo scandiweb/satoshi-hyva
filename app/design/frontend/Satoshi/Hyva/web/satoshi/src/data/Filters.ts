@@ -62,10 +62,13 @@ export const modifyUrlParams = (
   return parsedUrl.toString();
 };
 
-export const Filters = (clearUrl: string) =>
+export const Filters = (
+  clearUrl: string,
+  initialSort: Record<string, string>,
+) =>
   <FiltersType>{
     selectedFilters: {},
-    selectedSort: {},
+    selectedSort: initialSort,
     isTopLevel: false,
     currentName: "",
     isTopFilterVisible: null,

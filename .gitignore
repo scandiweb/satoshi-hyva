@@ -1,7 +1,6 @@
 /*
 !/app
 /app/etc/env.php
-/app/etc/config.php
 /app/etc/NonComposerComponentRegistration.php
 /app/etc/db_schema.xml
 /app/etc/di.xml

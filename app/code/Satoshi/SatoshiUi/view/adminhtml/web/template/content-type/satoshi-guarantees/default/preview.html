@@ -1,0 +1,48 @@
+<div
+  attr="data.main.attributes"
+  ko-style="data.main.style"
+  class="pagebuilder-content-type"
+  css="data.main.css"
+  event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+  <if
+    args="!data.guarantees_columns.attributes().guarantees.length > 0 || data.guarantees_columns.attributes().guarantees === '[]'"
+  >
+    <div class="empty-guarantees">
+      Guarantees
+    </div>
+  </if>
+
+  <if
+    args="data.guarantees_columns.attributes().guarantees.length > 0 && data.guarantees_columns.attributes().guarantees !== '[]'"
+  >
+    <div
+      data-bind="attr: { guarantees: JSON.stringify(data.guarantees_columns.attributes().guarantees) }"
+      ko-style="data.guarantees_columns.style"
+      data-element="guarantees_columns"
+      css="data.guarantees_columns.css"
+      class="guarantees"
+    >
+      <!-- ko foreach: data.guarantees_columns.attributes().guarantees -->
+      <div class="guarantee">
+        <if args="column_icon[0]">
+          <div class="guarantee-icon">
+            <img data-bind="attr: {src: column_icon[0].url}" />
+          </div>
+        </if>
+
+        <div class="guarantee-content">
+          <h3
+            data-bind="text: column_title"
+            class="guarantee-title"
+          >
+          </h3>
+          <p data-bind="text: column_description">
+          </p>
+        </div>
+      </div>
+      <!-- /ko -->
+    </div>
+  </if>
+  <render args="getOptions().template" />
+</div>

@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="AppearanceSourceSatoshi" type="Magento\PageBuilder\Model\Source\VisualSelect">
+        <arguments>
+            <argument name="optionsSize" xsi:type="string">large</argument>
+            <argument name="optionsData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="value" xsi:type="string">default</item>
+                    <item name="title" xsi:type="string" translate="true">Default</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="AppearanceSourceImageWithText" type="Magento\PageBuilder\Model\Source\VisualSelect">
+        <arguments>
+            <argument name="optionsSize" xsi:type="string">large</argument>
+            <argument name="optionsData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="value" xsi:type="string">image-first</item>
+                    <item name="title" xsi:type="string" translate="true">Image first</item>
+                    <item name="icon" xsi:type="string">Satoshi_SatoshiUi::images/content-type/satoshi-image-with-text/appearance/image-first.png</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="value" xsi:type="string">text-first</item>
+                    <item name="title" xsi:type="string" translate="true">Text first</item>
+                    <item name="icon" xsi:type="string">Satoshi_SatoshiUi::images/content-type/satoshi-image-with-text/appearance/text-first.png</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="BlockHeightSource" type="Magento\PageBuilder\Model\Source\VisualSelect">
+        <arguments>
+            <argument name="optionsSize" xsi:type="string">small</argument>
+            <argument name="optionsData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="value" xsi:type="string">small</item>
+                    <item name="title" xsi:type="string" translate="true">Small</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="value" xsi:type="string">medium</item>
+                    <item name="title" xsi:type="string" translate="true">Medium</item>
+                </item>
+                <item name="2" xsi:type="array">
+                    <item name="value" xsi:type="string">large</item>
+                    <item name="title" xsi:type="string" translate="true">Large</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="ContentAlignmentSource" type="Magento\PageBuilder\Model\Source\VisualSelect">
+        <arguments>
+            <argument name="optionsSize" xsi:type="string">small</argument>
+            <argument name="optionsData" xsi:type="array">
+                <item name="0" xsi:type="array">
+                    <item name="value" xsi:type="string">left</item>
+                    <item name="title" xsi:type="string" translate="true">Left</item>
+                </item>
+                <item name="1" xsi:type="array">
+                    <item name="value" xsi:type="string">center</item>
+                    <item name="title" xsi:type="string" translate="true">Center</item>
+                </item>
+                <item name="2" xsi:type="array">
+                    <item name="value" xsi:type="string">right</item>
+                    <item name="title" xsi:type="string" translate="true">Right</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>

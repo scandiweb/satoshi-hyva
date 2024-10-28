@@ -9,7 +9,7 @@ use Magento\Framework\View\Element\Template;
 /** @var Template $block */
 
 $isContain = false;
-$mixBackground = false;
+$mixBackground = true;
 ?>
 
 <template x-fallback-template-type="product">
@@ -66,7 +66,8 @@ $mixBackground = false;
             </div>
           </div>
         </div>
-        <!-- Render discount badge -->
+
+        <?= $template->setData(['class' => 'bottom left'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
       </div><!-- Mobile Featured Image -->
 
       <div class="flex flex-col gap-4 px-4 md:gap-1 md:px-0">
