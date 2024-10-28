@@ -449,7 +449,7 @@ $errorMessage = $block->getErrorMessage();
 
                 <?= $block->getChildHtml('form_additional_info') ?>
                 <?php if ($recaptcha): ?>
-                    <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
+                    <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) ?>
                     <?= $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) ?>
                 <?php endif; ?>
             </div>
