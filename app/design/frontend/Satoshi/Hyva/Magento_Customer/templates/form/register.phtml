@@ -51,7 +51,7 @@ $errorMessage = $block->getErrorMessage();
         <form action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
               x-data="Object.assign(hyva.formValidation($el),
                 Register(
-                    '<?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '') ?>',
+                    () => { <?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '') ?> },
                     '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
                     <?= $escaper->escapeHtmlAttr($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
                     [

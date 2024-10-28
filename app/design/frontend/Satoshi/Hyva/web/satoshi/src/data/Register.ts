@@ -34,7 +34,7 @@ export type RegisterType = {
 } & Magics<{}>;
 
 export const Register = (
-    recaptchaValidationScript: string,
+    recaptchaValidationScript: Function,
     telephoneErrorMessage: string,
     postCodeSpecs: CountryPostCodeSpecs,
     postcodeWarnings: string[],
@@ -187,9 +187,7 @@ export const Register = (
               // Do not rename $form, the variable is expected to be declared in the recaptcha output
               const $form = event.target as HTMLFormElement;
 
-              if (recaptchaValidationScript) {
-                eval(recaptchaValidationScript);
-              }
+              recaptchaValidationScript();
 
               if (this.errors === 0) {
                 this.onRegister($form);
