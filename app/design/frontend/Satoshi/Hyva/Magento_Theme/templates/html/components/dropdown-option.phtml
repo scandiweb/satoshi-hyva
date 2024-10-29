@@ -19,7 +19,7 @@ $url = $block->getData('url');
 <li>
   <a
     tabindex="0"
-    data-value="<?= $value ?>"
+    data-value="<?= $escaper->escapeHtmlAttr($value) ?>"
     class="flex cursor-pointer justify-between p-3 text-text-500<?= $isActive ? ' bg-bg-600 text-primary-600 md:cursor-not-allowed' : ' md:hover:text-primary-600' ?> gap-x-6 text-nowrap rounded-xs"
     <?php if ($url): ?>
     href="<?= $escaper->escapeUrl($url) ?>"
@@ -31,6 +31,6 @@ $url = $block->getData('url');
     aria-current="true"
     <?php endif; ?>
   >
-    <?= $label ?>
+    <?= /* @noEscape */ $label ?>
   </a>
 </li>
