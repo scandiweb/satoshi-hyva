@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template as Block;
+use Satoshi\Theme\Block\Template;
 
 /** @var Escaper $escaper */
-/** @var Template $block */
+/** @var Block $block */
+/** @var Template $template */
 
 $isContain = false;
 $mixBackground = true;
@@ -35,18 +37,10 @@ $mixBackground = true;
         <div class="relative aspect-product bg-[--fade-in-bg]">
           <div
             x-element-transition-dest="img"
-            class="flex size-full flex-col items-center justify-center"
-            <?php if ($isContain): ?>
-              :class="
-                {
-                  'p-[4%]': !!mobileImg
-                }
-              "
-            <?php endif; ?>
+            class="flex size-full flex-col items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?>"
           >
             <img
               :src="mobileImg"
-              x-show="!!mobileImg"
               class="
                 object-center
                 <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>
@@ -56,14 +50,6 @@ $mixBackground = true;
               height="100%"
               :alt="$store['transition'].pageData?.title"
             >
-            <div
-              class="contents"
-              x-show="!mobileImg"
-            >
-              <div class="flex aspect-product w-full items-center justify-center bg-secondary-400 text-center">
-                <?= __('Missing image') ?>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -87,30 +73,14 @@ $mixBackground = true;
       class="flex w-full flex-col flex-wrap gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:hidden"
     >
       <div
-        class="flex aspect-product w-full flex-shrink-0 items-center justify-center bg-[--fade-in-bg] md:rounded-2xl"
-        <?php if ($isContain): ?>
-          :class="
-            {
-              'p-[4%]': !!desktopImg
-            }
-          "
-        <?php endif; ?>
+        class="flex aspect-product w-full flex-shrink-0 items-center justify-center bg-[--fade-in-bg] md:rounded-2xl <?= $isContain ? 'p-[4%]' : '' ?>"
       >
         <img
-          x-show="!!desktopImg"
           :src="desktopImg"
           class="<?= $isContain ? 'object-contain max-h-full w-auto' : 'object-cover h-full w-full' ?> rounded-2xl object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
           width="100%"
           height="100%"
         >
-        <div
-          class="w-full overflow-hidden md:rounded-2xl"
-          x-show="!desktopImg"
-        >
-          <div class="flex aspect-product w-full items-center justify-center bg-secondary-400 text-center">
-            <?= __('Missing image') ?>
-          </div>
-        </div>
       </div>
       <template x-if="$store['transition'].pageData?.mediaCount >= 3">
         <div class="contents">
