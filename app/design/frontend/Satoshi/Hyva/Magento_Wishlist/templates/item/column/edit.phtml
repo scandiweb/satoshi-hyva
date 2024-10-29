@@ -1,0 +1,42 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Edit;
+use Magento\Wishlist\Model\Item;
+
+/** @var Edit $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var Item $item */
+$item = $block->getItem();
+$product = $item->getProduct();
+
+// The product url contains a hash with selected product options
+// We're going to use that hash
+$productUrl = $block->getProductUrl($item);
+$urlHash = explode('#', $productUrl);
+// it would be nicer if we would one day extend the getItemConfigureUrl instead
+$configureUrl = $block->getItemConfigureUrl($item);
+
+// we add the hash from productUrl to the configureUrl
+$editProductUrl = $configureUrl . (count($urlHash) > 1 ? '#' . $urlHash[1] : '');
+?>
+
+<?php if ($product->isVisibleInSiteVisibility()): ?>
+    <a
+        class="button button--outline-primary w-11 md:w-12 p-0 ml-auto mr-2"
+        href="<?= $escaper->escapeUrl($editProductUrl) ?>"
+        title="<?= $escaper->escapeHtmlAttr(__('Edit Item')) ?>"
+    >
+        <?= $hyvaicons->renderHtml('pencil', 'text-lg', attributes: ['title' => $escaper->escapeHtmlAttr(__('Edit Item'))]) ?>
+        <span class="sr-only">
+            <?= $escaper->escapeHtml(__('Edit %1', $product->getName())) ?>
+        </span>
+    </a>
+<?php endif ?>
