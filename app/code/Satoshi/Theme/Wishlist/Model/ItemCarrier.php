@@ -159,10 +159,6 @@ class ItemCarrier extends SourceItemCarrier
                 $products[] = '"' . $product->getName() . '"';
             }
 
-            $this->customerSession->setSuccessMessage(
-                __('%1 product(s) have been added to your cart: %2.', count($addedProducts), join(', ', $products))
-            );
-
             // save cart and collect totals
             $cart->save()->getQuote()->collectTotals();
         }
