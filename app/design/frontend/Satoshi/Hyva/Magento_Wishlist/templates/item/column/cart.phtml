@@ -1,0 +1,52 @@
+<?php
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Cart;
+use Magento\Wishlist\Model\Item;
+use Magento\Wishlist\ViewModel\AllowedQuantity;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Cart $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+/** @var Item $item */
+$item = $block->getItem();
+$product = $item->getProduct();
+/** @var AllowedQuantity $viewModel */
+$viewModel = $viewModels->require(AllowedQuantity::class);
+$allowedQty = $viewModel->setItem($item)->getMinMaxQty();
+?>
+<?php foreach ($block->getChildNames() as $childName): ?>
+    <?= /* @noEscape */ $block->getLayout()->renderElement($childName, false) ?>
+<?php endforeach;?>
+<div class="flex items-center">
+    <?php if ($product->isSaleable()): ?>
+        <button
+            type="button"
+            data-role="tocart"
+            @click.prevent='addToCart("<?= $escaper->escapeHtmlAttr($item->getId()) ?>",
+                <?= /* @noEscape */ $block->getItemAddToCartParams($item) ?>)'
+            title="<?= $escaper->escapeHtmlAttr(__('Add %1 to Cart', $product->getName())) ?>"
+            aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Cart %1', $product->getName())) ?>"
+            class="button button--filled-primary gap-3"
+            data-addto="cart"
+        >
+            <?= $escaper->escapeHtml(__('Add to cart')) ?>
+            <?= $hyvaicons->renderHtml('cart-empty', 'text-xl', attributes: ['title' => $escaper->escapeHtmlAttr(__('Add %1 to Cart', $product->getName()))]) ?>
+        </button>
+    <?php else: ?>
+        <?php if ($product->getIsSalable()): ?>
+            <p title="<?= $escaper->escapeHtmlAttr(__('Availability')) ?>">
+                <span><?= $escaper->escapeHtml(__('In stock')) ?></span>
+            </p>
+        <?php else: ?>
+            <p title="<?= $escaper->escapeHtmlAttr(__('Availability')) ?>">
+                <span><?= $escaper->escapeHtml(__('Out of stock')) ?></span>
+            </p>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>

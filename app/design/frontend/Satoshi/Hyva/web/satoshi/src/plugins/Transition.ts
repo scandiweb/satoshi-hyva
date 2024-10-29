@@ -311,6 +311,17 @@ export const replaceContent = (
   reExecuteJs(target);
 };
 
+const replaceTagContent = (rawContent: string, tag: string) => {
+  const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
+  const content = rawContent.match(regex);
+  const newContent = content ? content[1] : '';
+
+  const target = document.querySelector(tag) as HTMLElement;
+  if (newContent && target) {
+    target.innerHTML = newContent;
+  }
+};
+
 export const replaceMainContent = (rawContent: string) => {
   lastMainContentUpdateUrl = window.location.href;
   replaceMeta(rawContent);
@@ -329,6 +340,10 @@ const replacePreviewContent = (rawContent: string) => {
     "preview-content",
     document.getElementById("PreviewContent")!,
   );
+};
+
+const replaceWholeDocument = (rawContent: string) => {
+    replaceTagContent(rawContent, 'html');
 };
 
 const pushStateAndNotify = (...args: Parameters<History["pushState"]>) => {
@@ -371,10 +386,10 @@ export const cachePage = (url: string, html: string) => {
 };
 
 export const fetchAndCachePage = async (url: string) => {
-  const html = await fetchPage(url);
-  cachePage(url, html);
+    const html = await fetchPage(url);
+    cachePage(url, html);
 
-  return html;
+    return html;
 };
 
 export const replaceMainContentWithTransition = async (
@@ -404,6 +419,7 @@ export const navigateWithTransition = (
     data?: Record<string, any>;
     areaId?: string;
     target?: HTMLElement | null;
+    replaceDocument?: boolean;
   } = {},
 ) => {
   Alpine.store("transition").isAnimating = false;
@@ -444,10 +460,13 @@ export const navigateWithTransition = (
       Alpine.store("resizable").hideAll();
       history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
-      const html = await fetchAndCachePage(nextUrl!);
+      const html= await fetchAndCachePage(nextUrl!);
 
       if (isPreview) {
         replacePreviewContent(html);
+      } else if (options.replaceDocument) {
+          replaceWholeDocument(html);
+          window.scrollTo(0, 0);
       } else {
         replaceMainContent(html);
         window.scrollTo(0, 0);
