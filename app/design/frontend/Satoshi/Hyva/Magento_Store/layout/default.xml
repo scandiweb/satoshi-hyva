@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="footer-content">
+            <referenceBlock name="footer-column-store"
+            >
+                <!-- Override block class to use Magento\Store\Block\Switcher instead of the default Template -->
+                <block class="Magento\Store\Block\Switcher"
+                       name="store-switcher"
+                       template="Magento_Store::switch/stores.phtml"
+                />
+
+                <!-- Override block class and inject SwitcherUrlProvider ViewModel for Language Switcher -->
+                <block class="Magento\Store\Block\Switcher"
+                       name="store-language-switcher"
+                       template="Magento_Store::switch/languages.phtml"
+                />
+            </referenceBlock>
+        </referenceBlock>
+    </body>
+</page>

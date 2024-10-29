@@ -1,6 +1,6 @@
 <?php
 
-namespace Satoshi\Theme\Block\Form;
+namespace Satoshi\Customer\Block\Form;
 
 use Magento\Customer\Block\Form\Login as SourceLogin;
 use Magento\Customer\Model\Session;
