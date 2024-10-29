@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+/** @var DecodeHelper $decodeHelper */
+$decodeHelper = $this->helper(DecodeHelper::class);
+$guarantees = $block->getData('guarantees');
+$guarantees = $decodeHelper->decodeJSONHTMLEntity($guarantees);
+?>
+<?php if ($guarantees): ?>
+    <div class="relative flex gap-8 md:grid md:grid-cols-4 md:gap-14 max-md:overflow-x-auto ">
+        <?php foreach ($guarantees as $guarantee): ?>
+            <div class="flex flex-shrink-0 flex-col items-center justify-start gap-7 max-md:w-[160px]">
+                <div class="w-fit rounded-xl border border-primary-50 p-3">
+                    <?php if ($guarantee['column_icon']): ?>
+                        <img
+                            src="<?= $escaper->escapeHtmlAttr($guarantee['column_icon'][0]['url']) ?>"
+                            alt="<?= $escaper->escapeHtmlAttr(__($guarantee['column_title'])) ?>"
+                            width="20px"
+                            height="20px"
+                            loading="lazy"
+                        />
+                    <?php endif; ?>
+                </div>
+                <div class="flex flex-col gap-4 text-center">
+                    <h3 class="whitespace-nowrap text-lg text-text-500 m-0">
+                        <?= $escaper->escapeHtml(__($guarantee['column_title'])) ?>
+                    </h3>
+                    <p class="m-0">
+                        <?= $escaper->escapeHtml(__($guarantee['column_description'])) ?>
+                    </p>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
