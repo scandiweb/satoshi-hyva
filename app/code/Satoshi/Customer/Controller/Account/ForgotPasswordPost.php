@@ -1,6 +1,6 @@
 <?php
 
-namespace Satoshi\Theme\Customer\Controller\Account;
+namespace Satoshi\Customer\Controller\Account;
 
 use Exception;
 use Magento\Customer\Api\AccountManagementInterface;
