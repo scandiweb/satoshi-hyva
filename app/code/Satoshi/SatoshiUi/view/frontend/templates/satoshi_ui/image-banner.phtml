@@ -1,0 +1,105 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Satoshi\SatoshiUi\Helper\Link as LinkHelper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+/** @var LinkHelper */
+$linkHelper = $this->helper(LinkHelper::class);
+
+/** @var DecodeHelper $decodeHelper */
+$decodeHelper = $this->helper(DecodeHelper::class);
+$link_url = $decodeHelper->decodeJSONHTMLEntity($block->getData('button_link'));
+$linkHref = $linkHelper->getLinkHref($block, $link_url);
+$bannerHeight = $block->getData('banner_height');
+$desktopAlignment = $block->getData('desktop_content_position');
+$mobileAlignment = $block->getData('mobile_content_alignment');
+?>
+<div class="relative overflow-hidden">
+    <div class="absolute left-0 top-0 z-10 h-full w-full bg-black" style="opacity: 0.6"></div>
+    <?php if ($block->getData('image')): ?>
+        <div class="bg-[--fade-in-bg]">
+            <img
+                class="absolute left-0 top-0 z-0 h-full w-full object-cover object-center"
+                width="100%"
+                height="100%"
+                src="<?= $escaper->escapeUrl($block->getData('image')) ?>"
+                alt="<?= $escaper->escapeHtmlAttr($block->getData('heading')) ?>"
+            >
+        </div>
+    <?php endif; ?>
+    <div
+        class="
+            content-wrapper relative z-20 m-auto flex items-center
+            <?= match($bannerHeight) {
+                'small' => 'py-[5vh] h-[40vh]',
+                'medium' => 'py-[10vh] h-[60vh]',
+                'large' => 'py-[20vh] h-[80vh]'
+            } ?>
+            <?= match($desktopAlignment) {
+                'top-left' => 'md:items-start md:justify-start',
+                'top-center' => 'md:items-start md:justify-center',
+                'top-right' => 'md:items-start md:justify-end',
+                'middle-left' => 'md:items-center md:justify-start',
+                'middle-center' => 'md:items-center md:justify-center',
+                'middle-right' => 'md:items-center md:justify-end',
+                'bottom-left' => 'md:items-end md:justify-start',
+                'bottom-center' => 'md:items-end md:justify-center',
+                'bottom-right' => 'md:items-end md:justify-end'
+            } ?>
+            <?= match($mobileAlignment) {
+                'left' => 'justify-start text-start',
+                'center' => 'justify-center text-center',
+                'right' => 'justify-end text-end'
+            } ?>
+        "
+    >
+        <div
+            class="
+                flex max-w-[500px] flex-col justify-center gap-10 text-text-on-primary-bg
+                <?php if(str_contains($desktopAlignment, 'left')): ?>
+                    md:items-start md:text-start
+                <?php elseif(str_contains($desktopAlignment, 'right')): ?>
+                    md:items-end md:text-end
+                <?php else: ?>
+                    md:items-center md:text-center
+                <?php endif; ?>
+                <?= match($mobileAlignment) {
+                    'left' => 'items-start text-start',
+                    'center' => 'items-center text-center',
+                    'right' => 'items-end text-end'
+                } ?>
+            "
+        >
+            <h2
+                class="heading text-4xl leading-tight md:text-6xl md:leading-tight"
+            >
+                <?= $escaper->escapeHtml($block->getData('heading')) ?>
+            </h2>
+            <a
+                <?php if ($linkHref): ?>
+                    href="<?= $escaper->escapeUrl($linkHref); ?>"
+                    target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
+                <?php endif; ?>
+                class="button button--filled-secondary"
+                x-element-transition-trigger
+            >
+                <?= $escaper->escapeHtml($block->getData('button_label')) ?>
+                <span class="button__icon ml-2">
+                    <?= $hyvaicons->renderHtml('button-link'); ?>
+                </span>
+            </a>
+        </div>
+    </div>
+</div>
