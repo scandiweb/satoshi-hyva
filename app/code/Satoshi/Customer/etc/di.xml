@@ -19,6 +19,6 @@
     />
     <preference
             for="Magento\Customer\Block\Form\Register"
-            type="Satoshi\Theme\Block\Form\Register"
+            type="Satoshi\Customer\Block\Form\Register"
     />
 </config>
