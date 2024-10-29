@@ -340,7 +340,7 @@ export const ProductPage = () =>
               .filter((id) => !!id);
 
             if (itemIds.length) {
-              Alpine.store("cart").focusInCart(itemIds);
+              setTimeout(() => Alpine.store("cart").focusInCart(itemIds), 200);
             }
             return;
           }
@@ -351,7 +351,10 @@ export const ProductPage = () =>
           );
 
           if (item) {
-            Alpine.store("cart").focusInCart(item.item_id);
+            setTimeout(
+              () => Alpine.store("cart").focusInCart(item.item_id),
+              200,
+            );
           }
         },
         { once: true },

@@ -2,6 +2,10 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference
+            for="Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Info"
+            type="Satoshi\Wishlist\Block\Customer\Wishlist\Item\Column\Info"
+    />
+    <preference
             for="Magento\Wishlist\Controller\Index\Send"
             type="Satoshi\Wishlist\Controller\Index\Send"
     />
