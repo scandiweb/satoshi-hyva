@@ -22,13 +22,10 @@ $breadcrumbs = $catalogData->getBreadcrumbPath();
 ?>
 <?php if (!$productCollection->count()): ?>
     <div class="flex w-full flex-col gap-5 py-5 md:items-start">
-        <p class="">
+        <p>
             <b class="text-secondary-700"><?= __('Oops!') ?></b>
             <?= __('We could not find any products matching your selection.') ?>
         </p>
-        <button type="button" class="button button--outline-secondary" @click="resetAll">
-            <?= __('Reset selection') ?>
-        </button>
     </div>
 <?php else: ?>
     <?= $block->getToolbarHtml() ?>
