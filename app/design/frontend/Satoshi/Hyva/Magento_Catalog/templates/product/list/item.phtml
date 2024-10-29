@@ -25,6 +25,7 @@ $productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
 $product = $block->getData('product');
 $imageUrl = $this->helper(Image::class)->init($product, 'product_page_image_medium')
                  ->getUrl();
+$placeholderImageUrl = $this->helper(Image::class)->getDefaultPlaceholderUrl('image');
 $breadcrumbs = $block->getData('breadcrumbs') ?? [];
 
 // Calculating is large
@@ -108,7 +109,7 @@ if ($product) {
             <img width="0" height="0" class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
                  src="<?= $escaper->escapeUrl($imageUrl) ?>" alt="">
 
-            <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg]" x-element-transition-src="img"
+            <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg] h-full" x-element-transition-src="img"
                  style="transform: translateZ(0)">
 
                 <?php if ($product): ?>
@@ -120,19 +121,17 @@ if ($product) {
                             alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>" loading="lazy">
                     </div>
                 <?php else: ?>
-                    <template x-if="product.media_gallery?.[0]?.url">
-                        <div
-                            class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform  md:group-hover:scale-105">
-                            <img
-                                :src="product.media_gallery?.[0]?.url"
-                                :alt="product.image?.label"
-                                class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
-                                loading="lazy"
-                                width=""
-                                height=""
-                            />
-                        </div>
-                    </template>
+                    <div
+                        class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform  md:group-hover:scale-105">
+                        <img
+                            :src="product.media_gallery?.[0]?.url || '<?= $escaper->escapeUrl($placeholderImageUrl) ?>'"
+                            :alt="product.image?.label"
+                            class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
+                            loading="lazy"
+                            width=""
+                            height=""
+                        />
+                    </div>
                 <?php endif ?>
                 <?= $template->setData(['product' => $product, 'class' => 'py-1 bottom left', 'is_search' => $isSearch])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
             </div>
