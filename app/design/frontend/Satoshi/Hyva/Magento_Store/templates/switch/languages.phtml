@@ -1,0 +1,42 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Store\Block\Switcher;
+use Satoshi\Theme\Block\Template;
+use Magento\Store\ViewModel\SwitcherUrlProvider;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Switcher $block */
+/** @var Template $template */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SwitcherUrlProvider $switcherUrlProvider */
+$switcherUrlProvider = $viewModels->require(SwitcherUrlProvider::class);
+
+if (count($block->getStores()) > 1):
+    $id = $block->getIdModifier() ? '-' . $block->getIdModifier() : '';
+    $currentStoreId = $block->getCurrentStoreId();
+    $currentStoreCode = $block->getCurrentStoreCode();
+    $currentLabel = $block->getStoreName();
+
+    $options = array_map(static function ($store) use ($currentStoreId, $switcherUrlProvider) {
+        $isCurrent = $store->getId() === $currentStoreId;
+
+        return [
+            'value' => $store->getCode(),
+            'label' => $store->getName(),
+            'url' => $switcherUrlProvider->getTargetStoreRedirectUrl($store),
+            'is_active' => $isCurrent,
+        ];
+    }, $block->getStores());
+    ?>
+
+    <?= $template->setData([
+            'id' => 'store-selector' . $id,
+            'label' => $escaper->escapeHtml($currentLabel),
+            'options' => $options,
+            'placement' => 'top',
+        ])->render('Magento_Theme::html/components/dropdown.phtml'); ?>
+
+<?php endif; ?>

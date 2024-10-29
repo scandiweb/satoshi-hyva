@@ -2,6 +2,7 @@ import { replaceMainContentWithTransition } from "../plugins/Transition";
 import { MainStoreType } from "../store/Main";
 
 export type AuthenticationType = {
+  isLoading: boolean;
   errors: number;
   hasCaptchaToken: boolean;
   showPassword: boolean;
@@ -18,6 +19,7 @@ export type AuthenticationType = {
 
 export const Authentication = () => {
   return <AuthenticationType>{
+    isLoading: false,
     errors: 0,
     hasCaptchaToken: false,
     showPassword: false,
@@ -42,6 +44,8 @@ export const Authentication = () => {
         return;
       }
 
+      this.isLoading = true;
+
       fetch(form.action, {
         method: "POST",
         body: new FormData(form),
@@ -49,23 +53,27 @@ export const Authentication = () => {
           "X-Requested-With": "XMLHttpRequest",
         },
       })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            form.submit();
-          } else {
-            this.setErrorMessages({ [data.field]: data.message });
-          }
-        })
-        .catch((error) => {
-          this.generalErrorMessage = error.message();
-          this.displayErrorMessage = true;
-        });
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              form.submit();
+            } else {
+              this.setErrorMessages({[data.field]: data.message});
+            }
+          })
+          .catch((error) => {
+            this.generalErrorMessage = error.message();
+            this.displayErrorMessage = true;
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
     },
 
     submitAuthForm(formId) {
       const form = document.getElementById(formId) as HTMLFormElement;
       const formData = new FormData(form);
+      this.isLoading = true;
 
       fetch(form.action, {
         method: "POST",
@@ -74,14 +82,17 @@ export const Authentication = () => {
           "X-Requested-With": "XMLHttpRequest",
         },
       })
-        .then((response) => {
-          return response.text().then(async (content) => {
-            await replaceMainContentWithTransition(response.url, content);
+          .then((response) => {
+            return response.text().then(async (content) => {
+              await replaceMainContentWithTransition(response.url, content);
+            });
+          })
+          .catch((error) => {
+            console.error("Form submission failed:", error);
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
-        })
-        .catch((error) => {
-          console.error("Form submission failed:", error);
-        });
     },
   };
 };

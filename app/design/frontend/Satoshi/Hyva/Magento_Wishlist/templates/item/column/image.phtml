@@ -1,0 +1,24 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Image;
+use Magento\Wishlist\Model\Item;
+
+/** @var Image $block */
+/** @var Escaper $escaper */
+
+/** @var Item $item */
+$item = $block->getItem();
+$product = $item->getProduct();
+?>
+<a
+    class="
+        flex items-center justify-center overflow-hidden rounded-xl bg-[--fade-in-bg] mb-5
+        [&_img]:mix-blend-darken [&_img]:object-center [&_img]:max-h-full [&_img]:object-cover [&_img]:h-full [&_img]:w-full
+    "
+    tabindex="-1"
+    href="<?= $escaper->escapeUrl($block->getProductUrl($item)) ?>"
+    title="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
+>
+    <?= $block->getImage($block->getProductForThumbnail($item), 'wishlist_thumbnail')->toHtml() ?>
+</a>
