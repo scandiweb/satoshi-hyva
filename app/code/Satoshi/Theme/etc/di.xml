@@ -46,7 +46,8 @@
         for="Magento\Theme\Block\Html\Footer"
         type="Satoshi\Theme\Block\Html\Footer"
     />
-    <preference for="Magento\Wishlist\Block\Customer\Sharing"
-                type="Satoshi\Theme\Block\Customer\Sharing"
+    <preference
+            for="Magento\Wishlist\Block\Customer\Sharing"
+            type="Satoshi\Wishlist\Block\Customer\Sharing"
     />
 </config>
