@@ -191,11 +191,6 @@ class Cart extends SourceCart
             $wishlist->save();
 
             if (!$this->cart->getQuote()->getHasError()) {
-                $this->_customerSession->setSuccessMessage(
-                    __('%1 has been added to your cart. You can view your cart <a href="%2" class="underline" x-element-transition-trigger>here</a>.',
-                        $item->getProduct()->getName(),
-                        $this->cartHelper->getCartUrl())
-                );
                 $productsToAdd = [
                     [
                         'sku' => $item->getProduct()->getSku(),
