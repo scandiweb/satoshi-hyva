@@ -1,5 +1,5 @@
-import {Magics} from "alpinejs";
-import {replaceMainContentWithTransition, navigateWithTransition} from "../plugins/Transition";
+import { Magics } from "alpinejs";
+import { replaceMainContentWithTransition, navigateWithTransition } from "../plugins/Transition";
 
 interface PostCodeSpec {
   pattern: string;
