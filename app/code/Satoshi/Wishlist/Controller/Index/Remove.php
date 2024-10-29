@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Satoshi\Theme\Wishlist\Controller\Index;
+namespace Satoshi\Wishlist\Controller\Index;
 
 use Magento\Framework\App\Action;
 use Magento\Framework\Data\Form\FormKey\Validator;

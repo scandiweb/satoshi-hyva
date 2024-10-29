@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Satoshi\Theme\Block\Customer;
+namespace Satoshi\Wishlist\Block\Customer;
 
 use Magento\Wishlist\Block\Customer\Wishlist as SourceWishlist;
 

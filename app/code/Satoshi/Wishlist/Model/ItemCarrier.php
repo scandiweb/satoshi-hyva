@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Satoshi\Theme\Wishlist\Model;
+namespace Satoshi\Wishlist\Model;
 
 use Magento\Catalog\Model\Product\Exception as ProductException;
 use Magento\Checkout\Helper\Cart as CartHelper;

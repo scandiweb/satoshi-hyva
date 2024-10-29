@@ -83,7 +83,9 @@ export const WishListPage = (
         }).then(async (res) => {
           if (res.ok) {
             window.hyva.replaceDomElement("#MainContent", await res.text());
-            this.focusOnCartAddedItems(addedProductSkus);
+            if (addedProductSkus.length) {
+              this.focusOnCartAddedItems(addedProductSkus);
+            }
           }
         }).catch((error) => {
           console.error("Error while form submission", error);
