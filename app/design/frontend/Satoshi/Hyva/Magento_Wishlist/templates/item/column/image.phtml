@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Magento\Framework\Escaper;
 use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Image;
 use Magento\Wishlist\Model\Item;
@@ -19,6 +21,7 @@ $product = $item->getProduct();
     tabindex="-1"
     href="<?= $escaper->escapeUrl($block->getProductUrl($item)) ?>"
     title="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
+    x-element-transition-trigger
 >
     <?= $block->getImage($block->getProductForThumbnail($item), 'wishlist_thumbnail')->toHtml() ?>
 </a>

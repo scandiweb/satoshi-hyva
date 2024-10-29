@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Satoshi\Theme\Wishlist\Controller\Index;
+namespace Satoshi\Wishlist\Controller\Index;
 
 use Magento\Catalog\Helper\Product;
 use Magento\Catalog\Model\Product\Exception as ProductException;

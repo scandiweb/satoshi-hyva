@@ -27,6 +27,7 @@ $product = $item->getProduct();
             type="number"
             x-ref="product-qty-<?= $escaper->escapeHtmlAttr($item->getId()) ?>"
             data-role="qty"
+            data-product-sku="<?= $escaper->escapeHtmlAttr($product->getSku()) ?>"
             id="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
             name="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
             value="<?= /* @noEscape */ $block->getAddToCartQty($item) * 1 ?>"
