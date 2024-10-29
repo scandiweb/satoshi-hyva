@@ -19,13 +19,13 @@ $title = $block->getData('title') ? __($block->getData('title')) : $block->getTi
 
 ?>
 <?php if (count($block->getItems())): ?>
-    <dl class="my-6">
+    <dl class="mb-6">
         <dt class="mb-2 font-bold"><?= $escaper->escapeHtml($title) ?></dt>
         <div class="flex gap-3 overflow-x-auto">
             <?php foreach ($block->getItems() as $additionalInfo): ?>
                 <dd>
                     <a
-                        class="button button--outline-secondary"
+                        class="button button--outline-secondary button--size-sm"
                         href="<?= $escaper->escapeUrl($block->getLink($additionalInfo->getQueryText())) ?>"
                         x-element-transition-trigger
                     >
