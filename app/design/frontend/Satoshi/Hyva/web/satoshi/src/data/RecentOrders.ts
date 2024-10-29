@@ -98,9 +98,6 @@ export const RecentOrders = (messageText: string) =>
             .filter((itemId): itemId is string => !!itemId);
 
           if(itemIds.length) {
-            Alpine.store("cart").focusInCart(itemIds);
-          } else {
-            // When the cart is empty, the newly added items will be displayed once it opens.
             Alpine.store("cart").showCart();
           }
         });
