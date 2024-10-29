@@ -1,0 +1,39 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Wishlist\Items;
+
+/** @var Escaper $escaper */
+/** @var Items $block */
+$columns = $block->getColumns();
+?>
+
+<div>
+    <?php if (count($block->getItems())): ?>
+    <ol class="grid gap-5 grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3" data-content-wrapper>
+        <!-- pagination-content -->
+        <?php foreach ($block->getItems() as $item): ?>
+            <li
+                data-row="product-item"
+                id="item_<?= $escaper->escapeHtmlAttr($item->getId()) ?>"
+                class="p-5 bg-bg-400 rounded-xl"
+            >
+                <div data-container="product-grid">
+                    <?php foreach ($columns as $column): ?>
+                        <?= $column->setItem($item)->toHtml();?>
+                    <?php endforeach; ?>
+                </div>
+            </li>
+        <?php endforeach; ?>
+        <!-- end-pagination-content -->
+    </ol>
+    <?php else: ?>
+        <div>
+            <span><?= $escaper->escapeHtml(__('This Wish List has no Items')) ?></span>
+        </div>
+    <?php endif; ?>
+</div>
+
+<?php foreach ($columns as $column): ?>
+    <?= $column->getAdditionalHtml() ?>
+<?php endforeach; ?>
