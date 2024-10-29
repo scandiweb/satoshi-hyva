@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Satoshi\Theme\Block\Form;
+namespace Satoshi\Customer\Block\Form;
 
 use Magento\Customer\Block\Form\Edit as SourceEdit;
 

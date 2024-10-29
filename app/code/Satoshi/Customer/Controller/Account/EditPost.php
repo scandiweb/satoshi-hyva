@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Satoshi\Theme\Customer\Controller\Account;
+namespace Satoshi\Customer\Controller\Account;
 
 use Magento\Customer\Controller\Account\EditPost as SourceEditPost;
 use Magento\Customer\Api\Data\CustomerInterface;
