@@ -15,6 +15,11 @@ export type RegisterType = {
   errors: number;
   showPassword: boolean;
   showPasswordConfirm: boolean;
+  isCaptchaEnabled: boolean;
+  recaptchaErrorMessage: string | null;
+  recaptchaType: string;
+  recaptchaFailedMessage: string;
+  recaptchaSystemErrorMessage: string;
 
   init(): void;
   onPrivateContentLoaded(data: any): void;
@@ -30,11 +35,16 @@ export type RegisterType = {
   hasAvailableRegions(): boolean;
   onRegister(form: HTMLFormElement): void;
   submitForm(event: Event): void;
+  validateRecaptcha(form: HTMLFormElement): void;
   [key: string]: any;
 } & Magics<{}>;
 
 export const Register = (
     recaptchaValidationScript: Function,
+    isCaptchaEnabled: boolean,
+    recaptchaType: string,
+    recaptchaFailedMessage: string,
+    recaptchaSystemErrorMessage: string,
     telephoneErrorMessage: string,
     postCodeSpecs: CountryPostCodeSpecs,
     postcodeWarnings: string[],
@@ -44,6 +54,7 @@ export const Register = (
       errors: 0,
       showPassword: false,
       showPasswordConfirm: false,
+      recaptchaErrorMessage: null,
 
       init() {
         this.$nextTick(() => {
@@ -184,12 +195,11 @@ export const Register = (
       submitForm(event) {
         this.validate()
             .then(() => {
-              // Do not rename $form, the variable is expected to be declared in the recaptcha output
               const $form = event.target as HTMLFormElement;
 
-              recaptchaValidationScript();
+              this.validateRecaptcha($form);
 
-              if (this.errors === 0) {
+              if (this.errors === 0 && !this.recaptchaErrorMessage) {
                 this.onRegister($form);
               }
             })
@@ -198,5 +208,44 @@ export const Register = (
                 (invalid[0]).focus();
               }
             });
+      },
+
+      validateRecaptcha($form) {
+        this.recaptchaErrorMessage = null;
+
+        if (isCaptchaEnabled) {
+          try {
+            // Execute the recaptcha validation script to initialize the validation process
+            recaptchaValidationScript();
+
+            // Obtain the reCAPTCHA response token based on type
+            let recaptchaToken = '';
+
+            if (recaptchaType === 'recaptcha_v3') {
+              // For v3, reCAPTCHA will execute and provide the token directly
+              recaptchaToken = grecaptcha.getResponse();
+            } else if (recaptchaType === 'recaptcha' || recaptchaType === 'invisible') {
+              // For v2 types, get the token from the specific reCAPTCHA instance
+              recaptchaToken = grecaptcha.getResponse(window.grecaptchaInstanceCustomercreate);
+            }
+
+            if (!recaptchaToken) {
+              this.recaptchaErrorMessage = recaptchaFailedMessage;
+              return;
+            }
+
+            // Append the token to the form data based on reCAPTCHA type
+            if (recaptchaType === 'recaptcha_v3' || recaptchaType === 'recaptcha') {
+              $form['g-recaptcha-response'].value = recaptchaToken;
+            } else if (recaptchaType === 'invisible') {
+              // Execute the invisible captcha explicitly and append the token after
+              grecaptcha.execute(window.grecaptchaInstanceCustomercreate).then(() => {
+                $form['g-recaptcha-response'].value = recaptchaToken;
+              });
+            }
+          } catch (error) {
+            this.recaptchaErrorMessage = recaptchaSystemErrorMessage;
+          }
+        }
       },
     };
