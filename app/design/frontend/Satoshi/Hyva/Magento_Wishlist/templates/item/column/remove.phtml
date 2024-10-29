@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Remove;
 use Magento\Framework\Escaper;
 use Magento\Wishlist\Model\Item;
@@ -12,20 +12,22 @@ use Magento\Wishlist\Model\Item;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
-/** @var HeroiconsOutline $heroicons */
-$heroicons = $viewModels->require(HeroiconsOutline::class);
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
 
 /** @var Item $item */
 $item = $block->getItem();
 $product = $item->getProduct();
 ?>
 
-<a href="#"
-   data-role="remove"
-   @click.prevent='postFormWithRedirect(<?= /* @noEscape */ $block->getItemRemoveParams($block->getItem()) ?>)'
-   title="<?= $escaper->escapeHtmlAttr(__('Remove Item')) ?>"
-   class="btn-remove action delete btn btn-secondary inline-flex p-2">
-    <?= $heroicons->trashHtml('', 20, 20); ?>
+<a
+    href="#"
+    data-role="remove"
+    @click.prevent='postFormWithRedirect(<?= /* @noEscape */ $block->getItemRemoveParams($block->getItem()) ?>)'
+    title="<?= $escaper->escapeHtmlAttr(__('Remove Item')) ?>"
+    class="button button--outline-primary w-11 md:w-12 p-0"
+>
+    <?= $hyvaicons->renderHtml('remove', 'text-lg', attributes: ['title' => $escaper->escapeHtmlAttr(__('Remove Item'))]) ?>
     <span class="sr-only">
         <?= $escaper->escapeHtml(__('Remove item %1', $product->getName())) ?>
     </span>

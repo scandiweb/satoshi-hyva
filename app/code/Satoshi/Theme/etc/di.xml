@@ -2,33 +2,11 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Framework\View\TemplateEngine\Php">
-        <plugin name="utilities_template_engine_plugin"
-                type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"/>
+        <plugin
+            name="utilities_template_engine_plugin"
+            type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"
+        />
     </type>
-    <preference for="Magento\Customer\Controller\Account\LoginPost"
-                type="Satoshi\Theme\Customer\Controller\Account\LoginPost"/>
-    <preference for="Magento\Customer\Controller\Account\ForgotPasswordPost"
-                type="Satoshi\Theme\Customer\Controller\Account\ForgotPasswordPost"/>
-    <preference
-        for="Magento\Checkout\Controller\Cart\CouponPost"
-        type="Satoshi\Theme\Checkout\Controller\Cart\CouponPost"
-    />
-    <preference for="Magento\Wishlist\Controller\Index\Cart"
-                type="Satoshi\Theme\Wishlist\Controller\Index\Cart"
-    />
-    <preference for="Magento\Wishlist\Controller\Index\Update"
-                type="Satoshi\Theme\Wishlist\Controller\Index\Update"
-    />
-    <preference for="Magento\Wishlist\Controller\Index\Remove"
-                type="Satoshi\Theme\Wishlist\Controller\Index\Remove"
-    />
-    <preference for="Magento\Wishlist\Model\ItemCarrier"
-                type="Satoshi\Theme\Wishlist\Model\ItemCarrier"
-    />
-    <preference
-        for="Magento\Checkout\Block\Cart\Coupon"
-        type="Satoshi\Theme\Checkout\Block\Cart\Coupon"
-    />
     <preference
         for="Hyva\Theme\Service\Navigation"
         type="Satoshi\Theme\Service\Navigation"
@@ -38,21 +16,8 @@
         type="Satoshi\Theme\ViewModel\ReCaptcha"
     />
     <preference
-        for="Magento\Newsletter\Controller\Subscriber\NewAction"
-        type="Satoshi\Theme\Newsletter\Controller\Subscriber\NewAction"
-    />
-    <preference
         for="Hyva\Theme\ViewModel\ProductListItem"
         type="Satoshi\Theme\ViewModel\ProductListItem"
-    />
-    <preference for="Magento\Customer\Block\Account\Forgotpassword"
-                type="Satoshi\Theme\Block\Account\ForgotPassword"
-    />
-    <preference for="Magento\Customer\Block\Form\Login"
-                type="Satoshi\Theme\Block\Form\Login"
-    />
-    <preference for="Magento\Wishlist\Block\Customer\Wishlist"
-                type="Satoshi\Theme\Block\Customer\Wishlist"
     />
     <preference
         for="Magento\Theme\Block\Html\Footer"

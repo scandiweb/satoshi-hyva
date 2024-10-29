@@ -28,76 +28,108 @@ $recaptcha = $block->getData('viewModelRecaptcha');
 $errorMessage = $block->getErrorMessage();
 $successMessage = $block->getSuccessMessage();
 ?>
-<div class="mx-auto mb-16 w-[412px] max-w-full" x-data="Authentication">
-    <div aria-labelledby="block-customer-login-heading">
-        <form class="w-full"
-              action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
+<div class="container mx-auto flex h-full items-center px-5">
+    <div class="mx-auto w-[412px] max-w-full mb-16" x-data="Authentication">
+        <header class="flex items-center justify-between sm:text-center mb-7">
+            <h2 class="w-full text-2xl" tabindex="-1"><?= __('Login') ?></h2>
+        </header>
+
+        <form action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
               method="post"
               id="customer-login-form"
               @submit.prevent="submitAuthForm('customer-login-form')"
-            >
+        >
             <?= $block->getBlockHtml('formkey') ?>
-            <fieldset class="fieldset login">
-                <legend class="flex items-center justify-between sm:text-center">
-                    <h2 class="mb-7 w-full text-2xl">
-                        <?= $escaper->escapeHtml(__('Login')) ?>
-                    </h2>
-                </legend>
-                <?php if ($successMessage): ?>
-                    <div class="text-primary-600">
-                        <?= $successMessage ?>
-                    </div>
-                <?php endif; ?>
-                <div class="field email required mt-3">
-                    <input name="login[username]"
-                        placeholder="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
-                        class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                        required
-                        value="<?= $escaper->escapeHtmlAttr($block->getUsername()) ?>"
-                        autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'username' ?>"
-                        id="email"
-                        type="email"
-                        title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
-                    />
+
+            <?php if ($successMessage): ?>
+                <div class="text-green-700 -mt-3 mb-3">
+                    <span><?= $successMessage ?></span>
                 </div>
-                <?php if ($errorMessage): ?>
-                    <div class="text-red-600 mt-3">
-                        <?= $errorMessage ?>
-                    </div>
-                <?php endif; ?>
-                <div class="flex items-center mt-3">
-                    <input name="login[password]"
-                           placeholder="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
-                           class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                           required
-                           type="password"
-                           autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'current-password' ?>"
-                           id="pass"
-                           title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
-                    />
+            <?php elseif ($errorMessage['general'] ?? false): ?>
+                <div class="field-error -mt-3 mb-3">
+                    <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
                 </div>
+            <?php endif; ?>
+            <div x-show="displayErrorMessage" class="field-error -mt-3 mb-3">
+                <span class="messages" x-text="generalErrorMessage"></span>
+            </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="field field-reserved <?= $errorMessage ? 'field-error' : '' ?>">
+                    <label for="email_address" class="sr-only tracking-widest">
+                        <?= __('Email') ?>
+                    </label>
+                    <div>
+                        <input name="login[username]"
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                               required
+                               value="<?= $escaper->escapeHtmlAttr($block->getUsername()) ?>"
+                               autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'username' ?>"
+                               id="email"
+                               type="email"
+                               title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                        />
+                    </div>
+                    <?php if ($errorMessage): ?>
+                        <div class="field-error mt-1">
+                            <span class="messages"><?= $errorMessage ?></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="field field-reserved">
+                    <label for="pass" class="sr-only tracking-widest">
+                        <?= __('Password') ?>
+                    </label>
+                    <div>
+                        <input name="login[password]"
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
+                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                               required
+                               type="password"
+                               autocomplete="<?= $block->isAutocompleteDisabled() ? 'off' : 'current-password' ?>"
+                               id="pass"
+                               title="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
+                        />
+                    </div>
+                </div>
+
                 <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN) : '' ?>
+
                 <?= $block->getChildHtml('form_additional_info') ?>
-                <a class="link link--primary mt-2 text-sm tracking-widest" href="<?= $escaper->escapeUrl($block->getForgotPasswordUrl()) ?>" x-element-transition-trigger>
-                    <span><?= $escaper->escapeHtml(__('Forgot Your Password?')) ?></span>
-                </a>
-                <button type="submit" class="button button--filled-primary mt-7 w-full py-4 " name="send"
+            </div>
+
+            <a class="link link--primary mt-2 text-sm tracking-widest"
+               href="<?= $escaper->escapeUrl($block->getForgotPasswordUrl()) ?>"
+               x-element-transition-trigger
+            >
+                <span><?= $escaper->escapeHtml(__('Forgot Your Password?')) ?></span>
+            </a>
+
+            <div class="flex flex-col gap-6 mt-7">
+                <button class="button button--filled-primary"
+                        :class="isLoading ? 'button--disabled' : ''"
+                        :disabled="isLoading"
+                        type="submit"
+                        name="send"
                     <?php if ($loginButtonViewModel->disabled()): ?> disabled data-recaptcha-btn<?php endif; ?>
                 >
-                    <span><?= $escaper->escapeHtml(__('Sign In')) ?></span>
+                    <?= __('Sign In') ?>
                 </button>
-                <div x-show="displayErrorMessage" class="mt-3">
-                    <p class="text-red text-sm" x-text="generalErrorMessage"></p>
-                </div>
-                <div class="mt-6 text-center text-sm tracking-wider">
-                    <a href="<?= $this->getUrl('customer/account/create') ?>" class="link link--primary text-md" x-element-transition-trigger>
-                        <?= $escaper->escapeHtml(__('Create new account')) ?>
+                <div class="text-center tracking-wider">
+                    <a href="<?= $this->getUrl('customer/account/create') ?>"
+                       class="link link--primary"
+                       x-element-transition-trigger
+                    >
+                        <?= __('Create new account') ?>
                     </a>
                 </div>
-            </fieldset>
+            </div>
         </form>
-    </div>
-    <div class="w-full">
-        <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN) : '' ?>
+
+        <div class="w-full">
+            <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN) : '' ?>
+        </div>
     </div>
 </div>

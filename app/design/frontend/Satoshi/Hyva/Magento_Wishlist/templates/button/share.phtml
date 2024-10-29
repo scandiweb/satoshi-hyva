@@ -10,13 +10,15 @@ use Magento\Wishlist\Block\Customer\Wishlist\Button;
 ?>
 <?php if ($block->getWishlist()->getItemsCount() &&
     $block->getWishlist()->getShared() < $block->getConfig()->getSharingEmailLimit()): ?>
-    <button type="submit"
-            name="save_and_share"
-            title="<?= $escaper->escapeHtmlAttr(__('Share Wish List')) ?>"
-            class="button button--outline-primary"
-            :class="isLoading && 'button--disabled'"
-            :disabled="isLoading"
-            @click='setActionBtnText("share-wish-list")'
+    <button
+        type="submit"
+        name="save_and_share"
+        title="<?= $escaper->escapeHtmlAttr(__('Share wish list')) ?>"
+        class="button button--outline-primary bg-bg-400"
+        :class="isLoading && 'button--disabled'"
+        :disabled="isLoading"
+        @click='setActionBtnText("share-wish-list")'
+
     >
         <span x-text="isLoading && actionBtnText === 'share-wish-list' ?
             '<?= $escaper->escapeHtml(__('Sharing...')) ?>' :
