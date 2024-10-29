@@ -1,6 +1,6 @@
 <?php
 
-namespace Satoshi\Theme\Checkout\Block\Cart;
+namespace Satoshi\Checkout\Block\Cart;
 
 use Magento\Checkout\Block\Cart\Coupon as CoreCoupon;
 

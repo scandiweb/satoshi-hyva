@@ -1,6 +1,6 @@
 <?php
 
-namespace Satoshi\Theme\Newsletter\Controller\Subscriber;
+namespace Satoshi\Newsletter\Controller\Subscriber;
 
 use Magento\Newsletter\Controller\Subscriber\NewAction as SourceNewAction;
 use Magento\Customer\Api\AccountManagementInterface as CustomerAccountManagement;

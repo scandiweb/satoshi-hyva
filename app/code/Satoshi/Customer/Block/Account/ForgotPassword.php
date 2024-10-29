@@ -1,6 +1,6 @@
 <?php
 
-namespace Satoshi\Theme\Block\Account;
+namespace Satoshi\Customer\Block\Account;
 
 use Magento\Customer\Model\Session;
 use Magento\Customer\Model\Url;
