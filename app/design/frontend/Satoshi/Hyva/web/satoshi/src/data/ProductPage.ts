@@ -327,39 +327,35 @@ export const ProductPage = () =>
       window.addEventListener(
         "private-content-loaded",
         (event: any) => {
-          // In app/design/frontend/Satoshi/Hyva/Magento_Theme/layout/default.xml file we have the below code:
-          // <attribute name="@private-content-loaded.window" value="$store.cart.setCartItems($event.detail.data.cart?.items || []);" />
-          // which is responsible for saving cart items inside the store.
-          // here I use setTimeout to ensure the code inside this event listener gets executed after the above event listener in default.xml file.
-          // when user adds a product to cart, an animation gets triggered inside cart popup. this animation happens inside this event listener.
-          setTimeout(() => {
-            const { cart: { items = [] } = {} } = event.detail.data || {};
+          const { cart: { items = [] } = {} } = event.detail.data || {};
 
-            // Grouped products
-            if (this.groupedIds.length) {
-              const itemIds = this.groupedIds
-                .map(
-                  (id) =>
-                    items.find((item: CartItem) => item.product_id === id)
-                      ?.item_id,
-                )
-                .filter((id) => !!id);
+          // Grouped products
+          if (this.groupedIds.length) {
+            const itemIds = this.groupedIds
+              .map(
+                (id) =>
+                  items.find((item: CartItem) => item.product_id === id)
+                    ?.item_id,
+              )
+              .filter((id) => !!id);
 
-              if (itemIds.length) {
-                Alpine.store("cart").focusInCart(itemIds);
-              }
-              return;
+            if (itemIds.length) {
+              setTimeout(() => Alpine.store("cart").focusInCart(itemIds), 200);
             }
+            return;
+          }
 
-            // Non grouped products
-            const item = items.find((item: CartItem) =>
-              this.checkIsItemInCart(item),
+          // Non grouped products
+          const item = items.find((item: CartItem) =>
+            this.checkIsItemInCart(item),
+          );
+
+          if (item) {
+            setTimeout(
+              () => Alpine.store("cart").focusInCart(item.item_id),
+              200,
             );
-
-            if (item) {
-              Alpine.store("cart").focusInCart(item.item_id);
-            }
-          }, 200);
+          }
         },
         { once: true },
       );
