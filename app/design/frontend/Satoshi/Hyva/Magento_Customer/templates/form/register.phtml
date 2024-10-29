@@ -27,6 +27,8 @@ use Hyva\Theme\ViewModel\SvgIcons;
 // Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
 // on the Magento_ReCaptchaCustomer module
 $recaptcha = $block->getData('viewModelRecaptcha');
+$recaptchaFailedMessage = __('ReCAPTCHA validation failed. Please try again.');
+$recaptchaSystemErrorMessage = __('Something went wrong with reCAPTCHA. Please contact the store owner.');
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $createAccountButtonViewModel = $viewModels->require(CreateAccountButton::class);
 $region = $block->getAttributeData()->getFrontendLabel('region');
@@ -47,11 +49,17 @@ $errorMessage = $block->getErrorMessage();
         </header>
 
         <?php /* Extensions placeholder */ ?>
+      <!-- $form is used in recaptcha validation, and declared in x-init for scope -->
         <?= $block->getChildHtml('customer.form.register.extra') ?>
         <form action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
+              x-init="$form = $el"
               x-data="Object.assign(hyva.formValidation($el),
                 Register(
-                    () => { <?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '') ?> },
+                    () => { <?= $escaper->escapeHtmlAttr($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '') ?> },
+                    Boolean(<?= $recaptcha ? $recaptcha->isCaptchaEnabledFor(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>),
+                    '<?= $recaptcha ? $recaptcha->getSelectedTypeForForm(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>',
+                    '<?= $recaptchaFailedMessage ?>',
+                    '<?= $recaptchaSystemErrorMessage ?>',
                     '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
                     <?= $escaper->escapeHtmlAttr($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
                     [
@@ -77,6 +85,11 @@ $errorMessage = $block->getErrorMessage();
                     <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
                 </div>
             <?php endif; ?>
+          <template x-if="recaptchaErrorMessage">
+            <div class="field-error -mt-3 mb-3">
+              <span class="messages" x-text="recaptchaErrorMessage"></span>
+            </div>
+          </template>
 
             <?= /* @noEscape */
             $block->getBlockHtml('formkey'); ?>
@@ -127,9 +140,9 @@ $errorMessage = $block->getErrorMessage();
 
                 <div class="field field-reserved<?= !empty($errorMessage['password']) ? ' field-error' : '' ?>">
                     <label class="sr-only tracking-widest" for="password">
-                            <span>
-                                <?= $escaper->escapeHtml(__('Password')) ?>
-                            </span>
+                        <span>
+                            <?= $escaper->escapeHtml(__('Password')) ?>
+                        </span>
                     </label>
                     <div>
                         <input type="password"
@@ -209,9 +222,9 @@ $errorMessage = $block->getErrorMessage();
 
                         <div class="field field-reserved<?= !empty($errorMessage['street[]']) ? ' field-error' : '' ?>">
                             <label for="street_1" class="sr-only tracking-widest">
-                                    <span><?= /* @noEscape */
-                                        $block->getAttributeData()->getFrontendLabel('street') ?>
-                                    </span>
+                                <span><?= /* @noEscape */
+                                    $block->getAttributeData()->getFrontendLabel('street') ?>
+                                </span>
                             </label>
                             <div>
                                 <input type="text"
