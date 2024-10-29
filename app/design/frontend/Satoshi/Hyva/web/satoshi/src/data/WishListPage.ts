@@ -13,8 +13,8 @@ export type WishListPageType = {
   actionBtnText: string;
   addToCart(itemId: string, postParams: any, productId: string): void;
   addAllItemsToCart(): void;
-  postFormWithRedirect(postParams: PostParams, addedProductIds: string[]): void;
-  focusOnCartAddedItems(addedProductIds: string[]): void;
+  postFormWithRedirect(postParams: PostParams, addedProductSkus: string[]): void;
+  focusOnCartAddedItems(addedProductSkus: string[]): void;
   setActionBtnText(text?: string): void;
   updateWishList(event: Event): void;
 } & Magics<{}>;
@@ -26,32 +26,32 @@ export const WishListPage = (
       isLoading: false,
       actionBtnText: '',
 
-      addToCart(itemId, postParams, productId) {
+      addToCart(itemId, postParams, productSku) {
         const qtyInput = this.$refs[`product-qty-${itemId}`] as HTMLInputElement | null;
         postParams.data.qty = qtyInput?.value ?? postParams.data.qty;
 
-        this.postFormWithRedirect(postParams, [productId]);
+        this.postFormWithRedirect(postParams, [productSku]);
       },
 
       addAllItemsToCart() {
         let separator = urlParams.action.indexOf('?') >= 0 ? '&' : '?';
-        const addedProductIds = [] as string[];
+        const addedProductSkus = [] as string[];
 
         document.querySelectorAll('input[name^=qty]').forEach((inputElement) => {
           const input = inputElement as HTMLInputElement;
           urlParams.action += separator + input.name + '=' + encodeURIComponent(input.value);
           separator = '&';
 
-          const productId = input.getAttribute('data-product-id') as string;
-          if (productId) {
-            addedProductIds.push(productId);
+          const productSku = input.getAttribute('data-product-sku') as string;
+          if (productSku) {
+            addedProductSkus.push(productSku);
           }
         });
 
-        this.postFormWithRedirect(urlParams, addedProductIds);
+        this.postFormWithRedirect(urlParams, addedProductSkus);
       },
 
-      postFormWithRedirect(postParams, addedProductIds = [] as string[]) {
+      postFormWithRedirect(postParams, addedProductSkus = [] as string[]) {
         this.isLoading = true;
         const form = document.createElement("form");
 
@@ -83,7 +83,7 @@ export const WishListPage = (
         }).then(async (res) => {
           if (res.ok) {
             window.hyva.replaceDomElement("#MainContent", await res.text());
-            this.focusOnCartAddedItems(addedProductIds);
+            this.focusOnCartAddedItems(addedProductSkus);
           }
         }).catch((error) => {
           console.error("Error while form submission", error);
@@ -94,11 +94,11 @@ export const WishListPage = (
         });
       },
 
-      focusOnCartAddedItems(addedProductIds = [] as string[]) {
+      focusOnCartAddedItems(addedProductSkus = [] as string[]) {
         const cartItems = Alpine.store("cart").cartItems;
 
         const itemIds = cartItems
-            .filter((item: CartItem) => addedProductIds.includes(item.product_id))
+            .filter((item: CartItem) => addedProductSkus.includes(item.product_sku))
             .map((item) => item.item_id);
 
         if (itemIds.length) {
