@@ -10,13 +10,14 @@ use Magento\Wishlist\Block\Customer\Wishlist\Button;
 ?>
 
 <?php if ($block->getWishlist()->getItemsCount()): ?>
-    <button type="submit"
-            name="do"
-            title="<?= $escaper->escapeHtmlAttr(__('Update Wish List')) ?>"
-            class="button button--outline-primary"
-            :class="isLoading && 'button--disabled'"
-            :disabled="isLoading"
-            @click='setActionBtnText("update-wish-list")'
+    <button
+        type="submit"
+        name="do"
+        title="<?= $escaper->escapeHtmlAttr(__('Update wish list')) ?>"
+        class="button button--outline-primary bg-bg-400"
+        :class="isLoading && 'button--disabled'"
+        :disabled="isLoading"
+        @click='setActionBtnText("update-wish-list")'
     >
         <span x-text="isLoading && actionBtnText === 'update-wish-list' ?
             '<?= $escaper->escapeHtml(__('Updating...')) ?>' :

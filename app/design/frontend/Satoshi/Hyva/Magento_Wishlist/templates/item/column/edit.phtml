@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Edit;
 use Magento\Wishlist\Model\Item;
@@ -12,8 +12,8 @@ use Magento\Wishlist\Model\Item;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
-/** @var HeroiconsOutline $heroicons */
-$heroicons = $viewModels->require(HeroiconsOutline::class);
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
 
 /** @var Item $item */
 $item = $block->getItem();
@@ -31,11 +31,13 @@ $editProductUrl = $configureUrl . (count($urlHash) > 1 ? '#' . $urlHash[1] : '')
 ?>
 
 <?php if ($product->isVisibleInSiteVisibility()): ?>
-    <a class="action edit btn btn-secondary inline-flex mr-2 p-2"
-       href="<?= $escaper->escapeUrl($editProductUrl) ?>"
-       x-element-transition-trigger
+    <a
+        class="button button--outline-primary w-11 md:w-12 p-0 ml-auto mr-2"
+        href="<?= $escaper->escapeUrl($editProductUrl) ?>"
+        title="<?= $escaper->escapeHtmlAttr(__('Edit Item')) ?>"
+        x-element-transition-trigger
     >
-        <?= $heroicons->pencilHtml('', 20, 20); ?>
+        <?= $hyvaicons->renderHtml('pencil', 'text-lg', attributes: ['title' => $escaper->escapeHtmlAttr(__('Edit Item'))]) ?>
         <span class="sr-only">
             <?= $escaper->escapeHtml(__('Edit %1', $product->getName())) ?>
         </span>

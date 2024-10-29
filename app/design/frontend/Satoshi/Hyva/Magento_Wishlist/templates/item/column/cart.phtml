@@ -7,11 +7,14 @@ use Magento\Framework\Escaper;
 use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Cart;
 use Magento\Wishlist\Model\Item;
 use Magento\Wishlist\ViewModel\AllowedQuantity;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Cart $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
 /** @var Item $item */
 $item = $block->getItem();
 $product = $item->getProduct();
@@ -23,63 +26,37 @@ $allowedQty = $viewModel->setItem($item)->getMinMaxQty();
     <?= /* @noEscape */
     $block->getLayout()->renderElement($childName, false) ?>
 <?php endforeach; ?>
-<div class="box-tocart">
-    <fieldset class="fieldset">
-        <?php if ($item->canHaveQty() && $product->isVisibleInSiteVisibility()): ?>
-            <div class="field qty">
-                <label class="label"
-                       for="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]">
-                    <span>
-                        <?= $escaper->escapeHtml(__('Qty')) ?>
-                    </span>
-                </label>
-                <div class="control">
-                    <input type="number"
-                           x-ref="product-qty-<?= $escaper->escapeHtmlAttr($item->getId()) ?>"
-                           data-role="qty"
-                           data-product-sku="<?= $escaper->escapeHtmlAttr($product->getSku()) ?>"
-                           id="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
-                           class="form-input qty"
-                           name="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
-                           value="<?= /* @noEscape */
-                           $block->getAddToCartQty($item) * 1 ?>"
-                        <?= $product->isSaleable() ? '' : 'disabled' ?>
-                    >
-                </div>
-            </div>
-        <?php endif; ?>
-        <?php if ($product->isSaleable()): ?>
-            <div class="flex gap-4 flex-col md:flex-row mt-2">
-                <button type="button"
-                        data-role="tocart"
-                        @click.prevent='setActionBtnText("add-to-cart-<?= $item->getId() ?>"); addToCart("<?= $escaper->escapeHtmlAttr($item->getId()) ?>",
-                        <?= /* @noEscape */
-                        $block->getItemAddToCartParams($item) ?>,
-                        "<?= $escaper->escapeHtmlAttr($product->getSku()) ?>")'
-                        title="<?= $escaper->escapeHtmlAttr(__('Add %1 to Cart', $product->getName())) ?>"
-                        aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Cart %1', $product->getName())) ?>"
-                        class="button button--filled-primary"
-                        :class="isLoading ? 'button--disabled' : ''"
-                        :disabled="isLoading"
-                        data-addto="cart"
-                >
-                    <span x-text="isLoading && actionBtnText === 'add-to-cart-<?= $item->getId() ?>' ?
-                        '<?= $escaper->escapeHtml(__('Adding...')) ?>' :
-                        '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'">
-                        <?= $escaper->escapeHtml(__('Add to Cart')) ?>
-                    </span>
-                </button>
-            </div>
+<div class="flex items-center">
+    <?php if ($product->isSaleable()): ?>
+      <button type="button"
+              data-role="tocart"
+              @click.prevent='setActionBtnText("add-to-cart-<?= $item->getId() ?>"); addToCart("<?= $escaper->escapeHtmlAttr($item->getId()) ?>",
+                <?= /* @noEscape */
+                $block->getItemAddToCartParams($item) ?>,
+                "<?= $escaper->escapeHtmlAttr($product->getSku()) ?>")'
+              title="<?= $escaper->escapeHtmlAttr(__('Add %1 to Cart', $product->getName())) ?>"
+              aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Cart %1', $product->getName())) ?>"
+              class="button button--filled-primary gap-3"
+              :class="isLoading ? 'button--disabled' : ''"
+              :disabled="isLoading"
+              data-addto="cart"
+      >
+          <span x-text="isLoading && actionBtnText === 'add-to-cart-<?= $item->getId() ?>' ?
+              '<?= $escaper->escapeHtml(__('Adding...')) ?>' :
+              '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'">
+              <?= $escaper->escapeHtml(__('Add to Cart')) ?>
+          </span>
+          <?= $hyvaicons->renderHtml('cart-empty', 'text-xl', attributes: ['title' => $escaper->escapeHtmlAttr(__('Add %1 to Cart', $product->getName()))]) ?>
+      </button>
+    <?php else: ?>
+        <?php if ($product->getIsSalable()): ?>
+        <p title="<?= $escaper->escapeHtmlAttr(__('Availability')) ?>">
+          <span><?= $escaper->escapeHtml(__('In stock')) ?></span>
+        </p>
         <?php else: ?>
-            <?php if ($product->getIsSalable()): ?>
-                <p class="available stock" title="<?= $escaper->escapeHtmlAttr(__('Availability')) ?>">
-                    <span><?= $escaper->escapeHtml(__('In stock')) ?></span>
-                </p>
-            <?php else: ?>
-                <p class="unavailable stock" title="<?= $escaper->escapeHtmlAttr(__('Availability')) ?>">
-                    <span><?= $escaper->escapeHtml(__('Out of stock')) ?></span>
-                </p>
-            <?php endif; ?>
+        <p title="<?= $escaper->escapeHtmlAttr(__('Availability')) ?>">
+          <span><?= $escaper->escapeHtml(__('Out of stock')) ?></span>
+        </p>
         <?php endif; ?>
-    </fieldset>
+    <?php endif; ?>
 </div>
