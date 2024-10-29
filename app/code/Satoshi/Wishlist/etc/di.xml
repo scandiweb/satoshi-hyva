@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference
+            for="Magento\Wishlist\Controller\Index\Send"
+            type="Satoshi\Wishlist\Controller\Index\Send"
+    />
+    <preference
+            for="Magento\Wishlist\Block\Customer\Sharing"
+            type="Satoshi\Wishlist\Block\Customer\Sharing"
+    />
+</config>
