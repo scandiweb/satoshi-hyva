@@ -23,12 +23,4 @@
         for="Magento\Theme\Block\Html\Footer"
         type="Satoshi\Theme\Block\Html\Footer"
     />
-    <preference
-        for="Magento\Customer\Controller\Account\EditPost"
-        type="Satoshi\Theme\Customer\Controller\Account\EditPost"
-    />
-    <preference
-        for="Magento\Customer\Block\Form\Edit"
-        type="Satoshi\Theme\Block\Form\Edit"
-    />
 </config>
