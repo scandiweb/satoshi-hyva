@@ -1,0 +1,31 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Customer\Block\Widget\Company;
+use Magento\Customer\Helper\Address as AddressHelper;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var Company $block */
+
+$validationClass = $this->helper(AddressHelper::class)->getAttributeValidationClass('company');
+
+?>
+<div class="field field-reserved">
+    <label for="company" class="sr-only tracking-widest">
+        <span><?= $escaper->escapeHtml(__('Company')) ?></span>
+    </label>
+    <div>
+        <input type="text"
+               name="company"
+               id="company"
+            <?php if ($block->isRequired()): ?>
+                required
+            <?php endif; ?>
+               value="<?= $escaper->escapeHtmlAttr($block->getCompany()) ?>"
+               title="<?= $escaper->escapeHtmlAttr(__('Company')) ?>"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your company name')) ?>"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+        >
+    </div>
+</div>
