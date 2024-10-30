@@ -2,19 +2,23 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference
-        for="Magento\Customer\Controller\Account\LoginPost"
-        type="Satoshi\Customer\Controller\Account\LoginPost"
+            for="Magento\Customer\Controller\Account\LoginPost"
+            type="Satoshi\Customer\Controller\Account\LoginPost"
     />
     <preference
-        for="Magento\Customer\Controller\Account\ForgotPasswordPost"
-        type="Satoshi\Customer\Controller\Account\ForgotPasswordPost"
+            for="Magento\Customer\Controller\Account\ForgotPasswordPost"
+            type="Satoshi\Customer\Controller\Account\ForgotPasswordPost"
     />
     <preference
-        for="Magento\Customer\Block\Account\Forgotpassword"
-        type="Satoshi\Customer\Block\Account\ForgotPassword"
+            for="Magento\Customer\Block\Account\Forgotpassword"
+            type="Satoshi\Customer\Block\Account\ForgotPassword"
     />
     <preference
-        for="Magento\Customer\Block\Form\Login"
-        type="Satoshi\Customer\Block\Form\Login"
+            for="Magento\Customer\Block\Form\Login"
+            type="Satoshi\Customer\Block\Form\Login"
+    />
+    <preference
+            for="Magento\Customer\Block\Form\Register"
+            type="Satoshi\Customer\Block\Form\Register"
     />
 </config>
