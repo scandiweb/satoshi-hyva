@@ -1,0 +1,15 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Move customer.wishlist.item.comment after customer.wishlist.item.name -->
+        <move element="customer.wishlist.item.comment" destination="customer.wishlist.items" after="customer.wishlist.item.name"/>
+
+        <!-- Remove customer.wishlist.item.review -->
+        <referenceBlock name="customer.wishlist.item.review" remove="true"/>
+
+        <!-- Move customer.wishlist.item.cart inside customer.wishlist.item.actions -->
+        <move element="customer.wishlist.item.cart" destination="customer.wishlist.item.actions" before="-"/>
+
+        <!-- Move customer.wishlist.button.toCart button before the other buttons -->
+        <move element="customer.wishlist.button.toCart" destination="customer.wishlist.buttons" before="-"/>
+    </body>
+</page>

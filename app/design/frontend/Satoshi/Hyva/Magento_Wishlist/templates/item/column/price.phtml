@@ -1,0 +1,37 @@
+<?php
+
+use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Cart;
+
+/** @var Cart $block */
+
+/** @var Item $item */
+$item = $block->getItem();
+$product = $item->getProduct();
+?>
+
+<div class="flex justify-between items-center mb-5 [&_.price]:text-text-500 [&_.price]:text-lg [&_.price]:font-bold">
+    <?php foreach ($block->getChildNames() as $childName): ?>
+        <?= /* @noEscape */ $block->getLayout()->renderElement($childName, false) ?>
+    <?php endforeach;?>
+
+    <?php if ($item->canHaveQty() && $product->isVisibleInSiteVisibility()): ?>
+        <label
+            class="sr-only"
+            for="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
+        >
+            <span>
+                <?= $escaper->escapeHtml(__('Qty')) ?>
+            </span>
+        </label>
+        <input
+            type="number"
+            x-ref="product-qty-<?= $escaper->escapeHtmlAttr($item->getId()) ?>"
+            data-role="qty"
+            id="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
+            name="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
+            value="<?= /* @noEscape */ $block->getAddToCartQty($item) * 1 ?>"
+            class="input__field input__field--outline px-5 py-2.5 border-bg-600 placeholder:text-border-color w-20"
+            <?= $product->isSaleable() ? '' : 'disabled' ?>
+        >
+    <?php endif; ?>
+</div>
