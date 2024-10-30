@@ -32,7 +32,6 @@ foreach ($currencies as $code => $currency) {
     ];
 }
 
-
 $currency = $currencies[$currentCurrencyCode];
 if ($currency) {
     $currentSymbol = !empty($currency['symbol']) ? " ({$currency['symbol']})" : '';

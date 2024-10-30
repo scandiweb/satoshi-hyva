@@ -1,5 +1,5 @@
 import type { Magics } from "alpinejs";
-import {navigateWithTransition} from "../plugins/Transition";
+import { navigateWithTransition } from "../plugins/Transition";
 
 export type RecentOrdersType = {
   reorderProducts: {
@@ -50,7 +50,6 @@ export const RecentOrders = (messageText: string) =>
       this.reorderSidebarFetchHandler(params, postUrl);
     },
 
-    // TODO: Make this without page reload, after merging product actions
     reorderSidebarFetchHandler(body, postUrl) {
       const postHeaders: Record<string, any> = {
         headers: {
@@ -62,11 +61,12 @@ export const RecentOrders = (messageText: string) =>
         credentials: "include",
       };
 
+      this.isLoading = true;
       return fetch(postUrl, postHeaders)
-        .then((response) => {
+        .then(async (response) => {
           if (response.redirected) {
-            // This is the regular path, regardless if the items could be reordered or not
-            window.location.href = response.url;
+            const content = await response.text();
+            window.hyva.replaceDomElement("#recent-orders-sidebar", content);
           } else if (response.ok) {
             return response.json();
           } else {
@@ -88,30 +88,42 @@ export const RecentOrders = (messageText: string) =>
         .catch((error) => {
           const message = { type: "error", text: error };
           window.dispatchMessages && window.dispatchMessages([message], 5000);
+        }).finally(() => {
+          this.isLoading = false;
+          const cartItems = Alpine.store("cart").cartItems;
+          const itemIds = this.reorderItems
+            .map((reorderItem: any) => 
+              cartItems.find((cartItem: any) => cartItem.product_id === reorderItem.product_id)?.item_id
+            )
+            .filter((itemId): itemId is string => !!itemId);
+
+          if(itemIds.length) {
+            Alpine.store("cart").showCart();
+          }
         });
     },
 
-      onReorder(event) {
-        const target = event.target as HTMLElement;
-        const $form = target?.closest("form");
+    onReorder(event) {
+      const target = event.target as HTMLElement;
+      const $form = target?.closest("form");
 
-        if (!$form) return;
+      if (!$form) return;
 
-        const formData = new FormData($form);
-        this.isLoading = true;
+      const formData = new FormData($form);
+      this.isLoading = true;
 
-        fetch($form.action, {
-          method: "POST",
-          body: formData,
-        }).then((res) => {
-          if (res.ok) {
-          navigateWithTransition('/checkout/cart');
-          }
-        }).catch((error) => {
-          console.error("Error while processing reorder request:", error);
-          location.reload();
-        }).finally(() => {
-            this.isLoading = false;
-        });
-      },
+      fetch($form.action, {
+        method: "POST",
+        body: formData,
+      }).then((res) => {
+        if (res.ok) {
+        navigateWithTransition('/checkout/cart');
+        }
+      }).catch((error) => {
+        console.error("Error while processing reorder request:", error);
+        location.reload();
+      }).finally(() => {
+          this.isLoading = false;
+      });
+    },
   };

@@ -6,17 +6,17 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Wishlist;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 // phpcs:disable Generic.Files.LineLength.TooLong
 
 /** @var ViewModelRegistry $viewModels */
 /** @var Escaper $escaper */
 /** @var Template $block */
-/** @var HeroiconsOutline $heroiconsOutline */
+/** @var SvgIcons $hyvaicons */
 
 $wishlistViewModel = $viewModels->require(Wishlist::class);
-$heroiconsOutline = $viewModels->require(HeroiconsOutline::class);
+$hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
 <?php if ($wishlistViewModel->isEnabled()): ?>
@@ -78,7 +78,7 @@ $heroiconsOutline = $viewModels->require(HeroiconsOutline::class);
                         wishlistProducts.items = wishlistProducts.items.slice(0, SIDEBAR_ITEMS_NUMBER);
 
                         this.wishlistProducts = wishlistProducts;
-                        this.wishlistCountLabel = '(' + this.wishlistProducts.counter + ')';
+                        this.wishlistCountLabel = this.wishlistProducts.counter;
                         this.itemCount = this.wishlistProducts.items.length;
                         this.wishlistItems = this.wishlistProducts.items;
                     }
@@ -97,25 +97,25 @@ $heroiconsOutline = $viewModels->require(HeroiconsOutline::class);
                 }
             }
         }
-
     </script>
 
-    <div x-data="initWishlistOnWishlistSidebar()"
-         @private-content-loaded.window="receiveWishlistData($event.detail.data)"
-         class="wishlist-widget"
+    <div
+        x-data="initWishlistOnWishlistSidebar()"
+        @private-content-loaded.window="receiveWishlistData($event.detail.data)"
     >
         <template x-if="itemCount">
             <div class="mt-8">
-                <h2 class="border-t border-container mb-6 pt-5" id="wishlist-sidebar">
-                    <strong class="title text-primary font-semibold text-lg"><?= $escaper->escapeHtml($block->getTitle()) ?></strong>
-                    <span class="counter text-xs" x-html="wishlistCountLabel"></span>
+                <h2 class="mb-5" id="wishlist-sidebar">
+                    <strong
+                        class="text-text-500 text-lg font-bold leading-6 mr-3"
+                    ><?= $escaper->escapeHtml(__('My wish list')) ?></strong><span class="font-medium leading-5 capitalize" x-html="wishlistCountLabel"></span>
                 </h2>
-                <ul class="my-4" aria-labelledby="wishlist-sidebar">
+                <ul class="flex flex-col gap-5 mb-5 p-5 rounded-xl bg-bg-400" aria-labelledby="wishlist-sidebar">
                     <template x-for="product in wishlistItems">
-                        <li class="flex items-start mb-4">
+                        <li class="flex items-start">
                             <a
                                 :href="product.product_url"
-                                class="block mb-3 w-10 h-10 shrink-0 mr-4"
+                                class="block mb-3 w-12 h-14 shrink-0 mr-4 rounded-xl overflow-hidden bg-[--fade-in-bg]"
                                 tabindex="-1"
                                 aria-hidden="true"
                             >
@@ -123,20 +123,21 @@ $heroiconsOutline = $viewModels->require(HeroiconsOutline::class);
                                     :src="product.image.src"
                                     alt=""
                                     loading="lazy"
+                                    class="mix-blend-darken object-center max-h-full object-cover h-full w-full"
                                 >
                             </a>
-                            <div class="product-item-details">
-                                <strong class="mr-2 text-sm leading-6 font-normal">
+                            <div class="w-[calc(100%-102px)]">
+                                <strong class="block text-text-500 leading-5 font-bold mb-1 overflow-hidden text-ellipsis text-nowrap">
                                     <a :href="product.product_url" :title="product.product_name" x-html="product.product_name"></a>
                                 </strong>
-                                <div class="mr-2 text-sm leading-6 font-bold" x-html="product.product_price"></div>
+                                <div class="font-normal mb-4 [&_.price]:text-text-400" x-html="product.product_price"></div>
                                 <template x-if="product.product_is_saleable_and_visible">
-                                    <div class="actions-primary my-2">
+                                    <div>
                                         <template x-if="!product.product_has_required_options">
                                             <button
                                                 type="button"
                                                 @click.prevent="addToCart(product.add_to_cart_params)"
-                                                class="action tocart primary btn btn-primary text-sm"
+                                                class="button button--filled-primary"
                                                 :aria-label="hyva.str('<?= $escaper->escapeJs(__('Add to Cart %1'))  ?>', product.product_name)"
                                                 data-addto="cart"
                                             >
@@ -150,24 +151,20 @@ $heroiconsOutline = $viewModels->require(HeroiconsOutline::class);
                                 type="button"
                                 @click.prevent="removeFromWishlist(product.delete_item_params)"
                                 :aria-label="hyva.str('<?= $escaper->escapeJs(__('Remove product "%1" from My Wish List')) ?>', product.product_name)"
-                                class="
-                                    p-1 inline-flex shrink-0 items-center
-                                    justify-center text-gray-500 hover:text-primary ml-auto
-                                "
+                                class="h-[30px] w-[30px] ml-auto inline-flex items-center justify-center text-primary-bg rounded-lg border"
                             >
-                                <?= $heroiconsOutline->xHtml('h-6 w-6', 25, 25, ['aria-hidden' => 'true']); ?>
+                                <?= $hyvaicons->renderHtml('close', 'text-lg', attributes: ['title' => $escaper->escapeHtmlAttr(__('remove'))]); ?>
                             </button>
                         </li>
                     </template>
                 </ul>
-                <div class="flex flex-wrap items-center md:mt-5 space-x-4 text-sm">
-                    <a href="<?= $escaper->escapeUrl($block->getUrl('wishlist')) ?>"
-                       aria-label="<?= $escaper->escapeHtmlAttr(__('Go to Wish List page')); ?>"
-                       class="px-4 text-sm text-gray-500 hover:text-primary"
-                    >
-                        <?= $escaper->escapeHtml(__('Go to Wish List')); ?>
-                    </a>
-                </div>
+                <a
+                    href="<?= $escaper->escapeUrl($block->getUrl('wishlist')) ?>"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Go to Wish List page')); ?>"
+                    class="button button--outline-primary bg-bg-400"
+                >
+                    <?= $escaper->escapeHtml(__('Go to wish list')); ?>
+                </a>
             </div>
         </template>
     </div>
