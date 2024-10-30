@@ -19,7 +19,6 @@ $errorMessage = $block->getErrorMessage();
             id="oar-widget-orders-and-returns-form"
             action="<?= $escaper->escapeUrl($block->getActionUrl()) ?>"
             method="post" name="guest_post"
-            x-data="initForm()"
     >
         <fieldset class="fieldset">
             <?= $block->getBlockHtml('formkey') ?>

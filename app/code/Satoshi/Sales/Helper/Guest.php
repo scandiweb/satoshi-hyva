@@ -1,6 +1,6 @@
 <?php
 
-namespace Satoshi\Theme\Helper;
+namespace Satoshi\Sales\Helper;
 
 use Magento\Customer\Model\Session;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -8,31 +8,26 @@ use Magento\Framework\App as App;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
+use Magento\Framework\Stdlib\Cookie\CookieSizeLimitReachedException;
+use Magento\Framework\Stdlib\Cookie\FailureToSendException;
 use Magento\Framework\Stdlib\CookieManagerInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Helper\Guest as SourceGuest;
 use Magento\Sales\Model\Order;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Stdlib\Cookie\CookieSizeLimitReachedException;
-use Magento\Framework\Stdlib\Cookie\FailureToSendException;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Sales\Helper\Guest as SourceGuest;
 
 /**
  * Class Guest
  */
 class Guest extends SourceGuest
 {
-    /**
-     * @var Session
-     */
-    protected $session;
-
     /**
      * @var OrderRepositoryInterface
      */
@@ -63,7 +58,7 @@ class Guest extends SourceGuest
         OrderRepositoryInterface $orderRepository = null,
         SearchCriteriaBuilder $searchCriteria = null
     ) {
-        $this->session = $customerSession;
+        $this->customerSession = $customerSession;
         $this->storeManager = $storeManager;
         $this->orderRepository = $orderRepository ?: ObjectManager::getInstance()->get(OrderRepositoryInterface::class);
         $this->searchCriteriaBuilder = $searchCriteria ?: ObjectManager::getInstance()->get(SearchCriteriaBuilder::class);
@@ -113,7 +108,7 @@ class Guest extends SourceGuest
             return true;
         } catch (InputException $e) {
             // Change here: using session to set error message
-            $this->session->setErrorMessage($e->getMessage());
+            $this->customerSession->setErrorMessage($e->getMessage());
             return $this->resultRedirectFactory->create()->setPath('sales/guest/form');
         }
     }

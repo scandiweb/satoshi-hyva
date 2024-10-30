@@ -1,14 +1,11 @@
 <?php
 
-namespace Satoshi\Theme\Block\Widget\Guest;
+namespace Satoshi\Sales\Block\Widget\Guest;
 
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Sales\Block\Widget\Guest\Form as SourceForm;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Http\Context as HttpContext;
-
-/** @var Form $block */
-
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Sales\Block\Widget\Guest\Form as SourceForm;
 
 /**
  * @api
