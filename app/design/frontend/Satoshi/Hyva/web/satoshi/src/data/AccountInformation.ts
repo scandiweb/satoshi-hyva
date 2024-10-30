@@ -8,16 +8,25 @@ export type AccountInformationType = {
   errorMessages: string[];
   displayErrorMessage: boolean;
   errors: number;
-  recaptchaError: string | undefined;
+  recaptchaErrorMessage: string | null;
+  isCaptchaEnabled: boolean;
+  recaptchaType: string;
+  recaptchaFailedMessage: string;
+  recaptchaSystemErrorMessage: string;
   validate(): Promise<void>;
   handleCheckboxChange(checkboxId: string): void;
   setErrorMessages(messages: string[]): void;
   saveChanges(form: HTMLFormElement): void;
   submitForm(event: Event): void;
+  validateRecaptcha(form: HTMLFormElement): void;
 } & Magics<{}>;
 
 export const AccountInformation = (
-    recaptchaValidationScript: string,
+    recaptchaValidationScript: Function,
+    isCaptchaEnabled: boolean,
+    recaptchaType: string,
+    recaptchaFailedMessage: string,
+    recaptchaSystemErrorMessage: string,
     initialShowEmailField: boolean,
     initialShowPasswordFields: boolean,
 ) =>
@@ -28,7 +37,7 @@ export const AccountInformation = (
       errorMessages: [] as string[],
       displayErrorMessage: false,
       errors: 0,
-      recaptchaError: undefined,
+      recaptchaErrorMessage: null,
 
       handleCheckboxChange(checkboxId) {
         this.$nextTick(() => {
@@ -71,12 +80,9 @@ export const AccountInformation = (
               // Do not rename $form, the variable is expected to be declared in the recaptcha output
               const $form = event.target as HTMLFormElement;
 
-              if (recaptchaValidationScript) {
-                eval(recaptchaValidationScript);
-                this.recaptchaError = this.errorMessages.find(message => message.includes('ReCaptcha'));
-              }
+              this.validateRecaptcha($form);
 
-              if (this.errors === 0) {
+              if (this.errors === 0 && !this.recaptchaErrorMessage) {
                 this.saveChanges($form);
               }
             })
@@ -85,5 +91,44 @@ export const AccountInformation = (
                 (invalid[0] as HTMLElement).focus();
               }
             });
+      },
+
+      validateRecaptcha($form) {
+        this.recaptchaErrorMessage = null;
+
+        if (isCaptchaEnabled) {
+          try {
+            // Execute the recaptcha validation script to initialize the validation process
+            recaptchaValidationScript();
+
+            // Obtain the reCAPTCHA response token based on type
+            let recaptchaToken = '';
+
+            if (recaptchaType === 'recaptcha_v3') {
+              // For v3, reCAPTCHA will execute and provide the token directly
+              recaptchaToken = grecaptcha.getResponse();
+            } else if (recaptchaType === 'recaptcha' || recaptchaType === 'invisible') {
+              // For v2 types, get the token from the specific reCAPTCHA instance
+              recaptchaToken = grecaptcha.getResponse(window.grecaptchaInstanceCustomercreate);
+            }
+
+            if (!recaptchaToken) {
+              this.recaptchaErrorMessage = recaptchaFailedMessage;
+              return;
+            }
+
+            // Append the token to the form data based on reCAPTCHA type
+            if (recaptchaType === 'recaptcha_v3' || recaptchaType === 'recaptcha') {
+              $form['g-recaptcha-response'].value = recaptchaToken;
+            } else if (recaptchaType === 'invisible') {
+              // Execute the invisible captcha explicitly and append the token after
+              grecaptcha.execute(window.grecaptchaInstanceCustomercreate).then(() => {
+                $form['g-recaptcha-response'].value = recaptchaToken;
+              });
+            }
+          } catch (error) {
+            this.recaptchaErrorMessage = recaptchaSystemErrorMessage;
+          }
+        }
       },
     };
