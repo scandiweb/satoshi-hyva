@@ -29,6 +29,7 @@ import { Search } from "./data/Search";
 import { Shipping } from "./data/Shipping.js";
 import { Accordion } from "./data/Accordion";
 import { Address } from "./data/Address";
+import { AddressEdit } from "./data/AddressEdit";
 import { RangeSlider } from "./data/RangeSlider";
 import { Slider } from "./data/Slider";
 import { CountdownTimer } from "./data/CountdownTimer";
@@ -42,6 +43,7 @@ import { Rating } from "./data/Rating";
 import { BundlePrice } from "./data/BundlePrice";
 import { CatalogPrice } from "./data/CatalogPrice";
 import { ReviewList } from "./data/ReviewList.ts";
+import { Register } from "./data/Register";
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -71,6 +73,7 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("Shipping", Shipping);
   Alpine.data("Accordion", Accordion);
   Alpine.data("Address", Address);
+  Alpine.data("AddressEdit", AddressEdit);
   Alpine.data("RangeSlider", RangeSlider);
   Alpine.data("Slider", Slider);
   Alpine.data("CountdownTimer", CountdownTimer);
@@ -84,4 +87,5 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("BundlePrice", BundlePrice);
   Alpine.data("CatalogPrice", CatalogPrice);
   Alpine.data("ReviewList", ReviewList);
+  Alpine.data("Register", Register);
 });
