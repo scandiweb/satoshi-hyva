@@ -85,11 +85,6 @@ $errorMessage = $block->getErrorMessage();
                     <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
                 </div>
             <?php endif; ?>
-          <template x-if="recaptchaErrorMessage">
-            <div class="field-error -mt-3 mb-3">
-              <span class="messages" x-text="recaptchaErrorMessage"></span>
-            </div>
-          </template>
 
             <?= /* @noEscape */
             $block->getBlockHtml('formkey'); ?>
@@ -464,6 +459,12 @@ $errorMessage = $block->getErrorMessage();
                 <?php if ($recaptcha): ?>
                     <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) ?>
                     <?= $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) ?>
+
+                  <template x-if="recaptchaErrorMessage">
+                    <div class="field-error -mt-3">
+                      <span class="messages" x-text="recaptchaErrorMessage"></span>
+                    </div>
+                  </template>
                 <?php endif; ?>
             </div>
 
