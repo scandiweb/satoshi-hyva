@@ -24,6 +24,7 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
 $heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
 
 $images = $block->getGalleryImages()->getItems();
+
 $mainImage = current(array_filter($images, [$block, 'isMainImage']));
 
 if (!empty($images) && empty($mainImage)) {
@@ -44,7 +45,8 @@ $productName = $block->getProduct()->getName();
 
 <div class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8">
     <!-- Main image with anti blinking -->
-    <div class="relative flex aspect-product flex-shrink-0 items-center justify-center overflow-hidden bg-[--fade-in-bg] md:rounded-2xl max-md:hidden">
+    <div x-show="!imageApplied"
+         class="relative flex aspect-product flex-shrink-0 items-center justify-center overflow-hidden bg-[--fade-in-bg] md:rounded-2xl max-md:hidden">
         <div
             x-data="
                 TransitionImage({
@@ -116,7 +118,8 @@ $productName = $block->getProduct()->getName();
     </div>
 
     <!-- Other images  -->
-    <template x-for="(image, index) in images.filter(img => img.img !== '<?= $mainImageUrl ?>')" :key="index">
+    <template x-for="(image, index) in imageApplied ? images : images.filter(img => img.img !== '<?= $mainImageUrl ?>')"
+              :key="index">
         <div class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl">
             <div class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
                 <img

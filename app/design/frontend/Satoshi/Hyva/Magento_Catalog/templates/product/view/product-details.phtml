@@ -95,7 +95,7 @@ if ($product) {
                     alt="<?= $escaper->escapeHtmlAttr($mainImage ? $mainImage->getData('label') : $productName) ?>"
                     class=" inset-0 object-contain object-center w-full h-full m-auto"
                     loading="lazy"
-                    src="<?= $mainImageUrl ?>"
+                    :src="images[0].img"
                 >
                 <?= $template->setData(['product' => $product, 'class' => 'md:hidden bottom left'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
 
@@ -118,7 +118,7 @@ if ($product) {
                                     ['aria-hidden' => 'true']
                                 ); ?>
                             </button>
-        
+
                             <!-- Youtube container -->
                             <div class="absolute inset-0 hidden size-full bg-white"
                                 :class="{ 'hidden': activeVideoType !== 'youtube' }"
@@ -127,7 +127,7 @@ if ($product) {
                             >
                                 <div id="youtube-player-<?= $mainImage->getData('position') ?>" class="size-full"></div>
                             </div>
-        
+
                             <!-- Video container -->
                             <div class="absolute inset-0 hidden size-full bg-white"
                                 :class="{ 'hidden': activeVideoType !== 'vimeo' }"
