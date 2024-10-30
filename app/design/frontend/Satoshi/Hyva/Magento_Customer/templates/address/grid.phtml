@@ -1,0 +1,134 @@
+<?php
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Customer\Block\Address\Grid;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Grid $block */
+/** @var Escaper $escaper */
+
+/** @var ViewModelRegistry $viewModels */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<section x-data="Address()">
+    <div>
+        <h2 class="text-text-500 text-lg font-bold">
+            <?= $escaper->escapeHtml(__('Address Book')) ?>
+        </h2>
+        <div data-content-wrapper id="address-list-wrapper" class="break-words">
+            <?php if ($additionalAddresses = $block->getAdditionalAddresses()): ?>
+                <?php $i = 0; ?>
+                <!-- pagination-content -->
+                <?php foreach ($additionalAddresses as $address): ?>
+                    <?php $i++ ?>
+                    <div class="bg-bg-400 grid lg:grid-cols-6 gap-4 mt-5 p-5 rounded-xl">
+                        <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
+                            <div class="text-text-500 font-bold">
+                                <?= $escaper->escapeHtml(__('Company')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($address->getCompany()) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
+                            <div class="text-text-500 font-bold">
+                                <?= $escaper->escapeHtml(__('Name')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($address->getLastname()) ?>,
+                                <?= $escaper->escapeHtml($address->getFirstname()) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
+                            <div class="text-text-500 font-bold">
+                                <?= $escaper->escapeHtml(__('Street Address')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($block->getStreetAddress($address)) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
+                            <div class="text-text-500 font-bold">
+                                <?= $escaper->escapeHtml(__('City')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($address->getCity()) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:flex lg:flex-col gap-2">
+                            <div class="text-text-500 font-bold">
+                                <?= $escaper->escapeHtml(__('Country')) ?>
+                            </div>
+                            <div>
+                                <?= $escaper->escapeHtml($block->getCountryByCode($address->getCountryId())) ?>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:flex lg:flex-col md:items-end gap-2">
+                            <div class="text-text-500 font-bold">
+                                <?= $escaper->escapeHtml(__('Edit / Remove')) ?>
+                            </div>
+                            <div class="flex gap-5">
+                                <a
+                                    class="text-primary-500 w-5 h-5"
+                                    title="<?= $escaper->escapeHtmlAttr(__('Edit')) ?>"
+                                    href="<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>"
+                                    x-element-transition-trigger
+                                >
+                                    <?= $hyvaicons->renderHtml('pencil', 'w-full h-full', attributes: ['title' => 'Edit']) ?>
+                                </a>
+                                <a
+                                    class="text-primary-500 w-5 h-5"
+                                    :class="isLoading && 'button--disabled'"
+                                    :disabled="isLoading"
+                                    title="<?= $escaper->escapeHtmlAttr(__('Delete')) ?>"
+                                    @click.prevent="deleteAddress('<?= $address->getId() ?>', '<?= $escaper->escapeJs(__('Are you sure you want to delete this address?')) ?>', '<?= $escaper->escapeJs($block->getDeleteUrl()) ?>')"
+                                    href="#"
+                                >
+                                    <?= $hyvaicons->renderHtml('remove', 'w-full h-full') ?>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                <!-- end-pagination-content -->
+            <?php else: ?>
+                <p>
+                    <?= $escaper->escapeHtml(__('You have no other address entries in your address book.')) ?>
+                </p>
+            <?php endif ?>
+        </div>
+    </div>
+
+    <?php if ($block->getChildHtml('pager')): ?>
+        <?= $block->getChildHtml('pager') ?>
+    <?php endif; ?>
+
+    <div class="mt-5 flex flex-col md:flex-row gap-4">
+        <a
+            class="button button--filled-primary"
+            href="<?= $escaper->escapeUrl($block->getUrl('customer/address/new')) ?>"
+            x-element-transition-trigger
+        >
+        <span>
+            <?= $escaper->escapeHtml(__('Add new address')) ?>
+        </span>
+        </a>
+        <a
+            class="button button--ghost-primary"
+            href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+            x-element-transition-trigger
+        >
+        <span>
+            <?= $escaper->escapeHtml(__('Go back')) ?>
+        </span>
+        </a>
+    </div>
+</section>
