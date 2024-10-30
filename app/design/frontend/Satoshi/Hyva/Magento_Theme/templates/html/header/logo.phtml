@@ -42,7 +42,7 @@ $logoHeight = $logoHeight ?? 150;
   width="<?= $escaper->escapeHtmlAttr($logoWidth) ?>"
   height="<?= $escaper->escapeHtmlAttr($logoHeight) ?>"
   class="max-md:height-[56px] transition-all"
-  style="filter:url(#border); max-width: <?= $logoWidth ?>px"
+  style="filter:url(#border);
   <?php if($logoHeight > 56): ?>
   :style="{
     'height': $store.main.isHeaderShadowVisible ? '56px' : '<?= $escaper->escapeHtmlAttr($logoHeight) ?>px'
