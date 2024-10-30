@@ -1,0 +1,174 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var ViewModelRegistry $viewModels */
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var HeroiconsOutline $heroiconsOutline */
+
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+$heroiconsOutline = $viewModels->require(HeroiconsOutline::class);
+?>
+
+<?php if ($wishlistViewModel->isEnabled()): ?>
+    <script>
+        function initWishlistOnWishlistSidebar() {
+            function wishlistSidebarFetchHandler(body, postUrl, isRemoveAction = true) {
+                const messages = {
+                    "success": isRemoveAction
+                        ? "<?= $escaper->escapeJs(__("%1 has been removed from your Wish List.")) ?>"
+                        : "<?= $escaper->escapeJs(__("%1 has been added to your Wish List.")) ?>",
+                    "warning": isRemoveAction
+                        ? "<?= $escaper->escapeJs(__("Could not remove item from your Wish List.")) ?>"
+                        : "<?= $escaper->escapeJs(__('Could not add item to your Wish List.')) ?>",
+                }
+
+                const postHeaders = {
+                    "headers": {
+                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    },
+                    body: body,
+                    "method": "POST",
+                    "mode": "cors",
+                    "credentials": "include"
+                };
+
+                return fetch(postUrl, postHeaders).then(function (response) {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else if (response.ok) {
+                        return response.json();
+                    } else {
+                        const message = { type: "warning", text: messages.warning };
+                        window.dispatchMessages && window.dispatchMessages([message], 5000);
+                    }
+                }).then(function (response) {
+                    if (!response) return;
+                    const message = {
+                        type: (response.success) ? "success" : "error",
+                        text: (response.success) ? messages.success : response.error_message
+                    }
+                    window.dispatchMessages && window.dispatchMessages([message], 5000);
+                    window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+                }).catch(function (error) {
+                    const message = { type: "error", text: error };
+                    window.dispatchMessages && window.dispatchMessages([message], 5000);
+                });
+            }
+
+            return {
+                wishlistProducts: null,
+                itemCount: 0,
+                wishlistCountLabel: null,
+                wishlistItems: {},
+                receiveWishlistData: function (data) {
+                    if (data['wishlist']) {
+                        // Keep only 3 wishlist items
+                        const SIDEBAR_ITEMS_NUMBER = 3;
+                        const wishlistProducts = { ...data['wishlist'] };
+                        wishlistProducts.items = wishlistProducts.items.slice(0, SIDEBAR_ITEMS_NUMBER);
+
+                        this.wishlistProducts = wishlistProducts;
+                        this.wishlistCountLabel = '(' + this.wishlistProducts.counter + ')';
+                        this.itemCount = this.wishlistProducts.items.length;
+                        this.wishlistItems = this.wishlistProducts.items;
+                    }
+                },
+                addToCart: function (json) {
+                    const obj = JSON.parse(json);
+                    const postUrl = obj.action;
+                    const body = "form_key=" + hyva.getFormKey() + "&item=" + obj.data.item + "&qty=" + obj.data.qty + "&uenc=" + hyva.getUenc();
+                    wishlistSidebarFetchHandler(body, postUrl, /* isRemoveAction */ false);
+                },
+                removeFromWishlist: function(json) {
+                    const obj = JSON.parse(json);
+                    const postUrl = obj.action;
+                    const body = "form_key=" + hyva.getFormKey() + "&item=" + obj.data.item+"&uenc=" + hyva.getUenc();
+                    wishlistSidebarFetchHandler(body, postUrl);
+                }
+            }
+        }
+
+    </script>
+
+    <div x-data="initWishlistOnWishlistSidebar()"
+         @private-content-loaded.window="receiveWishlistData($event.detail.data)"
+         class="wishlist-widget"
+    >
+        <template x-if="itemCount">
+            <div class="mt-8">
+                <h2 class="border-t border-container mb-6 pt-5" id="wishlist-sidebar">
+                    <strong class="title text-primary font-semibold text-lg"><?= $escaper->escapeHtml($block->getTitle()) ?></strong>
+                    <span class="counter text-xs" x-html="wishlistCountLabel"></span>
+                </h2>
+                <ul class="my-4" aria-labelledby="wishlist-sidebar">
+                    <template x-for="product in wishlistItems">
+                        <li class="flex items-start mb-4">
+                            <a
+                                :href="product.product_url"
+                                class="block mb-3 w-10 h-10 shrink-0 mr-4"
+                                tabindex="-1"
+                                aria-hidden="true"
+                            >
+                                <img
+                                    :src="product.image.src"
+                                    alt=""
+                                    loading="lazy"
+                                >
+                            </a>
+                            <div class="product-item-details">
+                                <strong class="mr-2 text-sm leading-6 font-normal">
+                                    <a :href="product.product_url" :title="product.product_name" x-html="product.product_name"></a>
+                                </strong>
+                                <div class="mr-2 text-sm leading-6 font-bold" x-html="product.product_price"></div>
+                                <template x-if="product.product_is_saleable_and_visible">
+                                    <div class="actions-primary my-2">
+                                        <template x-if="!product.product_has_required_options">
+                                            <button
+                                                type="button"
+                                                @click.prevent="addToCart(product.add_to_cart_params)"
+                                                class="action tocart primary btn btn-primary text-sm"
+                                                :aria-label="hyva.str('<?= $escaper->escapeJs(__('Add to Cart %1'))  ?>', product.product_name)"
+                                                data-addto="cart"
+                                            >
+                                                <?= $escaper->escapeHtml(__('Add to Cart')) ?>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                            <button
+                                type="button"
+                                @click.prevent="removeFromWishlist(product.delete_item_params)"
+                                :aria-label="hyva.str('<?= $escaper->escapeJs(__('Remove product "%1" from My Wish List')) ?>', product.product_name)"
+                                class="
+                                    p-1 inline-flex shrink-0 items-center
+                                    justify-center text-gray-500 hover:text-primary ml-auto
+                                "
+                            >
+                                <?= $heroiconsOutline->xHtml('h-6 w-6', 25, 25, ['aria-hidden' => 'true']); ?>
+                            </button>
+                        </li>
+                    </template>
+                </ul>
+                <div class="flex flex-wrap items-center md:mt-5 space-x-4 text-sm">
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('wishlist')) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Go to Wish List page')); ?>"
+                       class="px-4 text-sm text-gray-500 hover:text-primary"
+                    >
+                        <?= $escaper->escapeHtml(__('Go to Wish List')); ?>
+                    </a>
+                </div>
+            </div>
+        </template>
+    </div>
+<?php endif ?>

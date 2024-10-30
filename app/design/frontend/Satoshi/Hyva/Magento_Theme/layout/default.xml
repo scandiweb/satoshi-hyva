@@ -14,7 +14,14 @@
         <attribute name="class" value="gradient" />
         <attribute name="class" value="bg-bg-500" />
         <attribute name="x-data" value="{}" />
-        <attribute name="@private-content-loaded.window" value="$store.cart.setCartItems($event.detail.data.cart?.items || []);" />
+        <attribute
+            name="@private-content-loaded.window"
+            value="
+                $store.cart.setCartItems($event.detail.data.cart?.items || []);
+                $store.wishlist.setWishlistItems($event.detail.data.wishlist?.items || []);
+                $store.main.isUserLoggedIn = Boolean($event.detail.data.customer?.signin_token);
+            "
+        />
 
         <referenceContainer name="root">
             <block class="Magento\Framework\View\Element\Template" name="svg.filters" template="Magento_Theme::html/components/svg-filters.phtml" before="-" />
