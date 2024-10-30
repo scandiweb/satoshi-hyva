@@ -1,0 +1,37 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Info;
+use Magento\Wishlist\Model\Item;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Info $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var Item $item */
+$item = $block->getItem();
+$product = $item->getProduct();
+?>
+<div class="flex justify-between leading-5">
+    <span><?= $escaper->escapeHtml($block->getCategoryName($product)) ?></span>
+    <span class="flex text-primary-500">
+        <?= $hyvaicons->renderHtml('star', 'text-xl') ?>
+        <span class="ml-1 mr-2 font-bold"><?= $escaper->escapeHtml($block->getProductReviewAverageRating($product)) ?></span>
+        <span class="after:content-[''] after:block after:relative after:top-[-3px] after:border-t after:border-primary-500">
+            <?= $escaper->escapeHtml('(' . $block->getProductReviewCount($product) . ')') ?>
+        </span>
+    </span>
+</div>
+<span class="block text-text-500 text-lg font-bold leading-6 mb-4 overflow-hidden text-ellipsis text-nowrap">
+    <a
+        href="<?= $escaper->escapeUrl($block->getProductUrl($item)) ?>"
+        title="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
+    >
+        <?= $escaper->escapeHtml($product->getName()) ?>
+    </a>
+</span>
