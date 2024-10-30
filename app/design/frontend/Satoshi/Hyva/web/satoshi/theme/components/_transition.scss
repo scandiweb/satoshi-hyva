@@ -1,0 +1,91 @@
+.element-transition {
+  @apply bg-bg-500 pointer-events-none fixed left-0 top-0 z-[35] h-full w-full max-w-screen transition-opacity;
+
+  > * {
+    @apply absolute origin-top-left translate-x-0 translate-y-0 transition-all duration-300;
+  }
+}
+
+.is-transition .animate-on-transition {
+  @apply animate-fadeIn;
+}
+
+.disable-fade .animate-on-transition {
+  @apply animate-none;
+}
+
+.hide-unless-transition:not(.is-transition .hide-unless-transition) {
+  @apply hidden;
+}
+
+.transition-preview {
+  @apply pointer-events-none fixed left-0 top-0 z-[9] h-full w-full overscroll-contain bg-transparent;
+
+  transition: background 300ms ease-in-out;
+
+  &--active {
+    @apply pointer-events-auto bg-overlay;
+  }
+
+  &__wrapper {
+    transition: transform 300ms 150ms ease-in-out;
+    transform: translateY(100%);
+
+    .transition-preview--active & {
+      transform: translateY(0);
+    }
+
+    @apply motion-reduce:transition-none;
+  }
+
+  &__scroll {
+    @apply max-h-screen overflow-x-hidden overflow-y-scroll overscroll-contain;
+
+    padding-top: calc(var(--offset-top) * 1px);
+  }
+
+  &__content {
+    @apply px-8 pt-12 lg:px-16 xl:px-28 xl:pt-20;
+
+    min-height: calc(110vh + var(--offset-top) * 1px);
+  }
+
+  &__bg {
+    @apply bg-bg-500 absolute left-0 right-0 -z-10 mx-auto;
+
+    --target-scale-x: calc(
+      var(--screen-width) / (var(--content-wrapper-width) - 16 * 4)
+    );
+
+    --target-scale-y: calc(
+      var(--screen-height) /
+        (var(--screen-height) - var(--offset-top) * 1px * 2)
+    );
+
+    top: calc(var(--offset-top) * 1px);
+    width: calc(100% - 16px * 2);
+    height: 100vh;
+    transform-origin: top center;
+
+    transition: transform 30ms linear, border-radius 30ms linear;
+
+    border-radius: calc(
+      12px * (1 - (var(--scroll-progress) * var(--scroll-progress)))
+    );
+
+    transform: scaleX(
+        calc(
+          1 + (var(--target-scale-x) - 1) *
+            (
+              var(--scroll-progress) * var(--scroll-progress) *
+                var(--scroll-progress)
+            )
+        )
+      )
+      translateY(calc(-1 * var(--offset-top) * 1px * var(--scroll-progress)));
+  }
+
+  .product-details {
+    top: calc(var(--offset-top) * (3 / 4) * -1px + var(--scroll-top));
+  }
+}

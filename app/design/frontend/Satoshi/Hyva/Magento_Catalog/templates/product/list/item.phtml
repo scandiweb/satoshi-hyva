@@ -1,0 +1,241 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Catalog\Block\Product\AbstractProduct;
+use Magento\Catalog\Helper\Image;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $template */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+$productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
+
+/** @var AbstractProduct $block */
+/** @var Magento\Catalog\Model\Product $product */
+$product = $block->getData('product');
+$imageUrl = $this->helper(Image::class)->init($product, 'product_page_image_medium')
+                 ->getUrl();
+$placeholderImageUrl = $this->helper(Image::class)->getDefaultPlaceholderUrl('image');
+$breadcrumbs = $block->getData('breadcrumbs') ?? [];
+
+// Calculating is large
+$nthLarge = $block->getData('n_of_large_card') ?? 0;
+$index = $block->getData('index');
+$isLarge = $nthLarge && !(($index + 1) % $nthLarge);
+
+// Add a setting allowing merchants to choose between cover or contain ?
+$fitType = 'cover';
+$isContain = $fitType === 'contain';
+
+$isSearch = $block->getData('is_search_card');
+$isAlpineTemplate = $block->getData('is_alpine_template');
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+
+if ($product) {
+    $price = $product->getPrice();
+    $finalPrice = $product->getData('final_price');
+    if ($price && $finalPrice) {
+        $difference = $price - $finalPrice;
+        $discountPercentage = round(($difference * 100.0) / $price);
+    }
+}
+?>
+<div
+    <?php if ($product): ?>
+        x-element-transition-area="p-<?= $product->getId() ?>"
+        key="<?= $product->getId() ?>"
+    <?php endif; ?>
+    class="<?= $isLarge ? 'col-span-2 md:col-auto' : '' ?> card-product h-full"
+>
+    <a
+        <?php if ($product): ?>
+          x-element-transition-trigger:product.preview.animate="
+            {
+                <?php if ($product->getImage()): ?>
+                    'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
+                <?php endif ?>
+                'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>',
+                'mediaCount': <?= $product?->getMediaGalleryImages()->count() ?? 3 ?>,
+                'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
+                'finalPrice': <?= $product->getFinalPrice() ?>,
+                'regularPrice': <?= $product->getPrice() ?>,
+            }
+        "
+        href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
+        <?php else: ?>
+          :href="`/${product.url_rewrites?.[0].url}`"
+          x-element-transition-trigger:product<?= !$isSearch ? '.preview' : '' ?>.animate="
+            {
+              'productImg': product.image?.url,
+              'title': product.name,
+              'mediaCount': product.media_gallery?.length || 3
+            }
+          "
+        <?php endif ?>
+        class="card-hover group relative flex h-full min-w-0 rounded-md"
+    >
+        <!-- Aspect Ratio div -->
+        <div class="h-0 w-0" style="padding-bottom: calc(100% * 1 / var(--product-aspect-ratio) + 81px)"></div>
+
+        <!-- Product Article -->
+        <article
+            class="contrast-border z-10 flex h-full w-full flex-col items-stretch justify-start overflow-hidden rounded-xl text-start"
+            x-data="ProductPage()"
+            <?php if ($product): ?>
+                x-init="
+                    () => {
+                        $data.setProductPageProps({
+                            productId: <?= $product->getId() ?>,
+                            isScrollingToTop: false
+                        })
+                    }
+                "
+            <?php endif ?>
+        >
+            <!-- this image is needed to avoid blink in preview on desktop as there, the select variant is shown, not featured image -->
+            <img width="0" height="0" class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
+                 src="<?= $escaper->escapeUrl($imageUrl) ?>" alt="">
+
+            <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg] h-full" x-element-transition-src="img"
+                 style="transform: translateZ(0)">
+
+                <?php if ($product): ?>
+                    <div
+                        class="aspect-product w-full h-full flex items-center justify-center transition-transform bg-[--fade-in-bg]">
+                        <img
+                            class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
+                            src="<?= $escaper->escapeUrl($imageUrl) ?>"
+                            alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>" loading="lazy">
+                    </div>
+                <?php else: ?>
+                    <div
+                        class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform  md:group-hover:scale-105">
+                        <img
+                            :src="product.media_gallery?.[0]?.url || '<?= $escaper->escapeUrl($placeholderImageUrl) ?>'"
+                            :alt="product.image?.label"
+                            class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
+                            loading="lazy"
+                            width=""
+                            height=""
+                        />
+                    </div>
+                <?php endif ?>
+                <?= $template->setData(['product' => $product, 'class' => 'py-1 bottom left', 'is_search' => $isSearch])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
+            </div>
+
+            <div class="relative flex flex-1 flex-col">
+                <div class="mt-4 flex flex-1 flex-col gap-1 contrast-more:px-3">
+                    <h2
+                        class="text-md text-text-500 max-md:w-[calc(100%-40px)]"
+                        <?php if (!$product): ?>
+                            x-text="product.name"
+                        <?php endif ?>
+                    >
+                        <?= $product?->getName() ?>
+                    </h2>
+                    <p
+                        class="truncate max-md:w-[calc(100%-40px)] "
+                        <?php if (!$product): ?>
+                            x-text="product.sku"
+                        <?php endif ?>
+                    >
+                        <?= $product?->getSku() ?>
+                    </p>
+
+                    <!-- Quick buy, for simple, virtual, configurable.. TODO: Make it for other types too -->
+                    <?php if ($product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
+                        <form
+                            method="post"
+                            action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
+                            id="quick_buy_form_<?= $product->getId() ?>"
+                            class="absolute right-0 md:hidden"
+                            @submit.prevent="addToCart($event)"
+                            <?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
+                        >
+                            <?= /** @noEscape */ $block->getBlockHtml('formkey') ?>
+                            <input type="hidden" name="product" value="<?= (int)$product->getId() ?>"/>
+                            <?php foreach ($productOptionsViewmodel->getOptionsData($product) as $optionItem): ?>
+                                <input type="hidden"
+                                    name="<?= $escaper->escapeHtml($optionItem['name']) ?>"
+                                    value="<?= $escaper->escapeHtml($optionItem['value']) ?>">
+                            <?php endforeach; ?>
+
+                            <button
+                                class="text-2xl text-primary-500"
+                                :class="{
+                                    'text-primary-50': isLoadingCart,
+                                    'text-primary-500': !isLoadingCart
+                                }"
+                                <?php if (in_array($product->getTypeId(), ['simple', 'virtual'])): ?>
+                                    form="quick_buy_form_<?= $product->getId() ?>"
+                                    data-addto="cart"
+                                    type="submit"
+                                    @click.stop.throttle
+                                <?php else: ?>
+                                    @click.prevent.stop="quickBuy()"
+                                    type="button"
+                                <?php endif; ?>
+                                aria-label="<?= __('Add to cart') ?>"
+                            >
+                                <?= $hyvaicons->renderHtml('cart'); ?>
+                            </button>
+
+                            <?php if (!in_array($product->getTypeId(), ['simple', 'virtual'])): ?>
+                                <!-- Quick buy popup -->
+                                <?= $popup->setData([
+                                        'id' => 'quick-buy-' . $product->getId(),
+                                        'isFocused' => true,
+                                    ])
+                                    ->setChildHtml($block->getProductDetailsHtml($product))
+                                    ->render() ?>
+                            <?php endif; ?>
+                        </form>
+                    <?php endif ?>
+                </div>
+
+                <div class="z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
+                    <?php if ($isSearch) : ?>
+                        <template
+                            x-if="product.price_range.minimum_price.final_price.value < product.price_range.minimum_price.regular_price.value">
+                            <div>
+                                <span class="sr-only"><?= __('Sale Price') ?></span>
+                                <span class="text-primary-500"
+                                    x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                                <s x-text="hyva.formatPrice(product.price_range.minimum_price.regular_price.value)"></s>
+                            </div>
+                        </template>
+                        <template x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value != product.price_range.maximum_price.value">
+                            <div>
+                                <span><?= __('As low as') ?></span>
+                                <span class="text-primary-500" x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                            </div>
+                        </template>
+                        <template
+                            x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value === product.price_range.maximum_price.value">
+                            <div>
+                                <span class="sr-only"><?= __('Regular Price') ?></span>
+                                <span class="text-primary-500"
+                                    x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                            </div>
+                            </template>
+                    <?php else: ?>
+                        <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </article>
+    </a>
+</div>

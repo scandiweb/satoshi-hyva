@@ -1,0 +1,165 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Satoshi\Theme\Block\Template;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$filters = $block->getData('filters');
+$renderer = $block->getData('renderer');
+$sortOptions = $block->getData('sort_options') ?? [];
+$sorter = $block->getData('sorter') ?? [];
+?>
+<div>
+    <!-- Heading -->
+    <div class="sticky start-0 top-0 z-10 flex flex-col gap-3 bg-bg-500 px-3 md:pt-2">
+        <div class="relative mb-2 flex min-h-7 items-center overflow-hidden">
+            <button
+                type="button"
+                class="button button--ghost-primary icon-button icon-button--size-xs absolute bottom-0 start-0 top-0 m-auto text-xxl transition-transform duration-300 motion-reduce:transition-none"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Back to all filters')) ?>"
+                @click="isTopLevel = true; currentName = ''"
+                :tabindex="isTopLevel ? -1 : 0"
+                :class="{
+                    '-translate-x-full': isTopLevel,
+                    'translate-x-0': !isTopLevel,
+                }"
+            >
+                <?= $hyvaicons->renderHtml('chevron', 'rotate-180'); ?>
+            </button>
+            <h2
+                class="text-md text-text-500 transition-transform duration-300 motion-reduce:transition-none"
+                :class="{
+                    'translate-x-0': isTopLevel,
+                    'translate-x-[34px]': !isTopLevel,
+                }"
+                x-text="isTopLevel ? '<?= $escaper->escapeJs(__('Filters')) ?>' : currentName"
+            >
+            </h2>
+            <button
+                type="button"
+                class="button button--outline-secondary icon-button icon-button--size-xs absolute right-0 top-0"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Close')) ?>}"
+                @click="hideFilters"
+            >
+                <?= $hyvaicons->renderHtml('close'); ?>
+            </button>
+        </div>
+        <hr class="divider -mx-5">
+    </div>
+
+    <article
+        class="relative px-3 "
+        :aria-label="
+            isTopLevel
+            ? '<?= $escaper->escapeJs(__('All filters')) ?>'
+            : '<?= $escaper->escapeJs(__('Filter by')) ?> ' + currentName?.toLowerCase()
+        "
+    >
+        <!-- Items -->
+        <nav class="flex flex-col gap-3 py-3" x-show="isTopLevel" aria-label="<?= $escaper->escapeHtmlAttr(__('Available filters')) ?>">
+            <button
+                type="button"
+                class="flex min-h-10 items-center justify-between py-1"
+                @click="isTopLevel = false; currentName='Sort by'"
+            >
+                <p class="grow text-left">
+                    <?= $escaper->escapeHtml(__('Sort by')) ?>
+                </p>
+                <p class="icon-button">
+                    <?= $hyvaicons->renderHtml('chevron'); ?>
+                </p>
+            </button>
+            <?php foreach ($filters as $filter): ?>
+                <button
+                    type="button"
+                    class="flex min-h-10 items-center justify-between py-1"
+                    @click="isTopLevel = false; currentName='<?= $escaper->escapeJs($filter->getName()) ?>'"
+                >
+                    <p class="grow text-left">
+                        <?= $escaper->escapeHtml($filter->getName()) ?>
+                    </p>
+                    <p class="icon-button">
+                        <?= $hyvaicons->renderHtml('chevron'); ?>
+                    </p>
+                </button>
+            <?php endforeach; ?>
+        </nav>
+
+        <div>
+            <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5" x-show="currentName == 'Sort by'">
+                <div
+                    id="filter-sort_by"
+                    key="filter-sort_by"
+                >
+                    <div role="radiogroup" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
+                        <?php foreach ($sortOptions as $sortOption): ?>
+                            <div class="relative h-11 w-full">
+                                <label for="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>" class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
+                                    <div class="flex items-center">
+                                        <input
+                                            type="radio"
+                                            name="filter-item-sort_by"
+                                            id="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>"
+                                            class="radio__input"
+                                            aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>"
+                                            @change="selectSort('<?= $sortOption['value'] ?>', '<?= $sortOption['dir'] ?>')"
+                                            :checked="selectedSort.key === '<?= $sortOption['value'] ?>' && selectedSort.dir === '<?= $sortOption['dir'] ?>'"
+                                            <?php if($sorter->isOrderCurrent($sortOption['value']) && $sorter->getCurrentDirection() === $sortOption['dir']): ?>
+                                                checked="checked"
+                                            <?php endif; ?>
+                                        />
+                                        <span class="radio__control mr-5" aria-hidden="true"></span>
+                                        <span class="radio__label ml-0"><?= /* @noEscape */ $sortOption['name'] ?></span>
+                                    </div>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </fieldset>
+            <?php foreach ($filters as $filter): ?>
+                <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5" x-show="currentName == '<?= $escaper->escapeJs($filter->getName()) ?>'">
+                    <div
+                        id="filter-<?= $escaper->escapeHtmlAttr($filter->getName()) ?>"
+                        key="filter-<?= $escaper->escapeHtmlAttr($filter->getName()) ?>"
+                    >
+                        <?= $renderer->setFilterTitle($filter->getName())->render($filter) ?>
+                    </div>
+                </fieldset>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Buttons -->
+        <div class="min-h-20"></div>
+        <template x-portal="document.getElementById('popup-fixed-content-portal')">
+            <div x-transition.opacity x-show="$store.popup.currentPopup == 'filters'">
+                <div class="-top-10 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>
+                <div class="flex items-center gap-3 bg-bg-500 px-4 pb-2">
+                    <button
+                        type="button"
+                        class="button button--outline-secondary"
+                        @click="onResetButtonClick"
+                    >
+                        <?= $escaper->escapeHtml(__('Reset')) ?>
+                    </button>
+                    <button
+                        type="button"
+                        class="button button--filled-primary grow"
+                        @click="applyFilters(currentName)"
+                    >
+                        <?= $escaper->escapeHtml(__('Apply')) ?>
+                    </button>
+                </div>
+            </div>
+        </template>
+    </article>
+</div>

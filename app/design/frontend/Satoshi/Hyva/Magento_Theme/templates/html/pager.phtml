@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Theme\Block\Html\Pager;
+use Magento\Framework\Escaper;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Escaper $escaper */
+/** @var Pager $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var SvgIcons $hyvaicons */
+
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$lastPage = $block->getLastPageNum();
+$currentPage = $block->getCurrentPage();
+?>
+
+<?php if ($lastPage > 1 && $currentPage < $lastPage): ?>
+    <div class="flex justify-center [&>*]:mt-5">
+        <a
+            href="#"
+            x-pagination-trigger="{ 'lastPage': <?= $lastPage ?> }"
+            class="button button--ghost-primary"
+        >
+            <?= __('Load more') ?>
+            <span class="button__icon button__icon--right top-[1px] text-lg">
+                <?= $hyvaicons->renderHtml('chevron', 'rotate-90') ?>
+            </span>
+        </a>
+    </div>
+<?php endif ?>

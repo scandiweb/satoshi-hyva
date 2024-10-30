@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\ProductList\Toolbar;
+
+/** @var Toolbar $block */
+?>
+
+<?php if ($block->getCollection()->getSize()): ?>
+    <?php if ($block->getIsBottom()): ?>
+        <?= $block->getPagerHtml() ?>
+    <?php else: ?>
+        <!-- Mobile filters -->
+        <div id="selected-filters-mobile" class="shrink-0 grow"></div>
+    <?php endif ?>
+<?php endif ?>

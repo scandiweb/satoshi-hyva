@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+use Satoshi\Theme\Block\Popup;
+
+/** @var Popup $block */
+$id = $block->getData('id');
+$isFocused = $block->getData('isFocused') ?? false;
+$isFullScreen = $block->getData('isFullScreen')  ?? false;
+$isAlwaysVisible = $block->getData('isAlwaysVisible')  ?? false;
+$isPreventOverlayClose = $block->getData('isPreventOverlayClose')  ?? false;
+$desktopTarget = $block->getData('desktopTarget') ?? 'popup-content-portal';
+$cssClass = $block->getData('cssClass');
+?>
+
+<div
+  class="contents"
+  x-init="
+    $store.popup._registerPopup({
+      id: '<?= $id ?>',
+      isFocused: <?=  $isFocused ? 'true' : 'false' ?>,
+      isFullScreen: <?= $isFullScreen  ? 'true' : 'false'  ?>,
+      isAlwaysVisible: <?= $isAlwaysVisible  ? 'true' : 'false'  ?>,
+      isPreventOverlayClose: <?= $isPreventOverlayClose  ? 'true' : 'false'  ?>
+    });
+  "
+>
+  <template x-portal="$store.main.isMobile ? document.getElementById('popup-content-portal') : document.getElementById('<?= $desktopTarget ?>')">
+    <template x-if="$store.main.isMobile ? $store.popup._nextPopup === '<?= $id ?>' : true">
+      <div
+        class="contents <?= $cssClass ?>"
+        id="<?= $id ?>"
+      >
+        <?= $block->getChildHtml() ?>
+      </div>
+    </template>
+  </template>
+</div>

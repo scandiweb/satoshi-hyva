@@ -1,0 +1,96 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template as Block;
+use Satoshi\Theme\Block\Template;
+
+/** @var Escaper $escaper */
+/** @var Block $block */
+/** @var Template $template */
+
+$isContain = false;
+$mixBackground = true;
+?>
+
+<template x-fallback-template-type="product">
+  <div class="md:[&:not(.transition-preview_&)]:mt-[89px]"></div>
+
+  <div class="max-md:hidden [.transition-preview_&]:hidden">
+    <?= $block->getChildHtml('product.breadcrumbs.placeholder') ?>
+  </div>
+
+  <div
+    class="md:content-wrapper relative z-30 mx-auto flex w-full flex-col justify-center gap-4 md:grid md:grid-cols-[1fr_250px] md:items-start md:gap-8 lg:grid-cols-[1fr_330px] xl:grid-cols-[1fr_400px] xl:gap-16"
+    x-data="
+      {
+        mobileImg: $store['transition'].pageData?.productImg,
+        desktopImg: $store['transition'].pageData?.productImg
+      }
+    "
+  >
+    <div class="product-details flex flex-col gap-4 md:sticky md:top-[--scroll-top] md:order-1 md:gap-8 md:pb-7">
+
+      <!-- Mobile Featured Image -->
+      <div class="relative md:hidden">
+        <div class="relative aspect-product bg-[--fade-in-bg]">
+          <div
+            x-element-transition-dest="img"
+            class="flex size-full flex-col items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?>"
+          >
+            <img
+              :src="mobileImg"
+              class="
+                object-center
+                <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>
+                <?= $mixBackground ? 'mix-blend-darken' : '' ?>
+              "
+              width="100%"
+              height="100%"
+              :alt="$store['transition'].pageData?.title"
+            >
+          </div>
+        </div>
+
+        <?= $template->setData(['class' => 'bottom left'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
+      </div><!-- Mobile Featured Image -->
+
+      <div class="flex flex-col gap-4 px-4 md:gap-1 md:px-0">
+        <div class="flex justify-between leading-tight md:flex-col md:gap-7">
+          <div class="flex w-full flex-col gap-2">
+            <h1
+              x-html="$store['transition'].pageData?.title"
+              class="text-md text-text-500 md:text-4xl max-md:truncate"
+            ></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop media -->
+    <div
+      class="flex w-full flex-col flex-wrap gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:hidden"
+    >
+      <div
+        class="flex aspect-product w-full flex-shrink-0 items-center justify-center bg-[--fade-in-bg] md:rounded-2xl <?= $isContain ? 'p-[4%]' : '' ?>"
+      >
+        <img
+          :src="desktopImg"
+          class="<?= $isContain ? 'object-contain max-h-full w-auto' : 'object-cover h-full w-full' ?> rounded-2xl object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
+          width="100%"
+          height="100%"
+        >
+      </div>
+      <template x-if="$store['transition'].pageData?.mediaCount >= 3">
+        <div class="contents">
+          <div></div>
+          <div></div>
+        </div>
+      </template>
+      <template x-if="$store['transition'].pageData?.mediaCount === 2">
+        <div></div>
+      </template>
+    </div>
+  </div>
+</template>

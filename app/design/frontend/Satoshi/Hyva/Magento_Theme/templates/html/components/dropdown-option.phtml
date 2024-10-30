@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$isActive = $block->getData('is_active') ?? false;
+$value = $escaper->escapeHtml($block->getData('value') ?? '');
+$label = $block->getData('label') ?? '';
+$onClick = $block->getData('on_click');
+$url = $block->getData('url');
+
+?>
+
+<li>
+  <a
+    tabindex="0"
+    data-value="<?= $escaper->escapeHtmlAttr($value) ?>"
+    class="flex cursor-pointer justify-between p-3 text-text-500<?= $isActive ? ' bg-bg-600 text-primary-600 md:cursor-not-allowed' : ' md:hover:text-primary-600' ?> gap-x-6 text-nowrap rounded-xs"
+    <?php if ($url): ?>
+    href="<?= $escaper->escapeUrl($url) ?>"
+    <?php endif; ?>
+    <?php if ($onClick): ?>
+    @click.prevent="<?= $escaper->escapeHtmlAttr($onClick) ?>"
+    <?php endif; ?>
+    <?php if ($isActive): ?>
+    aria-current="true"
+    <?php endif; ?>
+  >
+    <?= /* @noEscape */ $label ?>
+  </a>
+</li>

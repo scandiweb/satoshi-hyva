@@ -1,0 +1,24 @@
+/* purgecss start ignore */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "theme.css";
+
+@import url(components/category-page.css);
+@import url(components/product-prices.css);
+@import url(components/cart.css);
+@import url(components/customer.css);
+@import url(components/messages.css);
+@import url(components/wishlist.css);
+@import url(components/modal.css);
+@import url(components/slider.css);
+@import url(components/structure.css);
+@import url(components/swatches.css);
+@import url(components/button.css);
+@import url(components/theming.css);
+@import url(components/transitions.css);
+@import url(components/typography.css);
+@import url(components/page-builder.css);
+
+/* purgecss end ignore */
+
+@import "tailwindcss/utilities";
