@@ -42,6 +42,7 @@ import { Rating } from "./data/Rating";
 import { BundlePrice } from "./data/BundlePrice";
 import { CatalogPrice } from "./data/CatalogPrice";
 import { ReviewList } from "./data/ReviewList.ts";
+import { Register } from "./data/Register";
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -84,4 +85,5 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("BundlePrice", BundlePrice);
   Alpine.data("CatalogPrice", CatalogPrice);
   Alpine.data("ReviewList", ReviewList);
+  Alpine.data("Register", Register);
 });
