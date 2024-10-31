@@ -58,4 +58,14 @@ input[type="search"] {
   &__message {
     @apply ml-3 text-sm text-secondary-500;
   }
+
+  .field-error & {
+    &__field {
+      @apply border-red-500 shadow-error;
+    }
+  }
+}
+
+.field-error .messages {
+    @apply text-red-500;
 }

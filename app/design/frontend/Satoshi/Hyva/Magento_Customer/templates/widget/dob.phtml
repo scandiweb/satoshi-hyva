@@ -1,0 +1,344 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Customer\Block\Widget\Dob;
+use Magento\Customer\ViewModel\Address as AddressViewModel;
+use Magento\Framework\Escaper;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var Escaper $escaper */
+/** @var Dob $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var AddressViewModel $addressViewModel */
+$addressViewModel = $viewModels->require(AddressViewModel::class);
+?>
+<div class="field field-reserved"
+     x-data="initDatePicker()"
+     x-init="[initDate(), recalcDaysGrid()]"
+>
+    <div class="relative">
+        <?php
+        $validationClass = $escaper->escapeHtmlAttr(
+            $addressViewModel->addressGetAttributeValidationClass('dob')
+        );
+        ?>
+
+        <input type="text"
+               name="<?= $escaper->escapeHtmlAttr($block->getHtmlId()) ?>"
+               id="<?= $escaper->escapeHtmlAttr($block->getHtmlId()) ?>"
+               title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('dob')) ?>"
+            <?php if ($block->isRequired()): ?>
+                required
+            <?php endif; ?>
+               x-model="value"
+               @click="showDatepicker = !showDatepicker"
+               @keydown="onInputKeydown($event)"
+               @paste="$event.preventDefault()"
+               autocomplete="off"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 cursor-pointer"
+               placeholder="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('dob')) ?>"
+        >
+
+        <div
+            @click="showDatepicker = true"
+            class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
+            <?= $hyvaicons->renderHtml('chevron', 'rotate-90') ?>
+        </div>
+
+        <div
+            class="absolute left-0 top-0 p-3 mt-12 bg-bg-400 rounded-lg shadow z-10"
+            style="width: 21rem"
+            x-cloak
+            x-transition
+            x-show="showDatepicker"
+            @click.outside="showDatepicker = false"
+        >
+            <div class="flex justify-between items-center mb-2">
+                <div>
+                    <select name="datepicker_month"
+                            x-model="month"
+                            class="text-sm rounded border-secondary-400"
+                    >
+                        <template x-for="(monthName, index) in labels.monthNames">
+                            <option :value="index" x-text="monthName"></option>
+                        </template>
+                    </select>
+                    <select name="datepicker_year"
+                            x-model="year"
+                            class="text-sm rounded border-secondary-400"
+                    >
+                        <template x-for="option in yearRange">
+                            <option :value="option" x-text="option"></option>
+                        </template>
+                    </select>
+                </div>
+                <div>
+                    <button
+                        type="button"
+                        class="inline-flex p-1 rounded transition-colors cursor-pointer hover:bg-bg-600"
+                        :class="{'cursor-not-allowed opacity-25': isFirstMonth()}"
+                        :disabled="isFirstMonth()"
+                        :title="labels.prevText"
+                        @click="goToMonth(month - 1)">
+                        <?= /** @noEscape */
+                        $hyvaicons->renderHtml('chevron', 'rotate-180 w-6 h-6') ?>
+                        <span class="sr-only" x-text="labels.prevText"></span>
+                    </button>
+                    <button
+                        type="button"
+                        class="inline-flex p-1 rounded transition-colors cursor-pointer hover:bg-bg-600"
+                        :class="{'cursor-not-allowed opacity-25': isLastMonth() }"
+                        :disabled="isLastMonth()"
+                        :title="labels.nextText"
+                        @click="goToMonth(month + 1)">
+                        <?= /** @noEscape */
+                        $hyvaicons->renderHtml('chevron', 'w-6 h-6') ?>
+                        <span class="sr-only" x-text="labels.nextText"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-7 -mx-1">
+                <template x-for="(day, index) in labels.dayNamesShort" :key="index">
+                    <div class="p-1">
+                        <div x-text="day"
+                             class="font-medium text-center text-xs h-6 flex items-center
+                                justify-center"
+                        ></div>
+                    </div>
+                </template>
+                <template x-for="(date, dateIndex) in dayNumbers" :key="dateIndex">
+                    <div class="p-1"
+                         :style="getDayStyle(date)"
+                    >
+                        <div
+                            @click="if (canSelectDate(date)) { setDate(date) }"
+                            x-text="date"
+                            class="text-center text-sm rounded-full transition-colors
+                                flex items-center justify-center h-8"
+                            :class="{
+                                'cursor-pointer hover:bg-bg-600 hover:text-text-50': canSelectDate(date),
+                                'bg-primary-bg text-text-on-primary-bg': isToday(date),
+                                'text-secondary-700': isInFuture(date)
+                            }"
+                        ></div>
+                    </div>
+                </template>
+            </div>
+
+            <button class="p-2 w-full text-sm text-center rounded border border-secondary-400 hover:bg-bg-600"
+                    x-text="labels.currentText"
+                    @click.prevent="goToday()"
+            ></button>
+        </div>
+    </div>
+</div>
+<script>
+    function initDatePicker() {
+        const format = '<?= $escaper->escapeHtml($block->getDateFormat()) ?>';
+        const firstDayOfWeek = '<?= $escaper->escapeHtml($block->getFirstDay()) ?>';
+        const labelsConfig = <?= /* @noEscape */ $block->getTranslatedCalendarConfigJson() ?>;
+
+        return {
+            showDatepicker: false,
+            value: '<?= $escaper->escapeHtml($block->getValue()) ?>',
+            month: '',
+            year: '',
+            today: new Date(),
+            dayNumbers: [],
+            yearRange: [],
+            labels: labelsConfig,
+            dateFormatter: DateFormatter(format),
+
+            initDate() {
+                const today = new Date();
+                this.month = today.getMonth();
+                this.year = today.getFullYear();
+                this.initYearsRange();
+                this.correctWeeks();
+            },
+
+            initYearsRange() {
+                const today = new Date();
+                const thisYear = today.getFullYear();
+                const minimalYear = thisYear - 120;
+                const range = [];
+
+                for (let year = thisYear; year >= minimalYear; year--) {
+                    range.unshift(year);
+                }
+
+                this.yearRange = range;
+            },
+
+            correctWeeks() {
+                if (firstDayOfWeek > 0) {
+                    this.labels.dayNames = [
+                        ...this.labels.dayNames.slice(firstDayOfWeek),
+                        ...this.labels.dayNames.slice(0, firstDayOfWeek)
+                    ];
+                    this.labels.dayNamesShort = [
+                        ...this.labels.dayNamesShort.slice(firstDayOfWeek),
+                        ...this.labels.dayNamesShort.slice(0, firstDayOfWeek)
+                    ];
+                }
+            },
+
+            isToday(date) {
+                const today = new Date();
+                const d = new Date(this.year, this.month, date);
+
+                return today.toDateString() === d.toDateString();
+            },
+
+            setDate(date) {
+                const selectedDate = new Date(this.year, this.month, date);
+                const value = this.dateFormatter.format(selectedDate);
+
+                this.value = value;
+                this.showDatepicker = false;
+            },
+
+            recalcDaysGrid() {
+                const daysInMonth = new Date(this.year, this.month + 1, 0).getDate();
+                const dayNumbers = [];
+
+                for (let i = 1; i <= daysInMonth; i++) {
+                    dayNumbers.push(i);
+                }
+
+                this.dayNumbers = dayNumbers;
+            },
+
+            getDayStyle(day) {
+                const firstDayInWeek = this.correctDayOfWeek(new Date(this.year, this.month).getDay());
+
+                if (day.toString() === "1") {
+                    return `grid-column-start: ${firstDayInWeek + 1}`;
+                }
+
+                return '';
+            },
+
+            correctDayOfWeek(day) {
+                let corrected = day - firstDayOfWeek;
+
+                if (corrected < 0) {
+                    corrected += 7;
+                }
+
+                return corrected;
+            },
+
+            goToMonth(month) {
+                const date = new Date(this.year, this.month);
+
+                date.setMonth(month);
+                this.month = date.getMonth();
+                this.year = date.getFullYear();
+                this.recalcDaysGrid();
+            },
+
+            goToday() {
+                this.year = this.today.getFullYear();
+                this.month = this.today.getMonth();
+                this.recalcDaysGrid();
+            },
+
+            isInFuture(date) {
+                const today = new Date();
+
+                return this.year === today.getFullYear() &&
+                    this.month === today.getMonth() &&
+                    date > today.getDate()
+            },
+
+            isFirstMonth() {
+                return this.year === this.yearRange[0] && this.month === 0;
+            },
+
+            isLastMonth() {
+                return this.year === this.yearRange[this.yearRange.length - 1] &&
+                    this.month === this.today.getMonth()
+            },
+
+            canSelectDate(date) {
+                return !this.isToday(date) && !this.isInFuture(date)
+            },
+
+            onInputKeydown(evt) {
+                const keyCode = evt.code;
+
+                if (keyCode === "Escape") {
+                    this.showDatepicker = false;
+                }
+
+                if (keyCode === "Space") {
+                    this.showDatepicker = !this.showDatepicker;
+                }
+
+                if (keyCode !== "Enter") {
+                    evt.preventDefault();
+                }
+            }
+        }
+    }
+
+    function DateFormatter(template) {
+        return {
+            template: template,
+            map: {
+                'd': {day: 'numeric'},
+                'dd': {day: '2-digit'},
+                'D': {weekday: 'short'},
+                'DD': {weekday: 'long'},
+                'E': {weekday: 'short'},
+                'EE': {weekday: 'short'},
+                'EEE': {weekday: 'short'},
+                'EEEE': {weekday: 'long'},
+                'M': {month: '2-digit'},
+                'MM': {month: '2-digit'},
+                'MMM': {month: 'short'},
+                'MMMM': {month: 'long'},
+                'm': {month: 'numeric'},
+                'mm': {month: '2-digit'},
+                'y': {year: 'numeric'},
+                'Y': {year: 'numeric'},
+                'yy': {year: 'numeric'},
+                'yyyy': {year: 'numeric'}
+            },
+            format(date) {
+                const parsedFormat = template.match(new RegExp(/([mM]+)|([dD]+)|([yY]+)/g));
+
+                const options = parsedFormat.reduce((accumulator, match) => {
+                    if (this.map[match]) {
+                        return {
+                            ...accumulator,
+                            ...this.map[match]
+                        }
+                    }
+
+                    return accumulator;
+                }, {})
+
+                const dateData = Intl.DateTimeFormat('en-US', options).formatToParts(date);
+
+                return parsedFormat.reduce((result, valueTemplate) => {
+                    const dateItem = dateData.find(item => item.type === Object.keys(this.map[valueTemplate])[0]);
+
+                    if (dateItem) {
+                        return result.replace(valueTemplate, dateItem.value);
+                    }
+                    return result;
+                }, this.template);
+            }
+        }
+    }
+</script>
