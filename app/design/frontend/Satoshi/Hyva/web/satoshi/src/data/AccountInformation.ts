@@ -6,27 +6,18 @@ export type AccountInformationType = {
   showEmailField: boolean;
   showPasswordFields: boolean;
   errorMessages: string[];
-  displayErrorMessage: boolean;
   errors: number;
-  recaptchaErrorMessage: string | null;
-  isCaptchaEnabled: boolean;
-  recaptchaType: string;
-  recaptchaFailedMessage: string;
-  recaptchaSystemErrorMessage: string;
+  recaptchaErrorMessage?: string;
   validate(): Promise<void>;
   handleCheckboxChange(checkboxId: string): void;
   setErrorMessages(messages: string[]): void;
   saveChanges(form: HTMLFormElement): void;
-  submitForm(event: Event): void;
   validateRecaptcha(form: HTMLFormElement): void;
+  submitForm(event: Event): void;
 } & Magics<{}>;
 
 export const AccountInformation = (
     recaptchaValidationScript: Function,
-    isCaptchaEnabled: boolean,
-    recaptchaType: string,
-    recaptchaFailedMessage: string,
-    recaptchaSystemErrorMessage: string,
     initialShowEmailField: boolean,
     initialShowPasswordFields: boolean,
 ) =>
@@ -35,9 +26,8 @@ export const AccountInformation = (
       showEmailField: initialShowEmailField || false,
       showPasswordFields: initialShowPasswordFields || false,
       errorMessages: [] as string[],
-      displayErrorMessage: false,
       errors: 0,
-      recaptchaErrorMessage: null,
+      recaptchaErrorMessage: undefined,
 
       handleCheckboxChange(checkboxId) {
         this.$nextTick(() => {
@@ -50,7 +40,6 @@ export const AccountInformation = (
 
       setErrorMessages(messages: string[]) {
         this.errorMessages = messages;
-        this.displayErrorMessage = messages.length > 0;
       },
 
       saveChanges($form) {
@@ -74,15 +63,24 @@ export const AccountInformation = (
         });
       },
 
+      validateRecaptcha(form: HTMLFormElement) {
+        recaptchaValidationScript();
+        const {errors, errorMessage} = window.validateRecaptchaToken(form);
+
+        this.errors = errors ? errors : 0;
+        this.recaptchaErrorMessage = errors ? errorMessage : undefined;
+      },
+
       submitForm(event) {
         this.validate()
             .then(() => {
-              // Do not rename $form, the variable is expected to be declared in the recaptcha output
               const $form = event.target as HTMLFormElement;
 
-              this.validateRecaptcha($form);
+              if (recaptchaValidationScript) {
+                this.validateRecaptcha($form);
+              }
 
-              if (this.errors === 0 && !this.recaptchaErrorMessage) {
+              if (this.errors === 0) {
                 this.saveChanges($form);
               }
             })
@@ -91,44 +89,5 @@ export const AccountInformation = (
                 (invalid[0] as HTMLElement).focus();
               }
             });
-      },
-
-      validateRecaptcha($form) {
-        this.recaptchaErrorMessage = null;
-
-        if (isCaptchaEnabled) {
-          try {
-            // Execute the recaptcha validation script to initialize the validation process
-            recaptchaValidationScript();
-
-            // Obtain the reCAPTCHA response token based on type
-            let recaptchaToken = '';
-
-            if (recaptchaType === 'recaptcha_v3') {
-              // For v3, reCAPTCHA will execute and provide the token directly
-              recaptchaToken = grecaptcha.getResponse();
-            } else if (recaptchaType === 'recaptcha' || recaptchaType === 'invisible') {
-              // For v2 types, get the token from the specific reCAPTCHA instance
-              recaptchaToken = grecaptcha.getResponse(window.grecaptchaInstanceCustomercreate);
-            }
-
-            if (!recaptchaToken) {
-              this.recaptchaErrorMessage = recaptchaFailedMessage;
-              return;
-            }
-
-            // Append the token to the form data based on reCAPTCHA type
-            if (recaptchaType === 'recaptcha_v3' || recaptchaType === 'recaptcha') {
-              $form['g-recaptcha-response'].value = recaptchaToken;
-            } else if (recaptchaType === 'invisible') {
-              // Execute the invisible captcha explicitly and append the token after
-              grecaptcha.execute(window.grecaptchaInstanceCustomercreate).then(() => {
-                $form['g-recaptcha-response'].value = recaptchaToken;
-              });
-            }
-          } catch (error) {
-            this.recaptchaErrorMessage = recaptchaSystemErrorMessage;
-          }
-        }
       },
     };
