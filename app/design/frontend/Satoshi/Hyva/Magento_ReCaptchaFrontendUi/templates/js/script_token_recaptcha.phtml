@@ -11,7 +11,7 @@ use Magento\Framework\View\Element\Template;
 /** @var ViewModelRegistry $viewModels */
 
 $storeConfig = $viewModels->require(StoreConfig::class);
-$siteKey     = $storeConfig->getStoreConfig('recaptcha_frontend/type_recaptcha/public_key');
+$siteKey = $storeConfig->getStoreConfig('recaptcha_frontend/type_recaptcha/public_key');
 
 if (!$siteKey) {
     // No v2 checkbox google API credentials configured
@@ -27,19 +27,14 @@ $fieldName = $recaptcha->getResultTokenFieldName($formId);
 <?php if ($block->getData('render_script_tag')): ?>
 <script>
     <?php endif; ?>
-    this.hasCaptchaToken = $form['<?= $escaper->escapeJs($fieldName) ?>'] &&
-        $form['<?= $escaper->escapeJs($fieldName) ?>'].value.length > 0;
-    this.errors = this.hasCaptchaToken ? 0 : 1;
 
-    if (this.errors) {
-        const error = '<?= $escaper->escapeJs(__('ReCaptcha validation failed, please try again')) ?>';
-        if (this.setErrorMessages) {
-            this.setErrorMessages([error])
-            this.displayErrorMessage = true;
-        } else {
-            window.dispatchMessages && window.dispatchMessages([{ type: "error", text: error }], 5000);
-        }
-    }
+    window.validateRecaptchaToken = function (form) {
+        const hasCaptchaToken = form['<?= $escaper->escapeJs($fieldName) ?>'] && form['<?= $escaper->escapeJs($fieldName) ?>'].value.length > 0;
+        const errors = hasCaptchaToken ? 0 : 1;
+        const errorMessage = '<?= $escaper->escapeJs(__('ReCaptcha validation failed, please try again')) ?>';
+
+        return {errors, errorMessage};
+    };
 
     <?php if ($block->getData('render_script_tag')): ?>
 </script>

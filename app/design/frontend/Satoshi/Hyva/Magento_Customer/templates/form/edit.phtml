@@ -18,8 +18,6 @@ use Hyva\Theme\ViewModel\SvgIcons;
 // Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
 // on the Magento_ReCaptchaCustomer module
 $recaptcha = $block->getData('viewModelRecaptcha');
-$recaptchaFailedMessage = __('ReCAPTCHA validation failed. Please try again.');
-$recaptchaSystemErrorMessage = __('Something went wrong with reCAPTCHA. Please contact the store owner.');
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $minimumPasswordLength = $block->getMinimumPasswordLength();
 $passwordMinCharacterSets = $block->getRequiredCharacterClassesNumber();
@@ -36,7 +34,7 @@ $errorMessage = $block->getErrorMessage();
         <?= $escaper->escapeHtml(__('Account Information')) ?>
     </h2>
 
-  <!-- $form is used in recaptcha validation, and declared in x-init for scope -->
+  <!-- $form declared in x-init to ensure scope for reCAPTCHA validation -->
   <form x-init="$form = $el"
         id="form-validate"
         action="<?= $escaper->escapeUrl($block->getUrl('customer/account/editPost')) ?>"
@@ -45,10 +43,6 @@ $errorMessage = $block->getErrorMessage();
         x-data="Object.assign(hyva.formValidation($el),
             AccountInformation(
                 () => { <?= $escaper->escapeHtmlAttr($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '') ?> },
-                Boolean(<?= $recaptcha ? $recaptcha->isCaptchaEnabledFor(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>),
-                '<?= $recaptcha ? $recaptcha->getSelectedTypeForForm(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>',
-                '<?= $recaptchaFailedMessage ?>',
-                '<?= $recaptchaSystemErrorMessage ?>',
                 <?= $isChangingEmail ? 'true' : 'false' ?>,
                 <?= ($isChangingPassword || $block->getChangePassword()) ? 'true' : 'false' ?>,
             ),
