@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ProductListItem;
@@ -36,12 +37,8 @@ $breadcrumbs = $catalogData->getBreadcrumbPath();
             <div
                 data-content-wrapper
                 id="product-grid"
-                class="mb-5 grid gap-6 transition-opacity duration-100 ease-linear md:mb-16 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
-                :class="
-                    {
-                        'opacity-0': isLoadingProducts,
-                    }
-                "
+                class="mb-5 grid gap-6 transition-opacity duration-100 ease-linear grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+                :class="{'opacity-0': isLoadingProducts}"
             >
                 <!-- pagination-content -->
                 <?php
@@ -66,5 +63,6 @@ $breadcrumbs = $catalogData->getBreadcrumbPath();
             </div>
         </div>
     </div>
+
     <?= $block->getChildBlock('toolbar')->setIsBottom(true)->toHtml() ?>
 <?php endif; ?>
