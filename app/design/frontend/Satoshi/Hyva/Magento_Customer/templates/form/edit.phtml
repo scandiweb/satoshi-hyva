@@ -232,12 +232,6 @@ $errorMessage = $block->getErrorMessage();
             </div>
         </div>
 
-        <?php if ($errorMessage['general'] ?? false): ?>
-            <div class="field-error mt-3">
-                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general']) ?></span>
-            </div>
-        <?php endif; ?>
-
         <?php if ($recaptcha): ?>
             <div class="mt-3">
                 <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
