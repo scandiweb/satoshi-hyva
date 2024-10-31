@@ -1,5 +1,5 @@
 import { Magics } from "alpinejs";
-import { replaceMainContentWithTransition, navigateWithTransition } from "../plugins/Transition";
+import { navigateWithTransition } from "../plugins/Transition";
 
 interface PostCodeSpec {
   pattern: string;
@@ -15,11 +15,7 @@ export type RegisterType = {
   errors: number;
   showPassword: boolean;
   showPasswordConfirm: boolean;
-  isCaptchaEnabled: boolean;
-  recaptchaErrorMessage: string | null;
-  recaptchaType: string;
-  recaptchaFailedMessage: string;
-  recaptchaSystemErrorMessage: string;
+  recaptchaErrorMessage?: string;
 
   init(): void;
   onPrivateContentLoaded(data: any): void;
@@ -41,10 +37,6 @@ export type RegisterType = {
 
 export const Register = (
     recaptchaValidationScript: Function,
-    isCaptchaEnabled: boolean,
-    recaptchaType: string,
-    recaptchaFailedMessage: string,
-    recaptchaSystemErrorMessage: string,
     telephoneErrorMessage: string,
     postCodeSpecs: CountryPostCodeSpecs,
     postcodeWarnings: string[],
@@ -54,7 +46,7 @@ export const Register = (
       errors: 0,
       showPassword: false,
       showPasswordConfirm: false,
-      recaptchaErrorMessage: null,
+      recaptchaErrorMessage: undefined,
 
       init() {
         this.$nextTick(() => {
@@ -176,7 +168,7 @@ export const Register = (
             .then(async (res) => {
               if (res.ok) {
                 if (res.url === window.location.href) {
-                  await replaceMainContentWithTransition(res.url, await res.text());
+                  window.hyva.replaceDomElement("#form-validate", await res.text());
                   return;
                 }
 
@@ -192,14 +184,24 @@ export const Register = (
             });
       },
 
+      validateRecaptcha(form: HTMLFormElement) {
+        recaptchaValidationScript();
+        const {errors, errorMessage} = window.validateRecaptchaToken(form);
+
+        this.errors = errors ? errors : 0;
+        this.recaptchaErrorMessage = errors ? errorMessage : undefined;
+      },
+
       submitForm(event) {
         this.validate()
             .then(() => {
               const $form = event.target as HTMLFormElement;
 
-              this.validateRecaptcha($form);
+              if (recaptchaValidationScript) {
+                this.validateRecaptcha($form);
+              }
 
-              if (this.errors === 0 && !this.recaptchaErrorMessage) {
+              if (this.errors === 0) {
                 this.onRegister($form);
               }
             })
@@ -208,44 +210,5 @@ export const Register = (
                 (invalid[0]).focus();
               }
             });
-      },
-
-      validateRecaptcha($form) {
-        this.recaptchaErrorMessage = null;
-
-        if (isCaptchaEnabled) {
-          try {
-            // Execute the recaptcha validation script to initialize the validation process
-            recaptchaValidationScript();
-
-            // Obtain the reCAPTCHA response token based on type
-            let recaptchaToken = '';
-
-            if (recaptchaType === 'recaptcha_v3') {
-              // For v3, reCAPTCHA will execute and provide the token directly
-              recaptchaToken = grecaptcha.getResponse();
-            } else if (recaptchaType === 'recaptcha' || recaptchaType === 'invisible') {
-              // For v2 types, get the token from the specific reCAPTCHA instance
-              recaptchaToken = grecaptcha.getResponse(window.grecaptchaInstanceCustomercreate);
-            }
-
-            if (!recaptchaToken) {
-              this.recaptchaErrorMessage = recaptchaFailedMessage;
-              return;
-            }
-
-            // Append the token to the form data based on reCAPTCHA type
-            if (recaptchaType === 'recaptcha_v3' || recaptchaType === 'recaptcha') {
-              $form['g-recaptcha-response'].value = recaptchaToken;
-            } else if (recaptchaType === 'invisible') {
-              // Execute the invisible captcha explicitly and append the token after
-              grecaptcha.execute(window.grecaptchaInstanceCustomercreate).then(() => {
-                $form['g-recaptcha-response'].value = recaptchaToken;
-              });
-            }
-          } catch (error) {
-            this.recaptchaErrorMessage = recaptchaSystemErrorMessage;
-          }
-        }
       },
     };

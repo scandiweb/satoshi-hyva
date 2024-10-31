@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Satoshi\Theme\Customer\Controller\Account;
+namespace Satoshi\Customer\Controller\Account;
 
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface as CustomerRepository;

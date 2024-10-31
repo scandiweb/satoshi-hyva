@@ -27,8 +27,6 @@ use Hyva\Theme\ViewModel\SvgIcons;
 // Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
 // on the Magento_ReCaptchaCustomer module
 $recaptcha = $block->getData('viewModelRecaptcha');
-$recaptchaFailedMessage = __('ReCAPTCHA validation failed. Please try again.');
-$recaptchaSystemErrorMessage = __('Something went wrong with reCAPTCHA. Please contact the store owner.');
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $createAccountButtonViewModel = $viewModels->require(CreateAccountButton::class);
 $region = $block->getAttributeData()->getFrontendLabel('region');
@@ -49,17 +47,14 @@ $errorMessage = $block->getErrorMessage();
         </header>
 
         <?php /* Extensions placeholder */ ?>
-      <!-- $form is used in recaptcha validation, and declared in x-init for scope -->
         <?= $block->getChildHtml('customer.form.register.extra') ?>
-        <form action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
-              x-init="$form = $el"
+
+      <!-- $form declared in x-init to ensure scope for reCAPTCHA validation -->
+      <form x-init="$form = $el"
+            action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
               x-data="Object.assign(hyva.formValidation($el),
                 Register(
                     () => { <?= $escaper->escapeHtmlAttr($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '') ?> },
-                    Boolean(<?= $recaptcha ? $recaptcha->isCaptchaEnabledFor(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>),
-                    '<?= $recaptcha ? $recaptcha->getSelectedTypeForForm(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE) : '' ?>',
-                    '<?= $recaptchaFailedMessage ?>',
-                    '<?= $recaptchaSystemErrorMessage ?>',
                     '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
                     <?= $escaper->escapeHtmlAttr($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
                     [
