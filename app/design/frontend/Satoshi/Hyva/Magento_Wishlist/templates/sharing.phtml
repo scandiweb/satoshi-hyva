@@ -14,40 +14,41 @@ $successMessage = $block->getSuccessMessage();
 $errorMessage = $block->getErrorMessage();
 ?>
 <section class="w-full xl:w-1/2">
-    <h2 class="text-text-500 text-lg font-bold mb-5">
-        <?= $escaper->escapeHtml(__('Sharing Information')) ?>
-    </h2>
+  <h2 class="text-text-500 text-lg font-bold mb-5">
+      <?= $escaper->escapeHtml(__('Sharing Information')) ?>
+  </h2>
 
 
-    <form id="form-validate"
-          x-data="ShareWishlist(
+  <form id="form-validate"
+        x-data="ShareWishlist(
             <?= (int)$block->getEmailSharingLimit() ?>,
             '<?= $escaper->escapeJs(__('Please enter valid email addresses, separated by commas. For example, johndoe@domain.com, johnsmith@domain.com.')) ?>',
             '<?= $escaper->escapeJs(__('Maximum of %1 emails can be sent.', $block->getEmailSharingLimit())) ?>',
           )"
-          @submit.prevent="submitForm"
-          action="<?= $escaper->escapeUrl($block->getSendUrl()) ?>"
-          method="post"
-    >
-        <?php if ($successMessage): ?>
-            <div class="text-green-700 -mt-3 mb-3">
-                <span><?= $successMessage ?></span>
-            </div>
-        <?php elseif ($errorMessage['general'] ?? false): ?>
-            <div class="field-error -mt-3 mb-3">
-                <span class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
-            </div>
-        <?php endif; ?>
+        @submit.prevent="submitForm"
+        action="<?= $escaper->escapeUrl($block->getSendUrl()) ?>"
+        method="post"
+  >
+      <?php if ($successMessage): ?>
+        <div class="text-green-700 -mt-3 mb-3">
+          <span><?= $successMessage ?></span>
+        </div>
+      <?php elseif ($errorMessage['general'] ?? false): ?>
+        <div class="field-error -mt-3 mb-3">
+          <span
+              class="messages"><?= $escaper->escapeHtml($errorMessage['general'] ?? __('Oops! Something went wrong. Please try again.')) ?></span>
+        </div>
+      <?php endif; ?>
 
-        <?= $block->getBlockHtml('formkey') ?>
+      <?= $block->getBlockHtml('formkey') ?>
 
-        <div class="bg-bg-400 p-5 rounded-xl">
-            <div class="flex flex-col gap-3">
-                <div class="field field-reserved" :class="{ 'field-error': !isValid }">
-                    <label class="sr-only tracking-widest" for="email_address">
-                        <span><?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?></span>
-                    </label>
-                    <div>
+    <div class="bg-bg-400 p-5 rounded-xl">
+      <div class="flex flex-col gap-3">
+        <div class="field field-reserved" :class="{ 'field-error': !isValid }">
+          <label class="sr-only tracking-widest" for="email_address">
+            <span><?= $escaper->escapeHtml(__('Email addresses, separated by commas')) ?></span>
+          </label>
+          <div>
             <textarea id="email_address"
                       name="emails"
                       class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 w-full block"
@@ -59,19 +60,19 @@ $errorMessage = $block->getErrorMessage();
                       required
             ><?= /* @noEscape */
                 $block->getEnteredData('emails') ?></textarea>
-                        <?php if ($errorMessage['emails'] ?? false): ?>
-                            <div class="field-error mt-1">
-                                <span class="messages"><?= $escaper->escapeHtml($errorMessage['emails']) ?></span>
-                            </div>
-                        <?php endif; ?>
-                    </div>
+              <?php if ($errorMessage['emails'] ?? false): ?>
+                <div class="field-error mt-1">
+                  <span class="messages"><?= $escaper->escapeHtml($errorMessage['emails']) ?></span>
                 </div>
+              <?php endif; ?>
+          </div>
+        </div>
 
-                <div class="field field-reserved">
-                    <label class="sr-only tracking-widest" for="message">
-                        <span><?= $escaper->escapeHtml(__('Message')) ?></span>
-                    </label>
-                    <div>
+        <div class="field field-reserved">
+          <label class="sr-only tracking-widest" for="message">
+            <span><?= $escaper->escapeHtml(__('Message')) ?></span>
+          </label>
+          <div>
             <textarea id="message"
                       name="message"
                       class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 w-full block"
@@ -80,40 +81,40 @@ $errorMessage = $block->getErrorMessage();
                       placeholder="<?= $escaper->escapeHtml(__('Message')) ?>"
             ><?= /* @noEscape */
                 $block->getEnteredData('message') ?></textarea>
-                    </div>
-                </div>
+          </div>
+        </div>
 
-                <div>
-                    <?= $block->getChildHtml('captcha'); ?>
-                    <?php if ($errorMessage['captcha'] ?? false): ?>
-                        <div class="field-error mt-1">
-                            <span class="messages"><?= $escaper->escapeHtml($errorMessage['captcha']) ?></span>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
+        <div>
+            <?= $block->getChildHtml('captcha'); ?>
+            <?php if ($errorMessage['captcha'] ?? false): ?>
+              <div class="field-error mt-1">
+                <span class="messages"><?= $escaper->escapeHtml($errorMessage['captcha']) ?></span>
+              </div>
+            <?php endif; ?>
+        </div>
+      </div>
 
-            <div class="flex gap-x-4 flex-col md:flex-row mt-5">
-                <button type="submit"
-                        class="button button--filled-primary"
-                        :class="isLoading && 'button--disabled'"
-                        aria-label="<?= $escaper->escapeHtmlAttr(__('Share Wish List')) ?>"
-                        title="<?= $escaper->escapeHtmlAttr(__('Share Wish List')) ?>"
-                        :disabled="isLoading"
-                >
+      <div class="flex gap-x-4 flex-col md:flex-row mt-5">
+        <button type="submit"
+                class="button button--filled-primary"
+                :class="isLoading && 'button--disabled'"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Share Wish List')) ?>"
+                title="<?= $escaper->escapeHtmlAttr(__('Share Wish List')) ?>"
+                :disabled="isLoading"
+        >
             <span x-text="isLoading ?
                 '<?= $escaper->escapeHtml(__('Submitting...')) ?>' :
                 '<?= $escaper->escapeHtml(__('Share Wish List')) ?>'">
                 <?= $escaper->escapeHtml(__('Share Wish List')) ?>
             </span>
-                </button>
-                <a class="button button--ghost-primary"
-                   href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-                   x-element-transition-trigger
-                >
-                    <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
-                </a>
-            </div>
-        </div>
-    </form>
+        </button>
+        <a class="button button--ghost-primary"
+           href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+           x-element-transition-trigger
+        >
+          <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
+        </a>
+      </div>
+    </div>
+  </form>
 </section>
