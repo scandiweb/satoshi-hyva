@@ -26,6 +26,10 @@
         type="Satoshi\Customer\Controller\Account\EditPost"
     />
     <preference
+        for="Magento\Customer\Controller\Account\CreatePost"
+        type="Satoshi\Customer\Controller\Account\CreatePost"
+    />
+    <preference
         for="Magento\Customer\Block\Form\Edit"
         type="Satoshi\Customer\Block\Form\Edit"
     />
