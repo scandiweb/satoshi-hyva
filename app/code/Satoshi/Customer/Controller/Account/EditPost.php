@@ -70,16 +70,6 @@ class EditPost extends SourceEditPost
     private $sessionCleaner;
 
     /**
-     * @var AccountConfirmation
-     */
-    private $accountConfirmation;
-
-    /**
-     * @var Url
-     */
-    private Url $customerUrl;
-
-    /**
      * @param Context $context
      * @param Session $customerSession
      * @param AccountManagementInterface $accountManagement
@@ -108,18 +98,11 @@ class EditPost extends SourceEditPost
         ?Url                        $customerUrl = null
     )
     {
-        $this->session = $customerSession;
-        $this->accountManagement = $accountManagement;
-        $this->customerRepository = $customerRepository;
-        $this->formKeyValidator = $formKeyValidator;
-        $this->customerExtractor = $customerExtractor;
         $this->escaper = $escaper ?: ObjectManager::getInstance()->get(Escaper::class);
         $this->addressRegistry = $addressRegistry ?: ObjectManager::getInstance()->get(AddressRegistry::class);
         $this->filesystem = $filesystem ?: ObjectManager::getInstance()->get(Filesystem::class);
         $this->sessionCleaner = $sessionCleaner ?: ObjectManager::getInstance()->get(SessionCleanerInterface::class);
-        $this->accountConfirmation = $accountConfirmation ?: ObjectManager::getInstance()
-            ->get(AccountConfirmation::class);
-        $this->customerUrl = $customerUrl ?: ObjectManager::getInstance()->get(Url::class);
+
         parent::__construct(
             $context,
             $customerSession,
