@@ -58,7 +58,7 @@ $emailErrorMessage = $block->getContactEmailErrorMessage();
                     @submit.prevent="function($event) {
                         // do not rename $form, the variable is the expected name in the recaptcha output
                         const $form = $event.target;
-                        <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN)) : '' ?>
+                        <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT)) : '' ?>
                         if (this.errors === 0) {
                             this.submitForm($event);
                         }

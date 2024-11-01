@@ -68,11 +68,11 @@ input[type="search"] {
 
 .field {
   &-success {
-    @apply text-green-700;
+    @apply text-primary-700;
   }
 
   &-error {
-    @apply text-red-500;
+    @apply text-error;
   }
 
   &-success,
