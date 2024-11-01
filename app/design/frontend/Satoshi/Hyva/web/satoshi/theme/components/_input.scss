@@ -66,10 +66,23 @@ input[type="search"] {
   }
 }
 
-.field-success .messages {
-  @apply text-green-700;
-}
+.field {
+  &-success {
+    .messages {
+      @apply text-green-700;
+    }
+  }
 
-.field-error .messages {
-  @apply text-red-500;
+  &-error {
+    .messages {
+      @apply text-red-500;
+    }
+  }
+
+  &-success,
+  &-error {
+    a {
+      @apply border-b-1 border-current;
+    }
+  }
 }
