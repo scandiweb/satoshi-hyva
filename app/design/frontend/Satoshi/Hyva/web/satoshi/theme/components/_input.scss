@@ -66,6 +66,10 @@ input[type="search"] {
   }
 }
 
+.field-success .messages {
+  @apply text-green-700;
+}
+
 .field-error .messages {
-    @apply text-red-500;
+  @apply text-red-500;
 }
