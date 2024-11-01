@@ -24,7 +24,7 @@ $mixBackground = true;
         <a
           x-element-transition-trigger:product.animate="
             {
-              'variantImg': item.popup_image.src,
+              'variantImg': item.image.src,
               'title': item.product_name
             }
           "
@@ -32,10 +32,10 @@ $mixBackground = true;
           class="grid grid-cols-[94px_1fr] content-center gap-5 rounded-md"
         >
           <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg]">
-            <template x-if="item.popup_image.src">
+            <template x-if="item.image.src">
               <div class="h-full transition-transform md:group-hover:scale-105 bg-[--fade-in-bg]">
                 <img
-                  :src="item.popup_image.src"
+                  :src="item.image.src"
                   class="aspect-product h-full w-full object-cover object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
                   loading="lazy"
                   width=""
@@ -63,11 +63,7 @@ $mixBackground = true;
               </template>
             </div>
             <div class="flex flex-wrap items-center justify-between">
-              <div
-                class="flex flex-col items-center justify-between text-md"
-              >
-                <span x-text="hyva.formatPrice(item.product_price_value)"></span>
-              </div>
+              <div x-html="item.product_price"></div>
             </div>
           </div>
         </a>
