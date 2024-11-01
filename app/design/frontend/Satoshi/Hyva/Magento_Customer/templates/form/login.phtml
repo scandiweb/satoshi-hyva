@@ -24,7 +24,7 @@ $errorMessage = $block->getErrorMessage();
 $successMessage = $block->getSuccessMessage();
 
 ?>
-<div class="container mx-auto flex h-full items-center px-5" x-data="Authentication">
+<div class="container mx-auto flex h-full items-center px-5" x-data="Object.assign(Form, Authentication)">
     <div class="mx-auto w-[412px] max-w-full mb-16">
         <header class="flex items-center justify-between sm:text-center mb-7">
             <h2 class="w-full text-2xl"><?= __('Login') ?></h2>

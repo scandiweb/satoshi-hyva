@@ -9,9 +9,6 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ReCaptcha;
 use Hyva\Theme\ViewModel\SvgIcons;
 
-// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
-// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
-
 /** @var ContactForm $block */
 /** @var Escaper $escaper */
 /** @var ReCaptcha $recaptcha|null */
@@ -35,178 +32,183 @@ $commentErrorMessage = $block->getContactCommentErrorMessage();
 $emailErrorMessage = $block->getContactEmailErrorMessage();
 ?>
 <div class="content-wrapper mx-auto pb-12">
-  <h1 class="mb-7 text-center text-2xl font-semibold text-primary-500 md:mb-8">
-    <?= $escaper->escapeHtml(__('Get in Touch')) ?>
-  </h1>
+    <h1 class="mb-7 text-center text-2xl font-semibold text-primary-500 md:mb-8">
+        <?= $escaper->escapeHtml(__('Get in Touch')) ?>
+    </h1>
 
-  <div class="flex gap-y-7 max-md:flex-col">
-    <div class="flex-1 rounded-md px-5 py-7 md:p-12 bg-[#f5f5f5]">
-      <div class="leading-7">
-        <h2 class="mb-5 text-lg font-semibold text-primary-bg">
-          <?= $escaper->escapeHtml(__('Contact')) ?>
-        </h2>
-        <div class="rte">
-          <?= $block->getChildHtml('contact.details') ?>
+    <div class="flex gap-y-7 max-md:flex-col">
+        <div class="flex-1 rounded-md px-5 py-7 md:p-12 bg-[#f5f5f5]">
+            <div class="leading-7">
+                <h2 class="mb-5 text-lg font-semibold text-primary-bg">
+                    <?= $escaper->escapeHtml(__('Contact')) ?>
+                </h2>
+                <div class="rte">
+                    <?= $block->getChildHtml('contact.details') ?>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <div class="flex-1">
+            <div class="md:px-12">
+                <form
+                    action="<?= $escaper->escapeUrl($block->getFormAction()) ?>"
+                    id="<?= $escaper->escapeHtmlAttr($formId) ?>"
+                    method="post"
+                    x-data="Form"
+                    @submit.prevent="function($event) {
+                        // do not rename $form, the variable is the expected name in the recaptcha output
+                        const $form = $event.target;
+                        <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN)) : '' ?>
+                        if (this.errors === 0) {
+                            this.submitForm($event);
+                        }
+                    }"
+                >
+                    <?php if ($successMessage): ?>
+                        <div class="field-success -mt-3 mb-3">
+                            <span><?= $successMessage ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($errorMessage): ?>
+                        <div class="field-error -mt-3 mb-3">
+                            <span class="messages"><?= $errorMessage ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <template x-if="displayErrorMessage">
+                        <p class="field-error -mt-3 mb-3">
+                            <template x-for="errorMessage in errorMessages">
+                                <span class="messages" x-html="errorMessage"></span>
+                            </template>
+                        </p>
+                    </template>
+
+                    <div class="mb-3 flex flex-col">
+                        <label for="ContactForm-name" class="sr-only tracking-widest">
+                            <?= $escaper->escapeHtml(__('Full name')) ?>
+                            <span aria-hidden="true">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            required
+                            id="ContactForm-name"
+                            placeholder="<?= $escaper->escapeHtmlAttr(__('Full name')) ?>"
+                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 <?php if ($nameErrorMessage): ?>border-error<?php else: ?>border-text-50<?php endif; ?>"
+                            value="<?= $escaper->escapeHtmlAttr(
+                                $contactHelper->getPostValue('name')
+                                ?: $contactHelper->getUserName()
+                            ) ?>"
+                            autocomplete="name"
+                            aria-required="true"
+                            <?php if ($nameErrorMessage): ?>
+                                aria-invalid="true"
+                                aria-describedby="ContactForm-name-error"
+                            <?php endif; ?>
+                        >
+                        <?php if ($nameErrorMessage): ?>
+                            <span class="text-error" id="ContactForm-name-error">
+                                <span class="sr-only"><?= $escaper->escapeHtml(__('Error')) ?></span>
+                                <?= $nameErrorMessage ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="mb-3 flex flex-col">
+                        <label for="ContactForm-email" class="sr-only tracking-widest">
+                            <?= $escaper->escapeHtml(__('Email address')) ?>
+                            <span aria-hidden="true">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            id="ContactForm-email"
+                            placeholder="<?= $escaper->escapeHtmlAttr(__('Email address')) ?>"
+                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 <?php if ($emailErrorMessage): ?>border-error<?php else: ?>border-text-50<?php endif; ?>"
+                            value="<?= $escaper->escapeHtmlAttr(
+                                $contactHelper->getPostValue('email')
+                                ?: $contactHelper->getUserEmail()
+                            ) ?>"
+                            autocomplete="email"
+                            spellcheck="false"
+                            autocapitalize="off"
+                            aria-required="true"
+                            <?php if ($emailErrorMessage): ?>
+                                aria-invalid="true"
+                                aria-describedby="ContactForm-email-error"
+                            <?php endif; ?>
+                        >
+                        <?php if ($emailErrorMessage): ?>
+                            <span class="text-error" id="ContactForm-email-error">
+                                <span class="sr-only"><?= $escaper->escapeHtml(__('Error')) ?></span>
+                                <?= $emailErrorMessage ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="mb-3 flex flex-col">
+                        <label for="ContactForm-phone" class="sr-only tracking-widest">
+                            <?= $escaper->escapeHtml(__('Phone number')) ?>
+                        </label>
+                        <input
+                            type="tel"
+                            pattern="[0-9\-]*"
+                            name="telephone"
+                            id="ContactForm-phone"
+                            placeholder="<?= $escaper->escapeHtmlAttr(__('Phone number')) ?>"
+                            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                            value="<?= $escaper->escapeHtmlAttr(
+                                $contactHelper->getPostValue('telephone')
+                            ) ?>"
+                            autocomplete="tel"
+                        >
+                    </div>
+
+                    <div class="mb-3 flex flex-col">
+                        <label for="ContactForm-body" class="sr-only tracking-widest">
+                            <?= $escaper->escapeHtml(__('Comment')) ?>
+                            <span aria-hidden="true">*</span>
+                        </label>
+                        <textarea
+                            rows="4"
+                            id="ContactForm-body"
+                            class="input__field input__field--outline min-h-28 bg-bg-500 px-5 py-2.5 <?php if ($commentErrorMessage): ?>border-error<?php else: ?>border-text-50<?php endif; ?>"
+                            name="comment"
+                            required
+                            placeholder="<?= $escaper->escapeHtmlAttr(__('Comment')) ?>"
+                            aria-required="true"
+                            <?php if ($commentErrorMessage): ?>
+                                aria-invalid="true"
+                                aria-describedby="ContactForm-comment-error"
+                            <?php endif; ?>
+                        ><?= $escaper->escapeHtml($contactHelper->getPostValue('comment')) ?></textarea>
+                        <?php if ($commentErrorMessage): ?>
+                            <span class="text-error" id="ContactForm-comment-error">
+                                <span class="sr-only"><?= $escaper->escapeHtml(__('Error')) ?></span>
+                                <?= $commentErrorMessage ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="max-md:origin-top-left max-md:scale-90">
+                        <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT) : '' ?>
+                    </div>
+                    <?= $block->getBlockHtml('formkey') ?>
+
+                    <button
+                        type="submit"
+                        class="button button--filled-primary mt-5 w-full py-4"
+                        :class="{
+                        'button--disabled': isLoading
+                        }"
+                        :disabled="isLoading"
+                    >
+                        <?= $escaper->escapeHtml(__('Send')) ?>
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="flex-1">
-      <div class="md:px-12">
-        <form
-          action="<?= $escaper->escapeUrl($block->getFormAction()) ?>"
-          id="<?= $escaper->escapeHtmlAttr($formId) ?>"
-          method="post"
-          x-data="ContactForm(
-            '<?= $escaper->escapeJs($formId) ?>',
-            '<?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT) : '') ?>'
-          )"
-          @submit.prevent="submitForm()"
-        >
-          <?php if ($successMessage): ?>
-            <h2 class="mb-3" tabindex="-1" autofocus>
-              <span class="mb-1 inline-block text-green-700">
-                <?= $hyvaicons->renderHtml('tick'); ?>
-              </span>
-              <?= $escaper->escapeHtml($successMessage) ?>
-            </h2>
-          <?php endif; ?>
-
-          <?php if ($errorMessage): ?>
-            <h2 class="mb-3" tabindex="-1" autofocus>
-              <?= $escaper->escapeHtml($errorMessage) ?>
-            </h2>
-          <?php endif; ?>
-
-          <template x-for="errorMessage in errorMessages">
-            <h2 x-show="displayErrorMessage" x-html="errorMessage" class="mb-3" tabindex="-1" autofocus></h2>
-          </template>
-
-          <div class="mb-3 flex flex-col">
-            <label for="ContactForm-name" class="sr-only tracking-widest">
-              <?= $escaper->escapeHtml(__('Full name')) ?>
-              <span aria-hidden="true">*</span>
-            </label>
-            <input
-              type="text"
-              name="name"
-              required
-              id="ContactForm-name"
-              placeholder="<?= $escaper->escapeHtmlAttr(__('Full name')) ?>"
-              class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 <?php if ($nameErrorMessage): ?>border-error<?php else: ?>border-text-50<?php endif; ?>"
-              value="<?= $escaper->escapeHtmlAttr(
-                $contactHelper->getPostValue('name')
-                  ?: $contactHelper->getUserName()
-              ) ?>"
-              autocomplete="name"
-              aria-required="true"
-              <?php if ($nameErrorMessage): ?>
-                aria-invalid="true"
-                aria-describedby="ContactForm-name-error"
-              <?php endif; ?>
-            >
-            <?php if ($nameErrorMessage): ?>
-              <span class="text-error" id="ContactForm-name-error">
-                <span class="sr-only"><?= $escaper->escapeHtml(__('Error')) ?></span>
-                <?= $nameErrorMessage ?>
-              </span>
-            <?php endif; ?>
-          </div>
-
-          <div class="mb-3 flex flex-col">
-            <label for="ContactForm-email" class="sr-only tracking-widest">
-              <?= $escaper->escapeHtml(__('Email address')) ?>
-              <span aria-hidden="true">*</span>
-            </label>
-            <input
-              type="email"
-              name="email"
-              required
-              id="ContactForm-email"
-              placeholder="<?= $escaper->escapeHtmlAttr(__('Email address')) ?>"
-              class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5 <?php if ($emailErrorMessage): ?>border-error<?php else: ?>border-text-50<?php endif; ?>"
-              value="<?= $escaper->escapeHtmlAttr(
-                $contactHelper->getPostValue('email')
-                  ?: $contactHelper->getUserEmail()
-              ) ?>"
-              autocomplete="email"
-              spellcheck="false"
-              autocapitalize="off"
-              aria-required="true"
-              <?php if ($emailErrorMessage): ?>
-                aria-invalid="true"
-                aria-describedby="ContactForm-email-error"
-              <?php endif; ?>
-            >
-            <?php if ($emailErrorMessage): ?>
-              <span class="text-error" id="ContactForm-email-error">
-                <span class="sr-only"><?= $escaper->escapeHtml(__('Error')) ?></span>
-                <?= $emailErrorMessage ?>
-              </span>
-            <?php endif; ?>
-          </div>
-
-          <div class="mb-3 flex flex-col">
-            <label for="ContactForm-phone" class="sr-only tracking-widest">
-              <?= $escaper->escapeHtml(__('Phone number')) ?>
-            </label>
-            <input
-              type="tel"
-              pattern="[0-9\-]*"
-              name="telephone"
-              id="ContactForm-phone"
-              placeholder="<?= $escaper->escapeHtmlAttr(__('Phone number')) ?>"
-              class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-              value="<?= $escaper->escapeHtmlAttr(
-                $contactHelper->getPostValue('telephone')
-              ) ?>"
-              autocomplete="tel"
-            >
-          </div>
-
-          <div class="mb-3 flex flex-col">
-            <label for="ContactForm-body" class="sr-only tracking-widest">
-              <?= $escaper->escapeHtml(__('Comment')) ?>
-              <span aria-hidden="true">*</span>
-            </label>
-            <textarea
-              rows="4"
-              id="ContactForm-body"
-              class="input__field input__field--outline min-h-28 bg-bg-500 px-5 py-2.5 <?php if ($commentErrorMessage): ?>border-error<?php else: ?>border-text-50<?php endif; ?>"
-              name="comment"
-              required
-              placeholder="<?= $escaper->escapeHtmlAttr(__('Comment')) ?>"
-              aria-required="true"
-              <?php if ($commentErrorMessage): ?>
-                aria-invalid="true"
-                aria-describedby="ContactForm-comment-error"
-              <?php endif; ?>
-            ><?= $escaper->escapeHtml($contactHelper->getPostValue('comment')) ?></textarea>
-            <?php if ($commentErrorMessage): ?>
-              <span class="text-error" id="ContactForm-comment-error">
-                <span class="sr-only"><?= $escaper->escapeHtml(__('Error')) ?></span>
-                <?= $commentErrorMessage ?>
-              </span>
-            <?php endif; ?>
-          </div>
-
-          <div class="max-md:origin-top-left max-md:scale-90">
-            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT) : '' ?>
-          </div>
-          <?= $block->getBlockHtml('formkey') ?>
-
-          <button
-            type="submit"
-            class="button button--filled-primary mt-5 w-full py-4"
-            :class="{
-              'button--disabled': isLoading
-            }"
-            :disabled="isLoading"
-          >
-            <?= $escaper->escapeHtml(__('Send')) ?>
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
 </div>
