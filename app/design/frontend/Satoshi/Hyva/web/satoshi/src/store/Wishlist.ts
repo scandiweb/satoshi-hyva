@@ -11,13 +11,11 @@ export type ImageType = {
 export type WishlistItem = {
   item_id: string;
   image: ImageType;
-  popup_image: ImageType;
   product_sku: string;
   product_id: string;
   product_url: string;
   product_name: string;
   product_price: string;
-  product_price_value: number;
   product_is_saleable_and_visible: boolean;
   product_has_required_options: boolean;
   add_to_cart_params: string;

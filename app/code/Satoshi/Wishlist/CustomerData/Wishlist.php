@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\Wishlist\CustomerData;
 
 use Magento\Wishlist\CustomerData\Wishlist as SourceWishlist;
@@ -81,7 +83,6 @@ class Wishlist extends SourceWishlist
         return [
             'item_id' => $wishlistItem->getId(),
             'image' => $this->getImageData($this->itemResolver->getFinalProduct($wishlistItem)),
-            'popup_image' => $this->getImageData($this->itemResolver->getFinalProduct($wishlistItem), 'mini_cart_product_thumbnail'),
             'product_sku' => $product->getSku(),
             'product_id' => $product->getId(),
             'product_url' => $this->wishlistHelper->getProductUrl($wishlistItem),
@@ -92,7 +93,6 @@ class Wishlist extends SourceWishlist
                 \Magento\Framework\Pricing\Render::ZONE_ITEM_LIST,
                 ['item' => $wishlistItem]
             ),
-            'product_price_value' => $product->getFinalPrice(),
             'product_is_saleable_and_visible' => $product->isSaleable() && $product->isVisibleInSiteVisibility(),
             'product_has_required_options' => $product->getTypeInstance()->hasRequiredOptions($product),
             'add_to_cart_params' => $this->wishlistHelper->getAddToCartParams($wishlistItem),
@@ -116,14 +116,13 @@ class Wishlist extends SourceWishlist
      * Retrieve product image data
      *
      * @param Product $product
-     * @param string|null $imageType
      * @return array
      */
-    protected function getImageData($product, $imageType = 'wishlist_sidebar_block')
+    protected function getImageData($product)
     {
         /** @var \Magento\Catalog\Helper\Image $helper */
         $helper = $this->imageHelperFactory->create()
-            ->init($product, $imageType);
+            ->init($product, 'mini_cart_product_thumbnail');
 
         return [
             'template' => 'Magento_Catalog/product/image_with_borders',

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\Wishlist\ViewModel;
 
 use Magento\Wishlist\Helper\Data as WishlistHelper;
