@@ -123,9 +123,10 @@ $successMessage = $block->getSuccessMessage();
                     <?= __('Sign In') ?>
                 </button>
                 <div class="text-center tracking-wider">
-                    <a href="<?= $this->getUrl('customer/account/create') ?>"
-                       class="link link--primary"
-                       x-element-transition-trigger
+                    <a
+                        href="<?= $this->getUrl('customer/account/create') ?>"
+                        class="link link--primary"
+                        x-element-transition-trigger
                     >
                         <?= __('Create new account') ?>
                     </a>

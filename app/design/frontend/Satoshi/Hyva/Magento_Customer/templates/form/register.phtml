@@ -65,8 +65,7 @@ $errorMessage = $block->getErrorMessage();
             <?php if ($block->getShowAddressFields()): ?>
                 @private-content-loaded.window="updateCountry(event.detail.data)"
             <?php endif; ?>
-            oldid="<?= $escaper->escapeHtmlAttr($formId) ?>"
-            id="form-validate"
+            id="<?= $escaper->escapeHtmlAttr($formId) ?>"
             @submit.prevent="function($event) {
                 this.validate().then(() => {
                     // do not rename $form, the variable is the expected name in the recaptcha output
