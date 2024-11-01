@@ -1,4 +1,3 @@
-import { replaceMainContentWithTransition } from "../plugins/Transition";
 import { MainStoreType } from "../store/Main";
 
 type RegisterProps = {
@@ -13,12 +12,6 @@ type RegisterProps = {
 };
 
 export type AuthenticationType = {
-  isLoading: boolean;
-  errors: number;
-  hasCaptchaToken: boolean;
-  displayErrorMessage: boolean;
-  errorMessages: string[] | [];
-
   initRegister(props: RegisterProps): void;
   updateCountry(data: any): void;
   changeCountry(
@@ -31,19 +24,10 @@ export type AuthenticationType = {
   ): void;
   validateCountryDependentFields(): void;
   hasAvailableRegions(): boolean;
-
-  setErrorMessages(messages: string[]): void;
-  submitForm(event: Event): void;
 } & MainStoreType;
 
 export const Authentication = () => {
   return <AuthenticationType>{
-    isLoading: false,
-    errors: 0,
-    hasCaptchaToken: true,
-    displayErrorMessage: false,
-    errorMessages: [],
-
     initRegister({ telephoneErrorMessage, postCodes, postcodeWarnings }) {
       this.$nextTick(() => {
         window.hyva.formValidation.addRule(
@@ -164,36 +148,6 @@ export const Authentication = () => {
 
     hasAvailableRegions() {
       return Object.keys(this.availableRegions).length > 0;
-    },
-
-    setErrorMessages(messages) {
-      this.errorMessages = messages;
-      this.displayErrorMessage = !!this.errorMessages.length;
-    },
-
-    submitForm(event) {
-      const $form = event.target as HTMLFormElement;
-      const formData = new FormData($form);
-      this.isLoading = true;
-
-      fetch($form.action, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => {
-          return response.text().then(async (content) => {
-            await replaceMainContentWithTransition(response.url, content);
-          });
-        })
-        .catch((error) => {
-          console.error("Form submission failed:", error);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
     },
   };
 };
