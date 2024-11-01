@@ -68,15 +68,11 @@ input[type="search"] {
 
 .field {
   &-success {
-    .messages {
-      @apply text-green-700;
-    }
+    @apply text-green-700;
   }
 
   &-error {
-    .messages {
-      @apply text-red-500;
-    }
+    @apply text-red-500;
   }
 
   &-success,
