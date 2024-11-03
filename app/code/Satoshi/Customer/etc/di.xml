@@ -6,6 +6,10 @@
             type="Satoshi\Customer\Controller\Account\LoginPost"
     />
     <preference
+            for="Magento\Customer\Controller\Account\CreatePost"
+            type="Satoshi\Customer\Controller\Account\CreatePost"
+    />
+    <preference
             for="Magento\Customer\Controller\Account\ForgotPasswordPost"
             type="Satoshi\Customer\Controller\Account\ForgotPasswordPost"
     />

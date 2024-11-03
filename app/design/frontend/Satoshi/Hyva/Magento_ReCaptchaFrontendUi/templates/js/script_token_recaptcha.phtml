@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ReCaptcha;
 use Hyva\Theme\ViewModel\StoreConfig;
@@ -28,13 +30,20 @@ $fieldName = $recaptcha->getResultTokenFieldName($formId);
 <script>
     <?php endif; ?>
 
-    window.validateRecaptchaToken = function (form) {
-        const hasCaptchaToken = form['<?= $escaper->escapeJs($fieldName) ?>'] && form['<?= $escaper->escapeJs($fieldName) ?>'].value.length > 0;
-        const errors = hasCaptchaToken ? 0 : 1;
-        const errorMessage = '<?= $escaper->escapeJs(__('ReCaptcha validation failed, please try again')) ?>';
+    this.hasCaptchaToken = $form['<?= $escaper->escapeJs($fieldName) ?>'] &&
+        $form['<?= $escaper->escapeJs($fieldName) ?>'].value.length > 0;
+    this.errors = this.hasCaptchaToken ? 0 : 1;
 
-        return {errors, errorMessage};
-    };
+    if (this.errors) {
+        const error = '<?= $escaper->escapeJs(__('ReCaptcha validation failed, please try again')) ?>';
+        if (this.setErrorMessages) {
+            this.setErrorMessages([error])
+            this.displayErrorMessage = true;
+        } else {
+            // TODO: Remove when tested for all forms using captcha
+            window.dispatchMessages && window.dispatchMessages([{ type: "error", text: error }], 5000);
+        }
+    }
 
     <?php if ($block->getData('render_script_tag')): ?>
 </script>

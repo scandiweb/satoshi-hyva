@@ -8,6 +8,7 @@ use Magento\Customer\Api\CustomerRepositoryInterface as CustomerRepository;
 use Magento\Customer\Api\Data\AddressInterfaceFactory;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\Customer\Api\Data\RegionInterfaceFactory;
+use Magento\Customer\Controller\Account\CreatePost as SourceCreatePost;
 use Magento\Customer\Helper\Address;
 use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 use Magento\Customer\Model\CustomerExtractor;
@@ -24,11 +25,13 @@ use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Escaper;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\StateException;
+use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
+use Magento\Framework\Stdlib\Cookie\PhpCookieManager;
 use Magento\Framework\UrlFactory;
 use Magento\Newsletter\Model\SubscriberFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Customer\Controller\Account\CreatePost as SourceCreatePost;
 
 /**
  * Post create customer action
@@ -38,6 +41,17 @@ use Magento\Customer\Controller\Account\CreatePost as SourceCreatePost;
  */
 class CreatePost extends SourceCreatePost
 {
+
+    /**
+     * @var CookieMetadataFactory
+     */
+    private $cookieMetadataFactory;
+
+    /**
+     * @var PhpCookieManager
+     */
+    private $cookieMetadataManager;
+
     /**
      * @var AccountRedirect
      */
@@ -47,11 +61,6 @@ class CreatePost extends SourceCreatePost
      * @var Validator
      */
     private $formKeyValidator;
-
-    /**
-     * @var CustomerRepository
-     */
-    private $customerRepository;
 
     /**
      * @param Context $context
@@ -73,36 +82,34 @@ class CreatePost extends SourceCreatePost
      * @param DataObjectHelper $dataObjectHelper
      * @param AccountRedirect $accountRedirect
      * @param CustomerRepository $customerRepository
-     * @param Validator|null $formKeyValidator
+     * @param  Validator  $formKeyValidator
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        Context                    $context,
-        Session                    $customerSession,
-        ScopeConfigInterface       $scopeConfig,
-        StoreManagerInterface      $storeManager,
+        Context $context,
+        Session $customerSession,
+        ScopeConfigInterface $scopeConfig,
+        StoreManagerInterface $storeManager,
         AccountManagementInterface $accountManagement,
-        Address                    $addressHelper,
-        UrlFactory                 $urlFactory,
-        FormFactory                $formFactory,
-        SubscriberFactory          $subscriberFactory,
-        RegionInterfaceFactory     $regionDataFactory,
-        AddressInterfaceFactory    $addressDataFactory,
-        CustomerInterfaceFactory   $customerDataFactory,
-        CustomerUrl                $customerUrl,
-        Registration               $registration,
-        Escaper                    $escaper,
-        CustomerExtractor          $customerExtractor,
-        DataObjectHelper           $dataObjectHelper,
-        AccountRedirect            $accountRedirect,
-        CustomerRepository         $customerRepository,
-        Validator                  $formKeyValidator = null
-    )
-    {
-        $this->accountRedirect = $accountRedirect;
+        Address $addressHelper,
+        UrlFactory $urlFactory,
+        FormFactory $formFactory,
+        SubscriberFactory $subscriberFactory,
+        RegionInterfaceFactory $regionDataFactory,
+        AddressInterfaceFactory $addressDataFactory,
+        CustomerInterfaceFactory $customerDataFactory,
+        CustomerUrl $customerUrl,
+        Registration $registration,
+        Escaper $escaper,
+        CustomerExtractor $customerExtractor,
+        DataObjectHelper $dataObjectHelper,
+        AccountRedirect $accountRedirect,
+        CustomerRepository $customerRepository,
+        Validator $formKeyValidator = null
+    ) {
         $this->formKeyValidator = $formKeyValidator ?: ObjectManager::getInstance()->get(Validator::class);
-        $this->customerRepository = $customerRepository;
+        $this->accountRedirect = $accountRedirect;
 
         parent::__construct(
             $context,
@@ -124,39 +131,8 @@ class CreatePost extends SourceCreatePost
             $dataObjectHelper,
             $accountRedirect,
             $customerRepository,
-            $formKeyValidator);
-    }
-
-    /**
-     * Retrieve cookie manager
-     *
-     * @return \Magento\Framework\Stdlib\Cookie\PhpCookieManager
-     * @deprecated 100.1.0
-     */
-    private function getCookieManager()
-    {
-        if (!$this->cookieMetadataManager) {
-            $this->cookieMetadataManager = ObjectManager::getInstance()->get(
-                \Magento\Framework\Stdlib\Cookie\PhpCookieManager::class
-            );
-        }
-        return $this->cookieMetadataManager;
-    }
-
-    /**
-     * Retrieve cookie metadata factory
-     *
-     * @return \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory
-     * @deprecated 100.1.0
-     */
-    private function getCookieMetadataFactory()
-    {
-        if (!$this->cookieMetadataFactory) {
-            $this->cookieMetadataFactory = ObjectManager::getInstance()->get(
-                \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory::class
-            );
-        }
-        return $this->cookieMetadataFactory;
+            $formKeyValidator
+        );
     }
 
     /**
@@ -206,12 +182,15 @@ class CreatePost extends SourceCreatePost
             );
             $confirmationStatus = $this->accountManagement->getConfirmationStatus($customer->getId());
             if ($confirmationStatus === AccountManagementInterface::ACCOUNT_CONFIRMATION_REQUIRED) {
-                $this->session->setSuccessMessage(__('Registration successful!'));
+                $confirmUrl = $this->customerUrl->getEmailConfirmationUrl($customer->getEmail());
+                $msg = __('You must confirm your account. Please check your email for the confirmation link or <a href="%1">click here</a> for a new link.', $confirmUrl);
+                $this->session->setSuccessMessage($this->escaper->escapeHtml($msg, ['a']));
+
                 $url = $this->urlModel->getUrl('*/*/index', ['_secure' => true]);
                 $resultRedirect->setUrl($this->_redirect->success($url));
             } else {
                 $this->session->setCustomerDataAsLoggedIn($customer);
-                $this->session->setSuccessMessage(__('Registration successful!'));
+                $this->setMessageManagerSuccessMessage();
                 $requestedRedirect = $this->accountRedirect->getRedirectCookie();
                 if (!$this->scopeConfig->getValue('customer/startup/redirect_dashboard') && $requestedRedirect) {
                     $resultRedirect->setUrl($this->_redirect->success($requestedRedirect));
@@ -228,24 +207,116 @@ class CreatePost extends SourceCreatePost
 
             return $resultRedirect;
         } catch (StateException $e) {
-            $this->session->setErrorMessage(['email' => __('Account already exists.')]);
+            $url = $this->urlModel->getUrl('customer/account/forgotpassword');
+            $msg = __('There is already an account with this email address. If you are sure that it is your email address, <a href="%1">click here</a> to get your password and access your account.',
+                $url);
+            $this->session->setErrorMessage(['general' => $this->escaper->escapeHtml($msg, ['a'])]);
         } catch (InputException $e) {
-            $this->session->setErrorMessage(['general' => $this->escaper->escapeHtml($e->getMessage())]);
+            $this->session->setErrorMessage([
+                'general' => $this->escaper->escapeHtml($e->getMessage())
+            ]);
             foreach ($e->getErrors() as $error) {
                 $this->session->setErrorMessage([
                     $error->getFieldName() => $this->escaper->escapeHtml($error->getMessage())
                 ]);
             }
         } catch (LocalizedException $e) {
-            $this->session->setErrorMessage(['general' => $e->getMessage()]);
+            $this->session->setErrorMessage(['general' => $this->escaper->escapeHtml($e->getMessage())]);
         } catch (\Exception $e) {
             $this->session->setErrorMessage([
-                'general' => __('We can\'t save the customer.')
+                'general' => $this->escaper->escapeHtml(__('We can\'t save the customer.'))
             ]);
         }
 
         $this->session->setCustomerFormData($this->getRequest()->getPostValue());
         $defaultUrl = $this->urlModel->getUrl('*/*/create', ['_secure' => true]);
         return $resultRedirect->setUrl($this->_redirect->error($defaultUrl));
+    }
+
+    /**
+     * Retrieve cookie metadata factory
+     *
+     * @return CookieMetadataFactory
+     * @deprecated 100.1.0
+     */
+    private function getCookieMetadataFactory()
+    {
+        if (!$this->cookieMetadataFactory) {
+            $this->cookieMetadataFactory = ObjectManager::getInstance()->get(
+                CookieMetadataFactory::class
+            );
+        }
+        return $this->cookieMetadataFactory;
+    }
+
+    /**
+     * Retrieve cookie manager
+     *
+     * @return PhpCookieManager
+     * @deprecated 100.1.0
+     */
+    private function getCookieManager()
+    {
+        if (!$this->cookieMetadataManager) {
+            $this->cookieMetadataManager = ObjectManager::getInstance()->get(
+                PhpCookieManager::class
+            );
+        }
+        return $this->cookieMetadataManager;
+    }
+
+    /**
+     * Retrieve success message
+     *
+     * @return string
+     * @deprecated 102.0.4
+     */
+    protected function getSuccessMessage()
+    {
+        if ($this->addressHelper->isVatValidationEnabled()) {
+            if ($this->addressHelper->getTaxCalculationAddressType() == Address::TYPE_SHIPPING) {
+                // @codingStandardsIgnoreStart
+                $message = __(
+                    'If you are a registered VAT customer, please <a href="%1">click here</a> to enter your shipping address for proper VAT calculation.',
+                    $this->urlModel->getUrl('customer/address/edit')
+                );
+                // @codingStandardsIgnoreEnd
+            } else {
+                // @codingStandardsIgnoreStart
+                $message = __(
+                    'If you are a registered VAT customer, please <a href="%1">click here</a> to enter your billing address for proper VAT calculation.',
+                    $this->urlModel->getUrl('customer/address/edit')
+                );
+                // @codingStandardsIgnoreEnd
+            }
+        } else {
+            $message = __('Thank you for registering with %1.', $this->storeManager->getStore()->getFrontendName());
+        }
+        return $message;
+    }
+
+    /**
+     * Sets success message manager message
+     *
+     * @return void
+     * @throws NoSuchEntityException
+     */
+    private function setMessageManagerSuccessMessage(): void
+    {
+        if ($this->addressHelper->isVatValidationEnabled()) {
+
+            $url = $this->urlModel->getUrl('customer/address/edit');
+
+            if ($this->addressHelper->getTaxCalculationAddressType() == Address::TYPE_SHIPPING) {
+                $msg = __('If you are a registered VAT customer, please <a href="%1">click here</a> to enter your shipping address for proper VAT calculation.', $url);
+            } else {
+                $msg = __('If you are a registered VAT customer, please <a href="%1">click here</a> to enter your billing address for proper VAT calculation.', $url);
+            }
+
+            $this->session->setSuccessMessage($this->escaper->escapeHtml($msg, ['a']));
+
+        } else {
+            $this->session->setSuccessMessage($this->escaper->escapeHtml(__('Thank you for registering with %1.', $this->storeManager->getStore()->getFrontendName())));
+        }
     }
 }
