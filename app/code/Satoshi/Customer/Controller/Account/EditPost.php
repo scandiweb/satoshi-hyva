@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Satoshi\Customer\Controller\Account;
@@ -34,6 +35,7 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 
 class EditPost extends SourceEditPost
 {
+
     /**
      * @var EmailNotificationInterface
      */
@@ -70,6 +72,16 @@ class EditPost extends SourceEditPost
     private $sessionCleaner;
 
     /**
+     * @var AccountConfirmation
+     */
+    private $accountConfirmation;
+
+    /**
+     * @var Url
+     */
+    private Url $customerUrl;
+
+    /**
      * @param Context $context
      * @param Session $customerSession
      * @param AccountManagementInterface $accountManagement
@@ -102,6 +114,8 @@ class EditPost extends SourceEditPost
         $this->addressRegistry = $addressRegistry ?: ObjectManager::getInstance()->get(AddressRegistry::class);
         $this->filesystem = $filesystem ?: ObjectManager::getInstance()->get(Filesystem::class);
         $this->sessionCleaner = $sessionCleaner ?: ObjectManager::getInstance()->get(SessionCleanerInterface::class);
+        $this->accountConfirmation = $accountConfirmation ?: ObjectManager::getInstance()->get(AccountConfirmation::class);
+        $this->customerUrl = $customerUrl ?: ObjectManager::getInstance()->get(Url::class);
 
         parent::__construct(
             $context,
@@ -117,117 +131,6 @@ class EditPost extends SourceEditPost
             $accountConfirmation,
             $customerUrl
         );
-    }
-
-    /**
-     * Add error messages to session without overriding existing ones.
-     *
-     * @param array $newErrorMessages
-     * @return void
-     */
-    private function addSessionErrorMessages(array $newErrorMessages): void
-    {
-        $currentErrorMessages = $this->session->getErrorMessage() ?? [];
-        $mergedErrorMessages = array_merge($currentErrorMessages, $newErrorMessages);
-
-        $this->session->setErrorMessage($mergedErrorMessages);
-    }
-
-    /**
-     * Change customer email or password action
-     *
-     * @return Redirect
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @throws SessionException
-     */
-    public function execute()
-    {
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $validFormKey = $this->formKeyValidator->validate($this->getRequest());
-
-        if ($validFormKey && $this->getRequest()->isPost()) {
-            $customer = $this->getCustomerDataObject($this->session->getCustomerId());
-            $customerCandidate = $this->populateNewCustomerDataObject($this->_request, $customer);
-
-            // Capture if the user is attempting to change email or password
-            $isChangingEmail = $this->getRequest()->getParam('change_email') ? true : false;
-            $isChangingPassword = $this->getRequest()->getParam('change_password') ? true : false;
-
-            $attributeToDelete = $this->_request->getParam('delete_attribute_value');
-            if ($attributeToDelete !== null) {
-                $this->deleteCustomerFileAttribute($customerCandidate, $attributeToDelete);
-            }
-
-            try {
-                // whether a customer enabled change email option
-                $isEmailChanged = $this->processChangeEmailRequest($customer);
-
-                // whether a customer enabled change password option
-                $isPasswordChanged = $this->changeCustomerPassword($customer->getEmail());
-
-                // No need to validate customer address while editing customer profile
-                $this->disableAddressValidation($customerCandidate);
-
-                $this->customerRepository->save($customerCandidate);
-                $updatedCustomer = $this->customerRepository->getById($customerCandidate->getId());
-
-                $this->getEmailNotification()->credentialsChanged(
-                    $updatedCustomer,
-                    $customer->getEmail(),
-                    $isPasswordChanged
-                );
-
-                $this->dispatchSuccessEvent($updatedCustomer);
-                $this->session->setSuccessMessage(__('You saved the account information.'));
-                // logout from current session if password or email changed.
-                if ($isPasswordChanged || $isEmailChanged) {
-                    $this->session->logout();
-                    $this->session->start();
-                    $this->session->setSuccessMessage(
-                        __('You have updated your account information. Please sign in again.')
-                    );
-
-                    return $resultRedirect->setPath('customer/account/login');
-                }
-                return $resultRedirect->setPath('customer/account');
-            } catch (InvalidEmailOrPasswordException $e) {
-                $this->session->setErrorMessage([
-                    'current_password' => $this->escaper->escapeHtml($e->getMessage())
-                ]);
-            } catch (UserLockedException $e) {
-                $this->session->logout();
-                $this->session->start();
-                $this->session->setErrorMessage(['general' => __('The account sign-in was incorrect or your account is disabled temporarily. '
-                    . 'Please wait and try again later.')
-                ]);
-
-                return $resultRedirect->setPath('customer/account/login');
-            } catch (InputException $e) {
-                $this->session->setErrorMessage(['general' => $this->escaper->escapeHtml($e->getMessage())]);
-                foreach ($e->getErrors() as $error) {
-                    $this->session->setErrorMessage([
-                        $error->getFieldName() => $this->escaper->escapeHtml($error->getMessage())
-                    ]);
-                }
-            } catch (LocalizedException $e) {
-                $this->session->setErrorMessage(['general' => $e->getMessage()]);
-            } catch (\Exception $e) {
-                $this->session->setErrorMessage([
-                    'general' => __('We can\'t save the customer.')
-                ]);
-            }
-
-            $this->session->setCustomerFormData($this->getRequest()->getPostValue());
-        }
-
-        $this->addSessionErrorMessages([
-            'isChangingEmail' => $isChangingEmail,
-            'isChangingPassword' => $isChangingPassword,
-        ]);
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setPath('*/*/edit');
-
-        return $resultRedirect;
     }
 
     /**
@@ -256,6 +159,115 @@ class EditPost extends SourceEditPost
             return ObjectManager::getInstance()->get(EmailNotificationInterface::class);
         } else {
             return $this->emailNotification;
+        }
+    }
+
+    /**
+     * Change customer email or password action
+     *
+     * @return Redirect
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @throws SessionException
+     */
+    public function execute()
+    {
+        $resultRedirect = $this->resultRedirectFactory->create();
+        $validFormKey = $this->formKeyValidator->validate($this->getRequest());
+
+        if ($validFormKey && $this->getRequest()->isPost()) {
+            $customer = $this->getCustomerDataObject($this->session->getCustomerId());
+            $customerCandidate = $this->populateNewCustomerDataObject($this->_request, $customer);
+
+            $attributeToDelete = $this->_request->getParam('delete_attribute_value');
+            if ($attributeToDelete !== null) {
+                $this->deleteCustomerFileAttribute($customerCandidate, $attributeToDelete);
+            }
+
+            try {
+                // whether a customer enabled change email option
+                $isEmailChanged = $this->processChangeEmailRequest($customer);
+
+                // whether a customer enabled change password option
+                $isPasswordChanged = $this->changeCustomerPassword($customer->getEmail());
+
+                // No need to validate customer address while editing customer profile
+                $this->disableAddressValidation($customerCandidate);
+
+                $this->customerRepository->save($customerCandidate);
+                $updatedCustomer = $this->customerRepository->getById($customerCandidate->getId());
+
+                $this->getEmailNotification()->credentialsChanged(
+                    $updatedCustomer,
+                    $customer->getEmail(),
+                    $isPasswordChanged
+                );
+
+                $this->dispatchSuccessEvent($updatedCustomer);
+                $this->session->setSuccessMessage($this->escaper->escapeHtml(__('You saved the account information.')));
+                // logout from current session if password or email changed.
+                if ($isPasswordChanged || $isEmailChanged) {
+                    $this->session->logout();
+                    $this->session->start();
+                    $this->addComplexSuccessMessage($customer, $updatedCustomer);
+
+                    return $resultRedirect->setPath('customer/account/login');
+                }
+                return $resultRedirect->setPath('customer/account');
+            } catch (InvalidEmailOrPasswordException $e) {
+                $key = $e->getCode() === 1 ? 'email_current_password': 'current_password';
+                $this->session->setErrorMessage([
+                    $key => $this->escaper->escapeHtml($e->getMessage())
+                ]);
+            } catch (UserLockedException $e) {
+                $message = __(
+                    'The account sign-in was incorrect or your account is disabled temporarily. '
+                    . 'Please wait and try again later.'
+                );
+                $this->session->logout();
+                $this->session->start();
+                $this->session->setErrorMessage(['general' => $message]);
+
+                return $resultRedirect->setPath('customer/account/login');
+            } catch (InputException $e) {
+                $this->session->setErrorMessage(['general' => $this->escaper->escapeHtml($e->getMessage())]);
+                foreach ($e->getErrors() as $error) {
+                    $this->session->setErrorMessage([
+                        $error->getFieldName() => $this->escaper->escapeHtml($error->getMessage())
+                    ]);
+                }
+            } catch (LocalizedException $e) {
+                $this->session->setErrorMessage(['general' => $e->getMessage()]);
+            } catch (\Exception $e) {
+                $this->session->setErrorMessage([
+                    'general' => __('We can\'t save the customer.')
+                ]);
+            }
+
+            $this->session->setCustomerFormData($this->getRequest()->getPostValue());
+        }
+
+        $resultRedirect = $this->resultRedirectFactory->create();
+        $resultRedirect->setPath('*/*/edit');
+
+        return $resultRedirect;
+    }
+
+
+    /**
+     * Adds a complex success message if email confirmation is required
+     *
+     * @param CustomerInterface $outdatedCustomer
+     * @param CustomerInterface $updatedCustomer
+     * @throws LocalizedException
+     */
+    private function addComplexSuccessMessage(
+        CustomerInterface $outdatedCustomer,
+        CustomerInterface $updatedCustomer
+    ): void {
+        if (($outdatedCustomer->getEmail() !== $updatedCustomer->getEmail()) && $this->accountConfirmation->isCustomerEmailChangedConfirmRequired($updatedCustomer)) {
+            $url = $this->customerUrl->getEmailConfirmationUrl($updatedCustomer->getEmail());
+            $msg = __('You must confirm your account. Please check your email for the confirmation link or <a href="%1">click here</a> for a new link.', $url);
+            $this->session->setSuccessMessage($this->escaper->escapeHtml($msg, ['a']));
         }
     }
 
@@ -295,10 +307,9 @@ class EditPost extends SourceEditPost
      * @return CustomerInterface
      */
     private function populateNewCustomerDataObject(
-        RequestInterface  $inputData,
+        RequestInterface $inputData,
         CustomerInterface $currentCustomerData
-    )
-    {
+    ) {
         $attributeValues = $this->getCustomerMapper()->toFlatArray($currentCustomerData);
         $customerDto = $this->customerExtractor->extract(
             self::FORM_DATA_EXTRACTOR_CODE,
@@ -317,36 +328,10 @@ class EditPost extends SourceEditPost
     }
 
     /**
-     * Change customer password
-     *
-     * @param string $email
-     * @return boolean
-     * @throws InvalidEmailOrPasswordException|InputException|LocalizedException
-     */
-    protected function changeCustomerPassword($email)
-    {
-        $isPasswordChanged = false;
-        if ($this->getRequest()->getParam('change_password')) {
-            $currPass = $this->getRequest()->getPost('current_password');
-            $newPass = $this->getRequest()->getPost('password');
-            $confPass = $this->getRequest()->getPost('password_confirmation');
-            if ($newPass != $confPass) {
-                throw new InputException(__('Password confirmation doesn\'t match entered password.'));
-            }
-
-            $isPasswordChanged = $this->accountManagement->changePassword($email, $currPass, $newPass);
-        }
-
-        return $isPasswordChanged;
-    }
-
-    /**
      * Process change email request
      *
      * @param CustomerInterface $currentCustomerDataObject
      * @return bool
-     * @throws InvalidEmailOrPasswordException
-     * @throws UserLockedException
      */
     private function processChangeEmailRequest(CustomerInterface $currentCustomerDataObject)
     {
@@ -357,11 +342,13 @@ class EditPost extends SourceEditPost
                     $currentCustomerDataObject->getId(),
                     $this->getRequest()->getPost('current_password')
                 );
-                $this->sessionCleaner->clearFor((int)$currentCustomerDataObject->getId());
+                $this->sessionCleaner->clearFor((int) $currentCustomerDataObject->getId());
                 return true;
             } catch (InvalidEmailOrPasswordException $e) {
                 throw new InvalidEmailOrPasswordException(
-                    __("The password doesn't match this account. Verify the password and try again.")
+                    __("The password doesn't match this account. Verify the password and try again."),
+                    null,
+                    1
                 );
             }
         }
@@ -405,9 +392,8 @@ class EditPost extends SourceEditPost
      */
     private function deleteCustomerFileAttribute(
         CustomerInterface $customerCandidateDataObject,
-        string            $attributeToDelete
-    ): void
-    {
+        string $attributeToDelete
+    ) : void {
         if ($attributeToDelete !== '') {
             if (strpos($attributeToDelete, ',') !== false) {
                 $attributes = explode(',', $attributeToDelete);
@@ -416,7 +402,7 @@ class EditPost extends SourceEditPost
             }
             foreach ($attributes as $attr) {
                 $attributeValue = $customerCandidateDataObject->getCustomAttribute($attr);
-                if ($attributeValue !== null) {
+                if ($attributeValue!== null) {
                     if ($attributeValue->getValue() !== '') {
                         $mediaDirectory = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
                         $fileName = $attributeValue->getValue();
