@@ -53,7 +53,7 @@ export const Newsletter = (defaultErrorMessage: string) => {
             this.setErrorMessages([data.message]);
           }
         })
-        .catch((e) => {
+        .catch((_e) => {
           this.setErrorMessages([defaultErrorMessage]);
         })
         .finally(() => {
@@ -63,7 +63,7 @@ export const Newsletter = (defaultErrorMessage: string) => {
           // Because form here updates via ajax so recaptcha token gets expired after used once.
           try {
             window.grecaptcha?.reset();
-          } catch (e) {}
+          } catch (_e) {}
         });
     },
   };
