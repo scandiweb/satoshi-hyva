@@ -13,7 +13,7 @@ use Magento\Framework\View\Element\Template;
 /** @var ViewModelRegistry $viewModels */
 
 $storeConfig = $viewModels->require(StoreConfig::class);
-$siteKey     = $storeConfig->getStoreConfig('recaptcha_frontend/type_recaptcha/public_key');
+$siteKey = $storeConfig->getStoreConfig('recaptcha_frontend/type_recaptcha/public_key');
 
 if (!$siteKey) {
     // No v2 checkbox google API credentials configured
