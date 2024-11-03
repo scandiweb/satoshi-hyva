@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ReCaptcha;
 use Hyva\Theme\ViewModel\StoreConfig;
@@ -27,6 +29,7 @@ $fieldName = $recaptcha->getResultTokenFieldName($formId);
 <?php if ($block->getData('render_script_tag')): ?>
 <script>
     <?php endif; ?>
+
     this.hasCaptchaToken = $form['<?= $escaper->escapeJs($fieldName) ?>'] &&
         $form['<?= $escaper->escapeJs($fieldName) ?>'].value.length > 0;
     this.errors = this.hasCaptchaToken ? 0 : 1;
@@ -37,6 +40,7 @@ $fieldName = $recaptcha->getResultTokenFieldName($formId);
             this.setErrorMessages([error])
             this.displayErrorMessage = true;
         } else {
+            // TODO: Remove when tested for all forms using captcha
             window.dispatchMessages && window.dispatchMessages([{ type: "error", text: error }], 5000);
         }
     }
