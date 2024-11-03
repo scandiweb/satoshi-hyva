@@ -1,0 +1,31 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Comment;
+use Magento\Wishlist\Helper\Data as WishlistHelper;
+use Magento\Wishlist\Model\Item;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var Escaper $escaper */
+/** @var Comment $block  */
+
+/** @var Item $item */
+$item = $block->getItem();
+
+$wishlistHelper = $this->helper(WishlistHelper::class);
+?>
+<div class="mb-5">
+    <label class="leading-5" for="product-item-comment-<?= $escaper->escapeHtmlAttr($item->getWishlistItemId()) ?>">
+        <span><?= $escaper->escapeHtml(__('Comment')) ?></span>
+    </label>
+    <textarea
+        id="product-item-comment-<?= $escaper->escapeHtmlAttr($item->getWishlistItemId()) ?>"
+        placeholder="<?= $escaper->escapeHtmlAttr(__('Comment text')) ?>"
+        name="description[<?= $escaper->escapeHtmlAttr($item->getWishlistItemId()) ?>]"
+        title="<?= $escaper->escapeHtmlAttr(__('Comment')) ?>"
+        class="input__field input__field--outline block h-[60px] px-5 py-2.5 border-bg-600 placeholder:text-border-color resize-none mt-[6px]"
+        <?= $item->getProduct()->isSaleable() ? '' : 'disabled' ?>
+    ><?= ($escaper->escapeHtml($item->getDescription())) ?></textarea>
+</div>

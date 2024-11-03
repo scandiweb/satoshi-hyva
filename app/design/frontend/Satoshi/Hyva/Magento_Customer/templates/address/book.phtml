@@ -1,0 +1,80 @@
+<?php
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Customer\Block\Address\Book;
+use Magento\Framework\Escaper;
+
+/** @var Book $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+?>
+
+<section class="mb-7 md:mb-8">
+    <h2 class="text-text-500 text-lg font-bold mb-5">
+        <?= $escaper->escapeHtml(__('Default Addresses')) ?>
+    </h2>
+    <div class="grid gap-5 lg:gap-8 grid-cols-1 lg:grid-cols-2">
+        <?php if ($customerDefaultBillingAddress = $block->getDefaultBilling()): ?>
+            <div class="bg-bg-400 p-5 rounded-xl">
+                <h2 class="text-text-500 text-lg font-bold mb-4">
+                    <?= $escaper->escapeHtml(__('Default billing address')) ?>
+                </h2>
+                <div class="mb-7">
+                    <?= $block->getAddressHtml($block->getAddressById($customerDefaultBillingAddress)) ?>
+                </div>
+                <div>
+                    <a
+                        href="<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>"
+                        x-element-transition-trigger
+                        class="button button--outline-primary w-full md:w-auto"
+                    >
+                        <span>
+                            <?= $escaper->escapeHtml(__('Change billing address')) ?>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="bg-bg-400 p-5 rounded-xl">
+                <h2 class="text-text-500 text-lg font-bold mb-4">
+                    <?= $escaper->escapeHtml(__('Default billing address')) ?>
+                </h2>
+                <div>
+                    <p><?= $escaper->escapeHtml(__('You have no default billing address in your address book.')) ?></p>
+                </div>
+            </div>
+        <?php endif ?>
+
+        <?php if ($customerDefaultBillingAddress = $block->getDefaultShipping()): ?>
+            <div class="bg-bg-400 p-5 rounded-xl">
+                <h2 class="text-text-500 text-lg font-bold mb-4">
+                    <?= $escaper->escapeHtml(__('Default shipping address')) ?>
+                </h2>
+                <div class="mb-7">
+                    <?= $block->getAddressHtml($block->getAddressById($customerDefaultBillingAddress)) ?>
+                </div>
+                <div>
+                    <a
+                        href="<?= $escaper->escapeUrl($block->getAddressEditUrl($customerDefaultBillingAddress)) ?>"
+                        x-element-transition-trigger
+                        class="button button--outline-primary w-full md:w-auto"
+                    >
+                        <span><?= $escaper->escapeHtml(__('Change shipping address')) ?></span>
+                    </a>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="bg-bg-400 p-5 rounded-xl">
+                <h2 class="text-text-500 text-lg font-bold mb-4">
+                    <?= $escaper->escapeHtml(__('Default shipping address')) ?>
+                </h2>
+                <div>
+                    <p>
+                        <?= $escaper->escapeHtml(__('You have no default shipping address in your address book.')) ?>
+                    </p>
+                </div>
+            </div>
+        <?php endif ?>
+    </div>
+</section>
