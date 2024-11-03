@@ -1,13 +1,8 @@
 <?php
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
+
+declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Hyva\Theme\ViewModel\ReCaptcha;
 use Magento\Framework\Escaper;
 use Magento\Newsletter\Block\Subscribe;
@@ -17,10 +12,7 @@ use Hyva\Theme\ViewModel\SvgIcons;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 /** @var ReCaptcha $recaptcha */
-/** @var HeroiconsOutline $heroicons */
 /** @var SvgIcons $hyvaicons */
-
-$heroicons = $viewModels->require(HeroiconsOutline::class);
 
 // Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
 // on the Magento_ReCaptchaNewsletter module
@@ -35,16 +27,17 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         class="flex flex-col gap-3 items-stretch md:gap-4"
         action="<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>"
         method="post"
-        x-data="Newsletter({
-            recaptchaValidationCode: '<?= $escaper->escapeJS($recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '') ?>',
-            isCaptchaEnabled: Boolean(<?= $recaptcha ? $recaptcha->isCaptchaEnabledFor(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>),
-            recaptchaSiteKey: '<?= $recaptcha ? $recaptcha->getSiteKey(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>',
-            recaptchaFormIdNewsletter: '<?= ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER ?>',
-            recaptchaType: '<?= $recaptcha ? $recaptcha->getSelectedTypeForForm(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>',
-            recaptchaV2InvisibleBadgePosition: '<?= $recaptcha ? $recaptcha->getRecaptchaV2InvisibleBadgePosition() : '' ?>',
-            defaultErrorMessage: '<?= __('Something went wrong with the subscription.') ?>'
-        })"
-        @submit.prevent="submitForm()"
+        x-data="Newsletter('<?= __('Something went wrong with the subscription.') ?>')"
+        @submit.prevent="function($event) {
+            // do not rename $form, the variable is the expected name in the recaptcha output
+            const $form = $event.target;
+
+            <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER)) : '' ?>
+
+            if (this.errors === 0) {
+                this.submitForm($event);
+            }
+        }"
         id="newsletter-validate-detail"
         aria-label="<?= $escaper->escapeHtmlAttr(__('Subscribe to Newsletter')) ?>"
     >
@@ -59,34 +52,22 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 name="email"
                 class="input__field input__field--outline bg-bg-500 md:px-5 md:py-4"
                 :class="{
-                    'border-error': formSubmissionErrorMessages.email
+                    'border-error': displayErrorMessage
                 }"
                 placeholder="<?= $escaper->escapeHtmlAttr(__('Email address')) ?>"
                 aria-required="true"
                 required
-                :autofocus="!!formSubmissionErrorMessages.email"
-                :aria-invalid="!!formSubmissionErrorMessages.email"
-                :aria-describedby="formSubmissionErrorMessages.email ? 'error_newsletter' : formSubmissionSuccessMessage ? 'success_newsletter' : undefined"
+                :autofocus="displayErrorMessage"
+                :aria-invalid="displayErrorMessage"
+                :aria-describedby="displayErrorMessage ? 'error_newsletter' : successMessage ? 'success_newsletter' : undefined"
             >
-            <span
-                id="error_newsletter"
-                class="text-error"
-                x-show="formSubmissionErrorMessages.email"
-                x-cloak
-            >
-                <?= $hyvaicons->renderHtml('error'); ?>
-                <span x-html="formSubmissionErrorMessages.email"></span>
-            </span>
-            <span
-                class="block text-error"
-                x-show="displayErrorMessage"
-                x-cloak
-            >
-                <?= $hyvaicons->renderHtml('error'); ?>
-                <template x-for="errorMessage in errorMessages">
-                    <span x-html="errorMessage"></span>
-                </template>
-            </span>
+            <template x-if="displayErrorMessage">
+                <p class="field-error">
+                    <template x-for="errorMessage in errorMessages">
+                        <span class="messages" x-html="errorMessage"></span>
+                    </template>
+                </p>
+            </template>
         </div>
 
         <?= $block->getBlockHtml('formkey') ?>
@@ -111,14 +92,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             id="success_newsletter"
             tabindex="-1"
             autofocus
-            x-show="formSubmissionSuccessMessage"
+            x-show="successMessage"
             x-cloak
         >
             <?= $hyvaicons->renderHtml('success', 'inline'); ?>
-            <span x-html="formSubmissionSuccessMessage"></span>
+            <span x-html="successMessage"></span>
         </span>
-        <div class="mt-3 text-sm">
-            <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
-        </div>
+        <?php if($recaptcha && $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER)): ?>
+            <div class="mt-3 text-sm">
+                <?= $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) ?>
+            </div>
+        <?php endif; ?>
     </form>
 </div>
