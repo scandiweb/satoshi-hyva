@@ -58,4 +58,27 @@ input[type="search"] {
   &__message {
     @apply ml-3 text-sm text-secondary-500;
   }
+
+  .field-error & {
+    &__field {
+      @apply border-red-500 shadow-error;
+    }
+  }
+}
+
+.field {
+  &-success {
+    @apply text-primary-700;
+  }
+
+  &-error {
+    @apply text-error;
+  }
+
+  &-success,
+  &-error {
+    a {
+      @apply border-b-1 border-current;
+    }
+  }
 }
