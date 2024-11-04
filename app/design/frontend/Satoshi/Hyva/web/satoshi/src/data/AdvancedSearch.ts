@@ -1,5 +1,5 @@
 import { Magics } from "alpinejs";
-import { replaceMainContentWithTransition, navigateWithTransition } from "../plugins/Transition";
+import { navigateWithTransition } from "../plugins/Transition";
 
 export type AdvancedSearchType = {
   isLoading: boolean;
@@ -26,7 +26,7 @@ export const AdvancedSearch = () =>
             .then(async (res) => {
               if (res.ok) {
                 if (res.url === window.location.href) {
-                  await replaceMainContentWithTransition(res.url, await res.text());
+                  window.hyva.replaceDomElement("#maincontent", await res.text());
                   return;
                 }
 
