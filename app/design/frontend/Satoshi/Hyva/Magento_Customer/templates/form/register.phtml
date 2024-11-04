@@ -254,11 +254,6 @@ $errorMessage = $block->getErrorMessage();
                                     @input.debounce="onChange"
                                 />
                             </div>
-                            <?php if (!empty($errorMessage['street[]'])): ?>
-                                <div class="messages mt-1">
-                                    <span><?= $errorMessage['street[]'] ?></span>
-                                </div>
-                            <?php endif; ?>
                         </div>
 
                         <?php for ($i = 2, $n = $this->helper(Address::class)->getStreetLines(); $i <= $n; $i++): ?>
@@ -303,11 +298,6 @@ $errorMessage = $block->getErrorMessage();
                                     placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your postcode')) ?>"
                                 />
                             </div>
-                            <?php if (!empty($errorMessage['postcode'])): ?>
-                                <div class="messages mt-1">
-                                    <span><?= $errorMessage['postcode'] ?></span>
-                                </div>
-                            <?php endif; ?>
                         </div>
 
                         <div class="field field-reserved<?= !empty($errorMessage['city']) ? ' field-error' : '' ?>">
@@ -330,11 +320,6 @@ $errorMessage = $block->getErrorMessage();
                                     @input.debounce="onChange"
                                 />
                             </div>
-                            <?php if (!empty($errorMessage['city'])): ?>
-                                <div class="messages mt-1">
-                                    <span><?= $errorMessage['city'] ?></span>
-                                </div>
-                            <?php endif; ?>
                         </div>
 
                         <div
@@ -392,11 +377,6 @@ $errorMessage = $block->getErrorMessage();
                                     @input.debounce="onChange"
                                 />
                             </div>
-                            <?php if (!empty($errorMessage['region'])): ?>
-                                <div class="messages mt-1">
-                                    <span><?= $errorMessage['region'] ?></span>
-                                </div>
-                            <?php endif; ?>
                         </div>
 
                         <div class="field field-reserved">
