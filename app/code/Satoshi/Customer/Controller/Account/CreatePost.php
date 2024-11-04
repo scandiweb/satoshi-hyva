@@ -183,7 +183,7 @@ class CreatePost extends SourceCreatePost
             $confirmationStatus = $this->accountManagement->getConfirmationStatus($customer->getId());
             if ($confirmationStatus === AccountManagementInterface::ACCOUNT_CONFIRMATION_REQUIRED) {
                 $confirmUrl = $this->customerUrl->getEmailConfirmationUrl($customer->getEmail());
-                $msg = __('You must confirm your account. Please check your email for the confirmation link or <a href="%1">click here</a> for a new link.', $confirmUrl);
+                $msg = __('You must confirm your account. Please check your email for the confirmation link or <a href="%1" x-element-transition-trigger>click here</a> for a new link.', $confirmUrl);
                 $this->session->setSuccessMessage($this->escaper->escapeHtml($msg, ['a']));
 
                 $url = $this->urlModel->getUrl('*/*/index', ['_secure' => true]);
@@ -308,9 +308,9 @@ class CreatePost extends SourceCreatePost
             $url = $this->urlModel->getUrl('customer/address/edit');
 
             if ($this->addressHelper->getTaxCalculationAddressType() == Address::TYPE_SHIPPING) {
-                $msg = __('If you are a registered VAT customer, please <a href="%1">click here</a> to enter your shipping address for proper VAT calculation.', $url);
+                $msg = __('If you are a registered VAT customer, please <a href="%1" x-element-transition-trigger>click here</a> to enter your shipping address for proper VAT calculation.', $url);
             } else {
-                $msg = __('If you are a registered VAT customer, please <a href="%1">click here</a> to enter your billing address for proper VAT calculation.', $url);
+                $msg = __('If you are a registered VAT customer, please <a href="%1" x-element-transition-trigger>click here</a> to enter your billing address for proper VAT calculation.', $url);
             }
 
             $this->session->setSuccessMessage($this->escaper->escapeHtml($msg, ['a']));

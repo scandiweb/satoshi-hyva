@@ -266,7 +266,7 @@ class EditPost extends SourceEditPost
     ): void {
         if (($outdatedCustomer->getEmail() !== $updatedCustomer->getEmail()) && $this->accountConfirmation->isCustomerEmailChangedConfirmRequired($updatedCustomer)) {
             $url = $this->customerUrl->getEmailConfirmationUrl($updatedCustomer->getEmail());
-            $msg = __('You must confirm your account. Please check your email for the confirmation link or <a href="%1">click here</a> for a new link.', $url);
+            $msg = __('You must confirm your account. Please check your email for the confirmation link or <a href="%1" x-element-transition-trigger>click here</a> for a new link.', $url);
             $this->session->setSuccessMessage($this->escaper->escapeHtml($msg, ['a']));
         }
     }
