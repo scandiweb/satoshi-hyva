@@ -55,9 +55,10 @@ define([
       );
 
       data.heading = attributes.heading;
-      // data.collage_items = JSON.parse(
-      //   this.decodeWysiwygCharacters(attributes.collage_items || ""),
-      // );
+      data.category_id = attributes.category_id;
+      data.max_products_count = attributes.max_products_count;
+      data.view_all_button = attributes.view_all_button;
+      data.auto_resize_items = attributes.auto_resize_items;
 
       return data;
     };
@@ -71,14 +72,13 @@ define([
      */
 
     _proto.toDom = function toDom(data, config) {
-      // if (Array.isArray(data.collage_items)) {
-      //   data.collage_items = JSON.stringify(data.collage_items);
-      // }
-
       var attributes = {
         type: "Satoshi\\SatoshiUi\\Block\\Widget\\Category",
         heading: data.heading,
-        // collage_items: this.encodeWysiwygCharacters(data.collage_items || ""),
+        category_id: data.category_id,
+        max_products_count: data.max_products_count,
+        view_all_button: data.view_all_button,
+        auto_resize_items: data.auto_resize_items,
       };
 
       (0, _object.set)(
@@ -87,52 +87,6 @@ define([
         this.buildDirective(attributes),
       );
       return data;
-    };
-    /**
-     * @param {string} content
-     * @returns {string}
-     */
-
-    _proto.encodeWysiwygCharacters = function encodeWysiwygCharacters(content) {
-      return content
-        .replace(/\{/g, "^[")
-        .replace(/\}/g, "^]")
-        .replace(/"/g, "`")
-        .replace(/\\/g, "|")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    };
-    /**
-     * @param {string} content
-     * @returns {string}
-     */
-
-    _proto.decodeWysiwygCharacters = function decodeWysiwygCharacters(content) {
-      return content
-        .replace(/\^\[/g, "{")
-        .replace(/\^\]/g, "}")
-        .replace(/`/g, '"')
-        .replace(/\|/g, "\\")
-        .replace(/&lt;/g, "<")
-        .replace(/&gt;/g, ">");
-    };
-    /**
-     * Decode html special characters
-     *
-     * @param {string} content
-     * @returns {string}
-     */
-
-    _proto.decodeHtmlCharacters = function decodeHtmlCharacters(content) {
-      if (content) {
-        var htmlDocument = new DOMParser().parseFromString(
-          content,
-          "text/html",
-        );
-        return htmlDocument.body ? htmlDocument.body.textContent : content;
-      }
-
-      return content;
     };
 
     return WidgetDirective;
