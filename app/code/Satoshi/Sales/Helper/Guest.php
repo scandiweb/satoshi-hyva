@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\Sales\Helper;
 
 use Magento\Customer\Model\Session;
@@ -45,6 +47,21 @@ class Guest extends SourceGuest
 
     private $inputExceptionMessage = 'You entered incorrect data. Please try again.';
 
+    /**
+     * Guest constructor.
+     *
+     * @param App\Helper\Context $context
+     * @param StoreManagerInterface $storeManager
+     * @param Registry $coreRegistry
+     * @param Session $customerSession
+     * @param CookieManagerInterface $cookieManager
+     * @param CookieMetadataFactory $cookieMetadataFactory
+     * @param ManagerInterface $messageManager
+     * @param OrderFactory $orderFactory
+     * @param RedirectFactory $resultRedirectFactory
+     * @param OrderRepositoryInterface|null $orderRepository
+     * @param SearchCriteriaBuilder|null $searchCriteria
+     */
     public function __construct(
         App\Helper\Context $context,
         StoreManagerInterface $storeManager,

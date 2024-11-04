@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\Sales\Block\Widget\Guest;
 
 use Magento\Customer\Model\Session;
@@ -18,6 +20,14 @@ class Form extends SourceForm
      */
     private Session $customerSession;
 
+    /**
+     * Constructor
+     *
+     * @param Context $context
+     * @param HttpContext $httpContext
+     * @param Session $customerSession
+     * @param array $data
+     */
     public function __construct(
         Context $context,
         HttpContext $httpContext,
