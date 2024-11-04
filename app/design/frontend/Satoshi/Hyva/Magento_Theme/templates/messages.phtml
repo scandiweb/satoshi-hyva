@@ -1,0 +1,94 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsOutline;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var HeroiconsOutline $heroicons */
+/** @var StoreConfig $storeConfig */
+$heroicons = $viewModels->require(HeroiconsOutline::class);
+$storeConfig = $viewModels->require(StoreConfig::class);
+
+$defaultSuccessMessageTimeout = $storeConfig->getStoreConfig('hyva_theme_general/messages/success_message_timeout');
+
+?>
+<script>
+    <?php if ($defaultSuccessMessageTimeout): ?>
+    window.defaultSuccessMessageTimeout = <?= (int)$defaultSuccessMessageTimeout ?>;
+    <?php endif; ?>
+    function initMessages() {
+        "use strict";
+        return {
+            messages: window.mageMessages || [],
+            isEmpty() {
+                return this.messages.reduce(
+                    function (isEmpty, message) {
+                        return isEmpty && message === undefined
+                    }, true
+                )
+            },
+            removeMessage(messageIndex) {
+                this.messages[messageIndex] = undefined;
+            },
+            addMessages(messages, hideAfter) {
+                messages.map((message) => {
+                    this.messages = this.messages.concat(message);
+                    if (hideAfter === undefined && message.type === 'success' && window.defaultSuccessMessageTimeout) {
+                        hideAfter = window.defaultSuccessMessageTimeout;
+                    }
+                    if (hideAfter) {
+                        this.setHideTimeOut(this.messages.length - 1, hideAfter);
+                    }
+                });
+            },
+            setHideTimeOut(messageIndex, hideAfter) {
+                setTimeout((messageIndex) => {
+                    this.removeMessage(messageIndex);
+                }, hideAfter, messageIndex);
+            },
+            eventListeners: {
+                ['@messages-loaded.window'](event) {
+                    this.addMessages(event.detail.messages, event.detail.hideAfter)
+                },
+                ['@private-content-loaded.window'](event) {
+                    const data = event.detail.data;
+                    if (
+                        data.messages &&
+                        data.messages.messages &&
+                        data.messages.messages.length
+                    ) {
+                        this.addMessages(data.messages.messages);
+                    }
+                },
+                ['@clear-messages.window']() {
+                    this.messages = [];
+                }
+            }
+        }
+    }
+</script>
+<section id="messages"
+         x-data="initMessages()"
+         x-bind="eventListeners"
+         aria-live="assertive"
+         role="alert"
+>
+    <template x-if="!isEmpty()">
+        <div class="content-wrapper mx-auto">
+            <template x-for="(message, index) in messages" :key="index">
+                <template x-if="message">
+                    <div :class="message.type === 'error' ? 'field-error': 'text-green-700'"
+                         :ui-id="'message-' + message.type"
+                    >
+                        <span class="messages" x-html="message.text"></span>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </template>
+</section>
