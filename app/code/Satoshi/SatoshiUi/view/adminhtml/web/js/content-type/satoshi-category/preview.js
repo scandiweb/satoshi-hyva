@@ -115,8 +115,7 @@ define([
       if (this.hasDataChanged(this.previousData, data)) {
         this.displayPreview(false);
 
-        // TODO: Replace with category ?
-        if (!data.heading || data.heading?.length === 0) {
+        if (!data.category_id) {
           this.placeholderText(this.messages.EMPTY);
           return;
         }

@@ -3,24 +3,41 @@
 namespace Satoshi\SatoshiUi\Block\Widget;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
-use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Block\Product\Context;
-use Magento\Catalog\Helper\Image;
+use Magento\Catalog\Model\Product\Visibility;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\CatalogWidget\Block\Product\ProductsList;
+use Magento\CatalogWidget\Model\Rule;
+use Magento\Framework\App\Http\Context as HttpContext;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Data\Wysiwyg\Normalizer;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json;
-use Magento\Framework\View\Element\Template;
-use Magento\Widget\Block\BlockInterface;
+use Magento\Framework\Url\EncoderInterface;
+use Magento\Framework\View\LayoutFactory;
+use Magento\Rule\Model\Condition\Sql\Builder as SqlBuilder;
+use Magento\Widget\Helper\Conditions;
+use Magento\Catalog\Api\Data\CategoryInterface;
 
 /**
  * Category widget block
  */
-class Category extends Template implements BlockInterface
+class Category extends ProductsList
 {
+
     /**
      * @var string
      */
     protected $_template = 'Satoshi_SatoshiUi::widgets/category.phtml';
+
+    /**
+     * @var int
+     */
+    public $collectionSize = 0;
+
+    /**
+     * @var CategoryInterface
+     */
+    public $category;
 
     /**
      * @var CategoryRepositoryInterface
@@ -28,87 +45,176 @@ class Category extends Template implements BlockInterface
     private $categoryRepository;
 
     /**
-     * @var ProductRepositoryInterface
-     */
-    private $productRepository;
-
-    /**
-     * @var Image
-     */
-    private $imageHelper;
-
-    /**
-     * @var Json
-     */
-    private $serializer;
-
-    /**
-     * @var Normalizer
-     */
-    private $normalizer;
-
-    /**
      * @param  Context  $context
-     * @param  CategoryRepositoryInterface  $categoryRepository
-     * @param  ProductRepositoryInterface  $productRepository
-     * @param  Image  $imageHelper
-     * @param  Json|null  $serializer
-     * @param  Normalizer|null  $normalizer
+     * @param  CollectionFactory  $productCollectionFactory
+     * @param  Visibility  $catalogProductVisibility
+     * @param  HttpContext  $httpContext
+     * @param  SqlBuilder  $sqlBuilder
+     * @param  Rule  $rule
+     * @param  Conditions  $conditionsHelper
      * @param  array  $data
+     * @param  Json|null  $json
+     * @param  LayoutFactory|null  $layoutFactory
+     * @param  EncoderInterface|null  $urlEncoder
+     * @param  CategoryRepositoryInterface|null  $categoryRepository
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
-        CategoryRepositoryInterface $categoryRepository,
-        ProductRepositoryInterface $productRepository,
-        Image $imageHelper,
-        Json $serializer = null,
-        Normalizer $normalizer = null,
-        array $data = []
+        CollectionFactory $productCollectionFactory,
+        Visibility $catalogProductVisibility,
+        HttpContext $httpContext,
+        SqlBuilder $sqlBuilder,
+        Rule $rule,
+        Conditions $conditionsHelper,
+        array $data = [],
+        Json $json = null,
+        LayoutFactory $layoutFactory = null,
+        EncoderInterface $urlEncoder = null,
+        CategoryRepositoryInterface $categoryRepository = null
     ) {
         $this->categoryRepository = $categoryRepository ?? ObjectManager::getInstance()->get(CategoryRepositoryInterface::class);
-        $this->productRepository = $productRepository ?? ObjectManager::getInstance()->get(ProductRepositoryInterface::class);
-        $this->imageHelper = $imageHelper ?: ObjectManager::getInstance()->get(Image::class);
-        $this->serializer = $serializer ?: ObjectManager::getInstance()->get(Json::class);
-        $this->normalizer = $normalizer ?: ObjectManager::getInstance()->get(Normalizer::class);
         parent::__construct(
             $context,
-            $data
+            $productCollectionFactory,
+            $catalogProductVisibility,
+            $httpContext,
+            $sqlBuilder,
+            $rule,
+            $conditionsHelper,
+            $data,
+            $json,
+            $layoutFactory,
+            $urlEncoder,
+            $categoryRepository
         );
     }
 
-    public function getCategory()
+    /**
+     * Prepare and return product collection
+     *
+     * @return Collection
+     * @SuppressWarnings(PHPMD.RequestAwareBlockMethod)
+     * @throws LocalizedException
+     */
+    public function createCollection()
     {
-        return [];
-        $categoryId = $this->getData('category_id');
-        $category = $this->categoryRepository->get($categoryId, $this->_storeManager->getStore()->getId());
+        /** @var $collection Collection */
+        $collection = $this->productCollectionFactory->create();
 
-        return [
-            'id' => $category->getId(),
-            'name' => $category->getName(),
-            'url' => $category->getUrl(),
-            'image' => $category->getImageUrl()
+        if ($this->getData('store_id') !== null) {
+            $collection->setStoreId($this->getData('store_id'));
+        }
+
+        $collection->setVisibility($this->catalogProductVisibility->getVisibleInCatalogIds());
+
+        /**
+         * Change sorting attribute to entity_id because created_at can be the same for products fastly created
+         * one by one and sorting by created_at is indeterministic in this case.
+         */
+        $collection = $this->_addProductAttributesAndPrices($collection)
+                           ->addStoreFilter()
+                           ->addAttributeToSort('entity_id', 'desc')
+                           ->setPageSize($this->getProductsCount());
+
+        $conditions = $this->getConditions();
+        $conditions->collectValidatedAttributes($collection);
+        $this->sqlBuilder->attachConditionToCollection($collection, $conditions);
+
+        /**
+         * Prevent retrieval of duplicate records. This may occur when multiselect product attribute matches
+         * several allowed values from condition simultaneously
+         */
+        $collection->distinct(true);
+
+        $this->collectionSize = $collection->getSize();
+
+        return $collection;
+    }
+
+    /**
+     * Get conditions
+     *
+     * @return Combine
+     */
+    protected function getConditions()
+    {
+        $conditions = [
+            '1' => [
+                'aggregate' => 'all',
+                'new_child' => '',
+                'type' => 'Magento\\CatalogWidget\\Model\\Rule\\Condition\\Combine',
+                'value' => '1'
+            ],
+            '1--1' => [
+                'operator' => '==',
+                'type' => 'Magento\\CatalogWidget\\Model\\Rule\\Condition\\Product',
+                'attribute' => 'category_ids',
+                'value' => $this->getData('category_id')
+            ]
         ];
+
+        foreach ($conditions as $key => $condition) {
+            if (!empty($condition['attribute'])) {
+                if (in_array($condition['attribute'], ['special_from_date', 'special_to_date'])) {
+                    $conditions[$key]['value'] = date('Y-m-d H:i:s', strtotime($condition['value']));
+                }
+
+                if ($condition['attribute'] == 'category_ids') {
+                    $conditions[$key] = $this->updateAnchorCategoryConditions($condition);
+                }
+            }
+        }
+
+        $this->rule->loadPost(['conditions' => $conditions]);
+        return $this->rule->getConditions();
     }
 
-    public function getProduct($productId)
+    /**
+     * Update conditions if the category is an anchor category
+     *
+     * @param  array  $condition
+     * @return array
+     */
+    private function updateAnchorCategoryConditions(array $condition): array
     {
-        return $this->productRepository->getById($productId);
+        if (array_key_exists('value', $condition)) {
+            $categoryId = $condition['value'];
+
+            try {
+                $this->category = $this->categoryRepository->get($categoryId, $this->_storeManager->getStore()->getId());
+            } catch (NoSuchEntityException $e) {
+                return $condition;
+            }
+
+            $children = $this->category->getIsAnchor() ? $this->category->getChildren(true) : [];
+            if ($children) {
+                $children = explode(',', $children);
+                $condition['operator'] = "()";
+                $condition['value'] = array_merge([$categoryId], $children);
+            }
+        }
+
+        return $condition;
     }
 
-    public function getProductData($product)
-    {
-        return [
-            'id' => $product->getId(),
-            'name' => $product->getName(),
-            'url' => $product->getProductUrl(),
-            'image' => $this->imageHelper->init($product, 'product_page_image_medium')->getUrl()
-        ];
-    }
 
-    public function decode($value)
+    /**
+     * Retrieve how many products should be displayed
+     *
+     * @return int
+     */
+    public function getProductsCount()
     {
-        return $this->serializer->unserialize(
-            $this->normalizer->restoreReservedCharacters($value)
-        );
+        if ($this->hasData('max_products_count')) {
+            return $this->getData('max_products_count');
+        }
+
+        if (null === $this->getData('max_products_count')) {
+            $this->setData('max_products_count', self::DEFAULT_PRODUCTS_COUNT);
+        }
+
+        return $this->getData('max_products_count');
     }
 }
