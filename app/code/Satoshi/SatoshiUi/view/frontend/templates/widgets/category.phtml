@@ -41,6 +41,7 @@ $slidesAmountInView = match (true) {
     $count < 3 => ['xs' => 1, 'sm' => 2, 'md' => $count, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
     $count < 4 => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
     $count < 4 => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => $count, 'xxl' => $count],
+    default => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 6]
 };
 
 ?>
@@ -58,7 +59,7 @@ $slidesAmountInView = match (true) {
             ->render('Magento_Catalog::html/slider.phtml')
     ?>
     <?php if ($displayViewAll && $block->collectionSize > $block->getData('max_products_count')): ?>
-        <div class="mt-5 text-center">
+        <div class="view-all mt-5 text-center">
             <a
                 href="<?= $block->category->getUrl() ?>"
                 class="button button--filled-primary"
