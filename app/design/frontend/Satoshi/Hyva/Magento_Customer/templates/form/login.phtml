@@ -24,7 +24,9 @@ $errorMessage = $block->getErrorMessage();
 $successMessage = $block->getSuccessMessage();
 
 ?>
-<div class="container mx-auto flex h-full items-center px-5" x-data="Object.assign(Form, Authentication)">
+<div class="container mx-auto flex h-full items-center px-5"
+     x-data="Object.assign(Form('customer-login-form'), Authentication)"
+>
     <div class="mx-auto w-[412px] max-w-full mb-16">
         <header class="flex items-center justify-between sm:text-center mb-7">
             <h2 class="w-full text-2xl"><?= __('Login') ?></h2>
@@ -33,12 +35,13 @@ $successMessage = $block->getSuccessMessage();
         <form
             action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
             method="post"
+            id="customer-login-form"
             @submit.prevent="function($event) {
                 // do not rename $form, the variable is the expected name in the recaptcha output
                 const $form = $event.target;
                 <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_LOGIN)) : '' ?>
                 if (this.errors === 0) {
-                    this.submitForm($event);
+                    this.submitForm();
                 }
             }"
         >

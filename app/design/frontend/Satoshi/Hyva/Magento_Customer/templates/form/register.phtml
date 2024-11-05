@@ -51,7 +51,11 @@ $errorMessage = $block->getErrorMessage();
         <?= $block->getChildHtml('customer.form.register.extra') ?>
         <form
             action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
-            x-data="Object.assign(hyva.formValidation($el), Authentication(), Form())"
+            x-data="Object.assign(
+                hyva.formValidation($el),
+                Authentication(),
+                Form('<?= $escaper->escapeJs($formId) ?>'),
+            )"
             x-init="initRegister({
                 telephoneErrorMessage: '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
                 postCodes: <?= $escaper->escapeHtmlAttr($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
@@ -72,7 +76,7 @@ $errorMessage = $block->getErrorMessage();
                     const $form = $event.target;
                     <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE)) : '' ?>
                     if (this.errors === 0) {
-                        this.submitForm($event);
+                        this.submitForm();
                     }
                 })
                 .catch((invalid) => {

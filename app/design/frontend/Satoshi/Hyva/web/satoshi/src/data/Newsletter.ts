@@ -8,10 +8,13 @@ export type NewsletterType = {
 
   setErrorMessages(messages: string[]): void;
   clearMessages(): void;
-  submitForm(event: Event): void;
+  submitForm(): void;
 };
 
-export const Newsletter = (defaultErrorMessage: string) => {
+export const Newsletter = (
+  formId: string,
+  defaultErrorMessage: string,
+) => {
   return <NewsletterType>{
     isLoading: false,
     successMessage: "",
@@ -28,10 +31,12 @@ export const Newsletter = (defaultErrorMessage: string) => {
       this.displayErrorMessage = false;
       this.errorMessages = [];
     },
-    submitForm(event) {
+    submitForm() {
       this.clearMessages();
 
-      const $form = event.target as HTMLFormElement;
+      const $form = document.getElementById(formId) as HTMLFormElement;
+      if (!$form) return;
+
       const formData = new FormData($form);
 
       this.isLoading = true;
@@ -63,7 +68,8 @@ export const Newsletter = (defaultErrorMessage: string) => {
           // Because form here updates via ajax so recaptcha token gets expired after used once.
           try {
             window.grecaptcha?.reset();
-          } catch (_e) {}
+          } catch (_e) {
+          }
         });
     },
   };

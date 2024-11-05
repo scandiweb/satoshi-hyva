@@ -27,7 +27,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         class="flex flex-col gap-3 items-stretch md:gap-4"
         action="<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>"
         method="post"
-        x-data="Newsletter('<?= __('Something went wrong with the subscription.') ?>')"
+        x-data="Newsletter('newsletter-validate-detail', '<?= __('Something went wrong with the subscription.') ?>')"
         @submit.prevent="function($event) {
             // do not rename $form, the variable is the expected name in the recaptcha output
             const $form = $event.target;
@@ -35,7 +35,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER)) : '' ?>
 
             if (this.errors === 0) {
-                this.submitForm($event);
+                this.submitForm();
             }
         }"
         id="newsletter-validate-detail"

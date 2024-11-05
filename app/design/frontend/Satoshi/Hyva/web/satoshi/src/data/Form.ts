@@ -8,10 +8,12 @@ export type FormType = {
   errorMessages: string[];
 
   setErrorMessages(messages: string[]): void;
-  submitForm(event: Event): void;
+  submitForm(): void;
 };
 
-export const Form = () => {
+export const Form = (
+  formId: string,
+) => {
   return <FormType>{
     isLoading: false,
     errors: 0,
@@ -22,8 +24,10 @@ export const Form = () => {
       this.errorMessages = messages;
       this.displayErrorMessage = !!this.errorMessages.length;
     },
-    submitForm(event) {
-      const $form = event.target as HTMLFormElement;
+    submitForm() {
+      const $form = document.getElementById(formId) as HTMLFormElement;
+      if (!$form) return;
+
       const formData = new FormData($form);
       this.isLoading = true;
 
