@@ -160,7 +160,7 @@ $errorMessage = $block->getErrorMessage();
                             class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                             name="password"
                             id="password"
-                            placeholder="<?= $escaper->escapeHtmlAttr(__('password')) ?>"
+                            placeholder="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
                             required
                             data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
                             @input.debounce="onChange"
