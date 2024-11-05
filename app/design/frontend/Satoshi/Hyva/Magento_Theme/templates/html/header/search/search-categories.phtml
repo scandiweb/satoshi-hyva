@@ -13,8 +13,11 @@ $breadcrumbsViewModel = $viewModels->require(Breadcrumbs::class);
 $categoryUrlSuffix = $breadcrumbsViewModel->getCategoryUrlSuffix();
 
 ?>
-<div class="relative flex grow flex-col gap-4 p-3 pb-2 transition-opacity duration-300 md:p-5"
-     :class="{ 'opacity-0': isLoading }">
+<div
+  x-show="searchTerm.length > 2"
+  class="relative flex grow flex-col gap-4 p-3 pb-2 transition-opacity duration-300 md:p-5"
+  :class="{ 'opacity-0': isLoading }"
+>
   <div class="pb-2">
     <h2 class="text-lg"><?= __('Categories') ?></h2>
   </div>
