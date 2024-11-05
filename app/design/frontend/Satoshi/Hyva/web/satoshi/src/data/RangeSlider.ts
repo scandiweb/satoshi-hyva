@@ -49,7 +49,7 @@ export const RangeSlider = (
     onValueChange() {
       this.isLeftThumbActive = false;
       this.isRightThumbActive = false;
-      this.updateFilters();
+        this.applyPrice(this.minValue, this.maxValue);
     },
 
     onTrackClick(event: MouseEvent) {

@@ -2,6 +2,8 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="catalog.leftnav">
+            <block class="Satoshi\Theme\Block\Custom\PriceSlider" template="Magento_Theme::custom/price-slider.phtml"
+                   name="price.slider"/>
             <block class="Magento\Catalog\Block\Product\ProductList\Toolbar" name="filter_sort" />
         </referenceBlock>
     </body>

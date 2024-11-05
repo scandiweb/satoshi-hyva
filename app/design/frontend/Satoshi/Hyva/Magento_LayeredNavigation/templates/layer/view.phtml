@@ -17,6 +17,11 @@ use Satoshi\Theme\Block\Template;
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $sorter = $block->getChildBlock('filter_sort') ?? [];
 
+$collection = $this->getLayer()->getProductCollection();
+
+$minPrice = $collection->getMinPrice();
+$maxPrice = $collection->getMaxPrice();
+
 $sortOptions = [];
 $selectedSort = [];
 $index = 0;
@@ -179,7 +184,7 @@ if ($sorter) {
                                     </fieldset>
 
                                 <?php else: ?>
-                                    <?= $template->setData(['name' => $escaper->escapeHtml(__($filter->getName()))])->render('Magento_Theme::custom/price-slider.phtml') ?>
+                                    <?= $block->getChildBlock('price.slider')->setData(['name' => $escaper->escapeHtml(__($filter->getName())), 'minPrice' => $minPrice, 'maxPrice' => $maxPrice])->toHtml() ?>
                                 <?php endif; ?>
                             <?php endif; ?>
                         <?php endforeach; ?>

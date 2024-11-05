@@ -2,15 +2,18 @@
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
+use Satoshi\Theme\Block\Custom\PriceSlider;
 
-/** @var Template $block */
+/** @var PriceSlider $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
+$minPrice = $block->getData('minPrice');
+$maxPrice = $block->getData('maxPrice');
+[$minPriceValue, $maxPriceValue] = $block->getPriceParam();
 ?>
 
 
@@ -20,9 +23,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <h2 class="grow text-left text-text-500"><?= $block->getData('name') ?></h2>
         <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button"
                 aria-label="<?= $block->getData('name') ?>">
-                                            <span x-ref="AccordionIcon">
-                                                <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
-                                            </span>
+            <span x-ref="AccordionIcon">
+                <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
+            </span>
         </button>
     </div>
 
@@ -30,15 +33,15 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         class="overflow-hidden md:px-2"
         x-ref="AccordionPanel"
         :class="{
-                                            'transition-none': $store.main.isReducedMotion,
-                                            'transition': $store.main.isReducedMotion
-                                        }"
+            'transition-none': $store.main.isReducedMotion,
+            'transition': $store.main.isReducedMotion
+        }"
     >
         <div class="md:pb-3 md:pt-2">
             <div class="flex flex-col gap-4 py-3">
                 <div
                     class="range-slider relative flex w-full flex-col gap-5 py-4"
-                    x-data="RangeSlider(0, 100, 20, 30)"
+                    x-data="RangeSlider(0, 99, <?= $minPriceValue ?>, <?= $maxPriceValue ?>)"
                     x-morph-ignore
                     @reset-filters.window="resetValues"
                 >
@@ -53,8 +56,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                 class="input__field range-slider-input-field"
                                 x-model.debounce.300ms="minValue"
                                 type="number"
-                                min="{{ min }}"
-                                max="{{ max }}"
+                                min="<?= $minPrice ?>"
+                                max="<?= $maxPrice ?>"
                                 inputmode="numeric"
                                 value="{{ value_min }}"
                                 @blur="onValueChange"
@@ -74,8 +77,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                 class="input__field range-slider-input-field"
                                 x-model.debounce.300ms="maxValue"
                                 type="number"
-                                min="{{ min }}"
-                                max="{{ max }}"
+                                min="<?= $minPrice ?>"
+                                max="<?= $maxPrice ?>"
                                 inputmode="numeric"
                                 value="{{ value_max }}"
                                 @blur="onValueChange"
@@ -98,13 +101,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             <input
                                 type="range"
                                 step="1"
-                                min="{{ min }}"
-                                max="{{ max }}"
+                                min="<?= $minPrice ?>"
+                                max="<?= $maxPrice ?>"
                                 class="range-slider-hidden-input"
                                 @input="onMinValueInput"
                                 @change="onValueChange"
                                 x-model.debounce.300ms="minValue"
-                                value="{{ value_min }}"
+                                value="50"
                                 aria-label="{{ 'products.facets.from' | t }}"
                                 id="Range-{{ minInputName }}"
                                 tabindex="-1"
@@ -116,13 +119,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             <input
                                 type="range"
                                 step="1"
-                                min="{{ min }}"
-                                max="{{ max }}"
+                                min="<?= $minPrice ?>"
+                                max="<?= $maxPrice ?>"
                                 class="range-slider-hidden-input"
                                 @input="onMaxValueInput"
                                 @change="onValueChange"
                                 x-model.debounce.300ms="maxValue"
-                                value="{{ value_max }}"
+                                value="60"
                                 aria-label="{{ 'products.facets.to' | t }}"
                                 id="Range-{{ maxInputName }}"
                                 tabindex="-1"
@@ -151,16 +154,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
           left: `calc(${((minValue - min) * 100) / (max - min) }% - (32px * ${ ((minValue - min) ) / (max - min)}))`,
         }
       "
-                            @keydown.left="minValue > {{ min }} ? minValue-- : null"
-                            @keydown.right="minValue < {{ max }} ? minValue++ : null"
-                            @keydown.down="minValue = {{ min }}"
-                            @keydown.up="minValue = {{ max }}"
+                            @keydown.left="minValue > <?= $minPrice ?> ? minValue-- : null"
+                            @keydown.right="minValue < <?= $maxPrice ?> ? minValue++ : null"
+                            @keydown.down="minValue = <?= $minPrice ?>"
+                            @keydown.up="minValue = <?= $maxPrice ?>"
                             @keydown.enter="onValueChange()"
                             :aria-valuemin="min"
                             :aria-valuemax="max"
                             :aria-valuenow="minValue"
                             :aria-valuetext="`${minValue}`"
-                            aria-label="{{- 'products.facets.from' | t -}}"
+                            aria-label="<?= __('From') ?>"
                         ></div>
                         <div
                             role="slider"
@@ -172,16 +175,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
           right: `calc(${((max - maxValue) * 100) / (max - min) }% - (32px * ${ ((max - maxValue) ) / (max - min)}))`,
         }
       "
-                            @keydown.left="maxValue > {{ min }} ? maxValue-- : null"
-                            @keydown.right="maxValue < {{ max }} ? maxValue++ : null"
-                            @keydown.down="maxValue = {{ min }}"
-                            @keydown.up="maxValue = {{ max }}"
+                            @keydown.left="maxValue > <?= $minPrice ?> ? maxValue-- : null"
+                            @keydown.right="maxValue < <?= $maxPrice ?> ? maxValue++ : null"
+                            @keydown.down="maxValue = <?= $minPrice ?>"
+                            @keydown.up="maxValue = <?= $maxPrice ?>"
                             @keydown.enter="onValueChange()"
                             :aria-valuemin="min"
                             :aria-valuemax="max"
                             :aria-valuenow="maxValue"
                             :aria-valuetext="`${maxValue}`"
-                            aria-label="{{- 'products.facets.to' | t -}}"
+                            aria-label="<?= __('To') ?>"
                         ></div>
                     </div>
                 </div>

@@ -143,6 +143,14 @@ export const Filters = (
       }
     },
 
+      applyPrice(min, max) {
+          const url = window.location.href;
+          const newUrl = modifyUrlParams(url, {
+              'price': `${min}-${max}`
+          });
+          return navigateWithTransition(newUrl);
+      },
+
     applyFilters(filterName) {
       const url = window.location.href;
 
