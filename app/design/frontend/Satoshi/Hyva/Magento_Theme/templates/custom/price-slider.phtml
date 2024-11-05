@@ -14,6 +14,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 $minPrice = $block->getData('minPrice');
 $maxPrice = $block->getData('maxPrice');
 [$minPriceValue, $maxPriceValue] = $block->getPriceParam();
+if (!$maxPriceValue) {
+    $maxPriceValue = 99;
+}
 ?>
 
 
@@ -46,43 +49,43 @@ $maxPrice = $block->getData('maxPrice');
                     @reset-filters.window="resetValues"
                 >
                     <div class="grid grid-cols-2 gap-5">
-                        <label for="Filter-{{ minInputName }}" class="range-slider-input">
+                        <label for="Filter-min" class="range-slider-input">
                             <div class="range-slider-input-label ">
                                 <p><?= __('From') ?></p>
                             </div>
                             <input
-                                name="{{ minInputName }}"
-                                id="Filter-{{ minInputName }}"
+                                name="min"
+                                id="Filter-min"
                                 class="input__field range-slider-input-field"
                                 x-model.debounce.300ms="minValue"
                                 type="number"
                                 min="<?= $minPrice ?>"
                                 max="<?= $maxPrice ?>"
                                 inputmode="numeric"
-                                value="{{ value_min }}"
+                                value="<?= $minPriceValue ?>"
                                 @blur="onValueChange"
-                                aria-label="{{ 'products.facets.from' | t }}"
+                                aria-label="<?= __('From') ?>"
                             >
                             <div class="range-slider-input-suffix">
                                 <p>$</p>
                             </div>
                         </label>
-                        <label for="Filter-{{ maxInputName }}" class="range-slider-input">
+                        <label for="Filter-max" class="range-slider-input">
                             <div class="range-slider-input-label ">
                                 <p><?= __('To') ?></p>
                             </div>
                             <input
-                                name="{{ maxInputName }}"
-                                id="Filter-{{ maxInputName }}"
+                                name="max"
+                                id="Filter-max"
                                 class="input__field range-slider-input-field"
                                 x-model.debounce.300ms="maxValue"
                                 type="number"
                                 min="<?= $minPrice ?>"
                                 max="<?= $maxPrice ?>"
                                 inputmode="numeric"
-                                value="{{ value_max }}"
+                                value="<?= $maxPriceValue ?>"
                                 @blur="onValueChange"
-                                aria-label="{{ 'products.facets.to' | t }}"
+                                aria-label="<?= __('To') ?>"
                             >
                             <div class="range-slider-input-suffix">
                                 <p>$</p>
@@ -95,7 +98,7 @@ $maxPrice = $block->getData('maxPrice');
                             class="relative inline-block h-full w-full cursor-pointer touch-none select-none py-4 outline-0"
                             @click="onTrackClick"
                         >
-                            <label for="Range-{{ minInputName }}" class="sr-only tracking-widest">
+                            <label for="Range-min" class="sr-only tracking-widest">
                                 <?= __('From') ?>
                             </label>
                             <input
@@ -108,12 +111,12 @@ $maxPrice = $block->getData('maxPrice');
                                 @change="onValueChange"
                                 x-model.debounce.300ms="minValue"
                                 value="50"
-                                aria-label="{{ 'products.facets.from' | t }}"
-                                id="Range-{{ minInputName }}"
+                                aria-label="<?= __('From') ?>"
+                                id="Range-min"
                                 tabindex="-1"
                             >
 
-                            <label for="Range-{{ maxInputName }}" class="sr-only tracking-widest">
+                            <label for="Range-max" class="sr-only tracking-widest">
                                 <?= __('From') ?>
                             </label>
                             <input
@@ -126,8 +129,8 @@ $maxPrice = $block->getData('maxPrice');
                                 @change="onValueChange"
                                 x-model.debounce.300ms="maxValue"
                                 value="60"
-                                aria-label="{{ 'products.facets.to' | t }}"
-                                id="Range-{{ maxInputName }}"
+                                aria-label="<?= __('To') ?>"
+                                id="Range-max"
                                 tabindex="-1"
                             >
 

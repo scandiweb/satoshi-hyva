@@ -1,24 +1,24 @@
-import { navigateWithTransition } from "../plugins/Transition";
-import { ProductListType } from "./ProductList";
+import {navigateWithTransition} from "../plugins/Transition";
+import {ProductListType} from "./ProductList";
 
 export type FiltersType = {
-  [key: string | symbol]: any;
-  selectedFilters: Record<string, string>;
-  selectedSort: Record<string, string>;
-  isTopLevel: boolean;
-  currentName: string;
-  isTopFilterVisible: null | boolean;
+    [key: string | symbol]: any;
+    selectedFilters: Record<string, string>;
+    selectedSort: Record<string, string>;
+    isTopLevel: boolean;
+    currentName: string;
+    isTopFilterVisible: null | boolean;
 
-  init(): void;
-  selectSort(sortKey: string, sortDir: string): void;
-  applySort(): void;
-  removeSort(): void;
-  selectFilter(filterName: string, filterUrl: string): void;
-  applyFilters(filterName: string): void;
-  showFilters(isTopLevel?: boolean, currentName?: string): void;
-  hideFilters(): void;
-  onResetButtonClick(): void;
-  clearAllFilters(): void;
+    init(): void;
+    selectSort(sortKey: string, sortDir: string): void;
+    applySort(): void;
+    removeSort(): void;
+    selectFilter(filterName: string, filterUrl: string): void;
+    applyFilters(filterName: string): void;
+    showFilters(isTopLevel?: boolean, currentName?: string): void;
+    hideFilters(): void;
+    onResetButtonClick(): void;
+    clearAllFilters(): void;
 } & ProductListType;
 
 const POPUP_FILTERS = "filters";
@@ -32,168 +32,176 @@ export const FILTER_PRICE_MIN = "filter.v.price.gte";
 export const FILTER_PRICE_MAX = "filter.v.price.lte";
 
 export const modifyUrlParams = (
-  url: string,
-  params: Record<string, string>,
-  removeParams?: string[],
+    url: string,
+    params: Record<string, string>,
+    removeParams?: string[],
 ) => {
-  const parsedUrl = new URL(url);
-  const searchParams = parsedUrl.searchParams;
+    const parsedUrl = new URL(url);
+    const searchParams = parsedUrl.searchParams;
 
-  // Add or update params
-  for (const [key, value] of Object.entries(params)) {
-    if (searchParams.has(key)) {
-      if (searchParams.get(key) !== value) {
-        searchParams.set(key, value);
-      }
-    } else {
-      searchParams.append(key, value);
+    // Add or update params
+    for (const [key, value] of Object.entries(params)) {
+        if (searchParams.has(key)) {
+            if (searchParams.get(key) !== value) {
+                searchParams.set(key, value);
+            }
+        } else {
+            searchParams.append(key, value);
+        }
     }
-  }
 
-  // remove params
-  removeParams?.forEach((param) => {
-    if (searchParams.has(param)) {
-      searchParams.delete(param);
-    }
-  });
+    // remove params
+    removeParams?.forEach((param) => {
+        if (searchParams.has(param)) {
+            searchParams.delete(param);
+        }
+    });
 
-  parsedUrl.search = searchParams.toString();
+    parsedUrl.search = searchParams.toString();
 
-  return parsedUrl.toString();
+    return parsedUrl.toString();
 };
 
 export const Filters = (
-  clearUrl: string,
-  initialSort: Record<string, string>,
+    clearUrl: string,
+    initialSort: Record<string, string>,
 ) =>
-  <FiltersType>{
-    selectedFilters: {},
-    selectedSort: initialSort,
-    isTopLevel: false,
-    currentName: "",
-    isTopFilterVisible: null,
+    <FiltersType>{
+        selectedFilters: {},
+        selectedSort: initialSort,
+        isTopLevel: false,
+        currentName: "",
+        isTopFilterVisible: null,
+        minPrice: 0,
+        maxPrice: 0,
 
-    init() {
-      // Change popup height on content change
-      this.$watch("currentName", (value, oldValue) => {
-        if (value != oldValue) {
-          this.$nextTick(() => {
-            // setTimeout fixes content height calculations in some cases
-            setTimeout(() => {
-              Alpine.store("popup").updateContentSize();
-            }, 50);
-          });
-        }
-      });
+        init() {
+            // Change popup height on content change
+            this.$watch("currentName", (value, oldValue) => {
+                if (value != oldValue) {
+                    this.$nextTick(() => {
+                        // setTimeout fixes content height calculations in some cases
+                        setTimeout(() => {
+                            Alpine.store("popup").updateContentSize();
+                        }, 50);
+                    });
+                }
+            });
 
-      this.$watch("isTopFilterVisible", (value) => {
-        if (value) {
-          Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
-        } else {
-          Alpine.store("popup").showPopup(POPUP_BOTTOM_FILTERS, false);
-        }
-      });
+            this.$watch("isTopFilterVisible", (value) => {
+                if (value) {
+                    Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
+                } else {
+                    Alpine.store("popup").showPopup(POPUP_BOTTOM_FILTERS, false);
+                }
+            });
 
-      this.$watch("$store.popup.currentPopup", (value) => {
-        if (value === POPUP_BOTTOM_FILTERS && this.isTopFilterVisible) {
-          Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
-        }
-      });
-    },
+            this.$watch("$store.popup.currentPopup", (value) => {
+                if (value === POPUP_BOTTOM_FILTERS && this.isTopFilterVisible) {
+                    Alpine.store("popup").hidePopup(POPUP_BOTTOM_FILTERS);
+                }
+            });
+        },
 
-    selectSort(sortKey, sortDir) {
-      this.selectedSort = {
-        key: sortKey,
-        dir: sortDir,
-      };
+        selectSort(sortKey, sortDir) {
+            this.selectedSort = {
+                key: sortKey,
+                dir: sortDir,
+            };
 
-      if (!Alpine.store("main").isMobile) {
-        this.applySort();
-      }
-    },
+            if (!Alpine.store("main").isMobile) {
+                this.applySort();
+            }
+        },
 
-    applySort() {
-      const url = window.location.href;
+        applySort() {
+            const url = window.location.href;
 
-      this.hideFilters();
-      if (this.selectedSort.key && this.selectedSort.dir) {
-        const newUrl = modifyUrlParams(url, {
-          [FILTER_SORT_KEY]: this.selectedSort.key,
-          [FILTER_SORT_DIR]: this.selectedSort.dir,
-        });
-        navigateWithTransition(newUrl);
-      }
-    },
+            this.hideFilters();
+            if (this.selectedSort.key && this.selectedSort.dir) {
+                const newUrl = modifyUrlParams(url, {
+                    [FILTER_SORT_KEY]: this.selectedSort.key,
+                    [FILTER_SORT_DIR]: this.selectedSort.dir,
+                });
+                navigateWithTransition(newUrl);
+            }
+        },
 
-    removeSort() {
-      const url = window.location.href;
+        removeSort() {
+            const url = window.location.href;
 
-      const newUrl = modifyUrlParams(url, {}, [
-        FILTER_SORT_KEY,
-        FILTER_SORT_DIR,
-      ]);
-      navigateWithTransition(newUrl);
-    },
+            const newUrl = modifyUrlParams(url, {}, [
+                FILTER_SORT_KEY,
+                FILTER_SORT_DIR,
+            ]);
+            navigateWithTransition(newUrl);
+        },
 
-    selectFilter(filterName, filterUrl) {
-      this.selectedFilters[filterName] = filterUrl;
+        selectFilter(filterName, filterUrl) {
+            this.selectedFilters[filterName] = filterUrl;
 
-      if (!Alpine.store("main").isMobile) {
-        this.applyFilters(filterName);
-      }
-    },
+            if (!Alpine.store("main").isMobile) {
+                this.applyFilters(filterName);
+            }
+        },
 
-      applyPrice(min, max) {
-          const url = window.location.href;
-          const newUrl = modifyUrlParams(url, {
-              'price': `${min}-${max}`
-          });
-          return navigateWithTransition(newUrl);
-      },
+        setPrice(min: number, max: number) {
+            this.minPrice = min;
+            this.maxPrice = max;
+        },
 
-    applyFilters(filterName) {
-      const url = window.location.href;
+        applyPrice(min: number, max: number) {
+            this.setPrice(min, max);
+            const url = window.location.href;
+            const newUrl = modifyUrlParams(url, {
+                'price': `${min}-${max}`
+            });
+            return navigateWithTransition(newUrl);
+        },
 
-      this.hideFilters();
-      if (filterName === "Sort by") {
-        const newUrl = modifyUrlParams(url, {
-          [FILTER_SORT_KEY]: this.selectedSort.key,
-          [FILTER_SORT_DIR]: this.selectedSort.dir,
-        });
-        return navigateWithTransition(newUrl);
-      }
+        applyFilters(filterName) {
+            const url = window.location.href;
 
-      const filterUrl = this.selectedFilters[filterName];
-      if (filterUrl) {
-        navigateWithTransition(filterUrl);
-      }
-    },
+            this.hideFilters();
+            if (filterName === "Sort by") {
+                const newUrl = modifyUrlParams(url, {
+                    [FILTER_SORT_KEY]: this.selectedSort.key,
+                    [FILTER_SORT_DIR]: this.selectedSort.dir,
+                });
+                return navigateWithTransition(newUrl);
+            }
 
-    showFilters(isTopLevel = true, currentName = "") {
-      this.isTopLevel = isTopLevel;
-      this.currentName = currentName;
-      Alpine.store("popup").showPopup(POPUP_FILTERS, true);
-    },
+            const filterUrl = this.selectedFilters[filterName];
+            if (filterUrl) {
+                navigateWithTransition(filterUrl);
+            }
+        },
 
-    hideFilters() {
-      this.$store.popup.hidePopup(POPUP_FILTERS);
-      this.isTopLevel = false;
-      this.currentName = "";
-    },
+        showFilters(isTopLevel = true, currentName = "") {
+            this.isTopLevel = isTopLevel;
+            this.currentName = currentName;
+            Alpine.store("popup").showPopup(POPUP_FILTERS, true);
+        },
 
-    onResetButtonClick() {
-      this.hideFilters();
-      if (this.isTopLevel) {
-        this.clearAllFilters();
-      }
-    },
+        hideFilters() {
+            this.$store.popup.hidePopup(POPUP_FILTERS);
+            this.isTopLevel = false;
+            this.currentName = "";
+        },
 
-    clearAllFilters() {
-      const url = modifyUrlParams(clearUrl, {}, [
-        FILTER_SORT_KEY,
-        FILTER_SORT_DIR,
-      ]);
+        onResetButtonClick() {
+            this.hideFilters();
+            if (this.isTopLevel) {
+                this.clearAllFilters();
+            }
+        },
 
-      navigateWithTransition(url);
-    },
-  };
+        clearAllFilters() {
+            const url = modifyUrlParams(clearUrl, {}, [
+                FILTER_SORT_KEY,
+                FILTER_SORT_DIR,
+            ]);
+
+            navigateWithTransition(url);
+        },
+    };
