@@ -28,3 +28,5 @@
 !.prettierrc
 !.github
 .vscode/launch.json
+# TODO: Remove this line
+/app/code/Scandiweb
