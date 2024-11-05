@@ -1,0 +1,27 @@
+<div
+  class="pagebuilder-content-type pagebuilder-products"
+  data-bind="event: { mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+  <div
+    attr="data.main.attributes"
+    ko-style="data.main.style"
+    css="data.main.css"
+  >
+    <div
+      if="displayPreview"
+      class="rendered-content"
+      html="widgetUnsanitizedHtml"
+      afterRender="onAfterRender"
+    ></div>
+    <div
+      ifnot="displayPreview"
+      class="pagebuilder-products-placeholder"
+    >
+      <span
+        class="placeholder-text"
+        text="placeholderText"
+      ></span>
+    </div>
+  </div>
+  <render args="getOptions().template"></render>
+</div>
