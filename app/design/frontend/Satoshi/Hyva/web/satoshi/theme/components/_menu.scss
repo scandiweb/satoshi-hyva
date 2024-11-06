@@ -13,7 +13,7 @@
   }
 
   &__level {
-    @apply absolute left-0 top-0 hidden w-full;
+    @apply absolute left-0 top-0 bottom-0 hidden w-full;
 
     @screen md {
       /* animate content to fade OUT */
