@@ -184,7 +184,7 @@ if (!$menuItems) {
   <div
       class="w-full bg-bg-500 px-2 md:px-4 pb-2 md:w-[--menu-width] md:rounded-md md:pb-3 md:mt-8 absolute md:static bottom-[8px] right-0 left-0"
       :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'menu' : !$store.resizable.isVisible('menu-desktop')"
-      x-show="!$store.main.isMobile || ($store.popup.currentPopup == 'menu' && history[history.length - 1] === 'all' && !getIsSearchActive())"
+      x-show="(!$store.main.isMobile && '<?= $id ?>' === 'all') || ($store.popup.currentPopup == 'menu' && history[history.length - 1] === 'all' && !getIsSearchActive())"
   >
     <a x-element-transition-trigger
        href="<?= $accountUrl ?>"
