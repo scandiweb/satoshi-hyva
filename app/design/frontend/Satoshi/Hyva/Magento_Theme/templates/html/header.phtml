@@ -26,13 +26,15 @@ $cartItemsCount = $cart->getCartItemsQty();
   x-data="
     {
       isMenuVisible: false,
-      isCartVisible: false
+      isCartVisible: false,
+      isWishlistVisible: false
     }
   "
   x-init="
     $watch('$store.popup.currentPopup', (value) => {
       isMenuVisible = value === 'menu';
       isCartVisible = value === 'cart';
+      isWishlistVisible = value === 'wishlist';
     })
   "
   class="header sticky left-0 right-0 top-0 z-[36] flex flex-col justify-items-stretch p-3 md:pointer-events-none"
@@ -81,7 +83,7 @@ $cartItemsCount = $cart->getCartItemsQty();
     </div>
     <div class="contents md:flex md:flex-grow md:justify-end">
       <div
-          class="col-start-5 transition-all md:flex md:items-center z-10"
+        class="transition-all flex items-center z-10"
         :class="{ 'md:drop-shadow-lg': $store.main.isHeaderShadowVisible }"
       >
         <?=
@@ -94,6 +96,18 @@ $cartItemsCount = $cart->getCartItemsQty();
               'cssClass' => 'resizable--search max-md:hidden md:pointer-events-auto',
             ])
             ->setChildTemplate('Magento_Theme::html/header/search/search-button.phtml')
+            ->render()
+        ?>
+        <?=
+          $resizable
+            ->setData([
+              'id' => 'wishlist-desktop',
+              'initialWidth' => 56,
+              'initialHeight' => 56,
+              'right' => true,
+              'cssClass' => 'resizable--wishlist md:pointer-events-auto',
+            ])
+            ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-button.phtml')
             ->render()
         ?>
         <?=
@@ -141,6 +155,18 @@ $cartItemsCount = $cart->getCartItemsQty();
     ])
     ->setChildTemplate('Magento_Theme::html/header/menu/menu.phtml')
     ->render()
+?>
+
+<?=
+  $popup
+    ->setData([
+      'id' => 'wishlist',
+      'isFocused' => true,
+      'isFullScreen' => true,
+      'desktopTarget' => 'wishlist-desktop',
+    ])
+    ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-overlay.phtml')
+    ->toHtml()
 ?>
 
 <?=
