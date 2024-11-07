@@ -73,7 +73,7 @@ $cartItemsCount = $cart->getCartItemsQty();
       <a
         href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
         x-element-transition-trigger
-        class="rounded-sm px-3 py-2 text-xl font-bold"
+        class="rounded-sm px-3 py-2 text-xl font-semibold"
         aria-label="<?= __('Go to Home page') ?>"
       >
         <?= $block->getChildHtml('logo') ?>
@@ -120,8 +120,8 @@ $cartItemsCount = $cart->getCartItemsQty();
     <a
       href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
       x-element-transition-trigger
-      class="pointer-events-auto rounded-sm px-3 py-2 text-xl font-bold text-primary-500 transition-all"
-      :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}"
+      class="heading pointer-events-auto rounded-sm px-3 py-2 text-xl text-primary-500 transition-all"
+      :class="{'md:drop-shadow-xl': $store.main.isHeaderShadowVisible}"
       tabindex="3"
       x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
       aria-label="<?= __('Go to Home page') ?>"

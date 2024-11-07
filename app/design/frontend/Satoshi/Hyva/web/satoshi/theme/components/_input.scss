@@ -66,6 +66,19 @@ input[type="search"] {
   }
 }
 
-.field-error .messages {
-    @apply text-red-500;
+.field {
+  &-success {
+    @apply text-primary-700;
+  }
+
+  &-error {
+    @apply text-error;
+  }
+
+  &-success,
+  &-error {
+    a {
+      @apply border-b-1 border-current;
+    }
+  }
 }
