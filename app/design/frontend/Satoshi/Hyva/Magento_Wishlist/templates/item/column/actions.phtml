@@ -1,0 +1,16 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Actions;
+
+/** @var Escaper $escaper */
+/** @var Actions $block */
+?>
+<?php $children = $block->getChildNames(); ?>
+<?php if ($children): ?>
+    <div class="<?= $escaper->escapeHtmlAttr($block->getCssClass()) ?> flex w-full">
+        <?php foreach ($children as $childName): ?>
+            <?= /* @noEscape */ $block->getLayout()->renderElement($childName, false) ?>
+        <?php endforeach;?>
+    </div>
+<?php endif; ?>

@@ -312,9 +312,9 @@ export const replaceContent = (
 };
 
 const replaceTagContent = (rawContent: string, tag: string) => {
-  const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
+  const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i");
   const content = rawContent.match(regex);
-  const newContent = content ? content[1] : '';
+  const newContent = content ? content[1] : "";
 
   const target = document.querySelector(tag) as HTMLElement;
   if (newContent && target) {
@@ -343,7 +343,7 @@ const replacePreviewContent = (rawContent: string) => {
 };
 
 const replaceWholeDocument = (rawContent: string) => {
-    replaceTagContent(rawContent, 'html');
+  replaceTagContent(rawContent, "html");
 };
 
 const pushStateAndNotify = (...args: Parameters<History["pushState"]>) => {
@@ -386,10 +386,10 @@ export const cachePage = (url: string, html: string) => {
 };
 
 export const fetchAndCachePage = async (url: string) => {
-    const html = await fetchPage(url);
-    cachePage(url, html);
+  const html = await fetchPage(url);
+  cachePage(url, html);
 
-    return html;
+  return html;
 };
 
 export const replaceMainContentWithTransition = async (
@@ -460,13 +460,13 @@ export const navigateWithTransition = (
       Alpine.store("resizable").hideAll();
       history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
-      const html= await fetchAndCachePage(nextUrl!);
+      const html = await fetchAndCachePage(nextUrl!);
 
       if (isPreview) {
         replacePreviewContent(html);
       } else if (options.replaceDocument) {
-          replaceWholeDocument(html);
-          window.scrollTo(0, 0);
+        replaceWholeDocument(html);
+        window.scrollTo(0, 0);
       } else {
         replaceMainContent(html);
         window.scrollTo(0, 0);
@@ -501,8 +501,9 @@ function TransitionPlugin(Alpine: AlpineType) {
 
       const onClick = (e: MouseEvent) => {
         const link = el.getAttribute("href");
+        const isTargetBlank = el.getAttribute("target") === "_blank";
 
-        if (!link || isExternalURL(link)) {
+        if (!link || isExternalURL(link) || isTargetBlank) {
           return;
         }
 
