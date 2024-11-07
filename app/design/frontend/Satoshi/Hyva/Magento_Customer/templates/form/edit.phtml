@@ -1,0 +1,303 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ReCaptcha;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Customer\Block\Form\Edit as CustomerEdit;
+use Magento\Customer\Block\Widget\Name;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var CustomerEdit $block */
+/** @var Escaper $escaper */
+/** @var ReCaptcha|null $recaptcha */
+/** @var SvgIcons $hyvaicons */
+/** @var ViewModelRegistry $viewModels */
+
+// Do not replace this with $viewModels->require(ReCaptcha::class); that might break the dependency
+// on the Magento_ReCaptchaCustomer module
+$recaptcha = $block->getData('viewModelRecaptcha');
+$hyvaicons = $viewModels->require(SvgIcons::class);
+$minimumPasswordLength = $block->getMinimumPasswordLength();
+$passwordMinCharacterSets = $block->getRequiredCharacterClassesNumber();
+$storeConfig = $viewModels->require(StoreConfig::class);
+$isAutocompleteEnabled = $storeConfig->getStoreConfig('customer/password/autocomplete_on_storefront');
+
+$successMessage = $block->getSuccessMessage();
+$errorMessage = $block->getErrorMessage();
+
+$emailFailed = !empty($errorMessage['email_current_password']) || !empty($errorMessage['email']);
+$newPasswordFailed = !empty($errorMessage['current_password']) || !empty($errorMessage['password']) || !empty($errorMessage['password_confirmation']);
+?>
+
+<section class="w-full xl:w-1/2">
+    <h2 class="text-text-500 text-lg font-bold mb-5">
+        <?= $escaper->escapeHtml(__('Account Information')) ?>
+    </h2>
+
+    <form
+        id="form-validate"
+        action="<?= $escaper->escapeUrl($block->getUrl('customer/account/editPost')) ?>"
+        method="post"
+        enctype="multipart/form-data"
+        x-data="Object.assign(hyva.formValidation($el),
+            AccountInformation(
+                <?= (int) $emailFailed ?>,
+                <?= (int) ($newPasswordFailed || $block->getChangePassword()) ?>,
+            ),
+            Form()
+        )"
+        @submit.prevent="function($event) {
+            this.validate().then(() => {
+                // do not rename $form, the variable is the expected name in the recaptcha output
+                const $form = $event.target;
+                <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT)) : '' ?>
+                if (this.errors === 0) {
+                    this.submitForm($event);
+                }
+            })
+            .catch((invalid) => {
+                if (invalid.length > 0) {
+                    invalid[0].focus();
+                }
+            });
+        }"
+        autocomplete="off"
+    >
+        <?php if ($successMessage): ?>
+            <div class="text-green-700 -mt-3 mb-3">
+                <span><?= $successMessage ?></span>
+            </div>
+        <?php elseif (!empty($errorMessage['general'])): ?>
+            <div class="field-error -mt-3 mb-3">
+                <span class="messages"><?= $errorMessage['general'] ?></span>
+            </div>
+        <?php endif; ?>
+
+        <div class="bg-bg-400 p-5 rounded-xl">
+            <?= $block->getBlockHtml('formkey') ?>
+            <div class="space-y-3">
+                <?= $block->getLayout()->createBlock(Name::class)->setObject($block->getCustomer())->toHtml() ?>
+            </div>
+            <?php $dob = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Dob::class) ?>
+            <?php $taxvat = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Taxvat::class) ?>
+            <?php $gender = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Gender::class) ?>
+            <?php if ($dob->isEnabled()): ?>
+                <?= $dob->setDate($block->getCustomer()->getDob())->toHtml() ?>
+            <?php endif ?>
+            <?php if ($taxvat->isEnabled()): ?>
+                <?= $taxvat->setTaxvat($block->getCustomer()->getTaxvat())->toHtml() ?>
+            <?php endif ?>
+            <?php if ($gender->isEnabled()): ?>
+                <?= $gender->setGender($block->getCustomer()->getGender())->toHtml() ?>
+            <?php endif ?>
+
+            <label class="flex items-center gap-x-3 mx-4 mb-3 mt-5" for="change-email">
+                <input
+                    type="checkbox"
+                    name="change_email"
+                    id="change-email"
+                    value="1"
+                    x-model="showEmailField"
+                    title="<?= $escaper->escapeHtmlAttr(__('Change email')) ?>"
+                    @change="handleCheckboxChange('email-fields')"
+                    class="checkbox__input"
+                    aria-describedby="change_email_description"
+                />
+                <span class="checkbox__control" aria-hidden="true">
+                    <?= $hyvaicons->renderHtml('checkmark') ?>
+                </span>
+                <span class="checkbox__label ml-0"><?= $escaper->escapeHtml(__('Change email')) ?></span>
+                <span class="sr-only" id="change_email_description">
+                    <?= $escaper->escapeHtml(__('form appears when field is selected')) ?>
+                </span>
+            </label>
+
+            <label class="flex items-center gap-x-3 mx-4 mt-3" for="change-password">
+                <input
+                    type="checkbox"
+                    name="change_password"
+                    id="change-password"
+                    value="1"
+                    x-model="showPasswordFields"
+                    title="<?= $escaper->escapeHtmlAttr(__('Change password')) ?>"
+                    @change="handleCheckboxChange('password-fields')"
+                    <?php if ($block->getChangePassword()): ?> checked<?php endif; ?>
+                    class="checkbox__input"
+                    aria-describedby="change_password_description"
+                />
+                <span class="checkbox__control" aria-hidden="true">
+                    <?= $hyvaicons->renderHtml('checkmark') ?>
+                </span>
+                <span class="checkbox__label ml-0"><?= $escaper->escapeHtml(__('Change password')) ?></span>
+                <span class="sr-only" id="change_password_description">
+                    <?= $escaper->escapeHtml(__('form appears when field is selected')) ?>
+                </span>
+            </label>
+
+            <div id="email-fields"
+                 x-cloak x-transition x-show="showEmailField"
+                 class="field field-reserved mt-7<?= !empty($errorMessage['email']) ? ' field-error' : '' ?>"
+            >
+                <label class="sr-only tracking-widest" for="email">
+                    <span><?= $escaper->escapeHtml(__('Email')) ?></span>
+                </label>
+                <div>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        autocomplete="email"
+                        required
+                        value="<?= $escaper->escapeHtmlAttr($block->getCustomer()->getEmail()) ?>"
+                        title="<?= $escaper->escapeHtmlAttr(__('Email')) ?>"
+                        placeholder="<?= $escaper->escapeHtmlAttr(__('Your email')) ?>"
+                        class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                    />
+                </div>
+                <?php if (!empty($errorMessage['email'])): ?>
+                    <div class="messages mt-1">
+                        <span><?= $errorMessage['email'] ?></span>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div
+                id="password-fields"
+                x-cloak
+                x-transition
+                x-show="showEmailField || showPasswordFields"
+                class="field field-reserved mt-3 mb-5<?= !empty($errorMessage['current_password']) || !empty($errorMessage['email_current_password']) ? ' field-error' : '' ?>"
+                :class="{'!mt-7': !showEmailField, '!mb-0': showPasswordFields}"
+            >
+                <label class="sr-only tracking-widest" for="current-password">
+                    <span><?= $escaper->escapeHtml(__('Current Password')) ?></span>
+                </label>
+                <div>
+                    <input type="password"
+                           class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                           name="current_password"
+                           id="current-password"
+                           data-input="current-password"
+                           placeholder="<?= $escaper->escapeHtmlAttr(__('Your current password')) ?>"
+                           required
+                           autocomplete="<?= $isAutocompleteEnabled ? 'current-password' : 'off' ?>"
+                           aria-describedby="password-strength-meter"
+                    />
+                </div>
+                <?php if (!empty($errorMessage['current_password']) || !empty($errorMessage['email_current_password'])): ?>
+                    <div class="messages mt-1">
+                        <span><?= $errorMessage['current_password'] ?? $errorMessage['email_current_password'] ?></span>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <div x-cloak x-transition x-show="showPasswordFields">
+                <div class="field field-reserved mt-3<?= !empty($errorMessage['password']) ? ' field-error' : '' ?>">
+                    <label class="sr-only tracking-widest" for="password">
+                        <span>
+                            <?= $escaper->escapeHtml(__('New Password')) ?>
+                        </span>
+                    </label>
+                    <div>
+                        <input type="password"
+                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                               name="password"
+                               id="password"
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('New password')) ?>"
+                               required
+                               data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
+                               @input="onChange"
+                               minlength="<?= $escaper->escapeHtmlAttr($minimumPasswordLength) ?>"
+                               autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
+                               aria-describedby="password-strength-meter"
+                        />
+                        <div id="password-strength-meter-container" class="mt-2 text-sm"
+                             data-role="password-strength-meter" aria-live="polite">
+                            <div id="password-strength-meter" class="password-strength-meter">
+                                <?= $escaper->escapeHtml(__('Password Strength')) ?>:
+                                <span id="password-strength-meter-label" class="lowercase"
+                                      data-role="password-strength-meter-label">
+                                    <?= $escaper->escapeHtml(__('No Password')) ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <?php if (!empty($errorMessage['password'])): ?>
+                        <div class="messages mt-1">
+                            <span><?= $errorMessage['password'] ?></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <div class="field field-reserved mt-3 mb-5<?= !empty($errorMessage['password_confirmation']) ? ' field-error' : '' ?>">
+                    <label class="sr-only tracking-widest" for="password-confirmation">
+                        <span><?= $escaper->escapeHtml(__('Confirm New Password')) ?></span>
+                    </label>
+                    <div>
+                        <input type="password"
+                               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                               name="password_confirmation" id="password-confirmation"
+                               placeholder="<?= $escaper->escapeHtml(__('Confirm new password')) ?>"
+                               data-validate='{"equalTo": "password"}'
+                               title="<?= $escaper->escapeHtmlAttr(__('Confirm Password')) ?>"
+                               @input="onChange"
+                               autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
+                        />
+                    </div>
+                    <?php if (!empty($errorMessage['password_confirmation'])): ?>
+                        <div class="messages mt-1">
+                            <span><?= $errorMessage['password_confirmation'] ?></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="pt-3">
+                <?= $block->getChildHtml('fieldset_edit_info_additional') ?>
+                <?= $block->getChildHtml('form_additional_info') ?>
+            </div>
+        </div>
+
+        <?php if ($recaptcha): ?>
+            <div class="mt-3">
+                <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) ?>
+                <template x-if="displayErrorMessage">
+                    <p class="field-error">
+                        <template x-for="errorMessage in errorMessages">
+                            <span class="messages" x-html="errorMessage"></span>
+                        </template>
+                    </p>
+                </template>
+            </div>
+        <?php endif; ?>
+
+        <div class="flex gap-x-4 flex-col md:flex-row mt-5">
+            <button
+                type="submit"
+                class="button button--filled-primary"
+                :class="isLoading && 'button--disabled'"
+                title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
+                :disabled="isLoading"
+            >
+                <span x-text="isLoading ?
+                    '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
+                    '<?= $escaper->escapeHtml(__('Save')) ?>'">
+                    <?= $escaper->escapeHtml(__('Save')) ?>
+                </span>
+            </button>
+            <a class="button button--ghost-primary"
+               href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+               x-element-transition-trigger
+            >
+                <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
+            </a>
+        </div>
+    </form>
+
+    <div class="w-full">
+        <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT) : '' ?>
+    </div>
+</section>

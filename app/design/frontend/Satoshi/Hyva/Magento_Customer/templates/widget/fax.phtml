@@ -1,0 +1,31 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Customer\Block\Widget\Fax;
+use Magento\Customer\Helper\Address as AddressHelper;
+use Magento\Framework\Escaper;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var Escaper $escaper */
+/** @var Fax $block */
+
+$validationClass = $escaper->escapeHtmlAttr($this->helper(AddressHelper::class)->getAttributeValidationClass('fax'));
+
+?>
+<div class="field field-reserved">
+    <label for="fax" class="sr-only tracking-widest">
+        <span><?= $escaper->escapeHtml(__('Fax')) ?></span>
+    </label>
+    <div>
+        <input type="text"
+               name="fax"
+               id="fax"
+               value="<?= $escaper->escapeHtmlAttr($block->getFax()) ?>"
+               title="<?= $escaper->escapeHtmlAttr(__('Fax')) ?>"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your fax number')) ?>"
+        >
+    </div>
+</div>
