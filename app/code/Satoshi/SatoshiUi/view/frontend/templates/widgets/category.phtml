@@ -1,0 +1,72 @@
+<?php
+
+declare(strict_types=1);
+
+use Satoshi\SatoshiUi\Block\Widget\Category;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
+use Hyva\Theme\ViewModel\ProductListItem;
+
+/** @var Escaper $escaper */
+/** @var Category $block */
+/** @var Template $template */
+/** @var ViewModelRegistry $viewModels */
+/** @var ProductListItem $productListItemViewModel */
+
+$exists = $block->getProductCollection() && $block->getProductCollection()->getSize();
+$products = $block->getProductCollection()->getItems();
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+$sliderItemRenderer = $block->getLayout()->getBlock('product_list_item') ?: $block->getLayout()->createBlock(Template::class);
+$displayViewAll = $block->getData('view_all_button') === 'enabled';
+$autoResize = $block->getData('auto_resize_items') === 'enabled';
+
+$slidesHtml = array_reduce($products,
+    function ($acc, $product) use ($productListItemViewModel, $sliderItemRenderer, $block) {
+        $card = $productListItemViewModel->getItemHtmlWithRenderer(
+            $sliderItemRenderer,
+            $product,
+            $block,
+            'grid',
+            ProductReviewRenderer::SHORT_VIEW,
+            'category_page_grid',
+            false
+        );
+        return $acc . "<div class='slider__slide'>$card</div>";
+    }, '');
+
+$count = count($products);
+$slidesAmountInView = match (true) {
+    $count < 2 => ['xs' => $count, 'sm' => $count, 'md' => $count, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
+    $count < 3 => ['xs' => 1, 'sm' => 2, 'md' => $count, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
+    $count < 4 => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
+    $count < 4 => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => $count, 'xxl' => $count],
+    default => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 6]
+};
+
+?>
+<?php if($exists): ?>
+    <?=
+        $template
+            ->setData([
+                'slides' => $slidesHtml,
+                'gap' => 16,
+                'slides_amount_in_view' => $autoResize ? $slidesAmountInView : ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 6],
+                'title' => $escaper->escapeHtml($block->getData('heading')),
+                'id' => 'collection-' . $block->getData('category_id'),
+                'is_full_page' => true,
+            ])
+            ->render('Magento_Catalog::html/slider.phtml')
+    ?>
+    <?php if ($displayViewAll && $block->collectionSize > $block->getData('max_products_count')): ?>
+        <div class="view-all mt-5 text-center">
+            <a
+                href="<?= $block->category->getUrl() ?>"
+                class="button button--filled-primary"
+                x-element-transition-trigger
+            >
+                <?= $escaper->escapeHtml(__('View all')) ?>
+            </a>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>

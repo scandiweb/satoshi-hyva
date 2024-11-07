@@ -10,7 +10,7 @@ declare global {
 
   interface Window {
     hyva: {
-      formValidation: function;
+      formValidation: any;
       getFormKey: function;
       formatPrice: function;
       getUenc: function;
