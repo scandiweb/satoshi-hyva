@@ -22,7 +22,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             x-ref="<?= $escaper->escapeHtmlAttr($block->getFieldName('gender')) ?>"
             title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('gender')) ?>"
             class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-            @input.debounce="changeCountry"
             <?php if ($block->isRequired()): ?>required<?php endif; ?>
     >
         <?php $options = $block->getGenderOptions(); ?>
