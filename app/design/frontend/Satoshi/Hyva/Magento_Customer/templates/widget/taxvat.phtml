@@ -1,0 +1,29 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Customer\Block\Widget\Taxvat;
+use Magento\Customer\Helper\Address as AddressHelper;
+use Magento\Framework\Escaper;
+
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
+// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
+
+/** @var Escaper $escaper */
+/** @var Taxvat $block */
+?>
+<div class="field field-reserved">
+    <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($block->getFieldId('taxvat')) ?>">
+        <span><?= $escaper->escapeHtml($block->getStoreLabel('taxvat')) ?></span>
+    </label>
+    <div>
+        <input type="text"
+               id="<?= $escaper->escapeHtmlAttr($block->getFieldId('taxvat')) ?>"
+               name="<?= $escaper->escapeHtmlAttr($block->getFieldName('taxvat')) ?>"
+               value="<?= $escaper->escapeHtmlAttr($block->getTaxvat()) ?>"
+               title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('taxvat')) ?>"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your VAT number')) ?>"
+            <?= $block->isRequired() ? ' required' : '' ?>
+        >
+    </div>
+</div>

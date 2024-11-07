@@ -155,8 +155,9 @@ if ($product) {
                         <?= $product?->getSku() ?>
                     </p>
 
+                    <!-- TODO: INTERNAL-397: Rework quick buy -->
                     <!-- Quick buy, for simple, virtual, configurable.. TODO: Make it for other types too -->
-                    <?php if ($product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
+                    <?php if (false && $product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
                         <form
                             method="post"
                             action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
