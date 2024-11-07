@@ -12,12 +12,13 @@ $errorMessage = $block->getErrorMessage();
 ?>
 <div class="mx-auto mb-16 w-[412px] px-4 h-full flex items-center md:px-0 max-w-full">
     <form
-        x-data="{
-                authenticateBy: 'email'
-            }"
+        x-data="Object.assign(Form(), {
+            authenticateBy: 'email'
+        })"
         class="w-full"
         action="<?= $escaper->escapeUrl($block->getActionUrl()) ?>"
         method="post" name="guest_post"
+        @submit.prevent="submitForm($event)"
     >
         <fieldset class="fieldset">
             <?= $block->getBlockHtml('formkey') ?>
@@ -99,8 +100,8 @@ $errorMessage = $block->getErrorMessage();
                     </div>
                 </div>
                 <?php if ($errorMessage): ?>
-                    <div class="text-red-600 mt-3">
-                        <?= $errorMessage ?>
+                    <div class="field-error mt-1">
+                        <span class="messages"><?= $errorMessage ?></span>
                     </div>
                 <?php endif; ?>
             </div>
