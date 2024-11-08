@@ -19,6 +19,8 @@ export type GalleryType = {
   activeVideoType: string | false;
   initialImages: ImageData[];
   images: ImageData[];
+  appendedImages: ImageData[] | [];
+  mobileFeaturedImage: ImageData | null;
   appendOnReceiveImages: boolean;
   loopVideo: boolean;
   vimeoPlayer: any;
@@ -40,6 +42,8 @@ export const Gallery = (
     activeVideoType: false,
     initialImages: JSON.parse(images),
     images: JSON.parse(images),
+    appendedImages: [],
+    mobileFeaturedImage: null,
     appendOnReceiveImages,
     loopVideo,
     vimeoPlayer: null,
@@ -48,7 +52,8 @@ export const Gallery = (
         this.receiveImages(event.detail);
       },
       ["@reset-gallery.window"]() {
-        this.images = this.initialImages;
+        // @ts-ignore
+        this.appendedImages = [];
       },
     },
 
@@ -200,8 +205,17 @@ export const Gallery = (
         const newImages = images.filter(
           (image) => !initialUrls.includes(image.full),
         );
-        // TODO: Make it prepend, issue will be with main image.
-        this.images = [...this.initialImages, ...newImages];
+
+        if (!newImages.length) {
+          this.mobileFeaturedImage = null;
+          return;
+        }
+
+        // Exclude first image on mobile as it will be featured image
+        this.appendedImages = Alpine.store("main").isMobile
+          ? newImages.slice(1)
+          : newImages;
+        this.mobileFeaturedImage = newImages[0];
       } else {
         this.images = images;
       }
