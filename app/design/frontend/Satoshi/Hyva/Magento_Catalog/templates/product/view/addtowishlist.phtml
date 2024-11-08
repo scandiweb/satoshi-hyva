@@ -1,0 +1,220 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Wishlist $wishlistViewModel */
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+
+/** @var HeroiconsSolid $heroicons */
+$heroicons = $viewModels->require(HeroiconsSolid::class);
+
+/** @var CurrentProduct $currentProduct */
+$currentProduct = $viewModels->require(CurrentProduct::class);
+
+/** @var Product $product */
+$product = $currentProduct->get();
+
+if (!$product->getId() || !$wishlistViewModel->isEnabled()) {
+    return;
+}
+/**
+ * When visiting wishlist/index/configure, the current class is Magento\Wishlist\Block\Item\Configure
+ * In that case we take the form parameters from the existing wishlist item
+ */
+$updateParams = $block->getUpdateParams() ?: null;
+$uniqueId = '_' . uniqid();
+?>
+<script>
+    function initWishlist<?= /** @noEscape */ $uniqueId ?>() {
+        return {
+            currentWishListItem: {},
+            init() {
+                setTimeout(() => {
+                    console.log(this.$store.wishlist.wishlistItems);
+                    const productSku = '<?php echo $product->getSku(); ?>';
+                    this.currentWishListItem = this.$store.wishlist.wishlistItems.find(
+                        item => item.product_sku === productSku
+                    );
+
+                }, 0);
+
+                this.$watch("selectedAttributes", () => {
+                    const wishlistItems = this.$store.wishlist.wishlistItems;
+                    const selectedAttributes = this.selectedAttributes;
+                    const filterWishlistItems = (wishlistItems, selectedAttributes) => {
+                        return wishlistItems.filter(item => {
+                            const matchingOptions = item.options.filter(option =>
+                                selectedAttributes.some(attr =>
+                                    option.option_id === attr.attributeId && option.option_value === attr.value
+                                )
+                            );
+                            return matchingOptions.length === selectedAttributes.length && matchingOptions.length === item.options.length;
+                        });
+                    };
+
+                    this.currentWishListItem = filterWishlistItems(wishlistItems, selectedAttributes);
+                });
+
+                this.$watch("currentWishListItem", () => {
+                    console.log('exists:', !!this.currentWishListItem.length);
+                    console.log('current wish list item:', this.currentWishListItem);
+                });
+
+            },
+            addToWishlist(productId) {
+                const postParams = <?php if ($updateParams): ?>
+                    <?= /* @noEscape */ $updateParams ?>
+                <?php else: ?>
+                {
+                    action: BASE_URL + "wishlist/index/add/",
+                        data
+                :
+                    {
+                        product: productId,
+                            uenc
+                    :
+                        hyva.getUenc()
+                    }
+                }
+                <?php endif; ?>
+
+                postParams.data['form_key'] = hyva.getFormKey();
+                postParams.data['qty'] = document.getElementById(`qty[${productId}]`)
+                    ? document.getElementById(`qty[${productId}]`).value || 1
+                    : 1;
+
+                let postData = Object.keys(postParams.data).map(key => {
+                    return `${key}=${postParams.data[key]}`;
+                }).join('&');
+
+                // take the all the input fields that configure this product
+                // includes custom, configurable, grouped and bundled options
+                Array.from(document.querySelectorAll(
+                    '[name^=options], [name^=super_attribute], [name^=bundle_option], [name^=super_group], [name^=links]')
+                ).map(input => {
+                    if (input.type === "select-multiple") {
+                        Array.from(input.selectedOptions).forEach(option => {
+                            postData += `&${input.name}=${option.value}`
+                        })
+                    } else {
+                        // skip "checkable inputs" that are not checked
+                        if (!(['radio', 'checkbox', 'select'].includes(input.type) && !input.checked)) {
+                            postData += `&${input.name}=${input.value}`
+                        }
+                    }
+                });
+                fetch(postParams.action, {
+                    "headers": {
+                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    },
+                    "body": postData,
+                    "method": "POST",
+                    "mode": "cors",
+                    "credentials": "include"
+                }).then((response) => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else if (response.ok) {
+                        return response.json();
+                    } else {
+                        typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                            [{
+                                type: "warning",
+                                text: "<?= $escaper->escapeHtml(__('Could not add item to wishlist.')) ?>"
+                            }], 5000
+                        );
+                    }
+                }).then((response) => {
+                    if (!response) {
+                        return;
+                    }
+                    typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                        [{
+                            type: (response.success) ? "success" : "error",
+                            text: (response.success)
+                                ? "<?= $escaper->escapeHtml(
+                                    __("%1 has been added to your Wish List.", __("Product"))
+                                ) ?>"
+                                : response.error_message
+                        }], 5000
+                    );
+                    const reloadCustomerDataEvent = new CustomEvent("reload-customer-section-data");
+                    window.dispatchEvent(reloadCustomerDataEvent);
+                }).catch((error) => {
+                    typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                        [{
+                            type: "error",
+                            text: error
+                        }], 5000
+                    );
+                });
+            },
+            removeFromWishlist() {
+                const itemId = 23;
+
+                fetch(`${BASE_URL}/wishlist/index/remove`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        item: itemId,
+                        form_key: hyva.getFormKey(),
+                        uenc: hyva.getUenc(),
+                    }),
+                    mode: "cors",
+                    credentials: "include",
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Item removed from wishlist');
+                            location.reload(); // Refresh page or update wishlist section
+                        } else {
+                            return response.text().then(text => {
+                                throw new Error(text);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Error removing item from wishlist:', error);
+                    });
+
+            }
+        }
+    }
+</script>
+
+<button x-data="initWishlist<?= /** @noEscape */
+$uniqueId ?>()"
+        @click.prevent="addToWishlist(<?= (int)$product->getId() ?>)"
+        title="<?= $escaper->escapeHtmlAttr(
+            ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
+        ) ?>"
+        aria-label="<?= $escaper->escapeHtmlAttr(
+            ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
+        ) ?>"
+        id="add-to-wishlist"
+        class="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex
+                items-center justify-center text-gray-500 hover:text-red-600 ml-4"
+        data-addto="wishlist"
+>
+    <?= $heroicons->heartHtml("w-5 h-5", 25, 25) ?>
+</button>

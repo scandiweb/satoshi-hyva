@@ -4,7 +4,7 @@ import { CartItem } from "../store/Cart";
 
 export type ProductPageType = {
   [key: string | symbol]: any;
-
+    selectedAttributes: { attributeId: number, value: string }[];
   isVariantInCart: boolean;
   isLoadingCart: boolean;
   variantQty: number;
@@ -140,7 +140,7 @@ export const ProductPage = () =>
     optionConfig: undefined,
     allowedAttributeOptions: [],
     isGroupValid: true,
-
+      selectedAttributes: [],
     get isProductBeingRemoved() {
       return Alpine.store("cart").removingItemId === this.cartItemKey;
     },
@@ -418,7 +418,7 @@ export const ProductPage = () =>
       }
     },
 
-    changeOption(attributeId: number, value: string) {
+      changeOption(attributeId: number, value: string) {
       if (value === "") {
         this.selectedValues = this.removeAttrFromSelection(
           this.selectedValues,
@@ -432,10 +432,23 @@ export const ProductPage = () =>
       ) {
         // Only set as selected value if it is valid
         this.selectedValues[attributeId] = value;
+          this.findSimpleIndex();
+
       }
-      this.findSimpleIndex();
       this.findAllowedAttributeOptions();
-      this.updatePrices();
+          const existingIndex = this.selectedAttributes.findIndex(attr => attr.attributeId === attributeId);
+
+          if (existingIndex !== -1) {
+              this.selectedAttributes = [
+                  ...this.selectedAttributes.slice(0, existingIndex),
+                  {...this.selectedAttributes[existingIndex], value},
+                  ...this.selectedAttributes.slice(existingIndex + 1)
+              ];
+          } else {
+              this.selectedAttributes = [...this.selectedAttributes, {attributeId, value}];
+          }
+
+          this.updatePrices();
       this.updateGallery();
       window.dispatchEvent(
         new CustomEvent("configurable-selection-changed", {
