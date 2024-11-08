@@ -1,58 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\Customer\Controller\Account;
 
+use Magento\Customer\Api\AccountManagementInterface;
+use Magento\Customer\Controller\Account\LoginPost as SourceLoginPost;
+use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 use Magento\Customer\Model\Session;
+use Magento\Customer\Model\Url as CustomerUrl;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Data\Form\FormKey\Validator;
+use Magento\Framework\Exception\AuthenticationException;
+use Magento\Framework\Exception\EmailNotConfirmedException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\Cookie\PhpCookieManager;
-use Magento\Framework\View\Result\PageFactory;
-use Magento\Customer\Controller\Account\LoginPost as SourceLoginPost;
-use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Customer\Model\Account\Redirect as AccountRedirect;
-use Magento\Customer\Api\AccountManagementInterface;
-use Magento\Customer\Model\Url as CustomerUrl;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\Result\Json;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\EmailNotConfirmedException;
-use Magento\Framework\Exception\AuthenticationException;
-use Magento\Framework\Data\Form\FormKey\Validator;
-use Magento\Framework\Exception\LocalizedException;
 
 class LoginPost extends SourceLoginPost
 {
-    /**
-     * @var AccountManagementInterface
-     */
-    protected $customerAccountManagement;
-
-    /**
-     * @var Validator
-     */
-    protected $formKeyValidator;
-
-    /**
-     * @var AccountRedirect
-     */
-    protected $accountRedirect;
 
     /**
      * @var CustomerUrl
      */
     private $customerUrl;
-
-    /**
-     * @var JsonFactory
-     */
-    protected $jsonFactory;
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
 
     /**
      * @var CookieMetadataFactory
@@ -65,89 +39,47 @@ class LoginPost extends SourceLoginPost
     private $cookieMetadataManager;
 
     /**
-     * Constructor
-     *
-     * @param Context $context
-     * @param Session $customerSession
-     * @param PageFactory $resultPageFactory
-     * @param JsonFactory $jsonFactory
-     * @param AccountManagementInterface $customerAccountManagement
-     * @param CustomerUrl $customerHelperData
-     * @param Validator $formKeyValidator
-     * @param AccountRedirect $accountRedirect
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * @param  Context  $context
+     * @param  Session  $customerSession
+     * @param  AccountManagementInterface  $customerAccountManagement
+     * @param  CustomerUrl  $customerHelperData
+     * @param  Validator  $formKeyValidator
+     * @param  AccountRedirect  $accountRedirect
      */
     public function __construct(
         Context $context,
         Session $customerSession,
-        PageFactory $resultPageFactory,
-        JsonFactory $jsonFactory,
         AccountManagementInterface $customerAccountManagement,
         CustomerUrl $customerHelperData,
         Validator $formKeyValidator,
         AccountRedirect $accountRedirect
     ) {
-        $this->customerAccountManagement = $customerAccountManagement;
         $this->customerUrl = $customerHelperData;
-        $this->formKeyValidator = $formKeyValidator;
-        $this->accountRedirect = $accountRedirect;
-        $this->jsonFactory = $jsonFactory;
-        parent::__construct($context, $customerSession, $customerAccountManagement, $customerHelperData, $formKeyValidator, $accountRedirect);
+        parent::__construct(
+            $context,
+            $customerSession,
+            $customerAccountManagement,
+            $customerHelperData,
+            $formKeyValidator,
+            $accountRedirect
+        );
     }
 
     /**
-     * Get Scope Config
+     * Login post action
      *
-     * @return ScopeConfigInterface
-     */
-    private function getScopeConfig()
-    {
-        if (!($this->scopeConfig instanceof ScopeConfigInterface)) {
-            return ObjectManager::getInstance()->get(
-                ScopeConfigInterface::class
-            );
-        } else {
-            return $this->scopeConfig;
-        }
-    }
-
-    /**
-     * Retrieve cookie manager
-     *
-     * @deprecated 100.1.0
-     * @return PhpCookieManager
-     */
-    private function getCookieManager()
-    {
-        if (!$this->cookieMetadataManager) {
-            $this->cookieMetadataManager = ObjectManager::getInstance()->get(
-                PhpCookieManager::class
-            );
-        }
-        return $this->cookieMetadataManager;
-    }
-
-    /**
-     * Retrieve cookie metadata factory
-     *
-     * @deprecated 100.1.0
-     * @return CookieMetadataFactory
-     */
-    private function getCookieMetadataFactory()
-    {
-        if (!$this->cookieMetadataFactory) {
-            $this->cookieMetadataFactory = ObjectManager::getInstance()->get(
-                CookieMetadataFactory::class
-            );
-        }
-        return $this->cookieMetadataFactory;
-    }
-
-    /**
-     * @return Json|ResultInterface|ResponseInterface
+     * @return Redirect
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function execute()
     {
         if ($this->session->isLoggedIn() || !$this->formKeyValidator->validate($this->getRequest())) {
+            /** @var Redirect $resultRedirect */
             $resultRedirect = $this->resultRedirectFactory->create();
             $resultRedirect->setPath('*/*/');
             return $resultRedirect;
@@ -173,11 +105,9 @@ class LoginPost extends SourceLoginPost
                         return $resultRedirect;
                     }
                 } catch (EmailNotConfirmedException $e) {
-                    $errorMessageData = [
-                        'url' => $this->customerUrl->getEmailConfirmationUrl($login['username']),
-                    ];
-
-                    $this->session->setErrorMessage($errorMessageData);
+                    $url = $this->customerUrl->getEmailConfirmationUrl($login['username']);
+                    $message = __('You must confirm your account. Please check your email for the confirmation link or <a href="%1">click here</a> for a new link.', $url);
+                    $this->session->setErrorMessage($message);
                     $this->session->setUsername($login['username']);
                 } catch (AuthenticationException $e) {
                     $message = __(
@@ -188,9 +118,7 @@ class LoginPost extends SourceLoginPost
                     $message = $e->getMessage();
                 } catch (\Exception $e) {
                     // PA DSS violation: throwing or logging an exception here can disclose customer password
-                    $this->session->setErrorMessage(
-                        __('An unspecified error occurred. Please contact us for assistance.')
-                    );
+                    $this->session->setErrorMessage(__('An unspecified error occurred. Please contact us for assistance.'));
                 } finally {
                     if (isset($message)) {
                         $this->session->setErrorMessage($message);
@@ -204,4 +132,54 @@ class LoginPost extends SourceLoginPost
 
         return $this->accountRedirect->getRedirect();
     }
+
+    /**
+     * Get scope config
+     *
+     * @return ScopeConfigInterface
+     * @deprecated 100.0.10
+     */
+    private function getScopeConfig()
+    {
+        if (!($this->scopeConfig instanceof ScopeConfigInterface)) {
+            return ObjectManager::getInstance()->get(
+                ScopeConfigInterface::class
+            );
+        } else {
+            return $this->scopeConfig;
+        }
+    }
+
+    /**
+     * Retrieve cookie metadata factory
+     *
+     * @return CookieMetadataFactory
+     * @deprecated 100.1.0
+     */
+    private function getCookieMetadataFactory()
+    {
+        if (!$this->cookieMetadataFactory) {
+            $this->cookieMetadataFactory = ObjectManager::getInstance()->get(
+                CookieMetadataFactory::class
+            );
+        }
+        return $this->cookieMetadataFactory;
+    }
+
+    /**
+     * Retrieve cookie manager
+     *
+     * @return PhpCookieManager
+     * @deprecated 100.1.0
+     */
+    private function getCookieManager()
+    {
+        if (!$this->cookieMetadataManager) {
+            $this->cookieMetadataManager = ObjectManager::getInstance()->get(
+                PhpCookieManager::class
+            );
+        }
+        return $this->cookieMetadataManager;
+    }
+
 }

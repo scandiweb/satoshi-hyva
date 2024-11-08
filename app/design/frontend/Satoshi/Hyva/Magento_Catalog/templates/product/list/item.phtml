@@ -109,7 +109,7 @@ if ($product) {
             <img width="0" height="0" class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
                  src="<?= $escaper->escapeUrl($imageUrl) ?>" alt="">
 
-            <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg] h-full" x-element-transition-src="img"
+            <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg]" x-element-transition-src="img"
                  style="transform: translateZ(0)">
 
                 <?php if ($product): ?>
@@ -155,8 +155,9 @@ if ($product) {
                         <?= $product?->getSku() ?>
                     </p>
 
+                    <!-- TODO: INTERNAL-397: Rework quick buy -->
                     <!-- Quick buy, for simple, virtual, configurable.. TODO: Make it for other types too -->
-                    <?php if ($product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
+                    <?php if (false && $product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
                         <form
                             method="post"
                             action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"
