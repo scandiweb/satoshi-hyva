@@ -44,7 +44,7 @@ use Satoshi\Theme\Block\Template;
   >
     <div
       x-show="$store.main.isMobile ? $store.popup.currentPopup === 'menu' && getIsSearchActive() && products.length : getIsSearchActive() && products.length"
-      class="relative bg-bg-500 px-4 pb-2 transition-opacity duration-300 md:p-0 md:pt-1"
+      class="relative bg-bg-500 px-4 pb-2 transition-opacity duration-300 md:p-0 md:pt-1 md:mx-5 md:mb-5"
       :class="{ 'opacity-0': isLoading }"
     >
       <div class="absolute -top-10 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>

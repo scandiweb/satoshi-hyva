@@ -36,29 +36,31 @@ $logoHeight = $logoHeight ?? 150;
 ?>
 
 <?php if ($logoSrc): ?>
-<img
-  src="<?= $escaper->escapeUrl($logoSrc) ?>"
-  alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : __('Store logo')) ?>"
-  width="<?= $escaper->escapeHtmlAttr($logoWidth) ?>"
-  height="<?= $escaper->escapeHtmlAttr($logoHeight) ?>"
-  class="max-md:height-[56px] transition-all"
-  style="filter:url(#border); max-width: <?= $logoWidth ?>px"
-  <?php if($logoHeight > 56): ?>
-  :style="{
-    'height': $store.main.isHeaderShadowVisible ? '56px' : '<?= $escaper->escapeHtmlAttr($logoHeight) ?>px'
-  }"
-  <?php endif; ?>
-/>
+    <img
+        src="<?= $escaper->escapeUrl($logoSrc) ?>"
+        alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : __('Store logo')) ?>"
+        width="<?= $escaper->escapeHtmlAttr($logoWidth) ?>"
+        height="<?= $escaper->escapeHtmlAttr($logoHeight) ?>"
+        style="filter:url(#border); max-width: <?= $logoWidth ?>px;"
+        <?php if($logoHeight > 56): ?>
+            :style="{
+                '--logo-height': $store.main.isHeaderShadowVisible ? '56px' : '<?= $escaper->escapeHtmlAttr($logoHeight) ?>px',
+            }"
+        <?php endif ?>
+        class="max-md:h-[32px] w-auto transition-all <?php if($logoHeight > 56): ?> md:h-[--logo-height] <?php endif ?>"
+    />
 <?php else: ?>
-<svg
-  viewBox="0 0 <?= $estimated_width ?> 25"
-  class="m-auto h-[40px] w-2/3"
->
-  <text
-    text-anchor="middle"
-    x="50%"
-    y="20"
-    filter="url(#border)"
-  ><?= $escaper->escapeHtml($storeName)?></text>
-</svg>
+    <svg
+        viewBox="0 0 <?= $estimated_width ?> 25"
+        class="m-auto h-[40px] w-2/3"
+    >
+        <text
+            text-anchor="middle"
+            x="50%"
+            y="20"
+            filter="url(#border)"
+        >
+            <?= $escaper->escapeHtml($storeName)?>
+        </text>
+    </svg>
 <?php endif; ?>
