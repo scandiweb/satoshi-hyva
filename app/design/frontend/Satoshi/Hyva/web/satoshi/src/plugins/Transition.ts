@@ -281,7 +281,7 @@ export const morphContent = (
   replaceElement(target, newContent);
 };
 
-const replaceScriptTags = (target: HTMLElement | DocumentFragment) => {
+const reExecuteJs = (target: HTMLElement) => {
   Array.from(target.querySelectorAll("script")).forEach((oldScriptEl) => {
     const newScriptEl = document.createElement("script");
 
@@ -293,18 +293,6 @@ const replaceScriptTags = (target: HTMLElement | DocumentFragment) => {
     newScriptEl.appendChild(scriptText);
 
     oldScriptEl.parentNode!.replaceChild(newScriptEl, oldScriptEl);
-  });
-};
-
-const reExecuteJs = (target: HTMLElement) => {
-  // Re-execute scripts
-  replaceScriptTags(target);
-
-  // Re-execute scripts inside templates
-  const templates = target.querySelectorAll("template");
-  templates.forEach((template) => {
-    const content = template.content;
-    replaceScriptTags(content);
   });
 };
 

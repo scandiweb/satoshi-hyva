@@ -63,6 +63,8 @@ declare global {
 
   const BASE_URL: string;
   const CURRENT_STORE_CODE: string;
+  const grecaptchaV2LoadCallbacks: Array<() => void>;
+  const forceLoadRecaptchaScript: (form: HTMLElement | null) => void;
 }
 
 declare module "youtube-iframe-api" {
