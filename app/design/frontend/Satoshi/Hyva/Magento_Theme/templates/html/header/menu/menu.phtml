@@ -5,10 +5,6 @@ declare(strict_types=1);
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
-/** @var Template $block */
-$customerBlock = $block->getLayout()->createBlock(\Magento\Customer\Block\Account\Customer::class);
-$isLoggedIn = $customerBlock->customerLoggedIn();
-$accountUrl = $block->getUrl($isLoggedIn ? 'customer/account/index' : 'customer/account/login');
 ?>
 
 <nav
@@ -50,12 +46,9 @@ $accountUrl = $block->getUrl($isLoggedIn ? 'customer/account/index' : 'customer/
     <?=
       $template
         ->setData([
-            'id' => 'all',
-            'title' => 'All categories',
-            'path' => 'all',
-            'isLoggedIn' => $isLoggedIn,
-            'accountUrl' => $accountUrl,
-            'accountUrlText' => $isLoggedIn ? __('My account') : __('Login / Signup'),
+          'id' => 'all',
+          'title' => 'All categories',
+          'path' => 'all'
         ])
         ->render('Magento_Theme::html/header/menu/menu-items.phtml')
     ?>

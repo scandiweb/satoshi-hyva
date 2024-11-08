@@ -24,9 +24,6 @@ $menuItems = $block->getData('menuItems');
 $breadcrumbs = $block->getData('breadcrumbs') ?? [];
 $url = $block->getData('url');
 $level = $block->getData('level') ?? 1;
-$isLoggedIn = $block->getData('isLoggedIn');
-$accountUrl = $block->getData('accountUrl');
-$accountUrlText = $block->getData('accountUrlText');
 if (!$menuItems) {
   $menuItems = $viewModelNavigation->getNavigation(4);
   $block->setData('cache_tags', $viewModelNavigation->getIdentities());
@@ -187,12 +184,11 @@ if (!$menuItems) {
       x-show="(!$store.main.isMobile && '<?= $id ?>' === 'all') || ($store.popup.currentPopup == 'menu' && history[history.length - 1] === 'all' && !getIsSearchActive())"
   >
     <a x-element-transition-trigger
-       href="<?= $accountUrl ?>"
        class="button button--filled-primary w-full"
        x-a11y-trap-target.end="$store.popup.currentPopup === 'menu' && history.length === 1"
-    >
-        <?= $block->escapeHtml($accountUrlText) ?>
-    </a>
+       :href="$store.main.isUserLoggedIn ? '/customer/account/index' : '/customer/account/login'"
+       x-text="$store.main.isUserLoggedIn ? '<?= __('My account') ?>' : '<?= __('Login / Signup') ?>'"
+    ></a>
   </div>
 
   <?php if ($url && $id !== 'all'): ?>
