@@ -80,19 +80,20 @@ $newPasswordFailed = !empty($errorMessage['current_password']) || !empty($errorM
             <?= $block->getBlockHtml('formkey') ?>
             <div class="space-y-3">
                 <?= $block->getLayout()->createBlock(Name::class)->setObject($block->getCustomer())->toHtml() ?>
+
+                <?php $dob = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Dob::class) ?>
+                <?php $taxvat = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Taxvat::class) ?>
+                <?php $gender = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Gender::class) ?>
+                <?php if ($dob->isEnabled()): ?>
+                    <?= $dob->setDate($block->getCustomer()->getDob())->toHtml() ?>
+                <?php endif ?>
+                <?php if ($taxvat->isEnabled()): ?>
+                    <?= $taxvat->setTaxvat($block->getCustomer()->getTaxvat())->toHtml() ?>
+                <?php endif ?>
+                <?php if ($gender->isEnabled()): ?>
+                    <?= $gender->setGender($block->getCustomer()->getGender())->toHtml() ?>
+                <?php endif ?>
             </div>
-            <?php $dob = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Dob::class) ?>
-            <?php $taxvat = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Taxvat::class) ?>
-            <?php $gender = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Gender::class) ?>
-            <?php if ($dob->isEnabled()): ?>
-                <?= $dob->setDate($block->getCustomer()->getDob())->toHtml() ?>
-            <?php endif ?>
-            <?php if ($taxvat->isEnabled()): ?>
-                <?= $taxvat->setTaxvat($block->getCustomer()->getTaxvat())->toHtml() ?>
-            <?php endif ?>
-            <?php if ($gender->isEnabled()): ?>
-                <?= $gender->setGender($block->getCustomer()->getGender())->toHtml() ?>
-            <?php endif ?>
 
             <label class="flex items-center gap-x-3 mx-4 mb-3 mt-5" for="change-email">
                 <input

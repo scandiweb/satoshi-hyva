@@ -160,7 +160,7 @@ $errorMessage = $block->getErrorMessage();
                             class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                             name="password"
                             id="password"
-                            placeholder="<?= $escaper->escapeHtmlAttr(__('password')) ?>"
+                            placeholder="<?= $escaper->escapeHtmlAttr(__('Password')) ?>"
                             required
                             data-validate='{"password-strength": {"minCharacterSets": <?= (int)$passwordMinCharacterSets ?>}}'
                             @input.debounce="onChange"
@@ -217,7 +217,7 @@ $errorMessage = $block->getErrorMessage();
                 </div>
 
                 <?php if ($block->getShowAddressFields()): ?>
-                    <div class="grid lg:grid-cols-2 gap-3">
+                    <div class="grid gap-3">
                         <input type="hidden" name="create_address" value="1"/>
 
                         <?php $company = $block->getLayout()->createBlock(\Magento\Customer\Block\Widget\Company::class) ?>
@@ -253,11 +253,6 @@ $errorMessage = $block->getErrorMessage();
                                     @input.debounce="onChange"
                                 />
                             </div>
-                            <?php if ($errorMessage['street[]']): ?>
-                                <div class="messages mt-1">
-                                    <span><?= $errorMessage['street[]'] ?></span>
-                                </div>
-                            <?php endif; ?>
                         </div>
 
                         <?php for ($i = 2, $n = $this->helper(Address::class)->getStreetLines(); $i <= $n; $i++): ?>
@@ -302,11 +297,6 @@ $errorMessage = $block->getErrorMessage();
                                     placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your postcode')) ?>"
                                 />
                             </div>
-                            <?php if ($errorMessage['postcode']): ?>
-                                <div class="messages mt-1">
-                                    <span><?= $errorMessage['postcode'] ?></span>
-                                </div>
-                            <?php endif; ?>
                         </div>
 
                         <div class="field field-reserved<?= !empty($errorMessage['city']) ? ' field-error' : '' ?>">
@@ -329,11 +319,6 @@ $errorMessage = $block->getErrorMessage();
                                     @input.debounce="onChange"
                                 />
                             </div>
-                            <?php if ($errorMessage['city']): ?>
-                                <div class="messages mt-1">
-                                    <span><?= $errorMessage['city'] ?></span>
-                                </div>
-                            <?php endif; ?>
                         </div>
 
                         <div
@@ -391,11 +376,6 @@ $errorMessage = $block->getErrorMessage();
                                     @input.debounce="onChange"
                                 />
                             </div>
-                            <?php if ($errorMessage['region']): ?>
-                                <div class="messages mt-1">
-                                    <span><?= $errorMessage['region'] ?></span>
-                                </div>
-                            <?php endif; ?>
                         </div>
 
                         <div class="field field-reserved">
