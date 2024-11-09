@@ -87,6 +87,11 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
             >
                 <?= $escaper->escapeHtml($block->getData('heading')) ?>
             </h2>
+            <?php if(!empty($block->getData('description'))): ?>
+                <p>
+                    <?= $escaper->escapeHtml($block->getData('description')) ?>
+                </p>
+            <?php endif; ?>
             <a
                 <?php if ($linkHref): ?>
                     href="<?= $escaper->escapeUrl($linkHref); ?>"

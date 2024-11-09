@@ -3,24 +3,20 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Framework\View\TemplateEngine\Php">
         <plugin
-                name="utilities_template_engine_plugin"
-                type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"
+            name="utilities_template_engine_plugin"
+            type="Satoshi\Theme\Plugin\TemplateEngine\SharedVariablesPlugin"
         />
     </type>
     <preference
-            for="Hyva\Theme\Service\Navigation"
-            type="Satoshi\Theme\Service\Navigation"
+        for="Hyva\Theme\Service\Navigation"
+        type="Satoshi\Theme\Service\Navigation"
     />
     <preference
-            for="Hyva\Theme\ViewModel\ReCaptcha"
-            type="Satoshi\Theme\ViewModel\ReCaptcha"
+        for="Hyva\Theme\ViewModel\ProductListItem"
+        type="Satoshi\Theme\ViewModel\ProductListItem"
     />
     <preference
-            for="Hyva\Theme\ViewModel\ProductListItem"
-            type="Satoshi\Theme\ViewModel\ProductListItem"
-    />
-    <preference
-            for="Magento\Theme\Block\Html\Footer"
-            type="Satoshi\Theme\Block\Html\Footer"
+        for="Magento\Theme\Block\Html\Footer"
+        type="Satoshi\Theme\Block\Html\Footer"
     />
 </config>

@@ -72,7 +72,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 wishlistItems: {},
                 receiveWishlistData: function (data) {
                     if (data['wishlist']) {
-                        this.wishlistProducts = data['wishlist'];
+                        // Keep only 3 wishlist items
+                        const SIDEBAR_ITEMS_NUMBER = 3;
+                        const wishlistProducts = { ...data['wishlist'] };
+                        wishlistProducts.items = wishlistProducts.items.slice(0, SIDEBAR_ITEMS_NUMBER);
+
+                        this.wishlistProducts = wishlistProducts;
                         this.wishlistCountLabel = this.wishlistProducts.counter;
                         this.itemCount = this.wishlistProducts.items.length;
                         this.wishlistItems = this.wishlistProducts.items;

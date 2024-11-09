@@ -15,28 +15,30 @@ use Hyva\Theme\ViewModel\SvgIcons;
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
-<div class="relative">
-    <select
-            id="<?= $escaper->escapeHtmlAttr($block->getFieldId('gender')) ?>"
-            name="<?= $escaper->escapeHtmlAttr($block->getFieldName('gender')) ?>"
-            x-ref="<?= $escaper->escapeHtmlAttr($block->getFieldName('gender')) ?>"
-            title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('gender')) ?>"
-            class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-            @input.debounce="changeCountry"
-            <?php if ($block->isRequired()): ?>required<?php endif; ?>
-    >
-        <?php $options = $block->getGenderOptions(); ?>
-        <?php $value = $block->getGender(); ?>
-        <?php foreach ($options as $option): ?>
-            <option
-                value="<?= $escaper->escapeHtmlAttr($option->getValue()) ?>"
-                <?= ($option->getValue() == $value) ? 'selected="selected"' : '' ?>
-            >
-                <?= $escaper->escapeHtml(trim($option->getLabel()) ?: __('Please select gender')) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-    <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
-        <?= $hyvaicons->renderHtml('chevron', 'rotate-90') ?>
+<div class="field field-reserved">
+    <div class="relative">
+        <select
+                id="<?= $escaper->escapeHtmlAttr($block->getFieldId('gender')) ?>"
+                name="<?= $escaper->escapeHtmlAttr($block->getFieldName('gender')) ?>"
+                x-ref="<?= $escaper->escapeHtmlAttr($block->getFieldName('gender')) ?>"
+                title="<?= $escaper->escapeHtmlAttr($block->getStoreLabel('gender')) ?>"
+                class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+                @input.debounce="changeCountry"
+                <?php if ($block->isRequired()): ?>required<?php endif; ?>
+        >
+            <?php $options = $block->getGenderOptions(); ?>
+            <?php $value = $block->getGender(); ?>
+            <?php foreach ($options as $option): ?>
+                <option
+                        value="<?= $escaper->escapeHtmlAttr($option->getValue()) ?>"
+                    <?= ($option->getValue() == $value) ? 'selected="selected"' : '' ?>
+                >
+                    <?= $escaper->escapeHtml(trim($option->getLabel()) ?: __('Please select gender')) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none">
+            <?= $hyvaicons->renderHtml('chevron', 'rotate-90') ?>
+        </div>
     </div>
 </div>

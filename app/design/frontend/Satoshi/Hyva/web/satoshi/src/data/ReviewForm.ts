@@ -1,4 +1,4 @@
-import type { Magics } from "alpinejs";
+import { FormType } from "./Form";
 
 type Rating = {
   rating_id: string;
@@ -10,73 +10,43 @@ type Rating = {
 };
 
 type ReviewFormProps = {
-  validateRecaptcha: Function;
   ratings: Rating[];
   messages: Record<string, string>;
   gqlQuery: string;
   sku: string;
   fieldName: string;
-  formId: string;
   storeCode: string;
 };
 
 export type ReviewFormType = {
-  isLoading: boolean;
   displayNickname: boolean;
   displaySuccessMessage: boolean;
   displayErrorMessage: boolean;
-  errorMessages: Array<string[]> | [];
-  errors: number;
-  hasCaptchaToken: number;
   nickname: string | null;
   summary: string | null;
   ratings: any;
   review: string | null;
-  setErrorMessages(messages: string[]): void;
-  submitForm(): void;
   validate(): void;
-  placeReview(): void;
-} & Magics<{}>;
+  placeReview(event: Event): void;
+} & FormType;
 
 export const ReviewForm = ({
-  validateRecaptcha,
   ratings,
   messages,
   gqlQuery,
   sku,
   fieldName,
-  formId,
   storeCode,
 }: ReviewFormProps) =>
   <ReviewFormType>{
-    isLoading: false,
     displayNickname: false,
     displaySuccessMessage: false,
     displayErrorMessage: false,
-    errorMessages: [],
-    errors: 0,
-    hasCaptchaToken: 0,
     nickname: null,
     summary: null,
     ratings: [],
     review: null,
-    setErrorMessages: function (messages) {
-      this.errorMessages = [messages];
-      console.log("errorMessages", this.errorMessages);
-      this.displayErrorMessage = !!this.errorMessages.length;
-    },
-    submitForm: function () {
-      // Do not remove $form. The variable is used in the recaptcha child template.
-      // @ts-ignore
-      const $form = document.querySelector(`#${formId}`);
-      this.validate();
 
-      validateRecaptcha();
-
-      if (this.errors === 0) {
-        this.placeReview();
-      }
-    },
     validate: function () {
       this.nickname = (
         document.getElementById("nickname_field") as HTMLInputElement
@@ -117,7 +87,7 @@ export const ReviewForm = ({
         this.hasCaptchaToken = 0;
       }
     },
-    placeReview: function () {
+    placeReview: function (event) {
       this.isLoading = true;
       this.displayErrorMessage = false;
 
@@ -132,7 +102,7 @@ export const ReviewForm = ({
         }),
       };
 
-      const form = document.querySelector(`#${formId}`) as HTMLFormElement;
+      const form = event.target as HTMLFormElement;
       const elements = form.elements as Record<string, any>;
 
       const recaptchaHeader =
