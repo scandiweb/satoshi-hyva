@@ -17,7 +17,7 @@ use Magento\Wishlist\Block\Customer\Wishlist\Button;
         class="button button--outline-primary bg-bg-400"
         :class="isLoading && 'button--disabled'"
         :disabled="isLoading"
-        @click='setActionBtnText("update-wish-list")'
+        @click='onActionBtnChange("update-wish-list")'
     >
         <span x-text="isLoading && actionBtnText === 'update-wish-list' ?
             '<?= $escaper->escapeHtml(__('Updating...')) ?>' :

@@ -6,9 +6,6 @@ use Magento\Framework\Escaper;
 use Satoshi\Wishlist\Block\Customer\Wishlist;
 use Magento\Wishlist\Helper\Data as WishlistHelper;
 
-// phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
-// phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
-
 /** @var Escaper $escaper */
 /** @var Wishlist $block */
 
@@ -20,9 +17,9 @@ $errorMessage = $block->getErrorMessage();
 <?php if ($wishlistHelper->isAllow()): ?>
     <?= ($block->getChildHtml('wishlist.rss.link')) ?>
   <form id="wishlist-view-form"
-        x-data="WishListPage(
+        x-data="Object.assign(WishListPage(
               <?= $escaper->escapeHtmlAttr($block->getAddAllToCartParams()) ?>
-          )"
+            ), Form())"
         action="<?= $escaper->escapeUrl(
             $block->getUrl(
                 'wishlist/index/update',
@@ -30,7 +27,7 @@ $errorMessage = $block->getErrorMessage();
             )
         ) ?>"
         method="post"
-        @submit.prevent="updateWishList(event)"
+        @submit.prevent="submitForm"
   >
       <?php if ($successMessage): ?>
         <div class="text-green-700 mb-3">
@@ -54,6 +51,7 @@ $errorMessage = $block->getErrorMessage();
                   </span>
         </div>
       <?php endif ?>
+    <input type="hidden" class="hidden" id="update-or-share"/>
       <?= $block->getChildHtml('bottom') ?>
     <div
         class="flex flex-wrap gap-4 mt-5 <?php if ($block->hasWishlistItems()): ?>max-lg:flex-col<?php else: ?>max-md:flex-col<?php endif ?>">

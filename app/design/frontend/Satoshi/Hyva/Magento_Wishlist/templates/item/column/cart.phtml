@@ -30,7 +30,7 @@ $allowedQty = $viewModel->setItem($item)->getMinMaxQty();
     <?php if ($product->isSaleable()): ?>
       <button type="button"
               data-role="tocart"
-              @click.prevent='setActionBtnText("add-to-cart-<?= $item->getId() ?>"); addToCart("<?= $escaper->escapeHtmlAttr($item->getId()) ?>",
+              @click.prevent='onActionBtnChange("add-to-cart-<?= $item->getId() ?>"); addToCart("<?= $escaper->escapeHtmlAttr($item->getId()) ?>",
                 <?= /* @noEscape */
                 $block->getItemAddToCartParams($item) ?>,
                 "<?= $escaper->escapeHtmlAttr($product->getSku()) ?>")'
