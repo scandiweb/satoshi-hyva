@@ -1,5 +1,4 @@
 import { Magics } from "alpinejs";
-import { replaceMainContentWithTransition } from "../plugins/Transition";
 import { CartItem } from "../store/Cart.ts";
 
 export type PostParams = {
@@ -15,8 +14,7 @@ export type WishListPageType = {
   addAllItemsToCart(): void;
   postFormWithRedirect(postParams: PostParams, addedProductSkus: string[]): void;
   focusOnCartAddedItems(addedProductSkus: string[]): void;
-  setActionBtnText(text?: string): void;
-  updateWishList(event: Event): void;
+  onActionBtnChange(text?: string): void;
 } & Magics<{}>;
 
 export const WishListPage = (
@@ -92,7 +90,7 @@ export const WishListPage = (
           location.reload();
         }).finally(() => {
           this.isLoading = false;
-          this.setActionBtnText();
+          this.onActionBtnChange();
         });
       },
 
@@ -110,47 +108,16 @@ export const WishListPage = (
         }
       },
 
-      setActionBtnText(text) {
+      onActionBtnChange(text) {
         this.actionBtnText = text || '';
-      },
 
-      updateWishList(event) {
-        const $form = event.target as HTMLFormElement;
-        if (!$form) return;
+        const updateOrShareInput = document.getElementById('update-or-share');
+        if (!updateOrShareInput || !text) return;
 
-        this.isLoading = true;
-        const formData = new FormData($form);
-
-        const isShareBtnClicked = this.actionBtnText.includes('shar');
-        if (isShareBtnClicked) {
-          formData.append('save_and_share', '');
-        } else {
-          formData.append('do', '');
+        if (text === 'share-wish-list') {
+          updateOrShareInput.setAttribute('name', 'save_and_share');
+        } else if (text === 'update-wish-list') {
+          updateOrShareInput.setAttribute('name', 'do');
         }
-
-        fetch($form.action, {
-          method: "POST",
-          body: formData,
-        })
-            .then(async (res) => {
-              if (res.ok) {
-                const content = await res.text();
-
-                if (isShareBtnClicked) {
-                  await replaceMainContentWithTransition(res.url, content);
-                  return;
-                }
-
-                window.hyva.replaceDomElement("#maincontent", content);
-              }
-            })
-            .catch((error) => {
-              console.error(`Error while ${isShareBtnClicked ? 'sharing' : 'updating'} wish list:`, error);
-              location.reload();
-            })
-            .finally(() => {
-              this.isLoading = false;
-              this.setActionBtnText();
-            });
       },
     };

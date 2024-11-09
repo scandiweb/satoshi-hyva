@@ -12,7 +12,7 @@ use Magento\Wishlist\Block\Customer\Wishlist\Button;
 <?php if ($block->getWishlist()->getItemsCount() && $block->getWishlist()->isSalable()): ?>
     <button
         type="button"
-        @click.prevent='setActionBtnText("add-all-to-cart"); addAllItemsToCart()'
+        @click.prevent='onActionBtnChange("add-all-to-cart"); addAllItemsToCart()'
         data-role="all-tocart"
         title="<?= $escaper->escapeHtmlAttr(__('Add all to cart')) ?>"
         class="button button--filled-primary"
