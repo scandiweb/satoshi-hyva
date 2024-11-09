@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\Newsletter\Controller\Subscriber;
 
 use Magento\Newsletter\Controller\Subscriber\NewAction as SourceNewAction;

@@ -1,0 +1,83 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ReCaptcha;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var StoreConfig $storeConfig */
+$storeConfig = $viewModels->require(StoreConfig::class);
+
+$siteKey = $storeConfig->getStoreConfig('recaptcha_frontend/type_recaptcha_v3/public_key');
+
+if (!$siteKey) {
+    // No v3 google API credentials configured
+    return;
+}
+
+$parentBlock = $block->getParentBlock();
+$action = is_object($parentBlock) && $parentBlock->getNameInLayout()
+    ? preg_replace('/[^A-Za-z0-9\/_]/', '_', $parentBlock->getNameInLayout())
+    : 'submit';
+
+$recaptcha  = $viewModels->require(ReCaptcha::class);
+$formId     = $block->getData('form_id') ?? '';
+
+?>
+<?php /* render_script_tag is never set, it is present to force editors to see the code as JavaScript */ ?>
+<?php if ($block->getData('render_script_tag')): ?>
+<script>
+    <?php endif; ?>
+    if (!this.hasCaptchaToken) {
+        this.errors = 1;
+
+        const executeGreCaptcha = () => {
+            grecaptcha.ready(() => {
+                grecaptcha.execute(
+                    '<?= $escaper->escapeJs($siteKey) ?>',
+                    {action: '<?= $escaper->escapeJs($action) ?>'}
+                ).then((token) => {
+                    if (token && token.length > 0) {
+                        $form['<?= $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId)) ?>'].value = token;
+                        this.errors = 0;
+                        this.hasCaptchaToken = 1;
+                        (this.submitForm || $form.submit).call(this);
+                    } else {
+                        this.errors = 1;
+                        const error = '<?= $escaper->escapeJs(__('ReCaptcha validation failed, please try again')) ?>';
+                        if (this.setErrorMessages) {
+                            this.setErrorMessages([error])
+                            this.displayErrorMessage = true;
+                        } else {
+                            // TODO: Remove when tested for all forms using captcha
+                            window.dispatchMessages && window.dispatchMessages([{type: "error", text: error}], 5000);
+                        }
+                    }
+                }).catch(exception => {
+                    console.error(exception || `An unknown error occurred during ReCaptcha validation. Are the tokens and the domain correctly set up in the Google console?`)
+                });
+            })
+        }
+
+        if (window.grecaptcha) {
+            executeGreCaptcha();
+        } else {
+            const recaptchaUrl = "https://www.google.com/recaptcha/api.js?render=<?= $escaper->escapeJs($siteKey) ?>";
+            const script = document.createElement('script');
+            script.setAttribute('type', 'text/javascript');
+            script.setAttribute('src', recaptchaUrl);
+            document.head.appendChild(script);
+
+            script.addEventListener("load", executeGreCaptcha, false);
+        }
+    }
+    <?php if ($block->getData('render_script_tag')): ?>
+</script>
+<?php endif; ?>
