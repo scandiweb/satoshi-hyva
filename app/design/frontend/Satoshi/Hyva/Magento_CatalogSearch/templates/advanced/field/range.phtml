@@ -41,23 +41,23 @@ $code = $attribute->getAttributeCode();
 <div
     class="flex flex-col md:flex-row gap-3 sm:items-start md:items-center justify-between w-full"
     x-data="">
-  <div class="flex flex-row w-full md:w-1/2 gap-3 items-center">
-    <input name="<?= $escaper->escapeHtmlAttr($code) ?>[from]"
-           x-ref="from"
-           value="<?= $escaper->escapeHtml($block->getAttributeValue($attribute, 'from')) ?>"
-           id="<?= $escaper->escapeHtmlAttr($code) ?>"
-           title="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
-           class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-           type="<?= /** @noEscape */
-           $htmlInputType ?>"
-           placeholder="<?= $escaper->escapeHtmlAttr(__('From')) ?>"
-        <?= /* @noEscape */
-        $maxQueryLength ? "maxlength=\"$maxQueryLength\"" : '' ?>
-        <?= /* @noEscape */
-        $step ? "step=\"$step\"" : '' ?>
-        <?= /* @noEscape */
-        $attrInputType === 'price' ? "min=\"0\"" : '' ?>
-           @input="
+    <div class="flex flex-row w-full md:w-1/2 gap-3 items-center">
+        <input name="<?= $escaper->escapeHtmlAttr($code) ?>[from]"
+               x-ref="from"
+               value="<?= $escaper->escapeHtml($block->getAttributeValue($attribute, 'from')) ?>"
+               id="<?= $escaper->escapeHtmlAttr($code) ?>"
+               title="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+               type="<?= /** @noEscape */
+               $htmlInputType ?>"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('From')) ?>"
+            <?= /* @noEscape */
+            $maxQueryLength ? "maxlength=\"$maxQueryLength\"" : '' ?>
+            <?= /* @noEscape */
+            $step ? "step=\"$step\"" : '' ?>
+            <?= /* @noEscape */
+            $attrInputType === 'price' ? "min=\"0\"" : '' ?>
+               @input="
                $refs.from.setCustomValidity('');
                $refs.from.validity.valid && $refs.from.setCustomValidity(
                     $refs.from.value.length === 0 || ($refs.to.value.length === 0 || $refs.from.value <= $refs.to.value)
@@ -65,27 +65,27 @@ $code = $attribute->getAttributeCode();
                         : '<?= $escaper->escapeJs($validationMessage) ?>'
                )
                "/>
-      <?php if ($attrInputType === 'price'): ?>
-        <div class="inline-block md:hidden">
-            <?= $escaper->escapeHtml($block->getCurrency($attribute)) ?>
-        </div>
-      <?php endif; ?>
-  </div>
-  <div class="hidden md:inline-block">-</div>
-  <div class="flex flex-row w-full md:w-1/2 gap-3 items-center">
-    <input name="<?= $escaper->escapeHtmlAttr($code) ?>[to]"
-           x-ref="to"
-           value="<?= $escaper->escapeHtml($block->getAttributeValue($attribute, 'to')) ?>"
-           id="<?= $escaper->escapeHtmlAttr($code) ?>_to"
-           title="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
-           class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-           type="<?= /** @noEscape */
-           $htmlInputType ?>"
-           maxlength="<?= $escaper->escapeHtmlAttr($maxQueryLength) ?>"
-           placeholder="<?= $escaper->escapeHtmlAttr(__('To')) ?>"
-        <?= /* @noEscape */
-        $step ? "step=\"$step\"" : '' ?>
-           @input="
+        <?php if ($attrInputType === 'price'): ?>
+            <div class="inline-block md:hidden">
+                <?= $escaper->escapeHtml($block->getCurrency($attribute)) ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class="hidden md:inline-block">-</div>
+    <div class="flex flex-row w-full md:w-1/2 gap-3 items-center">
+        <input name="<?= $escaper->escapeHtmlAttr($code) ?>[to]"
+               x-ref="to"
+               value="<?= $escaper->escapeHtml($block->getAttributeValue($attribute, 'to')) ?>"
+               id="<?= $escaper->escapeHtmlAttr($code) ?>_to"
+               title="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+               type="<?= /** @noEscape */
+               $htmlInputType ?>"
+               maxlength="<?= $escaper->escapeHtmlAttr($maxQueryLength) ?>"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('To')) ?>"
+            <?= /* @noEscape */
+            $step ? "step=\"$step\"" : '' ?>
+               @input="
                $refs.from.setCustomValidity('');
                $refs.from.validity.valid && $refs.from.setCustomValidity(
                     $refs.from.value.length === 0 || ($refs.to.value.length === 0 || $refs.from.value <= $refs.to.value)
@@ -93,11 +93,11 @@ $code = $attribute->getAttributeCode();
                         : '<?= $escaper->escapeJs($validationMessage) ?>'
                )
                "/>
-      <?php if ($attrInputType === 'price'): ?>
-        <label class="inline-block"
-               for="<?= $escaper->escapeHtmlAttr($code) ?>_to">
-            <?= $escaper->escapeHtml($block->getCurrency($attribute)) ?>
-        </label>
-      <?php endif; ?>
-  </div>
+        <?php if ($attrInputType === 'price'): ?>
+            <label class="inline-block"
+                   for="<?= $escaper->escapeHtmlAttr($code) ?>_to">
+                <?= $escaper->escapeHtml($block->getCurrency($attribute)) ?>
+            </label>
+        <?php endif; ?>
+    </div>
 </div>

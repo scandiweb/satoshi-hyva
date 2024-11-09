@@ -12,13 +12,13 @@ $code = $attribute->getAttributeCode();
 $maxQueryLength = $catalogSearchHelper->getMaxQueryLength();
 ?>
 <div>
-  <input type="text"
-         name="<?= $escaper->escapeHtmlAttr($code) ?>"
-         id="<?= $escaper->escapeHtmlAttr($code) ?>"
-         value="<?= $escaper->escapeHtml($block->getAttributeValue($attribute)) ?>"
-         title="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
-         placeholder="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
-         class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
-         maxlength="<?= $escaper->escapeHtmlAttr($maxQueryLength) ?>"
-  />
+    <input type="text"
+           name="<?= $escaper->escapeHtmlAttr($code) ?>"
+           id="<?= $escaper->escapeHtmlAttr($code) ?>"
+           value="<?= $escaper->escapeHtml($block->getAttributeValue($attribute)) ?>"
+           title="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
+           placeholder="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
+           class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+           maxlength="<?= $escaper->escapeHtmlAttr($maxQueryLength) ?>"
+    />
 </div>
