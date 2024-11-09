@@ -20,11 +20,11 @@ $errorMessage = $block->getErrorMessage();
 
 
   <form id="form-validate"
-        x-data="ShareWishlist(
+        x-data="Object.assign(Form(), ShareWishlist(
             <?= (int)$block->getEmailSharingLimit() ?>,
             '<?= $escaper->escapeJs(__('Please enter valid email addresses, separated by commas. For example, johndoe@domain.com, johnsmith@domain.com.')) ?>',
             '<?= $escaper->escapeJs(__('Maximum of %1 emails can be sent.', $block->getEmailSharingLimit())) ?>',
-          )"
+          ))"
         @submit.prevent="submitForm"
         action="<?= $escaper->escapeUrl($block->getSendUrl()) ?>"
         method="post"

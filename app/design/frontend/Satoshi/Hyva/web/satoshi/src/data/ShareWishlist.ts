@@ -5,7 +5,6 @@ export type ShareWishlistType = {
   isValid: boolean;
   validateEmailsRegex: RegExp;
   validateForm(): boolean;
-  submitForm(event: Event): void;
 } & Magics<{}>;
 
 export const ShareWishlist = (
@@ -39,31 +38,5 @@ export const ShareWishlist = (
         this.isValid = true;
         emailField.setCustomValidity("");
         return true;
-      },
-
-      submitForm(event) {
-        const $form = event.target as HTMLFormElement;
-        if (!$form || !this.validateForm()) return;
-
-        const formData = new FormData($form);
-        this.isLoading = true;
-
-        fetch($form.action, {
-          method: "POST",
-          body: formData,
-        })
-            .then(async (res) => {
-              if (res.ok) {
-                const content = await res.text();
-                window.hyva.replaceDomElement("#form-validate", content);
-              }
-            })
-            .catch((error) => {
-              console.error("Error while sharing wishlist:", error);
-              location.reload();
-            })
-            .finally(() => {
-              this.isLoading = false;
-            });
       },
     };
