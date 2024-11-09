@@ -1,0 +1,64 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Wishlist\ViewModel\Wishlist;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var Wishlist $wishlist */
+$wishlist = $viewModels->require(Wishlist::class);
+$wishlistItemsCount = $wishlist->getWishlistItemsQty();
+?>
+
+<button
+  class="contrast-border md:button--filled-secondary button ghost-primary icon-button icon-button--size-lg"
+  x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
+  @click="(e) => $store.wishlist.handleWishlistButtonClick(e, isWishlistVisible)"
+  type="button"
+  aria-label="<?= __('View wishlist') ?>"
+  :class="{'hidden': !$store.main.isMobile && $store.resizable.isVisible('wishlist-desktop')}"
+>
+  <div
+    class="contents"
+    x-show="!isWishlistVisible"
+  >
+    <span
+      <?php if ($wishlistItemsCount > 0) : ?>
+      style="display: none"
+      <?php endif; ?>
+      x-show="$store.wishlist.wishlistItems.length === 0"
+    >
+      <?= $hyvaicons->renderHtml('bookmark-empty', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
+    </span>
+    <span
+      <?php if ($wishlistItemsCount !== 1) : ?>
+      style="display: none"
+      <?php endif; ?>
+      x-show="$store.wishlist.wishlistItems.length === 1"
+    >
+      <?= $hyvaicons->renderHtml('bookmark', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
+    </span>
+    <span
+      <?php if ($wishlistItemsCount < 2) : ?>
+      style="display: none"
+      <?php endif; ?>
+      x-show="$store.wishlist.wishlistItems.length > 1"
+    >
+      <?= $hyvaicons->renderHtml('bookmarks', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
+    </span>
+  </div>
+  <div
+    class="contents"
+    x-show="isWishlistVisible"
+    style="display: none;"
+  >
+    <?= $hyvaicons->renderHtml('close') ?>
+  </div>
+</button>

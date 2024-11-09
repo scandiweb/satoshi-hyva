@@ -5,4 +5,8 @@
         for="Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Info"
         type="Satoshi\Wishlist\Block\Customer\Wishlist\Item\Column\Info"
     />
+    <preference
+        for="Magento\Wishlist\CustomerData\Wishlist"
+        type="Satoshi\Wishlist\CustomerData\Wishlist"
+    />
 </config>
