@@ -16,55 +16,57 @@ $errorMessage = $block->getErrorMessage();
 
 <?php if ($wishlistHelper->isAllow()): ?>
     <?= ($block->getChildHtml('wishlist.rss.link')) ?>
-    <form id="wishlist-view-form"
-          x-data="Object.assign(WishListPage(
-              <?= $escaper->escapeHtmlAttr($block->getAddAllToCartParams()) ?>
-            ), Form())"
-          action="<?= $escaper->escapeUrl(
-              $block->getUrl(
-                  'wishlist/index/update',
-                  ['wishlist_id' => $block->getWishlistInstance()->getId()]
-              )
-          ) ?>"
-          method="post"
-          @submit.prevent="submitForm"
-    >
-        <?php if ($successMessage): ?>
-            <div class="text-green-700 mb-3">
-                <span><?= $successMessage; ?></span>
-            </div>
-        <?php elseif ($errorMessage): ?>
-            <div class="field-error mb-3">
-                <span class="messages"><?= $escaper->escapeHtml($errorMessage); ?></span>
-            </div>
-        <?php endif; ?>
+    <div x-data="Form">
+        <form id="wishlist-view-form"
+              x-data="WishListPage(
+                <?= $escaper->escapeHtmlAttr($block->getAddAllToCartParams()) ?>
+              )"
+              action="<?= $escaper->escapeUrl(
+                  $block->getUrl(
+                      'wishlist/index/update',
+                      ['wishlist_id' => $block->getWishlistInstance()->getId()]
+                  )
+              ) ?>"
+              method="post"
+              @submit.prevent="submitForm"
+        >
+            <?php if ($successMessage): ?>
+                <div class="text-green-700 mb-3">
+                    <span><?= $successMessage; ?></span>
+                </div>
+            <?php elseif ($errorMessage): ?>
+                <div class="field-error mb-3">
+                    <span class="messages"><?= $escaper->escapeHtml($errorMessage); ?></span>
+                </div>
+            <?php endif; ?>
 
-        <?= $block->getChildHtml('top') ?>
-        <?php if ($block->hasWishlistItems()): ?>
-            <?= $block->getBlockHtml('formkey') ?>
-            <?php $block->getChildBlock('items')->setItems($block->getWishlistItems()); ?>
-            <?= $block->getChildHtml('items') ?>
-        <?php else: ?>
-            <div>
+            <?= $block->getChildHtml('top') ?>
+            <?php if ($block->hasWishlistItems()): ?>
+                <?= $block->getBlockHtml('formkey') ?>
+                <?php $block->getChildBlock('items')->setItems($block->getWishlistItems()); ?>
+                <?= $block->getChildHtml('items') ?>
+            <?php else: ?>
+                <div>
                   <span>
                       <?= $escaper->escapeHtml(__('You have no items in your wish list.')) ?>
                   </span>
+                </div>
+            <?php endif ?>
+            <input type="hidden" class="hidden" id="update-or-share"/>
+            <?= $block->getChildHtml('bottom') ?>
+            <div
+                class="flex flex-wrap gap-4 mt-5 <?php if ($block->hasWishlistItems()): ?>max-lg:flex-col<?php else: ?>max-md:flex-col<?php endif ?>">
+                <?= $block->getChildHtml('control_buttons') ?>
+                <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
+                   class="button <?php if ($block->hasWishlistItems()): ?>button--ghost-primary<?php else: ?>button--filled-primary<?php endif ?>"
+                   x-element-transition-trigger
+                >
+                    <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
+                </a>
             </div>
-        <?php endif ?>
-        <input type="hidden" class="hidden" id="update-or-share"/>
-        <?= $block->getChildHtml('bottom') ?>
-        <div
-            class="flex flex-wrap gap-4 mt-5 <?php if ($block->hasWishlistItems()): ?>max-lg:flex-col<?php else: ?>max-md:flex-col<?php endif ?>">
-            <?= $block->getChildHtml('control_buttons') ?>
-            <a href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-               class="button <?php if ($block->hasWishlistItems()): ?>button--ghost-primary<?php else: ?>button--filled-primary<?php endif ?>"
-               x-element-transition-trigger
-            >
-                <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
-            </a>
+        </form>
+        <div>
+            <?= $block->getChildHtml('wishlist_item_pager') ?>
         </div>
-    </form>
-    <div>
-        <?= $block->getChildHtml('wishlist_item_pager') ?>
     </div>
 <?php endif ?>

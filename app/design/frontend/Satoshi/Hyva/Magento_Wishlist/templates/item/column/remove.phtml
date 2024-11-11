@@ -23,7 +23,7 @@ $product = $item->getProduct();
 <a
     href="#"
     data-role="remove"
-    @click.prevent='postFormWithRedirect(<?= /* @noEscape */
+    @click.prevent='postForm(<?= /* @noEscape */
     $block->getItemRemoveParams($block->getItem()) ?>)'
     title="<?= $escaper->escapeHtmlAttr(__('Remove Item')) ?>"
     class="button button--outline-primary w-11 md:w-12 p-0"

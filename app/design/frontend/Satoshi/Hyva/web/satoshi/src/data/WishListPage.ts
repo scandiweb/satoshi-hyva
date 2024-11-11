@@ -1,37 +1,30 @@
 import { Magics } from "alpinejs";
 import { CartItem } from "../store/Cart.ts";
 
-export type PostParams = {
-  action: string;
-  data: Record<string, string>;
-  skipUenc?: boolean;
-};
-
 export type WishListPageType = {
-  isLoading: boolean;
   actionBtnText: string;
-  addToCart(itemId: string, postParams: any, productId: string): void;
-  addAllItemsToCart(): void;
-  postFormWithRedirect(postParams: PostParams, addedProductSkus: string[]): void;
+  addToCart(itemId: string, postParams: any, productId: string): Promise<void>;
+  addAllItemsToCart(): Promise<void>;
   focusOnCartAddedItems(addedProductSkus: string[]): void;
-  onActionBtnChange(text?: string): void;
+  setActionBtnText(text?: string): void;
 } & Magics<{}>;
 
 export const WishListPage = (
   urlParams: { action: string, data: any },
 ) =>
   <WishListPageType>{
-    isLoading: false,
     actionBtnText: '',
 
-    addToCart(itemId, postParams, productSku) {
+    async addToCart(itemId, postParams, productSku) {
       const qtyInput = this.$refs[`product-qty-${itemId}`] as HTMLInputElement | null;
       postParams.data.qty = qtyInput?.value ?? postParams.data.qty;
 
-      this.postFormWithRedirect(postParams, [productSku]);
+      await this.postForm(postParams);
+      this.focusOnCartAddedItems([productSku]);
+      this.setActionBtnText();
     },
 
-    addAllItemsToCart() {
+    async addAllItemsToCart() {
       let separator = urlParams.action.indexOf('?') >= 0 ? '&' : '?';
       const addedProductSkus = [] as string[];
 
@@ -46,55 +39,14 @@ export const WishListPage = (
         }
       });
 
-      this.postFormWithRedirect(urlParams, addedProductSkus);
-    },
-
-    postFormWithRedirect(postParams, addedProductSkus = [] as string[]) {
-      this.isLoading = true;
-      const form = document.createElement("form");
-
-      let data = postParams.data;
-
-      if (!postParams.skipUenc && !data.uenc) {
-        data.uenc = btoa(window.location.href);
-      }
-      form.method = "POST";
-      form.action = postParams.action;
-
-      Object.keys(postParams.data).map(key => {
-        const field = document.createElement("input");
-        field.type = 'hidden'
-        field.value = postParams.data[key];
-        field.name = key;
-        form.appendChild(field);
-      });
-
-      const form_key = document.createElement("input");
-      form_key.type = 'hidden';
-      form_key.value = window.hyva.getFormKey();
-      form_key.name = "form_key";
-      form.appendChild(form_key);
-
-      fetch(form.action, {
-        method: "POST",
-        body: new FormData(form),
-      }).then(async (res) => {
-        if (res.ok) {
-          window.hyva.replaceDomElement("#MainContent", await res.text());
-          if (addedProductSkus.length) {
-            this.focusOnCartAddedItems(addedProductSkus);
-          }
-        }
-      }).catch((error) => {
-        console.error("Error while form submission", error);
-        location.reload();
-      }).finally(() => {
-        this.isLoading = false;
-        this.onActionBtnChange();
-      });
+      await this.postForm(urlParams);
+      this.focusOnCartAddedItems(addedProductSkus);
+      this.setActionBtnText();
     },
 
     focusOnCartAddedItems(addedProductSkus = [] as string[]) {
+      if (!addedProductSkus.length) return;
+
       const cartItems = Alpine.store("cart").cartItems;
 
       const itemIds = cartItems
@@ -108,16 +60,7 @@ export const WishListPage = (
       }
     },
 
-    onActionBtnChange(text) {
+    setActionBtnText(text) {
       this.actionBtnText = text || '';
-
-      const updateOrShareInput = document.getElementById('update-or-share');
-      if (!updateOrShareInput || !text) return;
-
-      if (text === 'share-wish-list') {
-        updateOrShareInput.setAttribute('name', 'save_and_share');
-      } else if (text === 'update-wish-list') {
-        updateOrShareInput.setAttribute('name', 'do');
-      }
     },
   };
