@@ -27,12 +27,9 @@ export const Form = () => {
       const formData = new FormData($form);
       this.isLoading = true;
 
-      let formAction = $form.action;
       const isGetMethod = $form.method.toLowerCase() === "get";
-      if (isGetMethod) {
-        const queryString = new URLSearchParams(formData as any).toString();
-        formAction += `?${queryString}`;
-      }
+      const query = isGetMethod ? new URLSearchParams(formData as any).toString() : '';
+      const formAction = $form.action + `?${query}`;
 
       fetch(formAction, {
         method: $form.method,
