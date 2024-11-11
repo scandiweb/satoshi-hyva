@@ -1,0 +1,29 @@
+<div
+  attr="data.main.attributes"
+  ko-style="data.main.style"
+  css="data.main.css"
+>
+  <div data-is-page-builder-ignored-element="true">
+    <h1
+      attr="data.heading.attributes"
+      ko-style="data.heading.style"
+      css="data.heading.css"
+      html="data.heading.html"
+      hidden
+    ></h1>
+
+    <if args="data.faqs_rows.attributes().faqs.length > 0 && data.faqs_rows.attributes().faqs !== '[]'">
+      <div
+        data-bind="attr: { faqs: JSON.stringify(data.faqs_rows.attributes().faqs) }"
+        ko-style="data.faqs_rows.style"
+        data-element="faqs_rows"
+        css="data.faqs_rows.css"
+        hidden
+      ></div>
+    </if>
+  </div>
+  <div
+    attr="data.block_directive.attributes"
+    html="data.block_directive.html"
+  ></div>
+</div>
