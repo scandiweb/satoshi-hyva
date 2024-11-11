@@ -54,7 +54,7 @@ $errorMessage = $block->getErrorMessage();
             x-data="Object.assign(
                 hyva.formValidation($el),
                 Authentication(),
-                Form(),
+                Form('<?= $escaper->escapeHtmlAttr($formId) ?>'),
                 AddressEdit(),
                 PasswordValidation({
                     zxcvbnScriptUrl: '<?= $escaper->escapeJs($block->getViewFileUrl('js/zxcvbn.js')) ?>',
@@ -88,7 +88,7 @@ $errorMessage = $block->getErrorMessage();
                     const $form = $event.target;
                     <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_CREATE)) : '' ?>
                     if (this.errors === 0) {
-                        this.submitForm($event);
+                        this.submitForm();
                     }
                 })
                 .catch((invalid) => {

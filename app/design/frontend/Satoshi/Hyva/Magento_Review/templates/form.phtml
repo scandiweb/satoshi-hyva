@@ -63,7 +63,7 @@ mutation createProductReviewMutation(
         <?php if ($block->getAllowWriteReviewFlag()): ?>
             <form
                 class="w-full max-w-sm"
-                x-data="Object.assign(Form(), ReviewForm({
+                x-data="Object.assign(Form('<?= $escaper->escapeHtmlAttr($formId) ?>'), ReviewForm({
                     ratings: <?= $escaper->escapeHtmlAttr(json_encode($block->getRatings()->getData())) ?>,
                     messages: {
                         required: '<?= $escaper->escapeJs(__('Please verify you\'ve entered all required information')) ?>',
@@ -83,7 +83,7 @@ mutation createProductReviewMutation(
                     <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW)) : '' ?>
 
                     if (this.errors === 0) {
-                        this.placeReview($event);
+                        this.placeReview();
                     }
                 }"
                 action=""
