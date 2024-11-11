@@ -365,6 +365,7 @@ return [
         'Satoshi_LayeredNavigation' => 1,
         'Satoshi_Migration' => 1,
         'Satoshi_Newsletter' => 1,
+        'Satoshi_Sales' => 1,
         'Satoshi_SatoshiUi' => 1,
         'Satoshi_Theme' => 1,
         'Satoshi_Wishlist' => 1,
