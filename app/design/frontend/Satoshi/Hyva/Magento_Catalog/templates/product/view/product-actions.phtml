@@ -10,10 +10,13 @@ use Magento\Catalog\Model\Product;
 use Magento\Checkout\Helper\Cart;
 use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\ProductActions;
+use Satoshi\Theme\Block\Template;
 
+/** @var Template $template */
 /** @var ProductActions $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
+
 
 /** @var ProductPage $productViewModel */
 $productViewModel = $viewModels->require(ProductPage::class);
@@ -109,6 +112,10 @@ $cartMessage = $block->getCartMessage();
           <?= __('Adding...') ?>
       </span>
     </button>
+      <?=
+      $template
+          ->render('Magento_Catalog::product/view/addtowishlist.phtml')
+      ?>
 
     <!-- Select items, only for grouped products -->
     <button

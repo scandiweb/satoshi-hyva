@@ -15,6 +15,7 @@ use Hyva\Theme\ViewModel\Wishlist;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
@@ -32,6 +33,10 @@ $currentProduct = $viewModels->require(CurrentProduct::class);
 /** @var Product $product */
 $product = $currentProduct->get();
 
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+
 if (!$product->getId() || !$wishlistViewModel->isEnabled()) {
     return;
 }
@@ -48,35 +53,30 @@ $uniqueId = '_' . uniqid();
             currentWishListItem: {},
             init() {
                 setTimeout(() => {
-                    console.log(this.$store.wishlist.wishlistItems);
                     const productSku = '<?php echo $product->getSku(); ?>';
                     this.currentWishListItem = this.$store.wishlist.wishlistItems.find(
                         item => item.product_sku === productSku
                     );
-
+                    console.log(this.$store.wishlist.wishlistItems);
                 }, 0);
 
                 this.$watch("selectedAttributes", () => {
                     const wishlistItems = this.$store.wishlist.wishlistItems;
                     const selectedAttributes = this.selectedAttributes;
-                    const filterWishlistItems = (wishlistItems, selectedAttributes) => {
-                        return wishlistItems.filter(item => {
+                    this.currentWishListItem =
+                        wishlistItems.find(item => {
                             const matchingOptions = item.options.filter(option =>
                                 selectedAttributes.some(attr =>
                                     option.option_id === attr.attributeId && option.option_value === attr.value
                                 )
                             );
-                            return matchingOptions.length === selectedAttributes.length && matchingOptions.length === item.options.length;
-                        });
-                    };
-
-                    this.currentWishListItem = filterWishlistItems(wishlistItems, selectedAttributes);
+                            return (
+                                matchingOptions.length === selectedAttributes.length &&
+                                matchingOptions.length === item.options.length
+                            );
+                        }) || {};
                 });
 
-                this.$watch("currentWishListItem", () => {
-                    console.log('exists:', !!this.currentWishListItem.length);
-                    console.log('current wish list item:', this.currentWishListItem);
-                });
 
             },
             addToWishlist(productId) {
@@ -130,10 +130,10 @@ $uniqueId = '_' . uniqid();
                     "mode": "cors",
                     "credentials": "include"
                 }).then((response) => {
-                    if (response.redirected) {
+                    if (response.redirected && response.url.includes('/customer/account/login')) {
                         window.location.href = response.url;
                     } else if (response.ok) {
-                        return response.json();
+                        console.log(response.json());
                     } else {
                         typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
                             [{
@@ -168,7 +168,7 @@ $uniqueId = '_' . uniqid();
                 });
             },
             removeFromWishlist() {
-                const itemId = 23;
+                const itemId = this.currentWishListItem['item_id'];
 
                 fetch(`${BASE_URL}/wishlist/index/remove`, {
                     method: 'POST',
@@ -185,8 +185,11 @@ $uniqueId = '_' . uniqid();
                 })
                     .then(response => {
                         if (response.ok) {
+                            const updatedWishlistItems = this.$store.wishlist.wishlistItems.filter(item => item.item_id !== this.currentWishListItem.item_id);
+                            this.$store.wishlist.setWishlistItems(updatedWishlistItems);
+                            this.$store.wishlist.showWishlist();
+                            this.currentWishListItem = {};
                             console.log('Item removed from wishlist');
-                            location.reload(); // Refresh page or update wishlist section
                         } else {
                             return response.text().then(text => {
                                 throw new Error(text);
@@ -204,7 +207,7 @@ $uniqueId = '_' . uniqid();
 
 <button x-data="initWishlist<?= /** @noEscape */
 $uniqueId ?>()"
-        @click.prevent="addToWishlist(<?= (int)$product->getId() ?>)"
+        @click.prevent="!currentWishListItem || !Object.keys(currentWishListItem).length ? addToWishlist(<?= (int)$product->getId() ?>) : removeFromWishlist()"
         title="<?= $escaper->escapeHtmlAttr(
             ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
         ) ?>"
@@ -212,9 +215,13 @@ $uniqueId ?>()"
             ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
         ) ?>"
         id="add-to-wishlist"
-        class="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex
-                items-center justify-center text-gray-500 hover:text-red-600 ml-4"
         data-addto="wishlist"
 >
-    <?= $heroicons->heartHtml("w-5 h-5", 25, 25) ?>
+    <span x-show="!currentWishListItem || !Object.keys(currentWishListItem).length">
+        <?= $hyvaicons->renderHtml('wishlist-plus', 'text-3xl'); ?>
+    </span>
+    <span x-show="Object.keys(currentWishListItem).length">
+        <?= $hyvaicons->renderHtml('wishlist-minus', 'text-3xl'); ?>
+    </span>
+
 </button>

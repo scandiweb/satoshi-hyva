@@ -44,7 +44,7 @@ export const WishlistStore = <WishlistStoreType>{
   wishlistItems: [],
 
   setWishlistItems(wishlistItems: WishlistItem[]) {
-    this.wishlistItems = wishlistItems
+      this.wishlistItems = wishlistItems;
   },
 
   handleWishlistButtonClick(event, isWishlistVisible) {
