@@ -1,10 +1,4 @@
 <?php
-/**
- * Hyvä Themes - https://hyva.io
- * Copyright © Hyvä Themes 2020-present. All rights reserved.
- * This product is licensed per Magento install
- * See https://hyva.io/license
- */
 
 declare(strict_types=1);
 
@@ -47,7 +41,7 @@ if (!$product->getId() || !$wishlistViewModel->isEnabled()) {
 $updateParams = $block->getUpdateParams() ?: null;
 ?>
 
-<button x-data="Wishlist(<?= $updateParams ?>)"
+<button x-data="Wishlist('<?= $updateParams ?>', '<?= $product->getSku(); ?>')"
         @click.prevent="!currentWishListItem || !Object.keys(currentWishListItem).length ? addToWishlist(<?= (int)$product->getId() ?>) : removeFromWishlist()"
         title="<?= $escaper->escapeHtmlAttr(
             ($updateParams) ? __('Update Wish List') : __('Add to Wish List')

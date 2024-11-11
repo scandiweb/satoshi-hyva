@@ -1,9 +1,8 @@
-export function Wishlist(updateParams) {
+export function Wishlist(updateParams, productSku) {
     return {
         currentWishListItem: {},
         init() {
             setTimeout(() => {
-                const productSku = '<?php echo $product->getSku(); ?>';
                 this.currentWishListItem = this.$store.wishlist.wishlistItems.find(
                     item => item.product_sku === productSku
                 );
@@ -15,8 +14,13 @@ export function Wishlist(updateParams) {
                 this.currentWishListItem =
                     wishlistItems.find(item => {
                         const matchingOptions = item.options.filter(option =>
-                            selectedAttributes.some(attr =>
-                                option.option_id === attr.attributeId && option.option_value === attr.value
+                            selectedAttributes.some(attr => {
+                                    if (option.option_id) {
+                                        return option.option_id === attr.attributeId && option.option_value === attr.value
+                                    } else if (option.label) {
+                                        return option.label === attr.label && option.option_value === attr.value
+                                    }
+                                }
                             )
                         );
                         return (
