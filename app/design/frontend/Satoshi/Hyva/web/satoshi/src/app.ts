@@ -45,6 +45,7 @@ import { BundlePrice } from "./data/BundlePrice";
 import { CatalogPrice } from "./data/CatalogPrice";
 import { ReviewList } from "./data/ReviewList.ts";
 import { AccountInformation } from "./data/AccountInformation";
+import { Recaptcha } from "./data/Recaptcha";
 import { PasswordValidation } from "./data/PasswordValidation";
 
 document.addEventListener("alpine:init", () => {
@@ -91,5 +92,6 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("CatalogPrice", CatalogPrice);
   Alpine.data("ReviewList", ReviewList);
   Alpine.data("AccountInformation", AccountInformation);
+  Alpine.data("Recaptcha", Recaptcha);
   Alpine.data("PasswordValidation", PasswordValidation);
 });

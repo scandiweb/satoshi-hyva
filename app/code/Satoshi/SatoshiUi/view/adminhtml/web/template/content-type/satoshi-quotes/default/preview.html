@@ -1,0 +1,100 @@
+<div
+  attr="data.main.attributes"
+  ko-style="data.main.style"
+  class="pagebuilder-content-type quotes"
+  css="data.main.css"
+  event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+
+  <div class="quotes__heading">
+    <h1
+      attr="data.heading.attributes"
+      ko-style="data.heading.style"
+      css="data.heading.css"
+      data-bind="liveEdit: { field: 'heading', placeholder: $t('Enter heading') }"
+    ></h1>
+    <div>
+      <button
+        class="quotes__button"
+        event="{ click: scrollPrev }"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path>
+        </svg>
+      </button>
+      <button
+        class="quotes__button"
+        event="{ click: scrollNext }"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          class=""
+        >
+          <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+
+  <if args="data.quotes_slides.attributes().quotes.length > 0 && data.quotes_slides.attributes().quotes !== '[]'">
+    <div
+      ko-style="data.quotes_slides.style"
+      data-element="quotes_slides"
+      css="data.quotes_slides.css"
+      class="quotes__slider"
+    >
+      <!-- ko foreach: data.quotes_slides.attributes().quotes -->
+      <div class="quotes__slide">
+        <div class="quote__rate">
+          <div data-bind="foreach: new Array(Math.floor(Number(rate) || 0))">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M18.29 7.65a.835.835 0 0 0-.723-.564l-4.75-.378-2.056-4.55a.832.832 0 0 0-1.519-.001L7.186 6.708l-4.75.378a.833.833 0 0 0-.516 1.427l3.51 3.423-1.241 5.377a.833.833 0 0 0 1.275.88L10 15.168l4.538 3.025a.834.834 0 0 0 1.264-.921l-1.524-5.334 3.78-3.401a.835.835 0 0 0 .232-.888Z"
+              ></path>
+            </svg>
+          </div>
+          <div if="(Number(rate) || 0) - Math.floor((Number(rate) || 0)) > 0">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 18 18"
+            >
+              <path
+                d="M3.189 16.313a.832.832 0 0 0 1.275.88L9 14.168l4.538 3.025a.834.834 0 0 0 1.264-.921l-1.524-5.334 3.78-3.401a.833.833 0 0 0-.492-1.45l-4.75-.379-2.057-4.55a.832.832 0 0 0-1.518-.001L6.186 5.708l-4.75.378A.833.833 0 0 0 .92 7.513l3.511 3.423-1.242 5.377ZM9 3.524l1.702 3.768.49.039 3.31.262-2.725 2.454v.001l-.387.347.143.498v.002l1.044 3.654-3.577-2.384v-8.64Z"
+              />
+            </svg>
+          </div>
+          <div
+            if="(5 - Math.ceil(Number(rate) || 0)) > 0"
+            data-bind="foreach: new Array((5 - Math.ceil(Number(rate) || 0)))"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 18 18"
+            >
+              <path
+                d="M4.431 10.935 3.19 16.312a.832.832 0 0 0 1.274.88L9 14.169l4.538 3.025a.834.834 0 0 0 1.264-.922l-1.524-5.333 3.78-3.402a.833.833 0 0 0-.492-1.45l-4.75-.378-2.057-4.55a.832.832 0 0 0-1.518 0l-2.056 4.55-4.75.377A.833.833 0 0 0 .92 7.513l3.511 3.422ZM6.81 7.33a.832.832 0 0 0 .693-.488l1.5-3.317L10.5 6.842a.832.832 0 0 0 .694.488l3.31.263-2.726 2.453a.835.835 0 0 0-.244.849l1.044 3.654-3.113-2.076a.83.83 0 0 0-.925 0l-3.253 2.17.875-3.79a.833.833 0 0 0-.23-.783L3.4 7.602 6.81 7.33Z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="quote__quote">
+          <p data-bind="text: quote">
+          </p>
+        </div>
+        –
+        <span data-bind="text: author_name"></span>
+      </div>
+      <!-- /ko -->
+    </div>
+  </if>
+  <render args="getOptions().template" />
+</div>

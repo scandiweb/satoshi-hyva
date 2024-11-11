@@ -47,7 +47,7 @@ $newPasswordFailed = !empty($errorMessage['current_password']) || !empty($errorM
                 <?= (int) $emailFailed ?>,
                 <?= (int) ($newPasswordFailed || $block->getChangePassword()) ?>,
             ),
-            Form()
+            Form('form-validate')
         )"
         @submit.prevent="function($event) {
             this.validate().then(() => {
@@ -55,7 +55,7 @@ $newPasswordFailed = !empty($errorMessage['current_password']) || !empty($errorM
                 const $form = $event.target;
                 <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CUSTOMER_EDIT)) : '' ?>
                 if (this.errors === 0) {
-                    this.submitForm($event);
+                    this.submitForm();
                 }
             })
             .catch((invalid) => {

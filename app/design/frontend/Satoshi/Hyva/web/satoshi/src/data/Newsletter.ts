@@ -28,10 +28,14 @@ export const Newsletter = (defaultErrorMessage: string) => {
       this.displayErrorMessage = false;
       this.errorMessages = [];
     },
-    submitForm(event) {
+    submitForm() {
       this.clearMessages();
 
-      const $form = event.target as HTMLFormElement;
+      const $form = document.getElementById(
+        "newsletter-validate-detail",
+      ) as HTMLFormElement;
+      if (!$form) return;
+
       const formData = new FormData($form);
 
       this.isLoading = true;
