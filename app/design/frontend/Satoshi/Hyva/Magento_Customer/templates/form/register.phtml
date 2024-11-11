@@ -73,9 +73,9 @@ $errorMessage = $block->getErrorMessage();
                 telephoneErrorMessage: '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
                 postCodes: <?= $escaper->escapeHtmlAttr($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
                 postcodeWarnings: [
-                '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
-                '<?= $escaper->escapeJs(__(' Example: ')) ?>',
-                '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
+                    '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
+                    '<?= $escaper->escapeJs(__(' Example: ')) ?>',
+                    '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
                 ],
             })"
             <?php if ($block->getShowAddressFields()): ?>
@@ -256,8 +256,8 @@ $errorMessage = $block->getErrorMessage();
 
                         <div class="field field-reserved<?= !empty($errorMessage['street[]']) ? ' field-error' : '' ?>">
                             <label for="street_1" class="sr-only tracking-widest">
-                            <span><?= /* @noEscape */
-                                $block->getAttributeData()->getFrontendLabel('street') ?></span>
+                                <span><?= /* @noEscape */
+                                    $block->getAttributeData()->getFrontendLabel('street') ?></span>
                             </label>
                             <div>
                                 <input
@@ -349,8 +349,8 @@ $errorMessage = $block->getErrorMessage();
                             :class="{ 'required': isRegionRequired }"
                         >
                             <label class="sr-only tracking-widest" for="region_id">
-                            <span><?= /* @noEscape */
-                                $regionLabel ?></span>
+                                <span><?= /* @noEscape */
+                                    $regionLabel ?></span>
                             </label>
                             <div
                                 class="field field-reserved<?= !empty($errorMessage['region']) ? ' field-error' : '' ?>">
