@@ -4,7 +4,6 @@ namespace Satoshi\Wishlist\Controller\Index;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NotFoundException;
@@ -16,6 +15,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Wishlist\Controller\WishlistProviderInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Wishlist\Controller\Index\Add as WishlistAdd;
+use Magento\Wishlist\Helper\Data;
 use Satoshi\Wishlist\CustomerData\Wishlist as WishlistData;
 
 
@@ -34,8 +34,20 @@ class Add extends WishlistAdd
     /**
      * @var WishlistData
      */
-
     private $wishlistData;
+
+    /**
+     * Add constructor.
+     *
+     * @param Context $context
+     * @param Session $customerSession
+     * @param WishlistProviderInterface $wishlistProvider
+     * @param ProductRepositoryInterface $productRepository
+     * @param Validator $formKeyValidator
+     * @param WishlistData $wishlistData
+     * @param RedirectInterface|null $redirect
+     * @param UrlInterface|null $urlBuilder
+     */
     public function __construct(
         Context $context,
         Session $customerSession,
@@ -73,9 +85,6 @@ class Add extends WishlistAdd
      */
     public function execute()
     {
-        /** @var Redirect $resultRedirect */
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $session = $this->_customerSession;
         $requestParams = $this->getRequest()->getParams();
 
         if (!$this->formKeyValidator->validate($this->getRequest())) {
@@ -119,7 +128,7 @@ class Add extends WishlistAdd
                 ['wishlist' => $wishlist, 'product' => $product, 'item' => $result]
             );
 
-            $this->_objectManager->get(\Magento\Wishlist\Helper\Data::class)->calculate();
+            $this->_objectManager->get(Data::class)->calculate();
 
             return $this->createJsonResponse([
                 'success' => true,
