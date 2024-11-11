@@ -17,8 +17,13 @@ use Magento\Wishlist\Block\Customer\Wishlist\Button;
         class="button button--outline-primary bg-bg-400"
         :class="isLoading && 'button--disabled'"
         :disabled="isLoading"
-        @click='onActionBtnChange("share-wish-list")'
-
+        @click="
+            setActionBtnText('share-wish-list');
+            const updateOrShareInput = document.getElementById('update-or-share');
+            if (updateOrShareInput) {
+              updateOrShareInput.setAttribute('name', 'save_and_share');
+            }
+        "
     >
         <span x-text="isLoading && actionBtnText === 'share-wish-list' ?
             '<?= $escaper->escapeHtml(__('Sharing...')) ?>' :
