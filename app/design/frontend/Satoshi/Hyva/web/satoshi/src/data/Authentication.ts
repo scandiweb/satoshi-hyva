@@ -99,7 +99,7 @@ export const Authentication = () => {
       this.directoryData = data["directory-data"] || {};
       const countryElement = this.$refs["country_id"] as HTMLSelectElement;
       if (countryElement) {
-        this.setCountry(countryElement, this.block.getCountryId());
+        this.setCountry(countryElement, this.block?.getCountryId());
       }
     },
 
