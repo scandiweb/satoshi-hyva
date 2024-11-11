@@ -77,7 +77,7 @@ class Wishlist extends SourceWishlist
      * @param WishlistItem $wishlistItem
      * @return array
      */
-    protected function getItemData(WishlistItem $wishlistItem)
+    public function getItemData(WishlistItem $wishlistItem)
     {
         $product = $wishlistItem->getProduct();
         return [
