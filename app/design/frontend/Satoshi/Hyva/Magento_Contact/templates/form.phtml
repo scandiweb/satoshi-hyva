@@ -54,13 +54,13 @@ $emailErrorMessage = $block->getContactEmailErrorMessage();
                     action="<?= $escaper->escapeUrl($block->getFormAction()) ?>"
                     id="<?= $escaper->escapeHtmlAttr($formId) ?>"
                     method="post"
-                    x-data="Form"
+                    x-data="Form('<?= $escaper->escapeHtmlAttr($formId) ?>')"
                     @submit.prevent="function($event) {
                         // do not rename $form, the variable is the expected name in the recaptcha output
                         const $form = $event.target;
                         <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_CONTACT)) : '' ?>
                         if (this.errors === 0) {
-                            this.submitForm($event);
+                            this.submitForm();
                         }
                     }"
                 >
