@@ -69,4 +69,26 @@
             </argument>
         </arguments>
     </virtualType>
+
+    <type name="Magento\PageBuilder\Model\Config\ContentType\AdditionalData\Provider\Wysiwyg\Config">
+        <arguments>
+            <argument name="editors" xsi:type="array">
+                <item name="mage/adminhtml/wysiwyg/tiny_mce/tinymceAdapter" xsi:type="array">
+                    <item name="component" xsi:type="string">Magento_PageBuilder/js/wysiwyg/tinymce</item>
+                    <item name="component_initializers" xsi:type="array">
+                        <item name="rich-text" xsi:type="string">Magento_PageBuilder/js/content-type/text/wysiwyg/tinymce/component-initializer</item>
+                    </item>
+                    <item name="config_modifiers" xsi:type="array">
+                        <item name="rich-text" xsi:type="string">Magento_PageBuilder/js/content-type/text/wysiwyg/tinymce/config-modifier</item>
+                    </item>
+                    <item name="mode" xsi:type="string">inline</item>
+                    <item name="minToolbarWidth" xsi:type="number">360</item>
+                    <item name="parentSelectorsToUnderlay" xsi:type="array">
+                        <item name="0" xsi:type="string">.column-container</item>
+                        <item name="1" xsi:type="string">.row-container</item>
+                    </item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
 </config>
