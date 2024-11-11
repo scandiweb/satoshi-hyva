@@ -51,7 +51,7 @@ $errorMessage = $block->getErrorMessage();
         <?= $block->getChildHtml('customer.form.register.extra') ?>
         <form
             action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
-            x-data="Object.assign(hyva.formValidation($el), Authentication(), Form())"
+            x-data="Object.assign(hyva.formValidation($el), Authentication(), Form(), AddressEdit())"
             x-init="initRegister({
                 telephoneErrorMessage: '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
                 postCodes: <?= $escaper->escapeHtmlAttr($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
