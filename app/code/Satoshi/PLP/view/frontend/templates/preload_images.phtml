@@ -1,0 +1,10 @@
+<?php
+
+use Satoshi\PLP\Block\ImageList;
+
+/** @var ImageList $block */
+
+$imageUrls = $block->getPreloadImageList();
+foreach ($imageUrls as $imageUrl): ?>
+    <link rel="preload" as="image" href="<?= $imageUrl ?>"/>
+<?php endforeach; ?>

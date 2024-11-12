@@ -14,5 +14,9 @@
         <referenceBlock name="category.description" remove="true" />
         <referenceBlock name="category.image" remove="true" />
         <referenceBlock name="category.cms" remove="true" />
+        <referenceBlock name="head.additional">
+            <block class="Satoshi\PLP\Block\ImageList" name="preload_images"
+                   template="Satoshi_PLP::preload_images.phtml"/>
+        </referenceBlock>
     </body>
 </page>
