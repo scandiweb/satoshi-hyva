@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-/** @var \Magento\CatalogSearch\Block\Advanced\Form $block */
+/** @var \Satoshi\CatalogSearch\Block\Advanced\Form $block */
 /** @var \Magento\Framework\Escaper $escaper */
 /** @var \Hyva\Theme\Model\ViewModelRegistry $viewModels */
 /** @var \Magento\CatalogSearch\Helper\Data $catalogSearchHelper */
 $catalogSearchHelper = $block->getData('catalogSearchHelper');
 
 $maxQueryLength = $catalogSearchHelper->getMaxQueryLength();
-
+$errorMessage = $block->getErrorMessage();
 ?>
 <div class="content-wrapper mx-auto">
     <div class="bg-bg-400 p-5 rounded-xl">
@@ -24,6 +24,12 @@ $maxQueryLength = $catalogSearchHelper->getMaxQueryLength();
               id="advanced-search-form"
               @submit.prevent="submitForm"
         >
+            <?php if ($errorMessage): ?>
+                <div class="field-error -mt-3 mb-3">
+                    <span class="messages"><?= $errorMessage ?></span>
+                </div>
+            <?php endif; ?>
+
             <div class="flex flex-col gap-3">
                 <?php foreach ($block->getSearchableAttributes() as $attribute): ?>
                     <?php $code = $attribute->getAttributeCode() ?>
