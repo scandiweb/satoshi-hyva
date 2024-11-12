@@ -41,7 +41,7 @@ $cssClasses = $block->getData('css_classes') ?? 'prose';
             <?= $escaper->escapeHtml(__('Description')) ?> /
             <?= $escaper->escapeHtml($product->getName()) ?>
         </p>
-        <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
+        <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" style="rotate: -180deg;">
             <?= $hyvaicons->renderHtml('chevron-up', 'rotate-180'); ?>
         </span>
     </button>

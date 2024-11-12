@@ -1,0 +1,86 @@
+.faq > div {
+  max-height: 0;
+  transition-duration: 300ms;
+  opacity: 0;
+}
+
+.faq--open > div {
+  max-height: var(--max-height) !important;
+  opacity: 1 !important;
+}
+
+.faq__heading {
+  font-size: 2.25rem !important;
+  line-height: 2.5rem !important;
+  font-weight: 600 !important;
+  margin: 0 0 24px 0 !important;
+}
+
+.faq__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.faq button {
+  justify-content: space-between;
+  width: 100%;
+  display: flex;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.faq button h2 {
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  text-align: start;
+  flex-grow: 1;
+  margin: 0 !important;
+  text-transform: capitalize;
+}
+
+.faq button div {
+  height: 28px;
+  width: 28px;
+  min-width: 28px;
+  padding-left: 0;
+  padding-right: 0;
+  font-size: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #514848;
+  background-color: transparent;
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  touch-action: manipulation;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 8px;
+  font-weight: 500;
+  line-height: 1.25;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.2s;
+}
+
+.faq button div svg {
+  transition-property: rotate;
+  transition-duration: 300ms;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0;
+  height: 18px;
+  width: 18px;
+}
+
+.faq--open button div svg {
+  rotate: -180deg;
+}
+
+.faq > div > p {
+  color: #363030;
+  margin: 8px 0 0 0 !important;
+}
