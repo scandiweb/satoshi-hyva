@@ -1,0 +1,55 @@
+<div
+  attr="data.main.attributes"
+  ko-style="data.main.style"
+  class="pagebuilder-content-type"
+  css="data.main.css"
+  event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+  <h2
+    class="faq__heading"
+    attr="data.heading.attributes"
+    ko-style="data.heading.style"
+    css="data.heading.css"
+    data-bind="liveEdit: { field: 'heading', placeholder: $t('Enter heading') }"
+  ></h2>
+
+  <if args="data.faqs_rows.attributes().faqs.length > 0 && data.faqs_rows.attributes().faqs !== '[]'">
+    <div
+      ko-style="data.faqs_rows.style"
+      data-element="faqs_rows"
+      css="data.faqs_rows.css"
+      class="faq__rows"
+    >
+      <!-- ko foreach: data.faqs_rows.attributes().faqs -->
+      <div
+        class="faq"
+        data-bind="css: {
+          'faq--open': $data.record_id == 0
+        },
+        style: {
+          '--max-height': $data.record_id == 0 ? '1000px' : '0px'
+        }"
+      >
+        <button event="{ click: $parent.handleClick }">
+          <h2 data-bind="text: question"></h2>
+          <div>
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+            </svg>
+          </div>
+        </button>
+        <div class="accordion-panel">
+          <p data-bind="text: answer">
+          </p>
+        </div>
+      </div>
+      <!-- /ko -->
+    </div>
+  </if>
+  <render args="getOptions().template" />
+</div>
