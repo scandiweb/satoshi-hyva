@@ -308,9 +308,11 @@ export const replaceContent = (
   const content = rawContent.match(regex);
   const newContent = content ? content[0] : "";
   target.innerHTML = newContent;
-  // Reload customerSectionData
-  window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
   reExecuteJs(target);
+  Alpine.nextTick(() => {
+    // Reload customerSectionData
+    window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+  });
 };
 
 export const replaceMainContent = (rawContent: string) => {
@@ -324,7 +326,6 @@ export const replaceMainContent = (rawContent: string) => {
 };
 
 const replacePreviewContent = (rawContent: string) => {
-  // TODO: use section_id when fetching page ...
   replaceMeta(rawContent);
   return replaceContent(
     rawContent,
