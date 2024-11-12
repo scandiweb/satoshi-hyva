@@ -35,7 +35,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER)) : '' ?>
 
             if (this.errors === 0) {
-                this.submitForm($event);
+                this.submitForm();
             }
         }"
         id="newsletter-validate-detail"
