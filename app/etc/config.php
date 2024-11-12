@@ -358,6 +358,7 @@ return [
         'ReadyMage_Logger' => 1,
         'ReadyMage_Maintenance' => 1,
         'Satoshi_CatalogGraphQl' => 1,
+        'Satoshi_CatalogSearch' => 1,
         'Satoshi_Checkout' => 1,
         'Satoshi_Contact' => 1,
         'Satoshi_Customer' => 1,
