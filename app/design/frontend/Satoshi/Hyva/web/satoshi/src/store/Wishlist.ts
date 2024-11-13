@@ -124,13 +124,6 @@ export const WishlistStore = <WishlistStoreType>{
         window.location.href = response.url;
       } else if (response.ok) {
         return response.json();
-      } else {
-        typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
-          [{
-            type: "warning",
-            text: "<?= $escaper->escapeHtml(__('Could not add item to wishlist.')) ?>"
-          }], 5000
-        );
       }
     }).then((response) => {
       if (!response) {
@@ -139,12 +132,7 @@ export const WishlistStore = <WishlistStoreType>{
       this.isInWishlist = true;
       this.showWishlist();
     }).catch((error) => {
-      typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
-        [{
-          type: "error",
-          text: error
-        }], 5000
-      );
+      console.log(error);
     });
   },
   removeFromWishlist(itemId: string) {

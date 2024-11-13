@@ -1,4 +1,5 @@
 <?php
+
 namespace Satoshi\Wishlist\Controller\Index;
 
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -11,43 +12,18 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\App\Response\RedirectInterface;
-use Magento\Framework\Controller\ResultInterface;
 use Magento\Wishlist\Controller\WishlistProviderInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Wishlist\Controller\Index\Add as WishlistAdd;
-use Magento\Wishlist\Helper\Data;
 use Satoshi\Wishlist\CustomerData\Wishlist as WishlistData;
-
 
 class Add extends WishlistAdd
 {
-    /**
-     * @var RedirectInterface
-     */
     private $redirect;
-
-    /**
-     * @var UrlInterface
-     */
     private $urlBuilder;
-
-    /**
-     * @var WishlistData
-     */
     private $wishlistData;
+    private $session;
 
-    /**
-     * Add constructor.
-     *
-     * @param Context $context
-     * @param Session $customerSession
-     * @param WishlistProviderInterface $wishlistProvider
-     * @param ProductRepositoryInterface $productRepository
-     * @param Validator $formKeyValidator
-     * @param WishlistData $wishlistData
-     * @param RedirectInterface|null $redirect
-     * @param UrlInterface|null $urlBuilder
-     */
     public function __construct(
         Context $context,
         Session $customerSession,
@@ -56,11 +32,12 @@ class Add extends WishlistAdd
         Validator $formKeyValidator,
         WishlistData $wishlistData,
         ?RedirectInterface $redirect = null,
-        ?UrlInterface $urlBuilder = null,
+        ?UrlInterface $urlBuilder = null
     ) {
         $this->redirect = $redirect ?: ObjectManager::getInstance()->get(RedirectInterface::class);
         $this->urlBuilder = $urlBuilder ?: ObjectManager::getInstance()->get(UrlInterface::class);
         $this->wishlistData = $wishlistData;
+        $this->session = $customerSession;
 
         parent::__construct(
             $context,
@@ -73,22 +50,14 @@ class Add extends WishlistAdd
         );
     }
 
-    /**
-     * Adding new item
-     *
-     * @return ResultInterface
-     * @throws NotFoundException
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     */
     public function execute()
     {
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $session = $this->_customerSession;
         $requestParams = $this->getRequest()->getParams();
 
         if (!$this->formKeyValidator->validate($this->getRequest())) {
-            return $this->createJsonResponse(['error' => true, 'message' => __('Invalid form key')]);
+            return $resultRedirect->setPath('*/');
         }
 
         $wishlist = $this->wishlistProvider->getWishlist();
@@ -98,61 +67,73 @@ class Add extends WishlistAdd
 
         $productId = isset($requestParams['product']) ? (int)$requestParams['product'] : null;
         if (!$productId) {
-            return $this->createJsonResponse(['error' => true, 'message' => __('Product ID is missing')]);
+            $resultRedirect->setPath('*/');
+            return $resultRedirect;
         }
 
         try {
             $product = $this->productRepository->getById($productId);
         } catch (NoSuchEntityException $e) {
-            return $this->createJsonResponse(['error' => true, 'message' => __('Product not found')]);
+            $product = null;
         }
 
         if (!$product || !$product->isVisibleInCatalog()) {
-            return $this->createJsonResponse(['error' => true, 'message' => __('We can\'t specify a product.')]);
+            $this->session->setErrorMessage(__('We can\'t specify a product.')); // Changed here
+            $resultRedirect->setPath('*/');
+            return $resultRedirect;
         }
 
         try {
             $buyRequest = new \Magento\Framework\DataObject($requestParams);
-            $result = $wishlist->addNewItem($product, $buyRequest);
 
+            $result = $wishlist->addNewItem($product, $buyRequest);
             if (is_string($result)) {
                 throw new LocalizedException(__($result));
             }
-
             if ($wishlist->isObjectNew()) {
                 $wishlist->save();
             }
-
             $this->_eventManager->dispatch(
                 'wishlist_add_product',
                 ['wishlist' => $wishlist, 'product' => $product, 'item' => $result]
             );
 
-            $this->_objectManager->get(Data::class)->calculate();
+            $referer = $session->getBeforeWishlistUrl();
+            if ($referer) {
+                $session->setBeforeWishlistUrl(null);
+            } else {
+                $referer = $this->_redirect->getRefererUrl();
+            }
 
-            return $this->createJsonResponse([
-                'success' => true,
-                'message' => __('%1 has been added to your wishlist.', $product->getName()),
-                'item' => $this->wishlistData->getItemData($result)
-            ]);
+            $this->_objectManager->get(\Magento\Wishlist\Helper\Data::class)->calculate();
 
+            $this->session->setSuccessMessage( // Changed here
+                __('The product %1 has been added to your wishlist.', $product->getName())
+            );
         } catch (LocalizedException $e) {
-            return $this->createJsonResponse(['error' => true, 'message' => __('%1.', $e->getMessage())]);
+            $this->session->setErrorMessage( // Changed here
+                __('We can\'t add the item to the Wishlist right now: %1.', $e->getMessage())
+            );
         } catch (\Exception $e) {
-            return $this->createJsonResponse(['error' => true, 'message' => __('We can\'t add the item to Wish List right now.')]);
+            $this->session->setErrorMessage( // Changed here
+                __('We can\'t add the item to the Wishlist right now.')
+            );
         }
-    }
 
-    /**
-     * Helper method to create a JSON response.
-     *
-     * @param array $data
-     * @return \Magento\Framework\Controller\Result\Json
-     */
-    private function createJsonResponse(array $data)
-    {
-        /** @var \Magento\Framework\Controller\Result\Json $resultJson */
-        $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
-        return $resultJson->setData($data);
+        if ($this->getRequest()->isAjax()) {
+            $url = $this->urlBuilder->getUrl(
+                '*',
+                $this->redirect->updatePathParams(
+                    ['wishlist_id' => $wishlist->getId()]
+                )
+            );
+            $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+            $resultJson->setData(['backUrl' => $url]);
+
+            return $resultJson;
+        }
+        $resultRedirect->setPath('*', ['wishlist_id' => $wishlist->getId()]);
+
+        return $resultRedirect;
     }
 }
