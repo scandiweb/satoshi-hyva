@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Hyva\GraphqlViewModel\ViewModel\GraphqlViewModel;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
@@ -61,11 +63,7 @@ mutation createProductReviewMutation(
         <?php if ($block->getAllowWriteReviewFlag()): ?>
             <form
                 class="w-full max-w-sm"
-                id="<?= $escaper->escapeHtmlAttr($formId) ?>"
-                @submit.prevent="submitForm()"
-                action=""
-                x-data="ReviewForm({
-                    validateRecaptcha: () => '<?= $recaptcha ? $recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>',
+                x-data="Object.assign(Form('<?= $escaper->escapeHtmlAttr($formId) ?>'), ReviewForm({
                     ratings: <?= $escaper->escapeHtmlAttr(json_encode($block->getRatings()->getData())) ?>,
                     messages: {
                         required: '<?= $escaper->escapeJs(__('Please verify you\'ve entered all required information')) ?>',
@@ -74,13 +72,23 @@ mutation createProductReviewMutation(
                     gqlQuery: `<?= $escaper->escapeHtmlAttr($gqlViewModel->query('create_product_review_mutation', $gqlCreateProductReviewMutation)) ?>`,
                     sku: '<?= $escaper->escapeJs($block->getProductInfo()->getSku()) ?>',
                     fieldName: '<?= $recaptcha ? $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId)) : '' ?>',
-                    formId: '<?= $escaper->escapeJs($formId) ?>',
                     storeCode: '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>'
-                })"
+                }))"
+                id="<?= $escaper->escapeHtmlAttr($formId) ?>"
+                @submit.prevent="function($event) {
+                    // do not rename $form, the variable is the expected name in the recaptcha output
+                    const $form = $event.target;
+                    this.validate();
 
+                    <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW)) : '' ?>
+
+                    if (this.errors === 0) {
+                        this.placeReview();
+                    }
+                }"
+                action=""
             >
                 <?= $block->getChildHtml('form_fields_before') ?>
-                <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
                 <fieldset class="w-full flex flex-col items-center justify-center">
                     <legend class="mb-4 text-center text-md">
                         <span>
@@ -158,36 +166,51 @@ mutation createProductReviewMutation(
                             </div>
                         </fieldset>
                     <?php endif ?>
-                    <div x-cloak
-                         x-show="displaySuccessMessage"
-                         class="text-primary-700 flex items-center mb-7">
+                    <div
+                        x-cloak
+                        x-show="displaySuccessMessage"
+                        class="field-success -mt-3 mb-3"
+                    >
                         <p>
                             <?= $escaper->escapeHtml(__('You submitted your review for moderation.')) ?>
                         </p>
                     </div>
+                    <template x-if="displayErrorMessage">
+                        <p class="field-error -mt-3 mb-3">
+                            <template x-for="errorMessage in errorMessages">
+                                <span class="messages" x-html="errorMessage"></span>
+                            </template>
+                        </p>
+                    </template>
+
                     <div class="w-full">
                         <div class="input mb-3">
                             <label for="nickname_field" class="sr-only tracking-widest">
                                 <span><?= $escaper->escapeHtml(__('Nickname')) ?></span>
                             </label>
-                            <input class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                                   required
-                                   placeholder="<?= $escaper->escapeHtmlAttr(__('Nickname') . '*') ?>" type="text"
-                                   name="nickname" id="nickname_field"/>
+                            <input
+                                class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                                required
+                                placeholder="<?= $escaper->escapeHtmlAttr(__('Nickname') . '*') ?>" type="text"
+                                name="nickname"
+                                id="nickname_field"
+                            />
                         </div>
                         <div class="input mb-3">
                             <label for="summary_field" class="sr-only">
                                 <span><?= $escaper->escapeHtml(__('Summary')) ?></span>
                             </label>
                             <div>
-                                <input class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                                       required
-                                       placeholder="<?= $escaper->escapeHtml(__('Summary') . '*') ?>" type="text"
-                                       name="title"
-                                       id="summary_field"/>
+                                <input
+                                    class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                                    required
+                                    placeholder="<?= $escaper->escapeHtml(__('Summary') . '*') ?>" type="text"
+                                    name="title"
+                                    id="summary_field"
+                                />
                             </div>
                         </div>
-                        <div class="input mb-7">
+                        <div class="input mb-4">
                             <label for="review_field" class="sr-only tracking-widest">
                                 <span><?= $escaper->escapeHtml(__('Review')) ?></span>
                             </label>
@@ -203,7 +226,10 @@ mutation createProductReviewMutation(
                         </div>
                     </div>
                 </fieldset>
-                <div>
+
+                <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
+
+                <div class="mt-4">
                     <button
                         type="submit"
                         class="button button--filled-primary w-full mb-4"
@@ -211,19 +237,13 @@ mutation createProductReviewMutation(
                             '!bg-primary-100': isLoading
                         }"
                     >
-                            <span>
-                                <?= $escaper->escapeHtml(__('Submit Review')) ?>
-                            </span>
+                        <span>
+                            <?= $escaper->escapeHtml(__('Submit Review')) ?>
+                        </span>
                     </button>
-                    <template x-if="displayErrorMessage">
-                        <template x-for="errorMessage in errorMessages">
-                            <p x-text="errorMessage" class="text-error items-center">
-                            </p>
-                        </template>
-                    </template>
-                    <?= $block->getChildHtml('form_additional_after') ?>
-                    <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
                 </div>
+                <?= $block->getChildHtml('form_additional_after') ?>
+                <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
             </form>
         <?php else: ?>
             <div

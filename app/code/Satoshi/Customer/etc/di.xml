@@ -6,6 +6,10 @@
         type="Satoshi\Customer\Controller\Account\LoginPost"
     />
     <preference
+        for="Magento\Customer\Controller\Account\CreatePost"
+        type="Satoshi\Customer\Controller\Account\CreatePost"
+    />
+    <preference
         for="Magento\Customer\Controller\Account\ForgotPasswordPost"
         type="Satoshi\Customer\Controller\Account\ForgotPasswordPost"
     />
@@ -16,5 +20,17 @@
     <preference
         for="Magento\Customer\Block\Form\Login"
         type="Satoshi\Customer\Block\Form\Login"
+    />
+    <preference
+        for="Magento\Customer\Block\Form\Register"
+        type="Satoshi\Customer\Block\Form\Register"
+    />
+    <preference
+        for="Magento\Customer\Controller\Account\EditPost"
+        type="Satoshi\Customer\Controller\Account\EditPost"
+    />
+    <preference
+        for="Magento\Customer\Block\Form\Edit"
+        type="Satoshi\Customer\Block\Form\Edit"
     />
 </config>
