@@ -1,0 +1,103 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \Magento\CatalogSearch\Block\Advanced\Form $block */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Magento\Eav\Model\Entity\Attribute $attribute */
+/** @var \Magento\CatalogSearch\Helper\Data $catalogSearchHelper */
+$catalogSearchHelper = $block->getData('catalogSearchHelper');
+
+$attrInputTypeToHtmlInputTypes = [
+    'price' => 'number',
+    'number' => 'number',
+    'date' => 'date',
+    'string' => 'text',
+];
+
+$validationMessages = [
+    'price' => __('Please enter a valid price range.'),
+    'number' => __('Please enter a valid number range.'),
+    'date' => __('Please enter a valid date range.'),
+];
+
+$attrInputType = $block->getAttributeInputType($attribute);
+$htmlInputType = $attrInputTypeToHtmlInputTypes[$attrInputType] ?? 'text';
+$validationMessage = $validationMessages[$attrInputType] ?? __('Please enter a valid range.');
+
+if ($attribute->getBackend()->getType() === 'decimal' || $attrInputType === 'price') {
+    $step = 'any';
+} else {
+    $step = $attrInputType === 'number' ? '1' : '';
+}
+
+$maxQueryLength = $attrInputType === 'string'
+    ? $escaper->escapeHtmlAttr($catalogSearchHelper->getMaxQueryLength())
+    : '';
+
+$code = $attribute->getAttributeCode();
+
+?>
+<div
+    class="flex flex-col md:flex-row gap-3 sm:items-start md:items-center justify-between w-full"
+    x-data="">
+    <div class="flex flex-row w-full md:w-1/2 gap-3 items-center">
+        <input name="<?= $escaper->escapeHtmlAttr($code) ?>[from]"
+               x-ref="from"
+               value="<?= $escaper->escapeHtml($block->getAttributeValue($attribute, 'from')) ?>"
+               id="<?= $escaper->escapeHtmlAttr($code) ?>"
+               title="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+               type="<?= /** @noEscape */
+               $htmlInputType ?>"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('From')) ?>"
+            <?= /* @noEscape */
+            $maxQueryLength ? "maxlength=\"$maxQueryLength\"" : '' ?>
+            <?= /* @noEscape */
+            $step ? "step=\"$step\"" : '' ?>
+            <?= /* @noEscape */
+            $attrInputType === 'price' ? "min=\"0\"" : '' ?>
+               @input="
+               $refs.from.setCustomValidity('');
+               $refs.from.validity.valid && $refs.from.setCustomValidity(
+                    $refs.from.value.length === 0 || ($refs.to.value.length === 0 || $refs.from.value <= $refs.to.value)
+                        ? ''
+                        : '<?= $escaper->escapeJs($validationMessage) ?>'
+               )
+               "/>
+        <?php if ($attrInputType === 'price'): ?>
+            <div class="inline-block md:hidden">
+                <?= $escaper->escapeHtml($block->getCurrency($attribute)) ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class="hidden md:inline-block">-</div>
+    <div class="flex flex-row w-full md:w-1/2 gap-3 items-center">
+        <input name="<?= $escaper->escapeHtmlAttr($code) ?>[to]"
+               x-ref="to"
+               value="<?= $escaper->escapeHtml($block->getAttributeValue($attribute, 'to')) ?>"
+               id="<?= $escaper->escapeHtmlAttr($code) ?>_to"
+               title="<?= $escaper->escapeHtml($block->getAttributeLabel($attribute)) ?>"
+               class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
+               type="<?= /** @noEscape */
+               $htmlInputType ?>"
+               maxlength="<?= $escaper->escapeHtmlAttr($maxQueryLength) ?>"
+               placeholder="<?= $escaper->escapeHtmlAttr(__('To')) ?>"
+            <?= /* @noEscape */
+            $step ? "step=\"$step\"" : '' ?>
+               @input="
+               $refs.from.setCustomValidity('');
+               $refs.from.validity.valid && $refs.from.setCustomValidity(
+                    $refs.from.value.length === 0 || ($refs.to.value.length === 0 || $refs.from.value <= $refs.to.value)
+                        ? ''
+                        : '<?= $escaper->escapeJs($validationMessage) ?>'
+               )
+               "/>
+        <?php if ($attrInputType === 'price'): ?>
+            <label class="inline-block"
+                   for="<?= $escaper->escapeHtmlAttr($code) ?>_to">
+                <?= $escaper->escapeHtml($block->getCurrency($attribute)) ?>
+            </label>
+        <?php endif; ?>
+    </div>
+</div>

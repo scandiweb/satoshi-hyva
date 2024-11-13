@@ -4,6 +4,7 @@ import { TransitionStoreType } from "./plugins/Transition";
 import { MainStoreType } from "./store/Main";
 import { ResizableStoreType } from "./store/Resizable";
 import { CartStoreType } from "./store/Cart";
+import { WishlistStoreType } from "./store/Wishlist";
 
 declare global {
   var Alpine: AlpineType;
@@ -23,27 +24,6 @@ declare global {
     grecaptchaInstanceNewsletter?: number;
     googleRecaptchaCallbackNewsletter?: function;
     dispatchMessages: function;
-
-    // TODO: Remove
-    Shopify: {
-      currency: {
-        active: string;
-      };
-      locale: string;
-      routes: {
-        root: string;
-      };
-      cdnHost: string;
-      PaymentButton: {
-        init: () => void;
-      };
-      loadFeatures: () => void;
-    };
-
-    ShopifyXR?: {
-      addModels: (models: any[]) => void;
-      setupXRElements: (elements: HTMLElement[]) => void;
-    };
 
     YT?: {
       Player: new (elementId: string, options: any) => any;
@@ -89,6 +69,7 @@ declare module "alpinejs" {
     main: MainStoreType;
     transition: TransitionStoreType;
     cart: CartStoreType;
+    wishlist: WishlistStoreType;
   }
 
   interface XAttributes {
