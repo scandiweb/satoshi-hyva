@@ -2,6 +2,20 @@ import type { Magics } from "alpinejs";
 import { isMobile } from "../utils/device";
 import { unfreezeScroll } from "../utils/scroll2";
 
+export type PrivateContentData = {
+  cart: {
+    items: any;
+  };
+  wishlist: {
+    counter: string | null;
+    data_id: number;
+    items: any;
+  };
+  customer: {
+    signin_token?: string;
+  };
+};
+
 export type MainStoreType = {
   [key: string | symbol]: any;
 
@@ -11,9 +25,11 @@ export type MainStoreType = {
   totalCartQty: number;
   isMobile: boolean;
   isReducedMotion: boolean;
+  isUserLoggedIn: boolean;
 
   onResize(): void;
   init(): void;
+  updatePrivateContent(data: PrivateContentData): void;
   setTransformValues(): void;
   isPopupFocused(): boolean;
   hideAllPopupsAndResizables(): void;
@@ -27,6 +43,7 @@ export const Main = <MainStoreType>{
   isMobile: isMobile(),
   isReducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)")
     .matches,
+  isUserLoggedIn: false,
 
   init() {
     this.setTransformValues();
@@ -40,6 +57,12 @@ export const Main = <MainStoreType>{
     mediaQuery.addEventListener("change", (e: any) => {
       this.isReducedMotion = e.matches;
     });
+  },
+
+  updatePrivateContent(data) {
+    this.isUserLoggedIn = Boolean(data.customer?.signin_token);
+    Alpine.store("cart").setCartItems(data.cart?.items || []);
+    Alpine.store("wishlist").setWishlistItems(data.wishlist?.items || []);
   },
 
   onResize() {

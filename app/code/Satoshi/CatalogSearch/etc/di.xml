@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference
+        for="Magento\CatalogSearch\Controller\Advanced\Result"
+        type="Satoshi\CatalogSearch\Controller\Advanced\Result"
+    />
+    <preference
+        for="Magento\CatalogSearch\Block\Advanced\Form"
+        type="Satoshi\CatalogSearch\Block\Advanced\Form"
+    />
+</config>

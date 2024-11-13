@@ -1,0 +1,73 @@
+<?php
+
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $block */
+
+$mixBackground = true;
+?>
+
+<div
+  class="flex flex-col gap-5 md:overflow-auto md:max-h-[calc(100dvh-225px)] md:px-4"
+>
+  <div
+    class="flex flex-col gap-5 md:pt-4 pb-5 md:pb-4"
+  >
+    <template
+      x-for="item in wishlistItems"
+      :key="item.item_id"
+    >
+      <div
+        :key="item.item_id"
+        class="card-hover group max-h-80 transition-all duration-300"
+      >
+        <a
+          x-element-transition-trigger:product.animate="
+            {
+              'variantImg': item.image.src,
+              'title': item.product_name
+            }
+          "
+          :href="item.product_url"
+          class="grid grid-cols-[94px_1fr] content-center gap-5 rounded-md"
+        >
+          <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg]">
+            <template x-if="item.image.src">
+              <div class="h-full transition-transform md:group-hover:scale-105 bg-[--fade-in-bg]">
+                <img
+                  :src="item.image.src"
+                  class="aspect-product h-full w-full object-cover object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
+                  loading="lazy"
+                  width=""
+                  height=""
+                  alt=""
+                >
+              </div>
+            </template>
+          </div>
+          <div class="flex min-w-0 flex-col items-stretch justify-center gap-5 z-10">
+            <div class="w-full">
+              <h2 class="text-md text-text-500">
+                <span x-text="item.product_name"></span>
+              </h2>
+              <template x-if="item.options.length">
+                <template
+                  x-for="(option, o) in item.options"
+                  :key="o"
+                >
+                  <p
+                    class="text-md mb-1 [&_.price]:text-primary-500 [&_.price]:block whitespace-nowrap text-ellipsis overflow-hidden"
+                    x-html="`${option.label}: ${option.value}`"
+                  ></p>
+                </template>
+              </template>
+            </div>
+            <div class="flex flex-wrap items-center justify-between">
+              <div x-html="item.product_price"></div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </template>
+  </div>
+</div>

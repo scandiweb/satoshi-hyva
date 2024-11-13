@@ -309,17 +309,10 @@ export const replaceContent = (
   const newContent = content ? content[0] : "";
   target.innerHTML = newContent;
   reExecuteJs(target);
-};
-
-const replaceTagContent = (rawContent: string, tag: string) => {
-  const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i');
-  const content = rawContent.match(regex);
-  const newContent = content ? content[1] : '';
-
-  const target = document.querySelector(tag) as HTMLElement;
-  if (newContent && target) {
-    target.innerHTML = newContent;
-  }
+  Alpine.nextTick(() => {
+    // Reload customerSectionData
+    window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+  });
 };
 
 export const replaceMainContent = (rawContent: string) => {
@@ -333,17 +326,12 @@ export const replaceMainContent = (rawContent: string) => {
 };
 
 const replacePreviewContent = (rawContent: string) => {
-  // TODO: use section_id when fetching page ...
   replaceMeta(rawContent);
   return replaceContent(
     rawContent,
     "preview-content",
     document.getElementById("PreviewContent")!,
   );
-};
-
-const replaceWholeDocument = (rawContent: string) => {
-    replaceTagContent(rawContent, 'html');
 };
 
 const pushStateAndNotify = (...args: Parameters<History["pushState"]>) => {
@@ -386,10 +374,10 @@ export const cachePage = (url: string, html: string) => {
 };
 
 export const fetchAndCachePage = async (url: string) => {
-    const html = await fetchPage(url);
-    cachePage(url, html);
+  const html = await fetchPage(url);
+  cachePage(url, html);
 
-    return html;
+  return html;
 };
 
 export const replaceMainContentWithTransition = async (
@@ -404,6 +392,7 @@ export const replaceMainContentWithTransition = async (
 
   history.replaceState({ ...history.state, scrollPosition }, "");
   pushStateAndNotify({}, "", url!);
+  cachePage(url, content);
   replaceMainContent(content);
   window.scrollTo(0, 0);
 
@@ -419,7 +408,6 @@ export const navigateWithTransition = (
     data?: Record<string, any>;
     areaId?: string;
     target?: HTMLElement | null;
-    replaceDocument?: boolean;
   } = {},
 ) => {
   Alpine.store("transition").isAnimating = false;
@@ -460,13 +448,10 @@ export const navigateWithTransition = (
       Alpine.store("resizable").hideAll();
       history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
-      const html= await fetchAndCachePage(nextUrl!);
+      const html = await fetchAndCachePage(nextUrl!);
 
       if (isPreview) {
         replacePreviewContent(html);
-      } else if (options.replaceDocument) {
-          replaceWholeDocument(html);
-          window.scrollTo(0, 0);
       } else {
         replaceMainContent(html);
         window.scrollTo(0, 0);
@@ -501,8 +486,9 @@ function TransitionPlugin(Alpine: AlpineType) {
 
       const onClick = (e: MouseEvent) => {
         const link = el.getAttribute("href");
+        const isTargetBlank = el.getAttribute("target") === "_blank";
 
-        if (!link || isExternalURL(link)) {
+        if (!link || isExternalURL(link) || isTargetBlank) {
           return;
         }
 
