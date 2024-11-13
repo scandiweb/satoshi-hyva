@@ -66,7 +66,7 @@
         </field>
     </fieldset>
 
-    <fieldset name="slides_data" sortOrder="20">
+    <fieldset name="general" sortOrder="20">
         <settings>
             <label translate="true">Columns</label>
             <collapsible>true</collapsible>

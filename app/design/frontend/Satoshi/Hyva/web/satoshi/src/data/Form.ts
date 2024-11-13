@@ -11,7 +11,7 @@ export type FormType = {
   submitForm(event: Event): void;
 };
 
-export const Form = () => {
+export const Form = (formId: string) => {
   return <FormType>{
     isLoading: false,
     errors: 0,
@@ -22,17 +22,23 @@ export const Form = () => {
       this.errorMessages = messages;
       this.displayErrorMessage = !!this.errorMessages.length;
     },
-    submitForm(event) {
-      const $form = event.target as HTMLFormElement;
+    submitForm() {
+      const $form = document.getElementById(formId) as HTMLFormElement;
+      if (!$form) return;
+
       const formData = new FormData($form);
       this.isLoading = true;
 
-      fetch($form.action, {
-        method: "POST",
-        body: formData,
+      const isGetMethod = $form.method.toLowerCase() === "get";
+      const query = isGetMethod ? new URLSearchParams(formData as any).toString() : '';
+      const formAction = $form.action + `?${query}`;
+
+      fetch(formAction, {
+        method: $form.method,
         headers: {
           "X-Requested-With": "XMLHttpRequest",
         },
+        ...(isGetMethod ? {} : {body: formData})
       })
         .then((response) => {
           return response.text().then(async (content) => {

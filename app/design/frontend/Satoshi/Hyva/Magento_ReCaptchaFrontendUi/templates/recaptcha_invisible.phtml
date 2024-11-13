@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ReCaptcha;
+use Magento\Framework\Escaper;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+$storeConfig = $viewModels->require(StoreConfig::class);
+$recaptcha   = $viewModels->require(ReCaptcha::class);
+$siteKey     = $storeConfig->getStoreConfig('recaptcha_frontend/type_invisible/public_key');
+$position    = $storeConfig->getStoreConfig('recaptcha_frontend/type_invisible/position') ?: 'inline';
+
+if (!$siteKey) {
+    // No v2 invisible google API credentials configured
+    return;
+}
+
+$inputElementId        = $block->getData('input_element_id');
+$instanceSuffix        = $recaptcha->calcJsInstanceSuffix($inputElementId ?: $block->getData('form_id') ?: 'x');
+$callback              = "googleRecaptchaCallback$instanceSuffix";
+$elementIdSuffix       = $instanceSuffix ?: 'x';
+$grecaptchaContainerId = "grecaptcha-container-$elementIdSuffix";
+$grecaptchaInstanceId  = "grecaptchaInstance$instanceSuffix";
+
+// reCaptcha v2 invisible form element
+// Explicitly render the recaptcha, so it doesn't use the first .g-recaptcha on the page */
+?>
+<div
+    x-data="Recaptcha({
+        containerId: '<?= $escaper->escapeJs($grecaptchaContainerId) ?>',
+        siteKey: '<?= $escaper->escapeJs($siteKey) ?>',
+        instanceId: '<?= /** @noEscape */ $grecaptchaInstanceId ?>',
+        callback: '<?= $escaper->escapeJs($callback) ?>',
+        badge: '<?= $escaper->escapeJs($position) ?>'
+    })"
+    x-init="initRecaptchaInvisible"
+    id="<?= $escaper->escapeHtmlAttr($grecaptchaContainerId) ?>"
+    class="g-recaptcha"
+></div>
