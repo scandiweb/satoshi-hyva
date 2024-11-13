@@ -9,58 +9,71 @@ export type StrengthLabelsType = {
 export type PasswordValidationType = {
   zxcvbnScriptUrl: string;
   strengthLabels: StrengthLabelsType;
-  minCharacterSets: number;
   validationMessage: string;
   init(): void;
+  destroy(): void;
 };
 
 export const PasswordValidation = (
   {
     zxcvbnScriptUrl,
     strengthLabels,
-    minCharacterSets,
     validationMessage,
   }: {
     zxcvbnScriptUrl: string;
     strengthLabels: StrengthLabelsType;
-    minCharacterSets: number;
     validationMessage: string;
   }): PasswordValidationType => {
   let loading = false;
   const callbacks: Array<() => void> = [];
 
-  function _calculateStrength({elementID, valid}: { elementID: string; valid: boolean }) {
+  const _calculateStrength = ({elementID, valid}: { elementID: string; valid: boolean }) => {
     const password = document.getElementById(elementID) as HTMLInputElement | null;
     const emailElm = document.getElementById("email_address") as HTMLInputElement | null;
     let displayScore: number;
 
+    // Display score is based on combination of whether password is empty, valid, and zxcvbn strength
     if (!password || !password.value) {
       displayScore = 0;
-    } else if (emailElm && password.value.toLowerCase() === emailElm.value.toLowerCase()) {
-      displayScore = 1;
     } else {
-      const zxcvbnScore = window.zxcvbn ? window.zxcvbn(password.value).score : 0;
-      displayScore = valid && zxcvbnScore > 0 ? zxcvbnScore : 1;
+      // We should only perform this check in case there is an email field on screen
+      if (emailElm && password.value.toLowerCase() === emailElm.value.toLowerCase()) {
+        displayScore = 1;
+      } else {
+        const zxcvbnScore = window.zxcvbn ? window.zxcvbn(password.value).score : 0;
+        displayScore = valid && zxcvbnScore > 0 ? zxcvbnScore : 1;
+      }
     }
 
     _displayStrength(displayScore);
   }
 
-  function _displayStrength(displayScore: number) {
-    const strengthLabel = [
-      strengthLabels.noPassword,
-      strengthLabels.weak,
-      strengthLabels.medium,
-      strengthLabels.strong,
-      strengthLabels.veryStrong,
-    ][displayScore] || "";
-    const className = [
-      "password-none",
-      "password-weak",
-      "password-medium",
-      "password-strong",
-      "password-very-strong",
-    ][displayScore] || "";
+  const _displayStrength = (displayScore: number) => {
+    let strengthLabel = "";
+    let className = "";
+
+    switch (displayScore) {
+      case 0:
+        strengthLabel = strengthLabels.noPassword;
+        className = "password-none";
+        break;
+      case 1:
+        strengthLabel = strengthLabels.weak;
+        className = "password-weak";
+        break;
+      case 2:
+        strengthLabel = strengthLabels.medium;
+        className = "password-medium";
+        break;
+      case 3:
+        strengthLabel = strengthLabels.strong;
+        className = "password-strong";
+        break;
+      case 4:
+        strengthLabel = strengthLabels.veryStrong;
+        className = "password-very-strong";
+        break;
+    }
 
     const meterElm = document.getElementById("password-strength-meter-container");
     const meterLabelElm = document.getElementById("password-strength-meter-label");
@@ -72,7 +85,7 @@ export const PasswordValidation = (
     }
   }
 
-  function loadZxcvbn(cb: () => void) {
+  const loadZxcvbn = (cb: () => void) => {
     callbacks.push(cb);
     if (loading) return;
     loading = true;
@@ -85,18 +98,18 @@ export const PasswordValidation = (
     document.head.appendChild(script);
   }
 
-  function addPasswordValidationRule() {
+  const addPasswordValidationRule = () => {
     if (window.hyva?.formValidation) {
       window.hyva.formValidation.addRule("password-strength", (value: string, options: {
         minCharacterSets?: number
       }, field: any) => {
         let counter = 0;
-        const minSets = options.minCharacterSets ?? minCharacterSets;
+        const minCharacterSets = options.minCharacterSets !== undefined ? options.minCharacterSets : 1;
 
-        if (/\d+/.test(value)) counter++;
-        if (/[a-z]+/.test(value)) counter++;
-        if (/[A-Z]+/.test(value)) counter++;
-        if (/[^a-zA-Z0-9]+/.test(value)) counter++;
+        if (value.match(/\d+/)) counter++;
+        if (value.match(/[a-z]+/)) counter++;
+        if (value.match(/[A-Z]+/)) counter++;
+        if (value.match(/[^a-zA-Z0-9]+/)) counter++;
 
         queueMicrotask(() => {
           window.dispatchEvent(
@@ -106,8 +119,8 @@ export const PasswordValidation = (
           );
         });
 
-        if (counter < minSets) {
-          const missing = minSets - counter;
+        if (counter < minCharacterSets) {
+          const missing = minCharacterSets - counter;
           return window.hyva.str(validationMessage, missing);
         }
         return true;
@@ -115,21 +128,30 @@ export const PasswordValidation = (
     }
   }
 
+  const passwordValidationCallback = (evt: CustomEvent) => {
+    const meterElm = document.getElementById("password-strength-meter-container");
+    const meterLabelElm = document.getElementById("password-strength-meter-label");
+
+    if (meterElm && meterLabelElm) {
+      if (evt.detail && evt.detail.elementID) {
+        const cb = () => _calculateStrength(evt.detail);
+        window.zxcvbn ? cb() : loadZxcvbn(cb);
+      }
+    }
+  }
+
   return {
     zxcvbnScriptUrl,
     strengthLabels,
-    minCharacterSets,
     validationMessage,
 
     init() {
       addPasswordValidationRule();
-
-      window.addEventListener("password-validate", ((evt: CustomEvent) => {
-        if (evt.detail && evt.detail.elementID) {
-          const cb = () => _calculateStrength(evt.detail);
-          window.zxcvbn ? cb() : loadZxcvbn(cb);
-        }
-      }) as EventListener);
+      window.addEventListener("password-validate", (passwordValidationCallback) as EventListener);
     },
+
+    destroy() {
+      window.removeEventListener("password-validate", (passwordValidationCallback) as EventListener);
+    }
   };
 };

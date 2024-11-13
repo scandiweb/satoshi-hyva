@@ -56,18 +56,6 @@ $errorMessage = $block->getErrorMessage();
                 Authentication(),
                 Form('<?= $escaper->escapeHtmlAttr($formId) ?>'),
                 AddressEdit(),
-                PasswordValidation({
-                    zxcvbnScriptUrl: '<?= $escaper->escapeJs($block->getViewFileUrl('js/zxcvbn.js')) ?>',
-                    strengthLabels: {
-                        noPassword: '<?= $escaper->escapeJs(__('No Password')) ?>',
-                        weak: '<?= $escaper->escapeJs(__('Weak')) ?>',
-                        medium: '<?= $escaper->escapeJs(__('Medium')) ?>',
-                        strong: '<?= $escaper->escapeJs(__('Strong')) ?>',
-                        veryStrong: '<?= $escaper->escapeJs(__('Very Strong')) ?>'
-                    },
-                    minCharacterSets: <?= (int)$passwordMinCharacterSets ?>,
-                    validationMessage: '<?= $escaper->escapeJs(__('The password must include at least %1 or more of: uppercase (A-Z), lowercase (a-z), number, and symbol.')) ?>'
-                })
             )"
             x-init="initRegister({
                 telephoneErrorMessage: '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
