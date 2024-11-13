@@ -18,7 +18,7 @@ if ($product->getTypeId() === 'grouped') {
 
 <section
   class="product-page"
-  x-data="ProductPage()"
+  x-data="ProductPage('<?= $product->getSku() ?>')"
 >
   <div
     x-init="

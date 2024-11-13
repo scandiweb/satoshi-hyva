@@ -41,22 +41,24 @@ if (!$product->getId() || !$wishlistViewModel->isEnabled()) {
 $updateParams = $block->getUpdateParams() ?: null;
 ?>
 
-<button x-data="Wishlist('<?= $updateParams ?>', '<?= $product->getSku(); ?>')"
-        @click.prevent="!currentWishListItem || !Object.keys(currentWishListItem).length ? addToWishlist(<?= (int)$product->getId() ?>) : removeFromWishlist()"
-        title="<?= $escaper->escapeHtmlAttr(
-            ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
-        ) ?>"
-        aria-label="<?= $escaper->escapeHtmlAttr(
-            ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
-        ) ?>"
-        id="add-to-wishlist"
-        data-addto="wishlist"
+<button
+    type="button"
+    class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-md md:icon-button--size-lg"
+    @click.prevent="!$store.wishlist.isInWishlist ? $store.wishlist.addToWishlist(<?= (int)$product->getId() ?>) : $store.wishlist.removeFromWishlist(currentWishListItem['item_id'])"
+    title="<?= $escaper->escapeHtmlAttr(
+        ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
+    ) ?>"
+    aria-label="<?= $escaper->escapeHtmlAttr(
+        ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
+    ) ?>"
+    id="add-to-wishlist"
+    data-addto="wishlist"
 >
-    <span x-show="!currentWishListItem || !Object.keys(currentWishListItem).length">
-        <?= $hyvaicons->renderHtml('wishlist-plus', 'text-3xl'); ?>
+    <span x-show="!$store.wishlist.isInWishlist">
+        <?= $hyvaicons->renderHtml('bookmark-empty', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
     </span>
-    <span x-show="Object.keys(currentWishListItem).length">
-        <?= $hyvaicons->renderHtml('wishlist-minus', 'text-3xl'); ?>
+    <span x-show="$store.wishlist.isInWishlist">
+        <?= $hyvaicons->renderHtml('bookmark', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
     </span>
 
 </button>

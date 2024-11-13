@@ -1,10 +1,9 @@
-import { withXAttributes } from "alpinejs";
-import { POPUP_OVERLAY_CLICK_EVENT } from "../store/Popup";
-import { CartItem } from "../store/Cart";
+import {withXAttributes} from "alpinejs";
+import {POPUP_OVERLAY_CLICK_EVENT} from "../store/Popup";
+import {CartItem} from "../store/Cart";
 
 export type ProductPageType = {
   [key: string | symbol]: any;
-    selectedAttributes: { attributeId: number, value: string }[];
   isVariantInCart: boolean;
   isLoadingCart: boolean;
   variantQty: number;
@@ -47,7 +46,6 @@ export type ProductPageType = {
   quickBuy(): void;
   scrollToTop(): void;
   changeOption(attributeId: number, value: string): void;
-
   initAttributes(
     swatchConfig: {
       [key: string]: {
@@ -122,7 +120,7 @@ type AllowedAttributeOption = {
 
 const POPUP_BOTTOM_ACTIONS = "product_bottom_actions";
 
-export const ProductPage = () =>
+export const ProductPage = (productSku?: string) =>
   <ProductPageType>{
     isVariantInCart: false,
     isLoadingCart: false,
@@ -140,7 +138,6 @@ export const ProductPage = () =>
     optionConfig: undefined,
     allowedAttributeOptions: [],
     isGroupValid: true,
-      selectedAttributes: [],
     get isProductBeingRemoved() {
       return Alpine.store("cart").removingItemId === this.cartItemKey;
     },
@@ -151,6 +148,31 @@ export const ProductPage = () =>
     },
 
     init() {
+      Alpine.nextTick(() => {
+        this.$store.wishlist.isInWishlist = this.$store.wishlist.wishlistItems.some(item => item.product_sku === productSku);
+      });
+
+      this.$watch("selectedValues", () => {
+        const wishlistItems = this.$store.wishlist.wishlistItems;
+
+        // Convert selectedValues into an array of {label, value} objects, ignoring null/undefined values
+        const attributes = this.selectedValues
+          .map((value, index) => (value !== undefined ? {label: index, value} : null))
+          .filter(Boolean);
+
+        // Check if any wishlist item matches all options in attributes
+        this.$store.wishlist.isInWishlist = wishlistItems.some(item => {
+          const matchingOptions = item.options.filter(option =>
+            attributes.some(attr =>
+              ((option.option_id && option.option_id === attr.label) || (option.label === attr.label)) &&
+              option.option_value === attr.value
+            )
+          );
+          return matchingOptions.length === attributes.length && matchingOptions.length === item.options.length;
+        });
+      });
+
+
       this.$watch("$store.cart.cartItems", () => {
         this._updateSelectedVariantCartState();
       });
@@ -163,10 +185,10 @@ export const ProductPage = () =>
     },
 
     setProductPageProps({
-      productId,
-      isScrollingToTop = false,
-      groupedIds = [],
-    }) {
+                          productId,
+                          isScrollingToTop = false,
+                          groupedIds = [],
+                        }) {
       this.productId = productId;
       this.productActionsPopup += `-${productId}`;
       this.isScrollingToTop = !!isScrollingToTop;
@@ -327,7 +349,7 @@ export const ProductPage = () =>
       window.addEventListener(
         "private-content-loaded",
         (event: any) => {
-          const { cart: { items = [] } = {} } = event.detail.data || {};
+          const {cart: {items = []} = {}} = event.detail.data || {};
 
           // Grouped products
           if (this.groupedIds.length) {
@@ -357,7 +379,7 @@ export const ProductPage = () =>
             );
           }
         },
-        { once: true },
+        {once: true},
       );
 
       this.isLoadingCart = true;
@@ -414,11 +436,11 @@ export const ProductPage = () =>
       if (typeof this.scrollToPreviewTop !== "undefined") {
         this.scrollToPreviewTop();
       } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({top: 0, behavior: "smooth"});
       }
     },
 
-      changeOption(attributeId: number, value: string) {
+    changeOption(attributeId: number, value: string) {
       if (value === "") {
         this.selectedValues = this.removeAttrFromSelection(
           this.selectedValues,
@@ -432,23 +454,10 @@ export const ProductPage = () =>
       ) {
         // Only set as selected value if it is valid
         this.selectedValues[attributeId] = value;
-          this.findSimpleIndex();
-
       }
+      this.findSimpleIndex();
       this.findAllowedAttributeOptions();
-          const existingIndex = this.selectedAttributes.findIndex(attr => attr.attributeId === attributeId);
-
-          if (existingIndex !== -1) {
-              this.selectedAttributes = [
-                  ...this.selectedAttributes.slice(0, existingIndex),
-                  {...this.selectedAttributes[existingIndex], value},
-                  ...this.selectedAttributes.slice(existingIndex + 1)
-              ];
-          } else {
-              this.selectedAttributes = [...this.selectedAttributes, {attributeId, value}];
-          }
-
-          this.updatePrices();
+      this.updatePrices();
       this.updateGallery();
       window.dispatchEvent(
         new CustomEvent("configurable-selection-changed", {
@@ -555,7 +564,7 @@ export const ProductPage = () =>
 
         newAllowedAttributeOptions[attribute.id] = allAttributes[
           attribute.id
-        ].options.filter((option: Record<string, any>) => {
+          ].options.filter((option: Record<string, any>) => {
           return !!option.products.find((product: string) => {
             return availableIndexes.includes(product);
           });
@@ -642,7 +651,7 @@ export const ProductPage = () =>
 
     getSwatchConfig(attributeId, optionId) {
       return this.swatchConfig[attributeId] &&
-        this.swatchConfig[attributeId][optionId]
+      this.swatchConfig[attributeId][optionId]
         ? this.swatchConfig[attributeId][optionId]
         : false;
     },
@@ -741,12 +750,12 @@ export const ProductPage = () =>
     findProductIdsForPartialSelection(optionSelection) {
       const candidateProducts = Object.values(optionSelection).reduce(
         (candidates: any, optionId) => {
-          const newCandidates = this.getProductIdsForOption({ id: optionId });
+          const newCandidates = this.getProductIdsForOption({id: optionId});
           return candidates === null
             ? newCandidates
             : candidates.filter((productId: string) =>
-                newCandidates.includes(productId),
-              );
+              newCandidates.includes(productId),
+            );
         },
         null,
       );
@@ -790,11 +799,11 @@ export const ProductPage = () =>
         // if it is, filter all products to only include those that match the selected attribute value
         const productsWithAttributeMatch = selectedValues[attribute]
           ? productIndexIds.filter((productIndex) => {
-              return (
-                this.optionConfig!.index[productIndex][attribute] ===
-                this.selectedValues[attribute]
-              );
-            })
+            return (
+              this.optionConfig!.index[productIndex][attribute] ===
+              this.selectedValues[attribute]
+            );
+          })
           : [];
 
         // if we found matches, only keep the ones that match, otherwise, keep all products
@@ -827,11 +836,11 @@ export const ProductPage = () =>
       if (this.productIndex) {
         const images = this.optionConfig!.images[this.productIndex];
         images &&
-          window.dispatchEvent(
-            new CustomEvent("update-gallery", {
-              detail: this.sortImagesByPosition(images),
-            }),
-          );
+        window.dispatchEvent(
+          new CustomEvent("update-gallery", {
+            detail: this.sortImagesByPosition(images),
+          }),
+        );
       } else {
         window.dispatchEvent(new Event("reset-gallery"));
       }
@@ -841,8 +850,8 @@ export const ProductPage = () =>
         return x.position === y.position
           ? 0
           : parseInt(x.position) > parseInt(y.position)
-          ? 1
-          : -1;
+            ? 1
+            : -1;
       });
     },
   };
