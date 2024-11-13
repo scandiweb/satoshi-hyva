@@ -53,7 +53,7 @@ $cartMessage = $block->getCartMessage();
     <div x-html="document.getElementById('bundleSummary').innerHTML"></div>
   <?php endif; ?>
 
-  <div class="flex flex-grow justify-stretch gap-3 bg-bg-500 relative">
+  <div class="flex flex-grow flex-wrap justify-stretch gap-3 bg-bg-500 relative">
     <!-- Quantity Controls -->
     <?php if ($block->getChildBlock('product.info.quantity')): ?>
       <?= $block->getChildBlock('product.info.quantity')->setData([

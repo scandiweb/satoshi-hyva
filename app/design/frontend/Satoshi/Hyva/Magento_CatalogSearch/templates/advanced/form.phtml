@@ -1,0 +1,80 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var \Satoshi\CatalogSearch\Block\Advanced\Form $block */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Hyva\Theme\Model\ViewModelRegistry $viewModels */
+/** @var \Magento\CatalogSearch\Helper\Data $catalogSearchHelper */
+$catalogSearchHelper = $block->getData('catalogSearchHelper');
+
+$maxQueryLength = $catalogSearchHelper->getMaxQueryLength();
+$errorMessage = $block->getErrorMessage();
+?>
+<div class="content-wrapper mx-auto">
+    <div class="bg-bg-400 p-5 rounded-xl">
+        <header class="mb-5">
+            <h2 class="text-text-500 text-lg"
+                tabindex="-1"><?= $escaper->escapeHtml(__('Search Settings')) ?></h2>
+        </header>
+
+        <form method="get"
+              action="<?= $escaper->escapeUrl($block->getSearchPostUrl()) ?>"
+              x-data="Form('advanced-search-form')"
+              id="advanced-search-form"
+              @submit.prevent="submitForm"
+        >
+            <?php if ($errorMessage): ?>
+                <div class="field-error -mt-3 mb-3">
+                    <span class="messages"><?= $errorMessage ?></span>
+                </div>
+            <?php endif; ?>
+
+            <div class="flex flex-col gap-3">
+                <?php foreach ($block->getSearchableAttributes() as $attribute): ?>
+                    <?php $code = $attribute->getAttributeCode() ?>
+                    <div class="field field-reserved">
+                        <label class="sr-only tracking-widest" for="<?= $escaper->escapeHtmlAttr($code) ?>">
+                            <span><?= $escaper->escapeHtml(__($block->getAttributeLabel($attribute))) ?></span>
+                        </label>
+                        <?php
+                        switch ($block->getAttributeInputType($attribute)) {
+                            case 'number':
+                            case 'price':
+                            case 'date':
+                                $fieldTemplate = $block->getTemplateFile('Magento_CatalogSearch::advanced/field/range.phtml');
+                                /* @noEscape */
+                                echo $block->assign('attribute', $attribute)->fetchView($fieldTemplate);
+                                break;
+                            case 'select':
+                            case 'yesno':
+                                $fieldTemplate = $block->getTemplateFile('Magento_CatalogSearch::advanced/field/select.phtml');
+                                /* @noEscape */
+                                echo $block->assign('attribute', $attribute)->fetchView($fieldTemplate);
+                                break;
+                            default:
+                                $fieldTemplate = $block->getTemplateFile('Magento_CatalogSearch::advanced/field/text.phtml');
+                                /* @noEscape */
+                                echo $block->assign('attribute', $attribute)->fetchView($fieldTemplate);
+                        } ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="flex flex-col gap-6 mt-7">
+                <button class="button button--filled-primary"
+                        :class="isLoading && 'button--disabled'"
+                        :disabled="isLoading"
+                        type="submit"
+                        title="<?= $escaper->escapeHtml(__('Search')) ?>"
+                >
+          <span x-text="isLoading ?
+              '<?= $escaper->escapeHtml(__('Searching...')) ?>' :
+              '<?= $escaper->escapeHtml(__('Search')) ?>'">
+              <?= $escaper->escapeHtml(__('Search')) ?>
+          </span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
