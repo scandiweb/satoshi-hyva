@@ -59,10 +59,10 @@ if ($productPriceViewModel->displayPriceInclAndExclTax()) {
                     <?= $escaper->escapeHtml(__('Customize %1', $product->getName())) ?>
                 </h2>
                 <button
-                        type="button"
-                        class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
-                        aria-label="<?= __('Close') ?>"
-                        @click.prevent="hideProductActions()"
+                    type="button"
+                    class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+                    aria-label="<?= __('Close') ?>"
+                    @click.prevent="hideProductActions()"
                 >
                     <?= $hyvaicons->renderHtml('close') ?>
                 </button>
@@ -79,8 +79,8 @@ if ($productPriceViewModel->displayPriceInclAndExclTax()) {
                     } ?>
                     <div>
                         <label
-                                id="option-label-<?= $escaper->escapeHtmlAttr($option->getId()) ?>"
-                                class="text-text-500 flex-grow font-semibold"
+                            id="option-label-<?= $escaper->escapeHtmlAttr($option->getId()) ?>"
+                            class="text-text-500 flex-grow font-semibold"
                         >
                             <?= $escaper->escapeHtml($option->getTitle()) ?>
                         </label>
