@@ -16,22 +16,28 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 $block->setData('cache_tags', $blockCacheViewModel->collectBlockChildrenCacheTags($block));
 ?>
 <button
-  @click="!isMenuVisible ? $store.popup.showPopup('menu') : $store.popup.hidePopup('menu')"
-  type="button"
-  class="contrast-border md:button--filled-secondary button icon-button icon-button--size-lg md:w-auto md:gap-3 md:px-4"
+    x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
+    @click="!isMenuVisible ? $store.popup.showPopup('menu') : $store.popup.hidePopup('menu')"
+    type="button"
+    aria-label="<?= __('Open menu') ?>"
+    :aria-controls="$store.main.isMobile ? 'menu' : 'menu-desktop'"
+    :aria-expanded="$store.main.isMobile ? $store.popup.currentPopup === 'menu' : $store.resizable.isVisible('menu-desktop')"
+    class="contrast-border md:button--filled-secondary button icon-button icon-button--size-lg md:w-auto md:gap-3 md:px-4  "
+    :class="{'hidden': !$store.main.isMobile && $store.resizable.isVisible('menu-desktop')}"
+    tabindex="2"
 >
-  <div
-    class="contents"
-    x-show="!isMenuVisible"
-  >
-    <?= $hyvaicons->renderHtml('menu') ?>
-  </div>
-  <div
-    class="contents"
-    x-show="isMenuVisible"
-    style="display: none;"
-  >
-    <?= $hyvaicons->renderHtml('close') ?>
-  </div>
-  <span class="text-md font-bold max-md:hidden"><?= __('Menu') ?></span>
+    <div
+        class="contents"
+        x-show="!isMenuVisible"
+    >
+        <?= $hyvaicons->renderHtml('menu') ?>
+    </div>
+    <div
+        class="contents"
+        x-show="isMenuVisible"
+        style="display: none;"
+    >
+        <?= $hyvaicons->renderHtml('close') ?>
+    </div>
+    <span class="text-md font-semibold max-md:hidden"><?= __('Menu') ?></span>
 </button>
