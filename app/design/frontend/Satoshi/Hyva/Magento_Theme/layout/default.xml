@@ -93,6 +93,8 @@
         <move element="main.content" destination="main-content" />
         <move element="top.container" destination="main.content" before="-" />
 
+        <move element="password.validate.js" destination="main.content" after="-"/>
+
         <move element="footer-container" destination="root" after="page.wrapper" />
 
         <referenceContainer name="footer">
