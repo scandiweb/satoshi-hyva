@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Satoshi\SatoshiUi\Block\Quotes;
+use Satoshi\Theme\Block\Template;
+use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Quotes $block */
+/** @var Template $template */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var DecodeHelper $decodeHelper */
+$decodeHelper = $this->helper(DecodeHelper::class);
+$quotes = $block->getData('quotes');
+$quotes = $decodeHelper->decodeJSONHTMLEntity($quotes);
+$id = uniqid();
+
+$slidesHtml = '';
+foreach ($quotes as $quote) {
+    $rate = floatval($quote['rate']);
+    $starsHtml = array_reduce(range(0, 4), function ($carry, $item) use ($rate, $hyvaicons) {
+        // Do full stars
+        $full = floor($rate);
+        if ($item < $full) {
+            return $carry . $hyvaicons->renderHtml('star-full');
+        } elseif($full != $rate && $item == $full) {
+            return $carry . $hyvaicons->renderHtml('star-half');
+        } else {
+            return $carry . $hyvaicons->renderHtml('star-empty');
+        }
+    });
+    $slidesHtml .= <<<HTML
+        <div class="slider__slide">
+            <div>
+                <div class="flex gap-2 text-xl mb-5">
+                    $starsHtml
+                </div>
+                <div class="rte mb-5 text-lg text-text-500 md:text-2xl">{$quote['quote']}</div>
+                <span class="text-text-500">– {$quote['author_name']}</span>
+            </div>
+        </div>
+    HTML;
+}
+?>
+<div>
+    <div
+        class="rounded-md bg-secondary-400 px-7 py-8 md:p-12"
+        x-data="Slider()"
+    >
+        <div class="mb-7 flex w-full items-center justify-between md:mb-8">
+            <h1 class="heading text-text-500">
+                <?= $escaper->escapeHtml($block->getData('heading')) ?>
+            </h1>
+        <div>
+            <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
+        </div>
+    </div>
+
+    <?= $template
+            ->setData([
+                'slides' => $slidesHtml,
+                'gap' => 16,
+                'slides_amount_in_view' => ['xs' => 1, 'sm' => 1, 'md' => 1, 'lg' => 1, 'xl' => 1, 'xxl' => 1],
+                'is_custom_slider_x_data' => true,
+                'is_header_disabled' => true,
+                'is_scrollbar_hidden' => true
+            ])
+            ->render('Magento_Catalog::html/slider.phtml'); ?>
+</div>

@@ -8,49 +8,49 @@ use Satoshi\Theme\Block\Template;
 ?>
 
 <nav
-  class="flex h-full flex-col"
-  aria-label="<?= __('Main menu') ?>"
-  x-data="Search"
-  :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'menu' : !$store.resizable.isVisible('menu-desktop')"
+    class="flex h-full flex-col"
+    aria-label="<?= __('Main menu') ?>"
+    x-data="Search"
+    :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'menu' : !$store.resizable.isVisible('menu-desktop')"
 >
-  <template x-portal="document.getElementById($store.main.isMobile ? 'search-mobile' : 'search-desktop')">
-    <?= $template->render('Magento_Theme::html/header/search/search.phtml') ?>
-  </template>
+    <template x-portal="document.getElementById($store.main.isMobile ? 'search-mobile' : 'search-desktop')">
+        <?= $template->render('Magento_Theme::html/header/search/search.phtml') ?>
+    </template>
 
-  <div
-    class="contents md:hidden"
-    id="search-mobile"
-  ></div>
+    <div
+        class="contents md:hidden"
+        id="search-mobile"
+    ></div>
 
-  <div
-    id="menu-sections"
-    class="menu__wrapper"
-    x-data="{
-      history: ['all'],
-      delayedLevel: 1,
-      setHistory(history) {
-        this.history = history;
+    <div
+        id="menu-sections"
+        class="menu__wrapper"
+        x-data="{
+            history: ['all'],
+            delayedLevel: 1,
+            setHistory(history) {
+                this.history = history;
 
-        setTimeout(() => {
-          this.delayedLevel = history.length;
+                setTimeout(() => {
+                    this.delayedLevel = history.length;
 
-          if (history.length) {
-            const level = history[history.length - 1]
-            document.querySelector(`[data-menu-level='${level}'] a`)?.focus();
-          }
-        }, 300);
-      }
-    }"
-    x-show="!$store.main.isMobile || !getIsSearchActive()"
-  >
-    <?=
-      $template
-        ->setData([
-          'id' => 'all',
-          'title' => 'All categories',
-          'path' => 'all'
-        ])
-        ->render('Magento_Theme::html/header/menu/menu-items.phtml')
-    ?>
-  </div>
+                    if (history.length) {
+                        const level = history[history.length - 1]
+                        document.querySelector(`[data-menu-level='${level}'] a`)?.focus();
+                    }
+                }, 300);
+            }
+        }"
+        x-show="!$store.main.isMobile || !getIsSearchActive()"
+    >
+        <?=
+            $template
+                ->setData([
+                    'id' => 'all',
+                    'title' => 'All categories',
+                    'path' => 'all'
+                ])
+                ->render('Magento_Theme::html/header/menu/menu-items.phtml')
+        ?>
+    </div>
 </nav>

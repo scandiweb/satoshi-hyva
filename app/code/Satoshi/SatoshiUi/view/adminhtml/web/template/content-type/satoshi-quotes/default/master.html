@@ -1,0 +1,29 @@
+<div
+  attr="data.main.attributes"
+  ko-style="data.main.style"
+  css="data.main.css"
+>
+  <div data-is-page-builder-ignored-element="true">
+    <h1
+      attr="data.heading.attributes"
+      ko-style="data.heading.style"
+      css="data.heading.css"
+      html="data.heading.html"
+      hidden
+    ></h1>
+
+    <if args="data.quotes_slides.attributes().quotes.length > 0 && data.quotes_slides.attributes().quotes !== '[]'">
+      <div
+        data-bind="attr: { quotes: JSON.stringify(data.quotes_slides.attributes().quotes) }"
+        ko-style="data.quotes_slides.style"
+        data-element="quotes_slides"
+        css="data.quotes_slides.css"
+        hidden
+      ></div>
+    </if>
+  </div>
+  <div
+    attr="data.block_directive.attributes"
+    html="data.block_directive.html"
+  ></div>
+</div>
