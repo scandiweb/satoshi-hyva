@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$label = $block->getLabel();
+?>
+<a
+    class="skip-to-content-link button sr-only"
+    href="#MainContent"
+    tabindex="1"
+>
+    <?= $escaper->escapeHtml($label) ?>
+</a>
