@@ -29,12 +29,16 @@ export const Form = (formId: string) => {
       const formData = new FormData($form);
       this.isLoading = true;
 
-      fetch($form.action, {
-        method: "POST",
-        body: formData,
+      const isGetMethod = $form.method.toLowerCase() === "get";
+      const query = isGetMethod ? new URLSearchParams(formData as any).toString() : '';
+      const formAction = $form.action + `?${query}`;
+
+      fetch(formAction, {
+        method: $form.method,
         headers: {
           "X-Requested-With": "XMLHttpRequest",
         },
+        ...(isGetMethod ? {} : {body: formData})
       })
         .then((response) => {
           return response.text().then(async (content) => {
