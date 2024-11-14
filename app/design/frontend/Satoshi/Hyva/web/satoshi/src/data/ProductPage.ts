@@ -331,7 +331,12 @@ export const ProductPage = () =>
 
           // Grouped products
           if (this.groupedIds.length) {
-            const itemIds = this.groupedIds
+            const groupedIdsWithQty = this.groupedIds.filter(groupId => {
+              const quantity = formData.get(`super_group[${groupId}]`);
+              return parseInt(<string>quantity) > 0;
+            });
+
+            const itemIds = groupedIdsWithQty
               .map(
                 (id) =>
                   items.find((item: CartItem) => item.product_id === id)
