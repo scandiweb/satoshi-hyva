@@ -55,7 +55,7 @@ $activeSelectOptions = [];
                   name="bundle_option[<?= (int) $optionId ?>]"
                   form="product_addtocart_form"
                   class="radio__input"
-              <?= ($default && $default->isSalable()) ? '' : ' checked ' ?>
+                   x-bind:checked="activeSelectOptions['<?= (int)$optionId ?>'] == ''"
                   value=""
                   x-on:change="
                             activeSelectOptions['<?= (int) $optionId ?>'] = [$event.target.value];
@@ -82,10 +82,7 @@ $activeSelectOptions = [];
                 form="product_addtocart_form"
                 class="radio__input"
             <?= $option->getRequired() ? 'required' : '' ?>
-            <?php if ($block->isSelected($selection)) {
-              array_push($activeSelectOptions, $selectionId);
-              echo 'checked = "checked"';
-            } ?>
+                 x-bind:checked="activeSelectOptions['<?= (int)$optionId ?>'] == '<?= (int)$selectionId ?>'"
             <?php if (!$selection->isSaleable()): ?>
               disabled
             <?php endif; ?>
