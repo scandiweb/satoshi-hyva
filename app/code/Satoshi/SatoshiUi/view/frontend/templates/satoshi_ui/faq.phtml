@@ -28,6 +28,7 @@ $id = uniqid();
                 <div x-data="Accordion(<?= (int)($index === 0) ?>, 300)">
                     <button
                         class="group flex w-full justify-between"
+                        style="text-align: unset;"
                         x-ref="AccordionButton"
                         :aria-expanded="isExpanded"
                         aria-controls="<?= $escaper->escapeHtmlAttr($id) ?>_panel"
