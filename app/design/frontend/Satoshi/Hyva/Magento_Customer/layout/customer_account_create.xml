@@ -4,6 +4,12 @@
         <referenceBlock name="page.main.title" remove="true" />
         <referenceContainer name="customer.login.container" htmlClass="container mx-auto flex h-full items-center px-5" />
 
+        <referenceBlock name="customer_form_register">
+            <arguments>
+                <argument name="show_address_fields" xsi:type="boolean">true</argument>
+            </arguments>
+        </referenceBlock>
+
         <referenceBlock name="breadcrumbs">
             <action method="addCrumb">
                 <argument name="crumbName" xsi:type="string">home</argument>

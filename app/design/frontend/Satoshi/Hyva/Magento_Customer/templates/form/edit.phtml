@@ -215,9 +215,9 @@ $newPasswordFailed = !empty($errorMessage['current_password']) || !empty($errorM
                                autocomplete="<?= $isAutocompleteEnabled ? 'new-password' : 'off' ?>"
                                aria-describedby="password-strength-meter"
                         />
-                        <div id="password-strength-meter-container" class="mt-2 text-sm"
+                      <div id="password-strength-meter-container"
                              data-role="password-strength-meter" aria-live="polite">
-                            <div id="password-strength-meter" class="password-strength-meter">
+                        <div id="password-strength-meter" class="password-strength-meter mt-2 text-[14px]">
                                 <?= $escaper->escapeHtml(__('Password Strength')) ?>:
                                 <span id="password-strength-meter-label" class="lowercase"
                                       data-role="password-strength-meter-label">
