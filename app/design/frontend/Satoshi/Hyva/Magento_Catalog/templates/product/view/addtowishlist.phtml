@@ -44,7 +44,7 @@ $updateParams = $block->getUpdateParams() ?: null;
 <button
     type="button"
     class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-md md:icon-button--size-lg"
-    @click.prevent="!$store.wishlist.isInWishlist ? $store.wishlist.addToWishlist(<?= (int)$product->getId() ?>) : $store.wishlist.removeFromWishlist(currentWishListItem['item_id'])"
+    @click.prevent="!currentWishlistItem ? $store.wishlist.addToWishlist(<?= (int)$product->getId() ?>) : $store.wishlist.removeFromWishlist(currentWishlistItem['item_id'])"
     title="<?= $escaper->escapeHtmlAttr(
         ($updateParams) ? __('Update Wish List') : __('Add to Wish List')
     ) ?>"
@@ -54,10 +54,10 @@ $updateParams = $block->getUpdateParams() ?: null;
     id="add-to-wishlist"
     data-addto="wishlist"
 >
-    <span x-show="!$store.wishlist.isInWishlist">
+    <span x-show="!currentWishlistItem">
         <?= $hyvaicons->renderHtml('bookmark-empty', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
     </span>
-    <span x-show="$store.wishlist.isInWishlist">
+    <span x-show="currentWishlistItem">
         <?= $hyvaicons->renderHtml('bookmark', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
     </span>
 

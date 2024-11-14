@@ -24,6 +24,7 @@ export type ProductPageType = {
   optionConfig: OptionConfig | undefined;
   allowedAttributeOptions: Array<AllowedAttributeOption[]>;
   isGroupValid: boolean;
+  currentWishlistItem: Object | false;
 
   readonly isProductBeingRemoved: boolean;
   readonly isProductBeingAdded: boolean;
@@ -34,6 +35,7 @@ export type ProductPageType = {
     groupedIds?: string[];
   }): void;
   _updateSelectedVariantCartState(): void;
+  setWishlist(): void;
   checkIsItemInCart(item: CartItem): boolean;
   toggleStickyProductActions(show: boolean): void;
   decreaseQty(): void;
@@ -138,6 +140,7 @@ export const ProductPage = (productSku?: string) =>
     optionConfig: undefined,
     allowedAttributeOptions: [],
     isGroupValid: true,
+    currentWishlistItem: false,
     get isProductBeingRemoved() {
       return Alpine.store("cart").removingItemId === this.cartItemKey;
     },
@@ -149,28 +152,12 @@ export const ProductPage = (productSku?: string) =>
 
     init() {
       Alpine.nextTick(() => {
-        this.$store.wishlist.isInWishlist = this.$store.wishlist.wishlistItems.some(item => item.product_sku === productSku);
+        this.currentWishlistItem = this.$store.wishlist.wishlistItems.find(item => item.product_sku === productSku) || false;
       });
 
-      this.$watch("selectedValues", () => {
-        const wishlistItems = this.$store.wishlist.wishlistItems;
+      this.$watch("$store.wishlist.wishlistItems", () => this.setWishlist());
 
-        // Convert selectedValues into an array of {label, value} objects, ignoring null/undefined values
-        const attributes = this.selectedValues
-          .map((value, index) => (value !== undefined ? {label: index, value} : null))
-          .filter(Boolean);
-
-        // Check if any wishlist item matches all options in attributes
-        this.$store.wishlist.isInWishlist = wishlistItems.some(item => {
-          const matchingOptions = item.options.filter(option =>
-            attributes.some(attr =>
-              ((option.option_id && option.option_id === attr.label) || (option.label === attr.label)) &&
-              option.option_value === attr.value
-            )
-          );
-          return matchingOptions.length === attributes.length && matchingOptions.length === item.options.length;
-        });
-      });
+      this.$watch("selectedValues", () => this.setWishlist());
 
 
       this.$watch("$store.cart.cartItems", () => {
@@ -207,6 +194,28 @@ export const ProductPage = (productSku?: string) =>
       this.isVariantInCart = !!cartItem;
       this.variantQty = cartItem?.qty || 1;
       this.cartItemKey = cartItem?.item_id;
+    },
+
+    setWishlist() {
+      const wishlistItems = this.$store.wishlist.wishlistItems;
+
+      // Convert selectedValues into an array of {label, value} objects, ignoring null/undefined values
+      const attributes = this.selectedValues
+        .map((value, index) => (value !== undefined ? {label: index, value} : null))
+        .filter(Boolean);
+
+      // Find the wishlist item that matches all options in attributes
+      const matchingItem = wishlistItems.find(item => {
+        const matchingOptions = item.options.filter(option =>
+          attributes.some(attr =>
+            ((option.option_id && option.option_id === attr.label) || (option.label === attr.label)) &&
+            option.option_value === attr.value
+          )
+        );
+        return matchingOptions.length === attributes.length && matchingOptions.length === item.options.length;
+      });
+
+      this.currentWishlistItem = matchingItem || false;
     },
 
     checkIsItemInCart(item: CartItem) {

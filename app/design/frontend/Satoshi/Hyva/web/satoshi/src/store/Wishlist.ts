@@ -30,8 +30,6 @@ export type WishlistItem = {
 
 export type WishlistStoreType = {
   wishlistItems: WishlistItem[];
-  isInWishlist: boolean;
-
   setWishlistItems(wishlistItems: WishlistItem[]): void;
   handleWishlistButtonClick(event: Event, isWishlistVisible: boolean): void;
   showWishlist(): void;
@@ -43,10 +41,9 @@ const WISHLIST_POPUP_ID = 'wishlist';
 
 export const WishlistStore = <WishlistStoreType>{
   wishlistItems: [],
-  isInWishlist: false,
 
   setWishlistItems(wishlistItems: WishlistItem[]) {
-      this.wishlistItems = wishlistItems;
+    this.wishlistItems = wishlistItems;
   },
 
   handleWishlistButtonClick(event, isWishlistVisible) {
@@ -74,7 +71,7 @@ export const WishlistStore = <WishlistStoreType>{
     }
   },
 
-  addToWishlist(productId: string, updateParams?: string) {
+  async addToWishlist(productId: string, updateParams?: string) {
     const postParams = updateParams ||
       {
         action: BASE_URL + "wishlist/index/add/",
@@ -123,13 +120,15 @@ export const WishlistStore = <WishlistStoreType>{
       if (response.redirected && response.url.includes('/customer/account/login')) {
         window.location.href = response.url;
       } else if (response.ok) {
-        return response.json();
+        return response.text();
       }
-    }).then((response) => {
-      if (!response) {
+    }).then((content) => {
+      if (!content) {
         return;
       }
-      this.isInWishlist = true;
+      window.hyva.replaceDomElement("#popup-content", content);
+      window.hyva.replaceDomElement("#wishlist-items", content);
+    }).then(() => {
       this.showWishlist();
     }).catch((error) => {
       console.log(error);
@@ -150,16 +149,14 @@ export const WishlistStore = <WishlistStoreType>{
       credentials: "include",
     })
       .then(response => {
-        if (response.ok) {
-          this.isInWishlist = false;
-        } else {
-          return response.text().then(text => {
-            throw new Error(text);
-          });
-        }
+        return response.text();
+      })
+      .then((content) => {
+        window.hyva.replaceDomElement("#popup-content", content);
+        window.hyva.replaceDomElement("#wishlist-items", content);
       })
       .catch(error => {
-        console.log('Error removing item from wishlist:', error);
+        console.log(error);
       });
 
   }
