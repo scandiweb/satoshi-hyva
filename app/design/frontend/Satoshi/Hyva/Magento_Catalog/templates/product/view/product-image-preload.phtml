@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\View\Gallery;
+use Magento\Framework\Escaper;
+
+/** @var Gallery $block */
+/** @var Escaper $escaper */
+
+$images = $block->getGalleryImages()->getItems();
+$mainImage = current(array_filter($images, [$block, 'isMainImage']));
+
+if (!empty($images) && empty($mainImage)) {
+    $mainImage = reset($images);
+}
+
+/** @var Image $helper */
+$helper = $block->getData('imageHelper');
+$mainImageUrl = $mainImage ? $mainImage->getData('medium_image_url') : $helper->getDefaultPlaceholderUrl('image');
+?>
+
+<link rel="preload" as="image" href="<?= $escaper->escapeUrl($mainImageUrl) ?>" />

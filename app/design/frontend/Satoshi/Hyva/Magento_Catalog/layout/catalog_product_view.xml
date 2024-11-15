@@ -2,6 +2,11 @@
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
+        <!-- Render preload link inside head -->
+        <referenceContainer name="head.additional">
+            <block class="Magento\Catalog\Block\Product\View\Gallery" name="product.image.preload" template="Magento_Catalog::product/view/product-image-preload.phtml" />
+        </referenceContainer>
+
         <referenceBlock name="product.detail.page">
             <block class="Magento\Catalog\Block\Product\View\Gallery" name="product.details" template="Magento_Catalog::product/view/product-details.phtml">
                 <block class="Magento\Catalog\Block\Product\View" name="product.details.info" template="Magento_Catalog::product/view/product-details-info.phtml" />
