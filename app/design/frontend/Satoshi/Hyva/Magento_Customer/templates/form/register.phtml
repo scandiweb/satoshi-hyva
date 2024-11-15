@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Customer\CreateAccountButton;
 use Hyva\Theme\ViewModel\ReCaptcha;
-use Satoshi\Theme\Block\Form\Register;
+use Satoshi\Customer\Block\Form\Register;
 use Magento\Customer\Block\Widget\Dob;
 use Magento\Customer\Block\Widget\Gender;
 use Magento\Customer\Block\Widget\Name as NameWidget;
@@ -51,16 +51,20 @@ $errorMessage = $block->getErrorMessage();
         <?= $block->getChildHtml('customer.form.register.extra') ?>
         <form
             action="<?= $escaper->escapeUrl($block->getPostActionUrl()) ?>"
-            x-data="Object.assign(hyva.formValidation($el), Authentication(), Form('<?= $escaper->escapeHtmlAttr($formId) ?>'))"
+            x-data="Object.assign(
+                hyva.formValidation($el),
+                Authentication(),
+                Form('<?= $escaper->escapeHtmlAttr($formId) ?>'),
+                AddressEdit(),
+            )"
             x-init="initRegister({
                 telephoneErrorMessage: '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
                 postCodes: <?= $escaper->escapeHtmlAttr($block->getPostCodeConfig()->getSerializedPostCodes() ?? []) ?>,
                 postcodeWarnings: [
-                        '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
-                        '<?= $escaper->escapeJs(__(' Example: ')) ?>',
-                        '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
-                    ],
-
+                    '<?= $escaper->escapeJs(__('Provided Zip/Postal Code seems to be invalid.')) ?>',
+                    '<?= $escaper->escapeJs(__(' Example: ')) ?>',
+                    '<?= $escaper->escapeJs(__('If you believe it is the right one you can ignore this notice.')) ?>'
+                ],
             })"
             <?php if ($block->getShowAddressFields()): ?>
                 @private-content-loaded.window="updateCountry(event.detail.data)"
@@ -102,7 +106,8 @@ $errorMessage = $block->getErrorMessage();
                 </p>
             </template>
 
-            <?= /* @noEscape */ $block->getBlockHtml('formkey'); ?>
+            <?= /* @noEscape */
+            $block->getBlockHtml('formkey'); ?>
             <?= $block->getChildHtml('form_fields_before') ?>
 
             <div class="flex flex-col gap-3">
@@ -170,11 +175,10 @@ $errorMessage = $block->getErrorMessage();
                         />
                         <div
                             id="password-strength-meter-container"
-                            class="mt-2 text-sm"
                             data-role="password-strength-meter"
                             aria-live="polite"
                         >
-                            <div id="password-strength-meter" class="password-strength-meter">
+                            <div id="password-strength-meter" class="password-strength-meter mt-2 text-[14px]">
                                 <?= $escaper->escapeHtml(__('Password Strength')) ?>:
                                 <span
                                     id="password-strength-meter-label"
@@ -193,7 +197,8 @@ $errorMessage = $block->getErrorMessage();
                     <?php endif; ?>
                 </div>
 
-                <div class="field field-reserved<?= !empty($errorMessage['password_confirmation']) ? ' field-error' : '' ?>">
+                <div
+                    class="field field-reserved<?= !empty($errorMessage['password_confirmation']) ? ' field-error' : '' ?>">
                     <label class="sr-only tracking-widest" for="password-confirmation">
                         <span><?= $escaper->escapeHtml(__('Confirm New Password')) ?></span>
                     </label>
@@ -239,7 +244,8 @@ $errorMessage = $block->getErrorMessage();
 
                         <div class="field field-reserved<?= !empty($errorMessage['street[]']) ? ' field-error' : '' ?>">
                             <label for="street_1" class="sr-only tracking-widest">
-                                <span><?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('street') ?></span>
+                                <span><?= /* @noEscape */
+                                    $block->getAttributeData()->getFrontendLabel('street') ?></span>
                             </label>
                             <div>
                                 <input
@@ -247,7 +253,8 @@ $errorMessage = $block->getErrorMessage();
                                     name="street[]"
                                     required
                                     value="<?= $escaper->escapeHtmlAttr($block->getFormData()->getStreet(0)) ?>"
-                                    title="<?= /* @noEscape */ $block->getAttributeData()->getFrontendLabel('street') ?>"
+                                    title="<?= /* @noEscape */
+                                    $block->getAttributeData()->getFrontendLabel('street') ?>"
                                     id="street_1"
                                     placeholder="<?= $escaper->escapeHtmlAttr(__('Enter your street address')) ?>"
                                     class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
@@ -258,7 +265,8 @@ $errorMessage = $block->getErrorMessage();
 
                         <?php for ($i = 2, $n = $this->helper(Address::class)->getStreetLines(); $i <= $n; $i++): ?>
                             <div class="field field-reserved">
-                                <label class="sr-only tracking-widest" for="street_<?= /* @noEscape */ $i ?>">
+                                <label class="sr-only tracking-widest" for="street_<?= /* @noEscape */
+                                $i ?>">
                                     <span><?= $escaper->escapeHtml(__('Street Address %1', $i)) ?></span>
                                 </label>
                                 <div>
@@ -329,21 +337,25 @@ $errorMessage = $block->getErrorMessage();
                             :class="{ 'required': isRegionRequired }"
                         >
                             <label class="sr-only tracking-widest" for="region_id">
-                                <span><?= /* @noEscape */ $regionLabel ?></span>
+                                <span><?= /* @noEscape */
+                                    $regionLabel ?></span>
                             </label>
-                            <div class="field field-reserved<?= !empty($errorMessage['region']) ? ' field-error' : '' ?>">
+                            <div
+                                class="field field-reserved<?= !empty($errorMessage['region']) ? ' field-error' : '' ?>">
                                 <template x-if="hasAvailableRegions() && (isRegionRequired || showOptionalRegions)">
                                     <div class="relative">
                                         <select
                                             id="region_id" name="region_id"
-                                            title="<?= /* @noEscape */ $regionLabel ?>"
+                                            title="<?= /* @noEscape */
+                                            $regionLabel ?>"
                                             class="input__field input__field--outline h-auto bg-bg-500 px-5 py-2.5"
                                             x-ref="region_id"
                                             x-model="selectedRegion"
                                             :required="isRegionRequired"
                                             @input.debounce="onRegionIdChange"
                                         >
-                                            <option value=""><?= $escaper->escapeHtml(__('Please select a region, state or province.')) ?></option>
+                                            <option
+                                                value=""><?= $escaper->escapeHtml(__('Please select a region, state or province.')) ?></option>
                                             <template x-for="regionId in Object.keys(availableRegions)">
                                                 <?php /* in alpine v3, if the bound props update, the template body gets evaluated before the template condition */ ?>
                                                 <?php /* because of this it is required to check if availableRegions[regionId] is set */ ?>
@@ -402,14 +414,16 @@ $errorMessage = $block->getErrorMessage();
                                 >
                                     <?php foreach ($countries as $country): ?>
                                         <option
-                                            name="<?= /** @noEscape */ $country['label'] ?>"
+                                            name="<?= /** @noEscape */
+                                            $country['label'] ?>"
                                             value="<?= /** @noEscape */
                                             $country['value'] ?>"
                                             data-is-zip-required="<?= (isset($country['is_zipcode_optional'])) ? '0' : '1' ?>"
                                             data-is-region-required="<?= (isset($country['is_region_required'])) ? '1' : '0' ?>"
                                             <?= ($block->getCountryId() === $country['value']) ? 'selected="selected"' : '' ?>
                                         >
-                                            <?= /** @noEscape */ $country['label'] ?>
+                                            <?= /** @noEscape */
+                                            $country['label'] ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
