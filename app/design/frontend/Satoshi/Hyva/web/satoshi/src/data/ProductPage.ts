@@ -1,6 +1,8 @@
 import {withXAttributes} from "alpinejs";
 import {POPUP_OVERLAY_CLICK_EVENT} from "../store/Popup";
 import {CartItem} from "../store/Cart";
+import {WishlistItem} from "../store/Wishlist.ts";
+
 
 export type ProductPageType = {
   [key: string | symbol]: any;
@@ -152,7 +154,7 @@ export const ProductPage = (productSku?: string) =>
 
     init() {
       Alpine.nextTick(() => {
-        this.currentWishlistItem = this.$store.wishlist.wishlistItems.find(item => item.product_sku === productSku) || false;
+        this.currentWishlistItem = this.$store.wishlist.wishlistItems.find((item: WishlistItem) => item.product_sku === productSku) || false;
       });
 
       this.$watch("$store.wishlist.wishlistItems", () => this.setWishlist());
@@ -205,11 +207,11 @@ export const ProductPage = (productSku?: string) =>
         .filter(Boolean);
 
       // Find the wishlist item that matches all options in attributes
-      const matchingItem = wishlistItems.find(item => {
+      const matchingItem = wishlistItems.find((item: WishlistItem) => {
         const matchingOptions = item.options.filter(option =>
           attributes.some(attr =>
-            ((option.option_id && option.option_id === attr.label) || (option.label === attr.label)) &&
-            option.option_value === attr.value
+            ((option.option_id && option.option_id === attr?.label) || (option?.label === `${attr?.label}`)) &&
+            option.option_value === attr?.value
           )
         );
         return matchingOptions.length === attributes.length && matchingOptions.length === item.options.length;

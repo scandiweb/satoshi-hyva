@@ -56,7 +56,7 @@ $cartMessage = $block->getCartMessage();
     <div x-html="document.getElementById('bundleSummary').innerHTML"></div>
   <?php endif; ?>
 
-  <div class="flex flex-grow flex-wrap justify-stretch gap-3 bg-bg-500 relative">
+    <div class="flex md:flex-grow md:flex-wrap md:justify-stretch gap-3 bg-bg-500 relative">
     <!-- Quantity Controls -->
     <?php if ($block->getChildBlock('product.info.quantity')): ?>
       <?= $block->getChildBlock('product.info.quantity')->setData([
@@ -112,11 +112,6 @@ $cartMessage = $block->getCartMessage();
           <?= __('Adding...') ?>
       </span>
     </button>
-      <?=
-      $template
-          ->render('Magento_Catalog::product/view/addtowishlist.phtml')
-      ?>
-
     <!-- Select items, only for grouped products -->
     <button
       <?php if ($productType !== 'grouped'): ?>
@@ -334,6 +329,9 @@ $cartMessage = $block->getCartMessage();
     >
       <?= __('Show product') ?>
     </a>
+        <?=
+        $template->render('Magento_Catalog::product/view/addtowishlist.phtml')
+        ?>
   </div>
 </div>
 

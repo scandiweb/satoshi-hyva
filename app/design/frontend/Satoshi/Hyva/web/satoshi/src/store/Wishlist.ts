@@ -71,68 +71,68 @@ export const WishlistStore = <WishlistStoreType>{
     }
   },
 
-  async addToWishlist(productId: string, updateParams?: string) {
-    const postParams = updateParams ||
-      {
-        action: BASE_URL + "wishlist/index/add/",
-        data:
-          {
-            product: productId,
-            uenc:
-              hyva.getUenc()
-          }
+  async addToWishlist(productId: string, updateParams?: any | { action: string; data: Record<string, any> }) {
+    const postParams = updateParams || {
+      action: BASE_URL + "wishlist/index/add/",
+      data: {
+        product: productId,
+        uenc: window.hyva.getUenc(),
       }
+    };
 
-    postParams.data['form_key'] = hyva.getFormKey();
-    postParams.data['qty'] = document.getElementById(`qty[${productId}]`)
-      ? document.getElementById(`qty[${productId}]`).value || 1
-      : 1;
+    const qtyElement = document.getElementById(`qty[${productId}]`) as HTMLInputElement | null;
+    postParams.data['form_key'] = window.hyva.getFormKey();
+    postParams.data['qty'] = qtyElement?.value || 1;
 
-    let postData = Object.keys(postParams.data).map(key => {
-      return `${key}=${postParams.data[key]}`;
-    }).join('&');
+    let postData = Object.keys(postParams.data).map(key => `${key}=${postParams.data[key]}`).join('&');
 
-    // take the all the input fields that configure this product
-    // includes custom, configurable, grouped and bundled options
     Array.from(document.querySelectorAll(
-      '[name^=options], [name^=super_attribute], [name^=bundle_option], [name^=super_group], [name^=links]')
-    ).map(input => {
-      if (input.type === "select-multiple") {
-        Array.from(input.selectedOptions).forEach(option => {
-          postData += `&${input.name}=${option.value}`
-        })
-      } else {
-        // skip "checkable inputs" that are not checked
-        if (!(['radio', 'checkbox', 'select'].includes(input.type) && !input.checked)) {
-          postData += `&${input.name}=${input.value}`
+      '[name^=options], [name^=super_attribute], [name^=bundle_option], [name^=super_group], [name^=links]'
+    )).forEach((input) => {
+      if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) {
+        if (input instanceof HTMLSelectElement && input.type === "select-multiple") {
+          Array.from(input.selectedOptions).forEach(option => {
+            postData += `&${input.name}=${option.value}`;
+          });
+        } else if (input instanceof HTMLInputElement) {
+          if (
+            ['radio', 'checkbox'].includes(input.type) && input.checked ||
+            input.type !== 'radio' && input.type !== 'checkbox'
+          ) {
+            postData += `&${input.name}=${input.value}`;
+          }
+        } else if (input instanceof HTMLSelectElement) {
+          postData += `&${input.name}=${input.value}`;
         }
       }
     });
+
+
     fetch(postParams.action, {
-      "headers": {
-        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-      },
-      "body": postData,
-      "method": "POST",
-      "mode": "cors",
-      "credentials": "include"
-    }).then((response) => {
-      if (response.redirected && response.url.includes('/customer/account/login')) {
-        window.location.href = response.url;
-      } else if (response.ok) {
-        return response.text();
-      }
-    }).then((content) => {
-      if (!content) {
-        return;
-      }
-      window.hyva.replaceDomElement("#popup-content", content);
-      window.hyva.replaceDomElement("#wishlist-items", content);
-    }).then(() => {
-      this.showWishlist();
-    }).catch((error) => {
-      console.log(error);
-    });
+      headers: {"content-type": "application/x-www-form-urlencoded; charset=UTF-8"},
+      body: postData,
+      method: "POST",
+      mode: "cors",
+      credentials: "include"
+    })
+      .then((response: Response) => {
+        if (response.redirected && response.url.includes('/customer/account/login')) {
+          window.location.href = response.url;
+        } else if (response.ok) {
+          return response.text();
+        }
+      })
+      .then((content: string | undefined) => {
+        if (content) {
+          window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+        }
+      })
+      .then(() => {
+        this.showWishlist();
+      })
+      .catch((error: Error) => {
+        console.error(error);
+      });
   },
   removeFromWishlist(itemId: string) {
     fetch(`${BASE_URL}/wishlist/index/remove`, {
@@ -142,18 +142,14 @@ export const WishlistStore = <WishlistStoreType>{
       },
       body: new URLSearchParams({
         item: itemId,
-        form_key: hyva.getFormKey(),
-        uenc: hyva.getUenc(),
+        form_key: window.hyva.getFormKey(),
+        uenc: window.hyva.getUenc(),
       }),
       mode: "cors",
       credentials: "include",
     })
-      .then(response => {
-        return response.text();
-      })
-      .then((content) => {
-        window.hyva.replaceDomElement("#popup-content", content);
-        window.hyva.replaceDomElement("#wishlist-items", content);
+      .then(() => {
+        window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
       })
       .catch(error => {
         console.log(error);
