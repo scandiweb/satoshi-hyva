@@ -43,6 +43,7 @@ $updateParams = $block->getUpdateParams() ?: null;
 
 <button
     type="button"
+    :class="{'button--disabled': $store.wishlist.wishListUpdateIsLoading}"
     class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-md md:icon-button--size-lg"
     @click.prevent="!currentWishlistItem ? $store.wishlist.addToWishlist(<?= (int)$product->getId() ?>) : $store.wishlist.removeFromWishlist(currentWishlistItem['item_id'])"
     title="<?= $escaper->escapeHtmlAttr(

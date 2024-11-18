@@ -29,6 +29,7 @@ export type WishlistItem = {
 };
 
 export type WishlistStoreType = {
+  wishListUpdateIsLoading: boolean;
   wishlistItems: WishlistItem[];
   setWishlistItems(wishlistItems: WishlistItem[]): void;
   handleWishlistButtonClick(event: Event, isWishlistVisible: boolean): void;
@@ -40,6 +41,7 @@ const WISHLIST_RESIZABLE_ID = 'wishlist-desktop';
 const WISHLIST_POPUP_ID = 'wishlist';
 
 export const WishlistStore = <WishlistStoreType>{
+  wishListUpdateIsLoading: false,
   wishlistItems: [],
 
   setWishlistItems(wishlistItems: WishlistItem[]) {
@@ -72,6 +74,7 @@ export const WishlistStore = <WishlistStoreType>{
   },
 
   async addToWishlist(productId: string, updateParams?: any | { action: string; data: Record<string, any> }) {
+    this.wishListUpdateIsLoading = true;
     const postParams = updateParams || {
       action: BASE_URL + "wishlist/index/add/",
       data: {
@@ -132,9 +135,12 @@ export const WishlistStore = <WishlistStoreType>{
       })
       .catch((error: Error) => {
         console.error(error);
-      });
+      }).finally(() => {
+      this.wishListUpdateIsLoading = false;
+    });
   },
   removeFromWishlist(itemId: string) {
+    this.wishListUpdateIsLoading = true;
     fetch(`${BASE_URL}/wishlist/index/remove`, {
       method: 'POST',
       headers: {
@@ -153,7 +159,9 @@ export const WishlistStore = <WishlistStoreType>{
       })
       .catch(error => {
         console.log(error);
-      });
+      }).finally(() => {
+      this.wishListUpdateIsLoading = false;
+    });
 
   }
 };
