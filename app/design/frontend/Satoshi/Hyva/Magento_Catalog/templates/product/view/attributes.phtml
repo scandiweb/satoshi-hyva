@@ -37,8 +37,8 @@ $product = $block->getProduct();
             <p class="text-base font-semibold leading-tight text-text-500">
                 <?= $block->getTitle() ? $escaper->escapeHtml($block->getTitle()) : '&nbsp;' ?>
             </p>
-            <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
-                <?= $hyvaicons->renderHtml('chevron-up', 'rotate-180'); ?>
+            <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" style="rotate: -180deg;">
+                <?= $hyvaicons->renderHtml('chevron', 'rotate-90', attributes: ['title' => '']); ?>
             </span>
         </button>
         <div
