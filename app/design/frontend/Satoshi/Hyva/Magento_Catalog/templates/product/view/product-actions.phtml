@@ -316,7 +316,7 @@ $cartMessage = $block->getCartMessage();
         style="display: none"
       <?php endif; ?>
       x-show="<?= (int) ($productType !== 'downloadable') ?> && (!isVariantInCart || <?= (int) $isPopup ?>)"
-      class="animate-on-transition button button--outline-primary w-full md:hidden"
+      class="animate-on-transition button button--outline-primary flex-grow md:hidden"
       :class="
       {
         'max-md:hidden': !isVariantInCart || !<?= (int) $isPopup ?>
