@@ -91,9 +91,8 @@ if ($product) {
                     id="mobile-image"
                     height="100%"
                     width="100%"
-                    class="max-h-full w-auto object-center object-cover h-full mix-blend-darken"
+                    class="max-h-full w-auto object-center object-contain rounded-2xl mix-blend-darken"
                     alt="<?= $escaper->escapeHtmlAttr($mainImage ? $mainImage->getData('label') : $productName) ?>"
-                    class=" inset-0 object-contain object-center w-full h-full m-auto"
                     loading="lazy"
                     src="<?= $mainImageUrl ?>"
                 >
