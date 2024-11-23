@@ -47,6 +47,7 @@ import { ReviewList } from "./data/ReviewList.ts";
 import { AccountInformation } from "./data/AccountInformation";
 import { Recaptcha } from "./data/Recaptcha";
 import { PasswordValidation } from "./data/PasswordValidation";
+import { Logout } from "./data/Logout";
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -94,4 +95,5 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("AccountInformation", AccountInformation);
   Alpine.data("Recaptcha", Recaptcha);
   Alpine.data("PasswordValidation", PasswordValidation);
+  Alpine.data("Logout", Logout);
 });
