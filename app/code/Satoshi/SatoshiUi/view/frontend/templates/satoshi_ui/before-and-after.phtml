@@ -1,0 +1,91 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\Model\ViewModelRegistry;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$sectionHeight = $block->getData('section_height');
+$beforeImage = $block->getData('before_image');
+$afterImage = $block->getData('after_image');
+$id = uniqid();
+?>
+
+<div
+    class="m-auto"
+    x-data="BeforeAfter({ id: '<?= $escaper->escapeHtmlAttr($id) ?>' })" id="<?= $escaper->escapeHtmlAttr($id) ?>"
+    style="--exposure: 50%;"
+>
+    <div
+        class="
+            relative overflow-hidden rounded-md
+            <?= match($sectionHeight) {
+                'small' => 'h-[40vh]',
+                'medium' => 'h-[60vh]',
+                'large' => 'h-[80vh]'
+            } ?>
+        "
+    >
+        <?php if(!empty($afterImage)): ?>
+            <div class="h-full">
+                <img src="<?= $escaper->escapeUrl($afterImage) ?>" alt="Image after" class="h-full object-cover object-center" width="100%" height="100%" loading="lazy">
+            </div>
+        <?php else: ?>
+            <!-- TODO: Add fallback -->
+            <!-- {{ 'lifestyle-2' | placeholder_svg_tag: 'w-full h-full min-h-[300px] bg-secondary-100 text-text-on-primary-bg ' }} -->
+        <?php endif; ?>
+        <div
+            class="absolute left-0 top-0 h-full w-full"
+            style="clip-path: inset(0 var(--exposure) 0 0);"
+        >
+            <?php if(!empty($beforeImage)): ?>
+                <div class="h-full">
+                    <img src="<?= $escaper->escapeUrl($beforeImage) ?>" alt="Image after" class="h-full object-cover object-center" width="100%" height="100%" loading="lazy">
+                </div>
+            <?php else: ?>
+            <!-- TODO: Add fallback -->
+            <!-- {{
+                'lifestyle-1'
+                | placeholder_svg_tag: 'w-full h-full min-h-[300px] bg-secondary-400 text-text-on-primary-bg'
+            }} -->
+            <?php endif; ?>
+        </div>
+        <div class="absolute right-[--exposure] top-0 h-full w-[2px] touch-none select-none bg-bg-500">
+            <label for="exposure_<?= $escaper->escapeHtmlAttr($id) ?>" class="sr-only tracking-widest">
+                <?= $escaper->escapeHtml(__('Exposure')) ?>
+            </label>
+            <input
+                class="[&:focus-visible_+_.button]:focus-ring sr-only"
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                x-model="exposure"
+                name="exposure"
+                tabindex="-1"
+                id="exposure_<?= $escaper->escapeHtmlAttr($id) ?>"
+            >
+            <span
+                class="button button--filled-secondary icon-button icon-button--size-sm absolute bottom-0 top-0 m-auto -translate-x-1/2 text-secondary-500  [&_svg]:rotate-90"
+                @pointerdown="onPointerDown"
+                @keydown="onKeyDown"
+                tabindex="0"
+                role="slider"
+                :aria-valuenow="parseInt(exposure, 10)"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Exposure')) ?>"
+                id="exposure"
+            >
+                <?= $hyvaicons->renderHtml('menu') ?>
+            </span>
+        </div>
+    </div>
+</div>
