@@ -1,0 +1,71 @@
+<div
+    attr="data.main.attributes"
+    ko-style="data.main.style"
+    class="pagebuilder-content-type before-and-after"
+    css="data.main.css"
+    event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+    <div
+        class="before-and-after__container"
+        data-bind="css: 'before-and-after__container-' + data.section_height.html()"
+    >
+        <div class="before-and-after__wrapper">
+            <img
+                css="data.before_image.css"
+                attr="data.before_image.attributes"
+                ko-style="data.before_image.style"
+                width="100%"
+                height="100%"
+                loading="lazy"
+                class="before-and-after__img"
+            />
+        </div>
+        <div class="before-and-after__after">
+            <div class="before-and-after__wrapper">
+                <img
+                    css="data.after_image.css"
+                    attr="data.after_image.attributes"
+                    ko-style="data.after_image.style"
+                    width="100%"
+                    height="100%"
+                    loading="lazy"
+                    class="before-and-after__img"
+                />
+            </div>
+        </div>
+
+        <div class="before-and-after__handle">
+            <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                name="exposure"
+                tabindex="-1"
+            />
+            <span
+                @pointerdown="onPointerDown"
+                @keydown="onKeyDown"
+                tabindex="0"
+                role="slider"
+                id="exposure"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                    width="24"
+                    height="24"
+                    role="img"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M3 7a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                        clip-rule="evenodd"
+                    ></path>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <render args="getOptions().template" />
+</div>
