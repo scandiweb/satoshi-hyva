@@ -1,0 +1,44 @@
+<div
+    attr="data.main.attributes"
+    ko-style="data.main.style"
+    class="pagebuilder-content-type"
+    css="data.main.css"
+    event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+    <div class="image-banner__overlay"></div>
+    <div>
+        <img
+            css="data.image.css"
+            attr="data.image.attributes"
+            ko-style="data.image.style"
+            width="100%"
+            height="100%"
+            loading="lazy"
+            class="image-banner__img"
+        />
+    </div>
+    <div class="image-banner__container">
+        <div class="image-banner__content">
+            <h2
+                class="image-banner__title"
+                attr="data.heading.attributes"
+                ko-style="data.heading.style"
+                css="data.heading.css"
+                data-bind="liveEdit: { field: 'heading', placeholder: $t('Enter heading') }"
+            ></h2>
+            <p
+                attr="data.subheading.attributes"
+                ko-style="data.subheading.style"
+                css="data.subheading.css"
+                data-bind="liveEdit: { field: 'subheading', placeholder: $t('Enter subheading') }"
+                class="image-banner__subheading"
+            ></p>
+            <iframe
+                frameborder="0"
+                allowfullscreen
+                attr="data.video.attributes"
+            ></iframe>
+        </div>
+    </div>
+    <render args="getOptions().template" />
+</div>
