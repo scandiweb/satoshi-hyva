@@ -44,8 +44,7 @@
                 tabindex="-1"
             />
             <span
-                @pointerdown="onPointerDown"
-                @keydown="onKeyDown"
+                event="{ pointerdown: onPointerDown }"
                 tabindex="0"
                 role="slider"
                 id="exposure"
