@@ -4,7 +4,7 @@
         label="Video"
         menu_section="satoshi_components"
         component="Magento_PageBuilder/js/content-type"
-        preview_component="Magento_PageBuilder/js/content-type/preview"
+        preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-video/preview"
         master_component="Magento_PageBuilder/js/content-type/master"
         form="pagebuilder_satoshi_video_form"
         icon="icon-pagebuilder-heading"
