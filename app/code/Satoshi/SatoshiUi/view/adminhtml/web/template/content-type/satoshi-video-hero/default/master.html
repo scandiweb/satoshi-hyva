@@ -1,0 +1,58 @@
+<div attr="data.main.attributes" ko-style="data.main.style" css="data.main.css">
+    <div data-is-page-builder-ignored-element="true">
+        <div
+            class="pagebuilder-video-container"
+            if="data.video.attributes().src"
+            hidden
+        >
+            <iframe
+                frameborder="0"
+                allowfullscreen
+                attr="data.video.attributes"
+            ></iframe>
+        </div>
+
+        <h2
+            attr="data.heading.attributes"
+            ko-style="data.heading.style"
+            css="data.heading.css"
+            html="data.heading.html"
+            hidden
+        ></h2>
+        <p
+            attr="data.description.attributes"
+            ko-style="data.description.style"
+            css="data.description.css"
+            html="data.description.html"
+            hidden
+        ></p>
+
+        <p
+            attr="data.overlay_opacity.attributes"
+            ko-style="data.overlay_opacity.style"
+            css="data.overlay_opacity.css"
+            html="data.overlay_opacity.html"
+            hidden
+        ></p>
+
+        <a
+            attr="data.button_link.attributes"
+            ko-style="data.button_link.style"
+            css="data.button_link.css"
+            hidden
+        >
+            <span
+                attr="data.button_label.attributes"
+                ko-style="data.button_label.style"
+                css="data.button_label.css"
+                html="data.button_label.html"
+                hidden
+            ></span>
+        </a>
+    </div>
+
+    <div
+        attr="data.block_directive.attributes"
+        html="data.block_directive.html"
+    ></div>
+</div>
