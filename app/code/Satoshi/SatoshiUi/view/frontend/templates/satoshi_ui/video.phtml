@@ -18,6 +18,7 @@ $videoUrl = $block->getData('video_source');
 $imageUrl = $block->getData('image');
 $heading = $block->getData('heading');
 $subheading = $block->getData('subheading');
+$autoplay = $block->getData('autoplay');
 
 ?>
 <div>
@@ -89,6 +90,8 @@ $subheading = $block->getData('subheading');
         <template x-if="loaded">
             <iframe
                 src="<?= $escaper->escapeUrl($videoUrl) ?>"
+                autoplay="<?= $autoplay ? 'true' : 'false' ?>"
+                muted="true"
                 class="h-full w-full"
                 allow="autoplay; encrypted-media"
                 allowfullscreen
