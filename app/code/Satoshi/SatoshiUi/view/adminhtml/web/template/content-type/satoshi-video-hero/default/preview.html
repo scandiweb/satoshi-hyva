@@ -1,0 +1,55 @@
+<div
+    attr="data.main.attributes"
+    ko-style="data.main.style"
+    class="pagebuilder-content-type satoshi-video"
+    css="data.main.css"
+    event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+    <div class="video__wrapper">
+        <button class="video__wrapper--button">
+            <div class="video__intro">
+                <div class="video__intro--container">
+                    <div>
+                        <h2
+                            attr="data.description.attributes"
+                            ko-style="data.description.style"
+                            css="data.description.css"
+                            data-bind="liveEdit: { field: 'description', placeholder: $t('Enter description') }"
+                        ></h2>
+                        <h1
+                            attr="data.heading.attributes"
+                            ko-style="data.heading.style"
+                            css="data.heading.css"
+                            data-bind="liveEdit: { field: 'heading', placeholder: $t('Enter heading') }"
+                        ></h1>
+                    </div>
+                    <span>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
+                            focusable="false"
+                            role="presentation"
+                            fill="none"
+                            viewBox="0 0 10 14"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M1.48177 0.814643C0.81532 0.448245 0 0.930414 0 1.69094V12.2081C0 12.991 0.858787 13.4702 1.52503 13.0592L10.5398 7.49813C11.1918 7.09588 11.1679 6.13985 10.4965 5.77075L1.48177 0.814643Z"
+                                fill="currentColor"
+                            ></path>
+                            <title>play</title>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+        </button>
+        <iframe
+            frameborder="0"
+            allowfullscreen
+            attr="data.video.attributes"
+            style="display: none"
+        ></iframe>
+    </div>
+    <render args="getOptions().template" />
+</div>

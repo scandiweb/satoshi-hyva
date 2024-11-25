@@ -1,6 +1,7 @@
-define(["Satoshi_SatoshiUi/js/content-type/block-directive"], function (
-  BlockDirectiveBase
-) {
+define([
+  "Satoshi_SatoshiUi/js/content-type/block-directive",
+  "Satoshi_SatoshiUi/js/helper/link",
+], function (BlockDirectiveBase, linkHelper) {
   "use strict";
   const $super = BlockDirectiveBase.prototype;
 
@@ -84,6 +85,8 @@ define(["Satoshi_SatoshiUi/js/content-type/block-directive"], function (
       }
     }
 
+    processedGetParams.push("controls=0");
+
     return processedGetParams.length > 0
       ? "?" + processedGetParams.join("&")
       : "";
@@ -92,6 +95,8 @@ define(["Satoshi_SatoshiUi/js/content-type/block-directive"], function (
   _proto.getAdditionalBlockAttributes = function getAdditionalBlockAttributes(
     data
   ) {
+    const tidyLink = linkHelper.prototype.tidyLink;
+
     // Parse video url
     let src = data.video_source;
     const youtubeRegExp = new RegExp(
@@ -117,10 +122,12 @@ define(["Satoshi_SatoshiUi/js/content-type/block-directive"], function (
 
     return {
       heading: data.heading,
-      subheading: data.subheading,
+      description: data.description,
+      button_label: data.button_label,
+      button_link: JSON.stringify(tidyLink(data.button_link)),
+      overlay_opacity: +data.overlay_opacity / 100,
       video_source: src,
       autoplay: data.autoplay,
-      ...(data.image[0] ? { image: data.image[0].url } : {}),
     };
   };
 
