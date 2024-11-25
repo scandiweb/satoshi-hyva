@@ -41,13 +41,13 @@ $logoHeight = $logoHeight ?? 150;
         alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : __('Store logo')) ?>"
         width="<?= $escaper->escapeHtmlAttr($logoWidth) ?>"
         height="<?= $escaper->escapeHtmlAttr($logoHeight) ?>"
-        style="filter:url(#border); max-width: <?= $logoWidth ?>px;"
+        style="filter:url(#border); --max-logo-width: <?= $logoWidth ?>px"
         <?php if($logoHeight > 56): ?>
             :style="{
                 '--logo-height': $store.main.isHeaderShadowVisible ? '56px' : '<?= $escaper->escapeHtmlAttr($logoHeight) ?>px',
             }"
         <?php endif ?>
-        class="max-md:h-[32px] w-auto transition-all <?php if($logoHeight > 56): ?> md:h-[--logo-height] <?php endif ?>"
+        class="max-md:h-[32px] w-auto transition-all md:max-w-[--max-logo-width] <?php if ($logoHeight > 56): ?>md:h-[--logo-height]<?php endif ?>"
     />
 <?php else: ?>
     <svg
