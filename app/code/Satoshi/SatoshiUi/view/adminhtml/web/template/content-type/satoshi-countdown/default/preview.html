@@ -1,0 +1,13 @@
+<div
+    attr="data.main.attributes"
+    ko-style="data.main.style"
+    class="pagebuilder-content-type"
+    css="data.main.css"
+    event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+>
+    <div style="height: 300px"></div>
+
+    <div ko-style="data.overlay_opacity.style"></div>
+    <!-- <div attr="data.date_example.attributes"></div> -->
+    <render args="getOptions().template" />
+</div>
