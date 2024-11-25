@@ -76,7 +76,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
           }
         "
       >
-        <?= $hyvaicons->renderHtml('close'); ?>
+          <?= $hyvaicons->renderHtml('close', attributes: ['title' => '']); ?>
       </button>
     </div>
   </form>
