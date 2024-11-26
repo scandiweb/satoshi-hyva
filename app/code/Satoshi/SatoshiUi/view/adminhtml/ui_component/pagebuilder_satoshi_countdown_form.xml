@@ -238,7 +238,7 @@
         <field name="section_height" sortOrder="90" formElement="select" component="Magento_PageBuilder/js/form/element/visual-select">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="default" xsi:type="string">large</item>
+                    <item name="default" xsi:type="string">small</item>
                 </item>
             </argument>
             <settings>
