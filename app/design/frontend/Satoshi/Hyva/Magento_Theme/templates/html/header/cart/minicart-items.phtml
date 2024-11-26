@@ -91,7 +91,7 @@ $mixBackground = true;
                 <?= $template->render('Magento_Theme::html/header/cart/minicart-quantity-controls.phtml') ?>
               </div>
               <div
-                class="flex flex-col items-center justify-between text-md <?= $isCartPage ? 'md:items-start' : '' ?>">
+                  class="flex flex-col items-center text-primary-500 justify-between text-md <?= $isCartPage ? 'md:items-start' : '' ?>">
                 <span x-text="hyva.formatPrice(item.product_price_value)"></span>
               </div>
             </div>
