@@ -53,7 +53,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         "
       >
       <div
-          class="max-md:icon-button--size-md md:button md:icon-button md:icon-button--size-lg md:order-1 md:text-primary-500 max-md:pointer-events-none max-md:absolute max-md:right-0 max-md:top-0 max-md:z-10 max-md:flex max-md:items-center max-md:justify-center max-md:px-0 max-md:text-lg max-md:text-text-500"
+        class="max-md:icon-button--size-md md:button md:icon-button md:icon-button--size-lg md:order-1 md:text-primary-500 max-md:pointer-events-none max-md:absolute max-md:right-0 max-md:top-0 max-md:z-10 max-md:flex max-md:items-center max-md:justify-center max-md:px-0 max-md:text-lg max-md:text-text-500"
         x-show="!$store.main.isMobile || !searchTerm"
         :class="
           {
@@ -76,7 +76,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
           }
         "
       >
-          <?= $hyvaicons->renderHtml('close', attributes: ['title' => '']); ?>
+          <?= $hyvaicons->renderHtml('close', attributes: ['title' => 'Clear']); ?>
       </button>
     </div>
   </form>
