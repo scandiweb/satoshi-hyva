@@ -12,10 +12,15 @@ use Magento\Framework\View\Element\Template;
 /** @var ViewModelRegistry $viewModels */
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
+
+$navigationBlock = $block->getChildBlock('customer_account_navigation');
+$links = $navigationBlock->getLinks();
+$currentUrl = rtrim($this->getRequest()->getPathInfo(), '/');
+
 ?>
 
 <div x-data="Accordion(!$store.main.isMobile, 300)" class="max-md:mt-3 bg-bg-400 p-5 md:p-4 rounded-md overflow-hidden">
-  <button
+    <button
         class="group flex items-center justify-between text-start w-full text-primary-600 md:hidden"
         x-ref="AccordionButton"
         type="button"
@@ -39,6 +44,28 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         role="region"
         class="text-text-700 [&_.current]:text-text-500 [&_a:hover]:underline"
     >
-        <?= $block->getChildHtml() ?>
+        <ul class="flex flex-col gap-4 mt-4 md:mt-0">
+            <?php foreach ($links as $link) :
+                $name = $link->getNameInLayout();
+                $url = $link->getPath();
+                $label = $link->getLabel();
+                $isActive = (ltrim($currentUrl, '/') === $url);
+                if ($name === 'authorization-link-login' || $name === 'customer-account-navigation-delimiter-2') :?>
+                    <?= $navigationBlock->getChildBlock($name)->toHtml() ?>
+                    <?php continue; ?>
+                <?php endif; ?>
+                <li class="nav-item">
+                    <?php if ($isActive) : ?>
+                        <strong>
+                            <?= $block->escapeHtml($label) ?>
+                        </strong>
+                    <?php else : ?>
+                        <a href="<?= $block->getUrl($url) ?>"
+                           x-element-transition-trigger
+                           class="nav-link"><?= $block->escapeHtml($label) ?></a>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
     </div>
 </div>
