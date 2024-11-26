@@ -31,12 +31,9 @@ $overlayOpacity = $block->getData('overlay_opacity');
 $heading = $block->getData('heading');
 $description = $block->getData('description');
 $sectionHeight = $block->getData('section_height');
-// echo '<div style="padding-top: 200px" /><pre>';
 $diff = $deadline->diff($now);
-// $remainingDays = $diff->format('%R%a');
-// var_dump($diff);
-?>
 
+?>
 <?php if(!$shouldHide): ?>
     <div
         x-data="
