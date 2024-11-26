@@ -35,22 +35,19 @@ define(["Magento_PageBuilder/js/content-type/preview"], function (PreviewBase) {
       timerId = setInterval(() => {
         const now = new Date();
         const remainingTime = Number(target) - Number(now);
+        const wrapperElement = this.wrapperElement || {};
 
         if (remainingTime <= 0) {
           clearInterval(timerId);
         } else {
-          this.wrapperElement.querySelector(
-            ".countdown__part--days"
-          ).innerHTML = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-          this.wrapperElement.querySelector(
-            ".countdown__part--hours"
-          ).innerHTML = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
-          this.wrapperElement.querySelector(
-            ".countdown__part--minutes"
-          ).innerHTML = Math.floor((remainingTime / 1000 / 60) % 60);
-          this.wrapperElement.querySelector(
-            ".countdown__part--seconds"
-          ).innerHTML = Math.floor((remainingTime / 1000) % 60);
+          wrapperElement.querySelector(".countdown__part--days").innerHTML =
+            Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+          wrapperElement.querySelector(".countdown__part--hours").innerHTML =
+            Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+          wrapperElement.querySelector(".countdown__part--minutes").innerHTML =
+            Math.floor((remainingTime / 1000 / 60) % 60);
+          wrapperElement.querySelector(".countdown__part--seconds").innerHTML =
+            Math.floor((remainingTime / 1000) % 60);
         }
       }, 1000);
     });
