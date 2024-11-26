@@ -123,13 +123,6 @@ export const ResizableStore = <ResizableStoreType>{
 
     // Store closest tabbable element
     this.originalFocusableEl = document.activeElement!.closest(SELECTOR_LIST);
-
-    const input = resizable?.querySelector("input");
-    if (input) {
-      setTimeout(() => {
-        input.focus();
-      }, 350);
-    }
   },
 
   hide(id) {
