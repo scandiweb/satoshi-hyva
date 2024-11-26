@@ -1,0 +1,44 @@
+<div attr="data.main.attributes" ko-style="data.main.style" css="data.main.css">
+    <div data-is-page-builder-ignored-element="true">
+        <img
+            css="data.image.css"
+            attr="data.image.attributes"
+            ko-style="data.image.style"
+            width="100%"
+            height="100%"
+            loading="lazy"
+            hidden
+        />
+        <div
+            class="pagebuilder-video-container"
+            if="data.video.attributes().src"
+            hidden
+        >
+            <iframe
+                frameborder="0"
+                allowfullscreen
+                attr="data.video.attributes"
+            ></iframe>
+        </div>
+
+        <h2
+            attr="data.heading.attributes"
+            ko-style="data.heading.style"
+            css="data.heading.css"
+            html="data.heading.html"
+            hidden
+        ></h2>
+        <p
+            attr="data.subheading.attributes"
+            ko-style="data.subheading.style"
+            css="data.subheading.css"
+            html="data.subheading.html"
+            hidden
+        ></p>
+    </div>
+
+    <div
+        attr="data.block_directive.attributes"
+        html="data.block_directive.html"
+    ></div>
+</div>
