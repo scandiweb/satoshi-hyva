@@ -169,6 +169,10 @@ h3 {
   @apply sr-only;
 }
 
+.cart-main + .product-slider {
+  @apply max-md:mb-28;
+}
+
 @layer components {
   @import "components/content-wrapper";
   @import "components/checkbox";
