@@ -15,9 +15,8 @@ define(["Satoshi_SatoshiUi/js/content-type/block-directive"], function (
   _proto.getAdditionalBlockAttributes = function getAdditionalBlockAttributes(
     data
   ) {
-    console.log("data directive", data);
     return {
-      slideshow_height: data.slideshow_height,
+      slide_height: data.slide_height,
     };
   };
 

@@ -1,27 +1,24 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_PageBuilder:etc/content_type.xsd">
-    <type name="satoshi_slideshow"
-        label="Slideshow"
-        component="Magento_PageBuilder/js/content-type-collection"
-        preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-slideshow/preview"
-        master_component="Magento_PageBuilder/js/content-type/master-collection"
+    <type name="satoshi_slide"
+        label="Slide"
         menu_section="satoshi_components"
-        form="pagebuilder_satoshi_slideshow_form"
+        component="Magento_PageBuilder/js/content-type"
+        preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-slide/preview"
+        master_component="Magento_PageBuilder/js/content-type/master"
+        form="pagebuilder_satoshi_slide_form"
         icon="icon-pagebuilder-heading"
         sortOrder="10"
         translate="label">
+    <children default_policy="deny"/>
     <parents default_policy="deny">
-        <parent name="row" policy="allow" />
+        <parent name="satoshi_slideshow" policy="allow"/>
     </parents>
-    <children default_policy="deny">
-        <child name="satoshi_slide" policy="allow"/>
-        <child name="slide" policy="allow"/>
-    </children>
     <appearances>
         <appearance name="default"
                   default="true"
-                  preview_template="Satoshi_SatoshiUi/content-type/satoshi-slideshow/default/preview"
-                  master_template="Satoshi_SatoshiUi/content-type/satoshi-slideshow/default/master"
+                  preview_template="Satoshi_SatoshiUi/content-type/satoshi-slide/default/preview"
+                  master_template="Satoshi_SatoshiUi/content-type/satoshi-slide/default/master"
                   reader="Magento_PageBuilder/js/master-format/read/configurable">
             <elements>
                 <element name="main">
@@ -40,8 +37,8 @@
                     <css name="css_classes"/>
                 </element>
                 <!-- TODO: Switch to attribute or style -->
-                <element name="slideshow_height">
-                    <html name="slideshow_height" converter="Magento_PageBuilder/js/converter/html/decode" />
+                <element name="slide_height">
+                    <html name="slide_height" converter="Magento_PageBuilder/js/converter/html/decode" />
                 </element>
                 <element name="block_directive">
                     <html name="block_directive" converter="Magento_PageBuilder/js/converter/html/tag-escaper" />
@@ -51,7 +48,7 @@
                 <converter component="Satoshi_SatoshiUi/js/content-type/satoshi-slideshow/block-directive" name="block_directive">
                     <config>
                         <item name="html_variable" value="block_directive"/>
-                        <item name="block_class" value="Satoshi\SatoshiUi\Block\Slideshow"/>
+                        <item name="block_class" value="Satoshi\SatoshiUi\Block\Slide"/>
                     </config>
                 </converter>
             </converters>

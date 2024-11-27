@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use Magento\Framework\Escaper;
-use Satoshi\SatoshiUi\Block\Slideshow;
+use Satoshi\SatoshiUi\Block\Quotes;
 use Satoshi\Theme\Block\Template;
 use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
 use Hyva\Theme\ViewModel\SvgIcons;
 
-/** @var Slideshow $block */
+/** @var Quotes $block */
 /** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
@@ -19,6 +19,4 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 /** @var DecodeHelper $decodeHelper */
 $decodeHelper = $this->helper(DecodeHelper::class);
 ?>
-<div>
-Slideshow frontend.phtml
-</div>
+Slide frontend.phtml
