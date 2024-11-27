@@ -60,16 +60,9 @@ define([
 
       _this =
         _preview2.call(this, contentType, config, observableUpdater) || this;
-      _this.displayPreview = _knockout.observable(false);
       _this.previewElement = _jquery.Deferred();
       _this.widgetUnsanitizedHtml = _knockout.observable();
-      _this.messages = {
-        EMPTY: (0, _translate)("No category selected."),
-        LOADING: (0, _translate)("Loading..."),
-        UNKNOWN_ERROR: (0, _translate)(
-          "An unknown error occurred. Please try again."
-        ),
-      };
+
       _this.ignoredKeysForBuild = [
         "margins_and_padding",
         "border",
@@ -79,7 +72,6 @@ define([
         "css_classes",
         "text_align",
       ];
-      _this.placeholderText = _knockout.observable(_this.messages.EMPTY);
 
       return _this;
     }
@@ -99,7 +91,6 @@ define([
     _proto.onAfterRender = function onAfterRender(element) {
       this.element = element;
       this.previewElement.resolve(element);
-      // this.initSlider();
     };
 
     /**
@@ -113,13 +104,6 @@ define([
       var data = this.contentType.dataStore.getState();
 
       if (this.hasDataChanged(this.previousData, data)) {
-        this.displayPreview(false);
-
-        if (!data.category_id) {
-          this.placeholderText(this.messages.EMPTY);
-          return;
-        }
-
         var url = _config.getConfig("preview_url");
 
         var requestConfig = {
@@ -130,7 +114,6 @@ define([
             directive: this.data.main.html(),
           },
         };
-        this.placeholderText(this.messages.LOADING);
 
         _jquery
           .ajax(url, requestConfig)
@@ -139,21 +122,70 @@ define([
               _this2.widgetUnsanitizedHtml(response.data.error);
             } else {
               _this2.widgetUnsanitizedHtml(response.data.content);
-
-              _this2.displayPreview(true);
             }
 
             _this2.previewElement.done(function () {
               (0, _jquery)(_this2.element).trigger("contentUpdated");
+
+              _this2.element
+                .querySelector(".slider__actions button:first-of-type")
+                ?.addEventListener("click", function (e) {
+                  e.preventDefault();
+
+                  const slideWidth =
+                    _this2.element.querySelector(".slider__slide")?.offsetWidth;
+                  const slider =
+                    _this2.element.querySelector(".slider__slides");
+                  if (slider) {
+                    slider.scrollLeft = slider.scrollLeft - slideWidth;
+                  }
+                });
+              _this2.element
+                .querySelector(".slider__actions button:last-of-type")
+                ?.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const slideWidth =
+                    _this2.element.querySelector(".slider__slide")?.offsetWidth;
+                  const slider =
+                    _this2.element.querySelector(".slider__slides");
+                  if (slider) {
+                    slider.scrollLeft = slider.scrollLeft + slideWidth;
+                  }
+                });
+
+              _this2.element
+                .querySelectorAll(".position-btn")
+                .forEach((button) => {
+                  button.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const btn = e.currentTarget;
+                    const index = btn?.getAttribute("data-index");
+
+                    const slideWidth =
+                      _this2.element.querySelector(
+                        ".slider__slide"
+                      )?.offsetWidth;
+                    const slider =
+                      _this2.element.querySelector(".slider__slides");
+                    if (slider) {
+                      slider.scrollLeft = (+index - 1) * (slideWidth + 16);
+                    }
+                  });
+                });
             });
           })
-          .fail(function () {
-            _this2.placeholderText(_this2.messages.UNKNOWN_ERROR);
-          });
+          .fail(function () {});
       }
 
       this.previousData = Object.assign({}, data);
     };
+
+    /**
+     * Build the slick config object
+     *
+     * @returns {{autoplay: boolean; autoplay: number; infinite: boolean; arrows: boolean; dots: boolean;
+     * centerMode: boolean; slidesToScroll: number; slidesToShow: number;}}
+     */
 
     /**
      * Determine if the data has changed, whilst ignoring certain keys which don't require a rebuild
