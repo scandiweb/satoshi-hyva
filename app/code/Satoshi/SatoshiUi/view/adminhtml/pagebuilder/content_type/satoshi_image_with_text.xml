@@ -4,8 +4,7 @@
         label="Image with text"
         menu_section="satoshi_components"
         component="Magento_PageBuilder/js/content-type"
-        preview_component="Magento_PageBuilder/js/content-type/preview"
-        master_component="Magento_PageBuilder/js/content-type/master"
+        preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-image-with-text/preview"
         form="pagebuilder_satoshi_image_with_text_form"
         icon="icon-pagebuilder-heading"
         sortOrder="10"
@@ -41,16 +40,18 @@
 
                 <!-- Map form elements here -->
                 <element name="image">
-                    <attribute name="image"
-                                source="src"
-                                converter="Magento_PageBuilder/js/converter/attribute/src"
-                                preview_converter="Magento_PageBuilder/js/converter/attribute/preview/src"/>
+                    <attribute
+                        name="image"
+                        source="src"
+                        converter="Magento_PageBuilder/js/converter/attribute/src"
+                        preview_converter="Magento_PageBuilder/js/converter/attribute/preview/src"
+                    />
                 </element>
                 <element name="heading">
                     <html name="heading" converter="Magento_PageBuilder/js/converter/html/decode" />
                 </element>
-                <element name="description">
-                    <html name="description" converter="Magento_PageBuilder/js/converter/html/decode" />
+                <element name="content">
+                    <html name="content" preview_converter="Magento_PageBuilder/js/converter/html/directive"/>
                 </element>
                 <element name="button_label">
                     <html name="button_label" converter="Magento_PageBuilder/js/converter/html/decode" />
@@ -100,17 +101,19 @@
 
                     <!-- Map form elements here -->
                     <element name="image">
-                        <attribute name="image"
-                                   source="src"
-                                   converter="Magento_PageBuilder/js/converter/attribute/src"
-                                   preview_converter="Magento_PageBuilder/js/converter/attribute/preview/src"/>
+                        <attribute
+                            name="image"
+                            source="src"
+                            converter="Magento_PageBuilder/js/converter/attribute/src"
+                            preview_converter="Magento_PageBuilder/js/converter/attribute/preview/src"
+                        />
                     </element>
                     <element name="heading">
 						<html name="heading" converter="Magento_PageBuilder/js/converter/html/decode" />
 					</element>
-                    <element name="description">
-						<html name="description" converter="Magento_PageBuilder/js/converter/html/decode" />
-					</element>
+                    <element name="content">
+                        <html name="content" preview_converter="Magento_PageBuilder/js/converter/html/directive"/>
+                    </element>
                     <element name="button_label">
                         <html name="button_label" converter="Magento_PageBuilder/js/converter/html/decode" />
                     </element>
@@ -135,5 +138,10 @@
                 </converters>
             </appearance>
         </appearances>
+        <additional_data>
+            <item name="wysiwygConfig" xsi:type="array">
+                <item name="wysiwygConfigData" xsi:type="object">Magento\PageBuilder\Model\Config\ContentType\AdditionalData\Provider\Wysiwyg\Config</item>
+            </item>
+        </additional_data>
     </type>
 </config>
