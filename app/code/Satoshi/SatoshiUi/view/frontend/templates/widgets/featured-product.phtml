@@ -12,8 +12,6 @@ use Satoshi\Theme\Block\Template;
 /** @var FeaturedProduct $block */
 /** @var ViewModelRegistry $viewModels */
 
-$block->getBlockInfo();
-
 $product = $block->getProduct();
 $groupedIds = [];
 if ($product->getTypeId() === 'grouped') {
@@ -88,7 +86,8 @@ if ($product) {
                 </div>
             </div>
 
-            <div>here comes product info</div>
+            <div class="relative flex flex-col" :style="`--price-width: ${$refs.ProductPrice?.clientWidth}px`">
+            </div>
         </div>
     </div>
 </section>
