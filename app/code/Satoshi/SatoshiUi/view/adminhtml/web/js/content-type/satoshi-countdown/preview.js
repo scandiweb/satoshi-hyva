@@ -1,4 +1,14 @@
-define(["Magento_PageBuilder/js/content-type/preview"], function (PreviewBase) {
+function updateDom(wrapperElement, d, h, m, s) {
+  wrapperElement.querySelector(".countdown__part--days").innerHTML = d;
+  wrapperElement.querySelector(".countdown__part--hours").innerHTML = h;
+  wrapperElement.querySelector(".countdown__part--minutes").innerHTML = m;
+  wrapperElement.querySelector(".countdown__part--seconds").innerHTML = s;
+}
+
+define([
+  "Magento_PageBuilder/js/content-type/preview",
+  "Magento_PageBuilder/js/events",
+], function (PreviewBase, _events) {
   "use strict";
   var $super;
 
@@ -6,10 +16,43 @@ define(["Magento_PageBuilder/js/content-type/preview"], function (PreviewBase) {
     PreviewBase.call(this, parent, config, stageId);
     let timerId = null;
 
-    this.contentType.dataStore.subscribe((state) => {
-      if (!state.deadline) {
+    _events.on("satoshi_countdown:renderAfter", function (args) {
+      if (!args.contentType.dataStore.state.deadline || !args.element) {
         return;
       }
+      const wrapperElement = args.element;
+
+      clearInterval(timerId);
+      let target = new Date(args.contentType.dataStore.state.deadline);
+      const now = new Date();
+      let remainingTime = Number(target) - Number(now);
+
+      if (remainingTime <= 0) {
+        updateDom(wrapperElement, 0, 0, 0, 0);
+        return;
+      }
+
+      timerId = setInterval(() => {
+        const now = new Date();
+        const remainingTime = Number(target) - Number(now);
+
+        if (remainingTime <= 0) {
+          clearInterval(timerId);
+        } else {
+          const d = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+          const h = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+          const m = Math.floor((remainingTime / 1000 / 60) % 60);
+          const s = Math.floor((remainingTime / 1000) % 60);
+          updateDom(wrapperElement, d, h, m, s);
+        }
+      }, 1000);
+    });
+
+    this.contentType.dataStore.subscribe((state) => {
+      if (!state.deadline || !this.wrapperElement) {
+        return;
+      }
+      const wrapperElement = this.wrapperElement;
 
       clearInterval(timerId);
       let target = new Date(state.deadline);
@@ -17,37 +60,22 @@ define(["Magento_PageBuilder/js/content-type/preview"], function (PreviewBase) {
       let remainingTime = Number(target) - Number(now);
 
       if (remainingTime <= 0) {
-        this.wrapperElement.querySelector(
-          ".countdown__part--days"
-        ).innerHTML = 0;
-        this.wrapperElement.querySelector(
-          ".countdown__part--hours"
-        ).innerHTML = 0;
-        this.wrapperElement.querySelector(
-          ".countdown__part--minutes"
-        ).innerHTML = 0;
-        this.wrapperElement.querySelector(
-          ".countdown__part--seconds"
-        ).innerHTML = 0;
+        updateDom(wrapperElement, 0, 0, 0, 0);
         return;
       }
 
       timerId = setInterval(() => {
         const now = new Date();
         const remainingTime = Number(target) - Number(now);
-        const wrapperElement = this.wrapperElement || {};
 
         if (remainingTime <= 0) {
           clearInterval(timerId);
         } else {
-          wrapperElement.querySelector(".countdown__part--days").innerHTML =
-            Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-          wrapperElement.querySelector(".countdown__part--hours").innerHTML =
-            Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
-          wrapperElement.querySelector(".countdown__part--minutes").innerHTML =
-            Math.floor((remainingTime / 1000 / 60) % 60);
-          wrapperElement.querySelector(".countdown__part--seconds").innerHTML =
-            Math.floor((remainingTime / 1000) % 60);
+          const d = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+          const h = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+          const m = Math.floor((remainingTime / 1000 / 60) % 60);
+          const s = Math.floor((remainingTime / 1000) % 60);
+          updateDom(wrapperElement, d, h, m, s);
         }
       }, 1000);
     });
