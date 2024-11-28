@@ -26,7 +26,7 @@ const easeInOutQuad = (x: number): number => {
   return x;
 };
 
-const OFFSET_TOP = 400;
+const OFFSET_TOP = window.innerHeight > 1080 ? 400 : 200;
 let prevIsMobile = isMobile();
 
 export const TransitionPreview = () =>
@@ -73,6 +73,14 @@ export const TransitionPreview = () =>
         }
       });
 
+      // Remove preview flag when page reloads
+      window.addEventListener("beforeunload", function () {
+        const {isPreview} = window.history.state || {};
+        if (isPreview) {
+          history.replaceState({isPreview: false}, "", window.location.href);
+        }
+      });
+
       this.$refs.scrollContainer.addEventListener("scroll", () => {
         const percentOfMaxScroll = Math.min(
           this.$refs.scrollContainer.scrollTop / this.maxScroll,
@@ -113,6 +121,7 @@ export const TransitionPreview = () =>
       }
 
       this.isActive = true;
+      this.$refs.transitionContent.focus();
       Alpine.store("transition").isPreviewActive = true;
       this.scrollToTop();
       freezeScroll();

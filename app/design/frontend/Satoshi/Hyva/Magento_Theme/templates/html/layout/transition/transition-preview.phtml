@@ -45,10 +45,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     <div
       x-ref="scrollContainer"
       class="transition-preview__scroll"
-      x-a11y-trap="isActive"
     >
       <div class="content-wrapper relative mx-auto">
-        <div class="transition-preview__content" x-ref="transitionContent">
+          <div class="transition-preview__content" x-ref="transitionContent" :tabindex="open ? '0' : '-1'">
           <div id="PreviewContent"></div>
           <div class="content-wrapper pointer-events-none fixed bottom-0 left-1/2 z-50 -translate-x-1/2">
             <div
