@@ -4,7 +4,7 @@
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">pagebuilder_satoshi_category_form.pagebuilder_satoshi_category_form_data_source</item>
         </item>
-        <item name="label" xsi:type="string" translate="true">Image with text</item>
+        <item name="label" xsi:type="string" translate="true">Category</item>
     </argument>
     <settings>
         <deps>
