@@ -9,6 +9,7 @@ export type ProductPageType = {
   isLoadingCart: boolean;
   variantQty: number;
   selectedValues: string[];
+  firstAvailableOptions: Record<string, string>;
   selectedDownloadableLinks: string[];
   selectedBundleOptions: Record<string, any>[];
   linksPurchasedSeparately: boolean;
@@ -47,6 +48,7 @@ export type ProductPageType = {
   quickBuy(): void;
   scrollToTop(): void;
   changeOption(attributeId: number, value: string): void;
+  selectFirstInStockConfigurableOption(): void;
 
   initAttributes(
     swatchConfig: {
@@ -140,6 +142,7 @@ export const ProductPage = () =>
     optionConfig: undefined,
     allowedAttributeOptions: [],
     isGroupValid: true,
+    firstAvailableOptions: {},
 
     get isProductBeingRemoved() {
       return Alpine.store("cart").removingItemId === this.cartItemKey;
@@ -159,6 +162,29 @@ export const ProductPage = () =>
         if (this.$store.popup.currentPopup === this.productActionsPopup) {
           this._handleStickyProductActionsClosure();
         }
+      });
+    },
+
+    selectFirstInStockConfigurableOption() {
+      console.log('selectFirstInStockConfigurableOption');
+      this.$watch("optionConfig", () => {
+        // const firstAvailableOptions: { [key: string]: string } = {};
+
+        Object.entries(this.swatchConfig).forEach(([attributeId]) => {
+          const allowedOptions = this.getAllowedAttributeOptions(parseInt(attributeId));
+
+          const firstAvailableOption = allowedOptions.find(option => {
+            return option.products && option.products.length > 0;
+          });
+
+          if (firstAvailableOption) {
+            if (this.selectedValues[parseInt(attributeId)] !== firstAvailableOption.id) {
+              this.changeOption(parseInt(attributeId), firstAvailableOption.id + "");
+            }
+
+            this.firstAvailableOptions[attributeId] = firstAvailableOption.id;
+          }
+        });
       });
     },
 
@@ -462,6 +488,7 @@ export const ProductPage = () =>
     },
 
     initAttributes(swatchConfig, optionConfig) {
+      this.selectFirstInStockConfigurableOption();
       this.swatchConfig = swatchConfig;
       this.optionConfig = optionConfig;
 
