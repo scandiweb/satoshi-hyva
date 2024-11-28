@@ -1,7 +1,7 @@
 <div
     attr="data.main.attributes"
     ko-style="data.main.style"
-    class="pagebuilder-content-type rich-text"
+    class="pagebuilder-content-type pagebuilder-wysiwyg rich-text"
     css="data.main.css"
     event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
 >
@@ -21,7 +21,7 @@
         data-bind="liveEdit: { field: 'caption', placeholder: $t('Enter caption') }"
     ></p>
 
-    <div class="rich-text__content pagebuilder-rich-text-text-content">
+    <div class="rich-text__content pagebuilder-wygiwyg-text-content">
         <div
             if="isWysiwygSupported()"
             class="inline-wysiwyg"

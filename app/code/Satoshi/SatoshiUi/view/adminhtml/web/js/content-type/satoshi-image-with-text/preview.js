@@ -369,7 +369,7 @@ define([
         }
       }); // After drop of new content type open TinyMCE and focus
 
-      _events.on("text:dropAfter", function (args) {
+      _events.on("image_with_text:dropAfter", function (args) {
         if (args.id === _this7.contentType.id) {
           _this7.afterRenderDeferred.then(function () {
             if (_this7.isWysiwygSupported()) {
