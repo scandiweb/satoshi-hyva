@@ -75,14 +75,14 @@ if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPr
     <div x-show="!activeProductsPriceData && !isPriceHidden()" class="flex flex-col gap-2">
         <div class="flex items-end gap-2 md:text-lg">
             <!-- Final price -->
-            <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+            <div class="flex gap-2" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
                 <?php if ($product->canConfigure() && is_int($product->getPrice())): ?>
-                    <span class="price-label block">
+                    <span class="text-primary-600 block">
                         <?= $escaper->escapeHtml(__('As low as')) . ':' ?>
                     </span>
                 <?php endif; ?>
                 <span id="product-price-<?= (int)$product->getId() ?>">
-                    <span class="price" x-html="getFormattedFinalPrice()">
+                    <span class="text-primary-600" x-html="getFormattedFinalPrice()">
                         <?= /** @noEscape */ $productViewModel->format($finalPrice) ?>
                     </span>
                 </span>
