@@ -105,15 +105,37 @@
         </field>
 
         <!-- Description field -->
-        <!-- TODO: Make this wysiwig -->
-        <field name="description" sortOrder="30" formElement="textarea">
+        <field name="content" sortOrder="30" formElement="wysiwyg" template="ui/form/field">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">page</item>
+                    <item name="wysiwygConfigData" xsi:type="array">
+                        <item name="pagebuilder_button" xsi:type="boolean">false</item>
+                        <item name="is_pagebuilder_enabled" xsi:type="boolean">false</item>
+                        <item name="toggle_button" xsi:type="boolean">false</item>
+                        <item name="height" xsi:type="string">200px</item>
+                    </item>
+                </item>
+            </argument>
             <settings>
-                <label translate="true">Description</label>
-                <dataType>text</dataType>
+                <label translate="true">Content</label>
+                <dataScope>content</dataScope>
                 <validation>
-                    <rule name="validate-string" xsi:type="boolean">true</rule>
+                    <rule name="validate-no-url" xsi:type="boolean">true</rule>
+                    <rule name="validate-no-widget" xsi:type="boolean">true</rule>
                 </validation>
+                <imports>
+                    <link name="validation.validate-no-url">${$.parentName}.link_url:value</link>
+                    <link name="validation.validate-no-widget">${$.parentName}.link_url:value</link>
+                </imports>
             </settings>
+            <formElements>
+                <wysiwyg>
+                    <settings>
+                        <wysiwyg>true</wysiwyg>
+                    </settings>
+                </wysiwyg>
+            </formElements>
         </field>
 
         <!-- Button, label and url field -->
