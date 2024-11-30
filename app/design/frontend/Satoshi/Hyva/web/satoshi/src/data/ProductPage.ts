@@ -166,23 +166,24 @@ export const ProductPage = () =>
     },
 
     selectFirstInStockConfigurableOption() {
-      console.log('selectFirstInStockConfigurableOption');
       this.$watch("optionConfig", () => {
-        // const firstAvailableOptions: { [key: string]: string } = {};
-
         Object.entries(this.swatchConfig).forEach(([attributeId]) => {
           const allowedOptions = this.getAllowedAttributeOptions(parseInt(attributeId));
 
-          const firstAvailableOption = allowedOptions.find(option => {
-            return option.products && option.products.length > 0;
-          });
+          const firstAvailableOption = allowedOptions.find(option => option.products && option.products.length > 0);
 
           if (firstAvailableOption) {
             if (this.selectedValues[parseInt(attributeId)] !== firstAvailableOption.id) {
-              this.changeOption(parseInt(attributeId), firstAvailableOption.id + "");
+              this.firstAvailableOptions[attributeId] = firstAvailableOption.id;
             }
+          }
+        });
 
-            this.firstAvailableOptions[attributeId] = firstAvailableOption.id;
+        Object.entries(this.firstAvailableOptions).forEach(([attributeId, optionId]) => {
+          const labelElement = document.querySelector(`label[for="attribute-option-${this.productId}-${optionId}"]`);
+
+          if (labelElement && !labelElement.classList.contains('button--disabled')) {
+            labelElement.click();
           }
         });
       });
@@ -488,7 +489,6 @@ export const ProductPage = () =>
     },
 
     initAttributes(swatchConfig, optionConfig) {
-      this.selectFirstInStockConfigurableOption();
       this.swatchConfig = swatchConfig;
       this.optionConfig = optionConfig;
 
