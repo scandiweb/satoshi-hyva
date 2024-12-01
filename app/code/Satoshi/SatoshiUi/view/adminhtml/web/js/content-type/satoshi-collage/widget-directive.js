@@ -54,7 +54,7 @@ define([
         config,
       );
 
-      data.collage_items = JSON.parse(
+      data.collage_items = attributes.collage_items === "" ? "" : JSON.parse(
         this.decodeWysiwygCharacters(attributes.collage_items || ""),
       );
 

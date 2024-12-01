@@ -58,18 +58,9 @@ define([
     function Preview(contentType, config, observableUpdater) {
       var _this;
 
-      _this =
-        _preview2.call(this, contentType, config, observableUpdater) || this;
-      _this.displayPreview = _knockout.observable(false);
+      _this = _preview2.call(this, contentType, config, observableUpdater) || this;
       _this.previewElement = _jquery.Deferred();
       _this.widgetUnsanitizedHtml = _knockout.observable();
-      _this.messages = {
-        EMPTY: (0, _translate)("No collage items selected."),
-        LOADING: (0, _translate)("Loading..."),
-        UNKNOWN_ERROR: (0, _translate)(
-          "An unknown error occurred. Please try again.",
-        ),
-      };
       _this.ignoredKeysForBuild = [
         "margins_and_padding",
         "border",
@@ -79,7 +70,6 @@ define([
         "css_classes",
         "text_align",
       ];
-      _this.placeholderText = _knockout.observable(_this.messages.EMPTY);
 
       return _this;
     }
@@ -99,7 +89,6 @@ define([
     _proto.onAfterRender = function onAfterRender(element) {
       this.element = element;
       this.previewElement.resolve(element);
-      // this.initSlider();
     };
 
     /**
@@ -113,13 +102,6 @@ define([
       var data = this.contentType.dataStore.getState();
 
       if (this.hasDataChanged(this.previousData, data)) {
-        this.displayPreview(false);
-
-        if (!data.collage_items || data.collage_items?.length === 0) {
-          this.placeholderText(this.messages.EMPTY);
-          return;
-        }
-
         var url = _config.getConfig("preview_url");
 
         var requestConfig = {
@@ -130,7 +112,6 @@ define([
             directive: this.data.main.html(),
           },
         };
-        this.placeholderText(this.messages.LOADING);
 
         _jquery
           .ajax(url, requestConfig)
@@ -139,8 +120,6 @@ define([
               _this2.widgetUnsanitizedHtml(response.data.error);
             } else {
               _this2.widgetUnsanitizedHtml(response.data.content);
-
-              _this2.displayPreview(true);
             }
 
             _this2.previewElement.done(function () {
@@ -148,7 +127,6 @@ define([
             });
           })
           .fail(function () {
-            _this2.placeholderText(_this2.messages.UNKNOWN_ERROR);
           });
       }
 
