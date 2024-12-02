@@ -31,7 +31,6 @@ $overlayOpacity = $block->getData('overlay_opacity');
 $autoplay = $block->getData('autoplay');
 $muted = $block->getData('muted');
 $loop = $block->getData('loop');
-$controls = $block->getData('controls');
 ?>
 
 <div class="relative h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)]">
@@ -66,7 +65,7 @@ $controls = $block->getData('controls');
         autoplay="<?= $autoplay ? 'true' : 'false' ?>"
         muted="<?= $muted ? 'true' : 'false' ?>"
         loop="<?= $loop ? 'true' : 'false' ?>"
-        controls="<?= $controls ? 'true' : 'false' ?>"
+        controls="false"
         class="w-full h-full object-cover"
         allow="autoplay; encrypted-media"
         allowfullscreen
