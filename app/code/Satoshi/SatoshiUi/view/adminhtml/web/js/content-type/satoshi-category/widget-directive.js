@@ -21,10 +21,6 @@ define([
   "Magento_PageBuilder/js/mass-converter/widget-directive-abstract",
   "Magento_PageBuilder/js/utils/object",
 ], function (_widgetDirectiveAbstract, _object) {
-  /**
-   * Copyright © Magento, Inc. All rights reserved.
-   * See COPYING.txt for license details.
-   */
 
   /**
    * @api
