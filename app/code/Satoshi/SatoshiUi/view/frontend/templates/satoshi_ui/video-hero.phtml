@@ -28,9 +28,9 @@ $imageUrl = $block->getData('image');
 $heading = $block->getData('heading');
 $description = $block->getData('description');
 $overlayOpacity = $block->getData('overlay_opacity');
-$autoplay = $block->getData('autoplay');
-$muted = $block->getData('muted');
-$loop = $block->getData('loop');
+$autoplay = $block->getData('autoplay') == 'true';
+$muted = $block->getData('muted') == 'true';
+$loop = $block->getData('loop') == 'true';
 ?>
 
 <div class="relative h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)]">
