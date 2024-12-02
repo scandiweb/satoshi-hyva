@@ -284,7 +284,8 @@ $errorMessage = $block->getErrorMessage();
                             </div>
                         <?php endfor; ?>
 
-                        <div class="field field-reserved<?= !empty($errorMessage['postcode']) ? ' field-error' : '' ?>">
+                        <div
+                            class="field field-reserved <?= !empty($errorMessage['postcode']) ? 'field-error' : '!text-text-500' ?>">
                             <label class="sr-only tracking-widest" for="zip">
                                 <span><?= /* @noEscape */
                                     $block->getAttributeData()->getFrontendLabel('postcode') ?>
