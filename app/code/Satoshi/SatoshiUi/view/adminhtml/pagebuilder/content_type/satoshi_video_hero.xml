@@ -89,6 +89,8 @@
                                    converter="Magento_PageBuilder/js/content-type/video/converter/attribute/autoplay"/>
                         <attribute name="loop" storage_key="loop" source="loop"
                                    converter="Magento_PageBuilder/js/content-type/video/converter/attribute/autoplay"/>
+                        <attribute name="controls" storage_key="controls" source="controls"
+                                   converter="Magento_PageBuilder/js/content-type/video/converter/attribute/autoplay"/>
                     </element>
 
                     <element name="block_directive">
