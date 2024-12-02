@@ -20,22 +20,14 @@ function _setPrototypeOf(o, p) {
 define([
   "jquery",
   "knockout",
-  "mage/translate",
-  "Magento_PageBuilder/js/events",
-  "slick",
   "underscore",
   "Magento_PageBuilder/js/config",
-  "Magento_PageBuilder/js/content-type-menu/hide-show-option",
   "Magento_PageBuilder/js/content-type/preview",
 ], function (
   _jquery,
   _knockout,
-  _translate,
-  _events,
-  _slick,
   _underscore,
   _config,
-  _hideShowOption,
   _preview,
 ) {
   /**
@@ -132,13 +124,6 @@ define([
 
       this.previousData = Object.assign({}, data);
     };
-
-    /**
-     * Build the slick config object
-     *
-     * @returns {{autoplay: boolean; autoplay: number; infinite: boolean; arrows: boolean; dots: boolean;
-     * centerMode: boolean; slidesToScroll: number; slidesToShow: number;}}
-     */
 
     /**
      * Determine if the data has changed, whilst ignoring certain keys which don't require a rebuild
