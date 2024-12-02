@@ -5,14 +5,14 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Customer\CreateAccountButton;
 use Hyva\Theme\ViewModel\ReCaptcha;
-use Satoshi\Customer\Block\Form\Register;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Customer\Block\Widget\Dob;
 use Magento\Customer\Block\Widget\Gender;
 use Magento\Customer\Block\Widget\Name as NameWidget;
 use Magento\Customer\Block\Widget\Taxvat;
 use Magento\Customer\Helper\Address;
 use Magento\Framework\Escaper;
-use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Customer\Block\Form\Register;
 
 /** @var Register $block */
 /** @var Escaper $escaper */
@@ -54,8 +54,8 @@ $errorMessage = $block->getErrorMessage();
             x-data="Object.assign(
                 hyva.formValidation($el),
                 Authentication(),
-                Form('<?= $escaper->escapeHtmlAttr($formId) ?>'),
                 AddressEdit(),
+                Form('<?= $escaper->escapeHtmlAttr($formId) ?>'),
             )"
             x-init="initRegister({
                 telephoneErrorMessage: '<?= $escaper->escapeJs(__('The telephone number is too short.')) ?>',
