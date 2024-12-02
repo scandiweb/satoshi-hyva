@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Satoshi\SatoshiUi\Block\VideoHero;
-use Hyva\Theme\ViewModel\SvgIcons;
-use Hyva\Theme\Model\ViewModelRegistry;
 use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
 use Satoshi\SatoshiUi\Helper\Link as LinkHelper;
 
@@ -15,7 +15,7 @@ use Satoshi\SatoshiUi\Helper\Link as LinkHelper;
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
-/** @var LinkHelper */
+/** @var LinkHelper $linkHelper */
 $linkHelper = $this->helper(LinkHelper::class);
 
 /** @var DecodeHelper $decodeHelper */
@@ -29,17 +29,19 @@ $heading = $block->getData('heading');
 $description = $block->getData('description');
 $overlayOpacity = $block->getData('overlay_opacity');
 $autoplay = $block->getData('autoplay');
+$muted = $block->getData('muted');
+$loop = $block->getData('loop');
 ?>
 
 <div class="relative h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)]">
     <div
-        class="absolute left-0 top-0 z-10 h-full w-full bg-black"
+            class="absolute left-0 top-0 z-10 h-full w-full bg-black pointer-events-none"
         style="opacity: <?= $escaper->escapeHtmlAttr($overlayOpacity) ?>"
     ></div>
-    <div class="absolute top-0 z-20 flex h-full w-full items-center justify-center bg-gradient-to-b from-[#00000000] to-[#00000040]">
+    <div class="absolute top-0 z-20 flex h-full w-full items-center justify-center bg-gradient-to-b from-[#00000000] to-[#00000040] pointer-events-none">
         <div class="w-full text-secondary-500 px-5">
-            <h1 class="mb-5 text-4xl font-semibold"><?= $escaper->escapeHtml($heading) ?></h1>
-            <p class="mb-8"><?= $escaper->escapeHtml($description) ?></p>
+            <h1 class="mb-5 text-4xl font-semibold pointer-events-auto"><?= $escaper->escapeHtml($heading) ?></h1>
+            <p class="mb-8 pointer-events-auto"><?= $escaper->escapeHtml($description) ?></p>
             <?php if(!empty($block->getData('button_label'))): ?>
                 <a
                     <?php if ($linkHref): ?>
@@ -47,6 +49,7 @@ $autoplay = $block->getData('autoplay');
                         target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
                     <?php endif; ?>
                     x-element-transition-trigger
+                    class="pointer-events-auto"
                 >
                     <span class="underline">
                         <?= $escaper->escapeHtml($block->getData('button_label')) ?>
@@ -60,7 +63,8 @@ $autoplay = $block->getData('autoplay');
     <iframe
         src="<?= $escaper->escapeUrl($videoUrl) ?>"
         autoplay="<?= $autoplay ? 'true' : 'false' ?>"
-        muted="true"
+        muted="<?= $muted ? 'true' : 'false' ?>"
+        loop="<?= $loop ? 'true' : 'false' ?>"
         controls="false"
         class="w-full h-full object-cover"
         allow="autoplay; encrypted-media"

@@ -82,10 +82,12 @@
                     <element name="video">
                         <attribute name="video_source" source="src"
                                    converter="Magento_PageBuilder/js/content-type/video/converter/attribute/videosrc"
-                                   preview_converter="Magento_PageBuilder/js/content-type/video/converter/attribute/videosrc"/>
+                                   preview_converter="Satoshi_SatoshiUi/js/content-type/satoshi-video-hero/converter/attribute/videosrc"/>
                         <attribute name="autoplay" storage_key="autoplay" source="autoplay"
                                    converter="Magento_PageBuilder/js/content-type/video/converter/attribute/autoplay"/>
-                        <attribute name="muted_video" storage_key="autoplay" source="muted"
+                        <attribute name="muted" storage_key="muted" source="muted"
+                                   converter="Magento_PageBuilder/js/content-type/video/converter/attribute/autoplay"/>
+                        <attribute name="loop" storage_key="loop" source="loop"
                                    converter="Magento_PageBuilder/js/content-type/video/converter/attribute/autoplay"/>
                     </element>
 
