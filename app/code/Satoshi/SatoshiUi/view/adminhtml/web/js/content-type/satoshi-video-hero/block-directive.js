@@ -85,6 +85,12 @@ define([
       delete filteredGetParams.autoplay;
     }
 
+    if (data.controls === "true") {
+      filteredGetParams.controls = "1";
+    } else {
+      delete filteredGetParams.controls;
+    }
+
     var processedGetParams = [];
 
     for (var _param in filteredGetParams) {
@@ -94,8 +100,6 @@ define([
         );
       }
     }
-
-    processedGetParams.push("controls=0");
 
     return processedGetParams.length > 0
       ? "?" + processedGetParams.join("&")
@@ -129,7 +133,8 @@ define([
         "?title=0&byline=0&portrait=0" +
         (data.autoplay === "true" ? "&autoplay=1&autopause=0" : "") +
         (data.muted === "true" ? "&muted=1" : "") +
-        (data.loop === "true" ? "&loop=1" : "");
+        (data.loop === "true" ? "&loop=1" : "") +
+        (data.controls === "true" ? "&controls=1" : "");
     }
 
     return {
@@ -142,6 +147,7 @@ define([
       autoplay: data.autoplay,
       muted: data.muted,
       loop: data.loop,
+      controls: data.controls,
     };
   };
 
