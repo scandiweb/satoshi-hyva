@@ -21,7 +21,7 @@ define([
    * @returns string
    * @private
    */
-  _proto.parseYoutubeGetParams = function parseYoutubeGetParams(url, data) {
+  _proto.parseYoutubeGetParams = function parseYoutubeGetParams(url, data, id) {
     var acceptableYouTubeParams = [
       "rel",
       "controls",
@@ -66,13 +66,23 @@ define([
         filteredGetParams[param] = urlGetParams[param];
       }
     }
+    if (data.muted === "true") {
+      filteredGetParams.mute = "1";
+    } else {
+      delete filteredGetParams.mute;
+    }
+
+    if (data.loop === "true") {
+      filteredGetParams.loop = "1";
+      filteredGetParams.playlist = id;
+    } else {
+      delete filteredGetParams.loop;
+    }
 
     if (data.autoplay === "true") {
       filteredGetParams.autoplay = "1";
-      filteredGetParams.mute = "1";
     } else {
       delete filteredGetParams.autoplay;
-      delete filteredGetParams.mute;
     }
 
     var processedGetParams = [];
@@ -101,23 +111,25 @@ define([
     let src = data.video_source;
     const youtubeRegExp = new RegExp(
       "^(?:https?://|//)?(?:www\\.|m\\.)?" +
-        "(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|watch\\?v=|watch\\?.+&v=))([\\w-]{11})(?![\\w-])"
+      "(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|watch\\?v=|watch\\?.+&v=))([\\w-]{11})(?![\\w-])"
     );
     const vimeoRegExp = new RegExp(
       "https?://(?:www\\.|player\\.)?vimeo.com/(?:channels/" +
-        "(?:\\w+/)?|groups/([^/]*)/videos/|album/(\\d+)/video/|video/|)(\\d+)(?:$|/|\\?)"
+      "(?:\\w+/)?|groups/([^/]*)/videos/|album/(\\d+)/video/|video/|)(\\d+)(?:$|/|\\?)"
     );
     if (youtubeRegExp.test(src)) {
       src =
         "https://www.youtube.com/embed/" +
         youtubeRegExp.exec(src)[1] +
-        _proto.parseYoutubeGetParams(src, data);
+        _proto.parseYoutubeGetParams(src, data, youtubeRegExp.exec(src)[1]);
     } else if (vimeoRegExp.test(src)) {
       src =
         "https://player.vimeo.com/video/" +
         vimeoRegExp.exec(src)[3] +
         "?title=0&byline=0&portrait=0" +
-        (data.autoplay === "true" ? "&autoplay=1&autopause=0&muted=1" : "");
+        (data.autoplay === "true" ? "&autoplay=1&autopause=0" : "") +
+        (data.muted === "true" ? "&muted=1" : "") +
+        (data.loop === "true" ? "&loop=1" : "");
     }
 
     return {
@@ -128,6 +140,8 @@ define([
       overlay_opacity: +data.overlay_opacity / 100,
       video_source: src,
       autoplay: data.autoplay,
+      muted: data.muted,
+      loop: data.loop,
     };
   };
 
