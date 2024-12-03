@@ -22,7 +22,7 @@ if ($sorter) {
     foreach ($sorter->getAvailableOrders() as $key => $option) {
         $sortOptions[] = ['value' => $key, 'name' => "{$option}, asc", 'dir' => 'asc'];
         $sortOptions[] = ['value' => $key, 'name' => "{$option}, desc", 'dir' => 'desc'];
-    
+
         if ($sorter->isOrderCurrent($key) && ($index !== 0 || $sorter->getCurrentDirection() !== 'asc')) {
             $selectedSort = ['value' => $key, 'name' => $option, 'dir' => $sorter->getCurrentDirection()];
         }
@@ -51,10 +51,10 @@ if ($sorter) {
 
 <!-- Desktop filters -->
 <div
-    class="hidden w-[275px] min-w-[275px] overflow-hidden transition-[width,min-width] motion-reduce:transition-none md:sticky md:top-[--scroll-top] md:block"
+    class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:sticky md:top-[--scroll-top] md:block"
     :class="{
-        'w-[275px] min-w-[275px]': $store.productList.isFiltersSidebarExpanded,
-        'w-0 min-w-0 ml-0': !$store.productList.isFiltersSidebarExpanded
+        'max-w-[275px]': $store.productList.isFiltersSidebarExpanded,
+        'max-w-0': !$store.productList.isFiltersSidebarExpanded
     }"
     x-sticky-scroll="{
         top: 90,

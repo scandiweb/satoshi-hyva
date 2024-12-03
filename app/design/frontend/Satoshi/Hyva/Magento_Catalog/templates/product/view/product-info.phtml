@@ -132,7 +132,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         $popup_id = 'product_actions-' . $product->getId();
         $options = $block->getChildBlock('product.info.form') ? $block->getChildBlock('product.info.form')->setData(['is_popup' => true])->toHtml() : '';
         $options .= $block->getChildHtml('product_options_wrapper_bottom');
-        $minHeight = $product->getTypeId() === 'bundle' ? 'min-h-24' : 'min-h-20';
+        $minHeight = $product->getTypeId() === 'bundle' ? 'min-h-40' : 'min-h-20';
 
         $productActions = <<<HTML
             <template x-if="\$store.main.isMobile">
