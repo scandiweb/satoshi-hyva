@@ -19,14 +19,18 @@ use Magento\Newsletter\Block\Subscribe;
 $recaptcha = $block->getData('viewModelRecaptcha');
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
+$title = $block->getData('title') ?? __('Join Our Newsletter.');
 $subtitle = $block->getData('subtitle');
+$buttonLabel = $block->getData('button_label') ?? __('Subscribe');
 $isWrapped = $block->getData('wrapped') == 'true';
 ?>
 
 <div
     class="md:max-w-screen-sm mx-auto flex flex-col items-stretch gap-5 rounded-md border-1 border-transparent px-5 py-6 md:min-w-[35%] md:gap-4 md:p-7 h-fit <?= $isWrapped ? 'bg-secondary-400 md:bg-bg-500' : '' ?>">
-    <h2 class="text-lg"><?= $escaper->escapeHtml(__('Join Our Newsletter.')) ?></h2>
-    <p class="text-text-500"><?= $escaper->escapeHtml($subtitle) ?></p>
+    <h2 class="text-lg"><?= $escaper->escapeHtml($title) ?></h2>
+    <?php if (!empty($subtitle)): ?>
+        <p class="text-text-500"><?= $escaper->escapeHtml($subtitle) ?></p>
+    <?php endif; ?>
     <form
         class="flex flex-col gap-3 items-stretch md:gap-4"
         action="<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>"
@@ -93,7 +97,7 @@ $isWrapped = $block->getData('wrapped') == 'true';
             }"
             :disabled="isLoading"
         >
-            <?= $escaper->escapeHtml(__('Subscribe')) ?>
+            <?= $escaper->escapeHtml($buttonLabel) ?>
         </button>
         <span
             class="newsletter-form__message newsletter-form__message--success form__message"
