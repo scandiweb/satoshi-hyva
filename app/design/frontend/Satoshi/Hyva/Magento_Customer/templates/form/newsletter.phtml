@@ -18,6 +18,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         action="<?= $escaper->escapeUrl($block->getAction()) ?>"
         method="post"
         id="form-validate"
+        x-data="Form('form-validate')"
+        @submit.prevent="submitForm"
     >
         <h2 class="text-text-500 text-lg font-bold mb-5">
             <?= $escaper->escapeHtml(__('Subscription Option')) ?>
@@ -47,11 +49,15 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
         <div class="flex flex-col md:flex-row gap-4">
             <button
+                class="button button--filled-primary"
+                :class="isLoading && 'button--disabled'"
+                :disabled="isLoading"
                 type="submit"
                 title="<?= $escaper->escapeHtmlAttr(__('Save')) ?>"
-                class="button button--filled-primary"
             >
-                <?= $escaper->escapeHtmlAttr(__('Save')) ?>
+                <span x-text="isLoading ?
+                '<?= $escaper->escapeHtml(__('Saving...')) ?>' :
+                '<?= $escaper->escapeHtml(__('Save')) ?>'"><?= $escaper->escapeHtml(__('Save')) ?></span>
             </button>
             <a class="button button--ghost-primary"
                href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
