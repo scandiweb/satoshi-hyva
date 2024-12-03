@@ -38,15 +38,17 @@ $linkHref = $linkHelper->getLinkHref($block, $link_url);
         <?= /* @noEscape */ str_replace('&quote;', '"', html_entity_decode($block->getData('content'))) ?>
     </div>
 
-    <a
-        <?php if ($linkHref): ?>
-            href="<?= $escaper->escapeUrl($linkHref); ?>"
-            target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
-        <?php endif; ?>
-        class="text-text-500"
-        x-element-transition-trigger
-    >
-        <span class="underline"><?= $escaper->escapeHtml($block->getData('button_label')) ?></span>
-        <?= $hyvaicons->renderHtml('button-link', 'inline text-primary-500'); ?>
-    </a>
+    <?php if(!empty($block->getData('button_label'))): ?>
+        <a
+            <?php if ($linkHref): ?>
+                href="<?= $escaper->escapeUrl($linkHref); ?>"
+                target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
+            <?php endif; ?>
+            class="text-text-500"
+            x-element-transition-trigger
+        >
+            <span class="underline"><?= $escaper->escapeHtml($block->getData('button_label')) ?></span>
+            <?= $hyvaicons->renderHtml('button-link', 'inline text-primary-500'); ?>
+        </a>
+    <?php endif; ?>
 </div>
