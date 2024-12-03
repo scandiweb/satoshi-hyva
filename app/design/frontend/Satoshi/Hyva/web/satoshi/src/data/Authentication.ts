@@ -1,4 +1,5 @@
 import { MainStoreType } from "../store/Main";
+import { replaceMainContentWithTransition } from "../plugins/Transition";
 
 type RegisterProps = {
   telephoneErrorMessage: string;
@@ -24,10 +25,14 @@ export type AuthenticationType = {
   ): void;
   validateCountryDependentFields(): void;
   hasAvailableRegions(): boolean;
+  isLoading: boolean;
+  logout(postData: { action: string }): void;
 } & MainStoreType;
 
 export const Authentication = () => {
   return <AuthenticationType>{
+    isLoading: false,
+
     initRegister({ telephoneErrorMessage, postCodes, postcodeWarnings }) {
       this.$nextTick(() => {
         window.hyva.formValidation.addRule(
@@ -148,6 +153,34 @@ export const Authentication = () => {
 
     hasAvailableRegions() {
       return Object.keys(this.availableRegions).length > 0;
+    },
+
+    logout(postData) {
+      if (this.isLoading) return;
+
+      this.isLoading = true;
+
+      // using postData.data causes 'Invalid Form Key' error
+      const formData = new FormData();
+      formData.append("form_key", window.hyva.getFormKey());
+      formData.append("uenc", window.hyva.getUenc());
+
+      fetch(postData.action, {
+        method: "POST",
+        body: formData,
+      })
+        .then((result) => {
+          return result;
+        })
+        .then(async (response) => {
+          await replaceMainContentWithTransition(response.url, await response.text());
+        })
+        .catch((error) => {
+          console.error("Error while logging out:", error);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
   };
 };

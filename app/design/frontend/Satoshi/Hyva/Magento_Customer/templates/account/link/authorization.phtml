@@ -12,7 +12,7 @@ use Magento\Framework\Escaper;
 
 if ($block->isLoggedIn()): ?>
     <?php $dataPostParam = $block->getPostParams(); ?>
-    <li x-data="Logout">
+    <li x-data="Authentication">
         <button <?= /* @noEscape */ $block->getLinkAttributes() ?>
             :class="isLoading && 'button--disabled'"
             :disabled="isLoading"
