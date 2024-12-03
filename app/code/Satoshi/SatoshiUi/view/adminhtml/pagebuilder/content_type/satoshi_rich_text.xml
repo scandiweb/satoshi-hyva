@@ -8,7 +8,7 @@
           preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-rich-text/preview"
           form="pagebuilder_satoshi_rich_text_form"
           icon="icon-pagebuilder-heading"
-          sortOrder="100"
+          sortOrder="50"
           translate="label">
         <children default_policy="deny"/>
         <parents default_policy="deny">

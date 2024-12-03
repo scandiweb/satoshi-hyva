@@ -7,7 +7,7 @@
           component="Magento_PageBuilder/js/content-type"
           form="pagebuilder_satoshi_video_hero_form"
           icon="icon-pagebuilder-heading"
-          sortOrder="120"
+          sortOrder="65"
           translate="label">
         <children default_policy="deny"/>
         <parents default_policy="deny">

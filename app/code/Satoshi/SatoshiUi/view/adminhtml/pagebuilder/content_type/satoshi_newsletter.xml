@@ -1,15 +1,13 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_PageBuilder:etc/content_type.xsd">
-    <type name="satoshi_category"
-          label="Category"
+    <type name="satoshi_newsletter"
+          label="Newsletter"
           menu_section="satoshi_components"
           component="Magento_PageBuilder/js/content-type"
-          preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-category/preview"
-          master_component="Magento_PageBuilder/js/content-type/master"
-          form="pagebuilder_satoshi_category_form"
+          form="pagebuilder_satoshi_newsletter_form"
           icon="icon-pagebuilder-heading"
-          sortOrder="15"
+          sortOrder="70"
           translate="label">
         <children default_policy="deny"/>
         <parents default_policy="deny">
@@ -19,8 +17,8 @@
         <appearances>
             <appearance name="default"
                         default="true"
-                        preview_template="Satoshi_SatoshiUi/content-type/satoshi-category/default/preview"
-                        master_template="Satoshi_SatoshiUi/content-type/satoshi-category/default/master"
+                        preview_template="Satoshi_SatoshiUi/content-type/satoshi-newsletter/default/preview"
+                        master_template="Satoshi_SatoshiUi/content-type/satoshi-newsletter/default/master"
                         reader="Magento_PageBuilder/js/master-format/read/configurable">
                 <elements>
                     <element name="main">
@@ -47,9 +45,22 @@
                                preview_converter="Magento_PageBuilder/js/converter/style/preview/display"/>
                         <attribute name="name" source="data-content-type"/>
                         <attribute name="appearance" source="data-appearance"/>
-                        <html name="html"
-                              preview_converter="Magento_PageBuilder/js/converter/attribute/preview/store-id"/>
                         <css name="css_classes"/>
+                    </element>
+
+                    <!-- Map form elements here -->
+                    <element name="title">
+                        <html name="title" converter="Magento_PageBuilder/js/converter/html/decode"/>
+                    </element>
+                    <element name="subtitle">
+                        <html name="subtitle" converter="Magento_PageBuilder/js/converter/html/decode"/>
+                    </element>
+                    <element name="button_label">
+                        <html name="button_label" converter="Magento_PageBuilder/js/converter/html/decode"/>
+                    </element>
+                    <element name="wrapped">
+                        <attribute name="wrapped" source="data-wrapped"
+                                   converter="Magento_PageBuilder/js/content-type/video/converter/attribute/autoplay"/>
                     </element>
 
                     <element name="block_directive">
@@ -57,10 +68,11 @@
                     </element>
                 </elements>
                 <converters>
-                    <converter component="Satoshi_SatoshiUi/js/content-type/satoshi-category/widget-directive"
-                               name="widget_directive">
+                    <converter component="Satoshi_SatoshiUi/js/content-type/satoshi-newsletter/block-directive"
+                               name="block_directive">
                         <config>
-                            <item name="html_variable" value="html"/>
+                            <item name="html_variable" value="block_directive"/>
+                            <item name="block_class" value="Magento\Newsletter\Block\Subscribe"/>
                         </config>
                     </converter>
                 </converters>
