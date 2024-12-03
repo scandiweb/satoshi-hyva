@@ -98,7 +98,7 @@ $isSmall = $block->getData('is_small') ?? false;
       <?php endif; ?>
       name="qty"
       :value="variantQty || <?= $block->getProductDefaultQty() * 1 ?>"
-      class="animate-on-transition input__field flex-shrink-0 basis-14 text-center md:h-auto bg-transparent <?= $isSmall ? 'h-9 px-3' : '' ?>"
+      class="animate-on-transition input__field flex-shrink-0 basis-14 text-center md:h-auto bg-transparent <?= $isSmall ? 'h-9 px-3' : '' ?> <?= $isPopup ? 'max-sm:basis-8 max-sm:px-2' : '' ?>"
       min="1"
       @change.lazy="setQuantity($event.target.value)"
       aria-label="<?= __('Quantity') ?>"

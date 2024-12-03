@@ -148,6 +148,28 @@ h3 {
   grid-template-columns: 275px repeat(2, minmax(0, 1fr)) 275px;
 }
 
+.grid-columns-plp {
+  @apply h-full flex flex-col md:flex-row gap-y-5;
+}
+
+.main-sidebar {
+  @apply relative col-span-1 md:pl-8 transition-all;
+}
+
+.sidebar-additional {
+  @apply transition-all md:max-w-[275px] whitespace-nowrap overflow-hidden;
+}
+
+.plp-grid-wrapper--full {
+  .main-sidebar {
+    @apply pl-0;
+  }
+
+  .sidebar-additional {
+    @apply max-w-0;
+  }
+}
+
 .price-box {
   @apply flex flex-col gap-1 md:gap-2;
 
@@ -190,6 +212,7 @@ h3 {
   @import "components/link";
   @import "components/page-builder";
 }
+
 @import "components/progress-bar";
 
 @layer base {

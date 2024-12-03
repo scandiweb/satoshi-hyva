@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Satoshi\SatoshiUi\Block\Video;
-use Hyva\Theme\ViewModel\SvgIcons;
-use Hyva\Theme\Model\ViewModelRegistry;
 
 /** @var Video $block */
 /** @var Escaper $escaper */
@@ -25,14 +25,14 @@ $autoplay = $block->getData('autoplay');
     <noscript>
         <a
             href="<?= $escaper->escapeUrl($videoUrl) ?>"
-            class="relative"
+            class="relative [[data-appearance='contained']_&]:rounded-xl overflow-hidden"
         >
             <?php if(!empty($imageUrl)): ?>
-                <div class="h-full w-full rounded-xl">
+                <div class="h-full w-full">
                     <img
                         src="<?= $escaper->escapeUrl($imageUrl) ?>"
                         alt="<?= $escaper->escapeHtmlAttr($subheading) ?>"
-                        class="h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)] w-full object-cover rounded-xl"
+                        class="h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)] w-full object-cover"
                     />
                 </div>
             <?php else: ?>
@@ -53,22 +53,24 @@ $autoplay = $block->getData('autoplay');
     </noscript>
 
     <div
-        class="relative h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)] overflow-hidden rounded-xl"
+        class="relative h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)] overflow-hidden [[data-appearance='contained']_&]:rounded-xl"
         x-data="{ loaded: false }"
     >
         <button
             type="button"
-            @click="loaded = true"
+            <?php if (!empty($videoUrl)): ?>
+                @click="loaded = true"
+            <?php endif; ?>
             class="h-full w-full"
             style="text-align: inherit;"
             :class="{ 'hidden': loaded }"
         >
             <?php if(!empty($imageUrl)): ?>
-                <div class="h-full w-full rounded-xl">
+                <div class="h-full w-full">
                     <img
                         src="<?= $escaper->escapeUrl($imageUrl) ?>"
                         alt="<?= $escaper->escapeHtmlAttr($subheading) ?>"
-                        class="h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)] w-full object-cover rounded-xl"
+                        class="h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)] w-full object-cover"
                     />
                 </div>
             <?php else: ?>
