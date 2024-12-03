@@ -8,7 +8,7 @@
           preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-image-with-text/preview"
           form="pagebuilder_satoshi_image_with_text_form"
           icon="icon-pagebuilder-heading"
-          sortOrder="40"
+          sortOrder="20"
           translate="label">
         <children default_policy="deny"/>
         <parents default_policy="deny">

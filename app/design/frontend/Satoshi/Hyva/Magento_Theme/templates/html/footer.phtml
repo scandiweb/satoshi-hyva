@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Magento\Framework\Escaper;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Html\Footer;
 
 /** @var Footer $block */
@@ -28,30 +28,32 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             <?php foreach($block->getFooterCmsBlockIds() as $index=>$cmsBlockId): ?>
               <?php if ($block->getIsCmsBlockAvailable($cmsBlockId)): ?>
                 <div
-                  class="flex-1 py-2 md:flex md:flex-col md:gap-4 md:py-4"
                   x-data="Accordion(!$store.main.isMobile, 300, true)"
                 >
-                  <button
-                    class="group flex h-11 w-full items-center rounded-md p-3 md:h-auto md:cursor-text md:px-[3px] md:py-0 md:hover:bg-inherit"
-                    x-ref="AccordionButton"
-                    :disabled="!$store.main.isMobile"
-                    :aria-expanded="isExpanded && $store.main.isMobile"
-                    aria-controls="<?= $escaper->escapeHtmlAttr('footer_column_' . $index+1 . '_panel') ?>"
-                    aria-labelledby="<?= $escaper->escapeHtmlAttr('footer_column_' . $index+1 . '_label') ?>"
-                    type="button"
-                  >
-                    <h2
-                      class="grow text-left text-text-500"
-                      id="<?= $escaper->escapeHtmlAttr('footer_column_' . $index+1 . '_label') ?>"
-                    >
-                      <?= $escaper->escapeHtml($block->getCmsBlockTitle($cmsBlockId)) ?>
-                    </h2>
-                    <div class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable md:hidden">
-                      <span x-ref="AccordionIcon">
-                        <?= $hyvaicons->renderHtml('chevron-up', 'rotate-180'); ?>
-                      </span>
-                    </div>
-                  </button>
+                    <!--                  <button-->
+                    <!--                    class="group flex h-11 w-full items-center rounded-md p-3 md:h-auto md:cursor-text md:px-[3px] md:py-0 md:hover:bg-inherit"-->
+                    <!--                    x-ref="AccordionButton"-->
+                    <!--                    :disabled="!$store.main.isMobile"-->
+                    <!--                    :aria-expanded="isExpanded && $store.main.isMobile"-->
+                    <!--                    aria-controls="-->
+                    <?php //= $escaper->escapeHtmlAttr('footer_column_' . $index+1 . '_panel') ?><!--"-->
+                    <!--                    aria-labelledby="-->
+                    <?php //= $escaper->escapeHtmlAttr('footer_column_' . $index+1 . '_label') ?><!--"-->
+                    <!--                    type="button"-->
+                    <!--                  >-->
+                    <!--                    <h2-->
+                    <!--                      class="grow text-left text-text-500"-->
+                    <!--                      id="-->
+                    <?php //= $escaper->escapeHtmlAttr('footer_column_' . $index+1 . '_label') ?><!--"-->
+                    <!--                    >-->
+                    <!--                      --><?php //= $escaper->escapeHtml($block->getCmsBlockTitle($cmsBlockId)) ?>
+                    <!--                    </h2>-->
+                    <!--                    <div class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable md:hidden">-->
+                    <!--                      <span x-ref="AccordionIcon">-->
+                    <!--                        --><?php //= $hyvaicons->renderHtml('chevron-up', 'rotate-180'); ?>
+                    <!--                      </span>-->
+                    <!--                    </div>-->
+                    <!--                  </button>-->
                   <div
                     x-cloak
                     x-ref="AccordionPanel"
