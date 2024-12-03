@@ -21,7 +21,8 @@ $recaptcha = $block->getData('viewModelRecaptcha');
 $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
-<div class="flex flex-col items-stretch gap-5 rounded-md border-1 border-transparent bg-secondary-400 px-5 py-6 md:min-w-[35%] md:gap-4 md:bg-bg-500 md:p-7">
+<div
+    class="flex flex-col items-stretch gap-5 rounded-md border-1 border-transparent bg-secondary-400 px-5 py-6 md:min-w-[35%] md:gap-4 md:bg-bg-500 md:p-7 h-fit">
     <h2 class="text-lg"><?= $escaper->escapeHtml(__('Join Our Newsletter.')) ?></h2>
     <form
         class="flex flex-col gap-3 items-stretch md:gap-4"
@@ -71,12 +72,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </div>
 
         <?= $block->getBlockHtml('formkey') ?>
-        <div
-            id="newsletter-recaptcha-container"
-            class="origin-top-left scale-[0.8] max-w-[245px] sm:scale-100 sm:max-w-none md:scale-[0.65] lg:scale-90 xl:scale-100"
-        >
-            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
-        </div>
+
+        <?php if ($recaptcha && $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER)): ?>
+            <div
+                id="newsletter-recaptcha-container"
+                class="origin-top-left scale-[0.8] max-w-[245px] sm:scale-100 sm:max-w-none md:scale-[0.65] lg:scale-90 xl:scale-100"
+            >
+                <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER); ?>
+            </div>
+        <?php endif; ?>
+
         <button
             type="submit"
             class="button button--filled-primary w-full"

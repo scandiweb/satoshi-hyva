@@ -2,9 +2,9 @@
 <view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/view.xsd">
     <media>
         <images module="Magento_Catalog">
-            <image id="mini_cart_product_thumbnail" type="small_image">
-                <width>265</width>
-                <height>265</height>
+            <image id="mini_cart_product_thumbnail" type="thumbnail">
+                <width>700</width>
+                <height>700</height>
             </image>
         </images>
     </media>
