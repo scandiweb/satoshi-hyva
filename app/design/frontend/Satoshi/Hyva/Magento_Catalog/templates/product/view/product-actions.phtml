@@ -73,6 +73,7 @@ $cartMessage = $block->getCartMessage();
           ['configurable', 'downloadable', 'grouped', 'bundle']) && !$isPopup) ? 'max-md:hidden' : '' ?>
         <?= $isSmall ? 'button--size-sm' : '' ?>
         animate-on-transition button button--filled-primary flex-grow
+        <?= $isPopup ? 'max-sm:px-3' : '' ?>
       "
       :class="
         {
@@ -287,7 +288,12 @@ $cartMessage = $block->getCartMessage();
         style="display: none"
       <?php endif; ?>
       x-show="isVariantInCart"
-      class="animate-on-transition button button--disabled button--outline-secondary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= $hasVariants ? 'max-md:hidden' : '' ?>"
+      class="
+        animate-on-transition button button--disabled button--outline-secondary flex-grow
+        <?= $isSmall ? 'button--size-sm' : '' ?>
+        <?= $hasVariants ? 'max-md:hidden' : '' ?>
+        <?= $isPopup ? 'max-sm:px-3' : '' ?>
+      "
       @click.prevent="$store.cart.showCart()"
       x-a11y-trap-target.end="$store.popup.currentPopup === productActionsPopup"
       type="button"
@@ -303,7 +309,13 @@ $cartMessage = $block->getCartMessage();
         style="display: none"
       <?php endif; ?>
       x-show="!isVariantInCart || <?= (int) $isPopup ?>"
-      class="animate-on-transition button button--disabled button--outline-secondary flex-grow <?= $isSmall ? 'button--size-sm' : '' ?> <?= ($inStock || (!$isPopup && $hasVariants)) ? 'max-md:hidden' : '' ?> <?= $inStock ? 'md:hidden' : '' ?>"
+      class="
+        animate-on-transition button button--disabled button--outline-secondary flex-grow
+        <?= $isSmall ? 'button--size-sm' : '' ?>
+        <?= ($inStock || (!$isPopup && $hasVariants)) ? 'max-md:hidden' : '' ?>
+        <?= $inStock ? 'md:hidden' : '' ?>
+        <?= $isPopup ? 'max-sm:px-3' : '' ?>
+      "
       disabled
       type="button"
     >
@@ -316,7 +328,7 @@ $cartMessage = $block->getCartMessage();
         style="display: none"
       <?php endif; ?>
       x-show="<?= (int) ($productType !== 'downloadable') ?> && (!isVariantInCart || <?= (int) $isPopup ?>)"
-      class="animate-on-transition button button--outline-primary w-full md:hidden"
+      class="animate-on-transition button button--outline-primary flex-grow md:hidden <?= $isPopup ? 'max-sm:px-3' : '' ?>"
       :class="
       {
         'max-md:hidden': !isVariantInCart || !<?= (int) $isPopup ?>
@@ -332,7 +344,7 @@ $cartMessage = $block->getCartMessage();
 
 <!-- Status Message -->
 <?php if (!$isPopup && is_array($cartMessage)): ?>
-  <span class="basis-full <?= $cartMessage['status'] === 'error' ? 'text-error' : '' ?>">
+  <span class="basis-full max-md:px-3 <?= $cartMessage['status'] === 'error' ? 'text-error' : '' ?>">
     <?= $cartMessage['message'] ?>
   </span>
 <?php endif; ?>

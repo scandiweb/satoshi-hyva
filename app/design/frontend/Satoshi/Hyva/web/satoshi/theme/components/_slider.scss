@@ -31,7 +31,7 @@
   }
 
   &__actions {
-    @apply ml-auto flex gap-3 pt-2;
+    @apply ml-auto flex gap-3 pt-2 z-20;
   }
 
   &__slides {

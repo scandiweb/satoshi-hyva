@@ -16,7 +16,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 <template x-portal="document.getElementById('footer-portal')">
   <div class="contents">
     <footer
-      class="footer rounded-t-2xl md:bg-secondary-500"
+      class="footer rounded-t-2xl md:bg-secondary-400"
       x-cloak
       :class="{ 'hidden': $store.main.isMobile && '<?= $block->getIsHomePage() ?>' !== '1' }"
     >

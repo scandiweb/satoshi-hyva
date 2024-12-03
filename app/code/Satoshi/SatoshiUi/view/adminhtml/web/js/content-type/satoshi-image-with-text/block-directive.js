@@ -14,14 +14,14 @@ define([
   var _proto = BlockDirective.prototype;
 
   _proto.getAdditionalBlockAttributes = function getAdditionalBlockAttributes(
-    data,
+    data
   ) {
     const tidyLink = linkHelper.prototype.tidyLink;
 
     return {
       appearance: data.appearance,
       heading: data.heading,
-      description: data.description,
+      content: data.content,
       button_label: data.button_label,
       button_link: JSON.stringify(tidyLink(data.button_link)),
       ...(data.image[0] ? { image: data.image[0].url } : {}),

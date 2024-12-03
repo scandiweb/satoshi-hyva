@@ -8,6 +8,11 @@
 @import "content-type/_rich-text.style.less";
 @import "content-type/_faq.style.less";
 @import "content-type/_quotes.style.less";
+@import "content-type/_before-and-after.style.less";
+@import "content-type/_video.style.less";
+@import "content-type/_video-hero.style.less";
+@import "content-type/_countdown.style.less";
+@import "content-type/_shop-the-look.style.less";
 
 .pagebuilder-content-type .content-wrapper {
   padding-left: 16px;
@@ -29,4 +34,17 @@
   @media (min-width: 1536px) {
     max-width: 1536px;
   }
+}
+
+.pagebuilder-content-type.pagebuilder-wysiwyg
+  .inline-wysiwyg
+  + .placeholder-text {
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+}
+
+.pagebuilder-wygiwyg-text-content {
+  position: relative;
 }

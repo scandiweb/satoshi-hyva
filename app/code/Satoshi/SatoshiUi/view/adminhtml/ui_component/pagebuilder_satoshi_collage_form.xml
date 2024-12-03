@@ -153,35 +153,36 @@
                     </argument>
                 </field>
 
-                <field name="item_product">
+                <field name="item_product" formElement="select">
                     <argument name="data" xsi:type="array">
                         <item name="config" xsi:type="array">
                             <item name="visible" xsi:type="boolean">false</item>
-                            <item name="filterOptions" xsi:type="boolean">true</item>
-                            <item name="multiple" xsi:type="boolean">false</item>
-                            <item name="showCheckbox" xsi:type="boolean">false</item>
-                            <item name="disableLabel" xsi:type="boolean">true</item>
-                            <item name="levelsVisibility" xsi:type="number">1</item>
-                            <item name="additionalClasses" xsi:type="string">required</item>
-                            <item name="dataType" xsi:type="string">text</item>
                             <item name="label" xsi:type="string" translate="true">Select product</item>
-                            <item name="componentType" xsi:type="string">field</item>
-                            <item name="formElement" xsi:type="string">select</item>
-                            <item name="component" xsi:type="string">Satoshi_SatoshiUi/js/form/collage/product-selector</item>
-                            <item name="elementTmpl" xsi:type="string">ui/grid/filters/elements/ui-select</item>
-                            <item name="dataScope" xsi:type="string">item_product</item>
-                            <item name="emptyOptionsHtml" xsi:type="string" translate="true">No results found. Please enter a search term or try a different one.</item>
-                            <item name="missingValuePlaceholder" xsi:type="string" translate="true">Product ID: %s</item>
-                            <item name="required" xsi:type="boolean">true</item>
+                            <item name="component" xsi:type="string">Satoshi_SatoshiUi/js/form/collage/product-selector
+                            </item>
+                            <item name="disableLabel" xsi:type="boolean">true</item>
+                            <item name="filterOptions" xsi:type="boolean">true</item>
                             <item name="searchOptions" xsi:type="boolean">true</item>
-                            <item name="filterRateLimit" xsi:type="number">20</item>
+                            <item name="chipsEnabled" xsi:type="boolean">true</item>
+                            <item name="levelsVisibility" xsi:type="number">1</item>
+                            <item name="options" xsi:type="array"/>
+                            <item name="multiple" xsi:type="boolean">false</item>
+                            <item name="closeBtn" xsi:type="boolean">true</item>
+                            <item name="template" xsi:type="string">ui/grid/filters/elements/ui-select</item>
                             <item name="searchUrl" xsi:type="url" path="catalog/product/search"/>
-                            <item name="validation" xsi:type="array">
-                                <item name="required-entry" xsi:type="boolean">true</item>
+                            <item name="filterPlaceholder" xsi:type="string" translate="true">Product Name or SKU</item>
+                            <item name="filterRateLimitMethod" xsi:type="string">notifyWhenChangesStop</item>
+                            <item name="isDisplayEmptyPlaceholder" xsi:type="boolean">true</item>
+                            <item name="emptyOptionsHtml" xsi:type="string" translate="true">Start typing to find
+                                products
                             </item>
-                            <item name="listens" xsi:type="array">
-                                <item name="${ $.namespace }.${ $.namespace }:responseData" xsi:type="string">setParsed</item>
+                            <item name="missingValuePlaceholder" xsi:type="string" translate="true">Product with ID: %s
+                                doesn't
+                                exist
                             </item>
+                            <item name="isDisplayMissingValuePlaceholder" xsi:type="boolean">true</item>
+                            <item name="isRemoveSelectedIcon" xsi:type="boolean">true</item>
+                            <item name="validationUrl" xsi:type="url" path="catalog/product/getSelected"/>
                         </item>
                     </argument>
                 </field>
@@ -200,5 +201,15 @@
                 </actionDelete>
             </container>
         </dynamicRows>
+    </fieldset>
+
+    <fieldset name="advanced">
+        <field name="text_align">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="visible" xsi:type="boolean">false</item>
+                </item>
+            </argument>
+        </field>
     </fieldset>
 </form>
