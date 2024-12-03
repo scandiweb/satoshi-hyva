@@ -120,7 +120,7 @@ export const ReviewForm = ({
       const form = document.querySelector(`#${formId}`) as HTMLFormElement;
       const elements = form.elements as Record<string, any>;
 
-      const recaptchaHeader =
+      const recaptchaHeader: Record<string, string> =
         fieldName && form && elements[fieldName]
           ? { "X-ReCaptcha": elements[fieldName].value }
           : {};
