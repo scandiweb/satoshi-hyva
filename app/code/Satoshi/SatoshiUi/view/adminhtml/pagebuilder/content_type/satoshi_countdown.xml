@@ -9,7 +9,7 @@
           master_component="Magento_PageBuilder/js/content-type/master"
           form="pagebuilder_satoshi_countdown_form"
           icon="icon-pagebuilder-heading"
-          sortOrder="70"
+          sortOrder="35"
           translate="label">
         <children default_policy="deny"/>
         <parents default_policy="deny">
