@@ -9,7 +9,7 @@
           master_component="Magento_PageBuilder/js/content-type/master"
           form="pagebuilder_satoshi_faq_form"
           icon="icon-pagebuilder-heading"
-          sortOrder="80"
+          sortOrder="40"
           translate="label">
         <children default_policy="deny"/>
         <parents default_policy="deny">

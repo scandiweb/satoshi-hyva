@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ReCaptcha;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Newsletter\Block\Subscribe;
-use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Subscribe $block */
 /** @var Escaper $escaper */
@@ -19,11 +19,14 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $recaptcha = $block->getData('viewModelRecaptcha');
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
+$subtitle = $block->getData('subtitle');
+$isWrapped = $block->getData('wrapped') == 'true';
 ?>
 
 <div
-    class="flex flex-col items-stretch gap-5 rounded-md border-1 border-transparent bg-secondary-400 px-5 py-6 md:min-w-[35%] md:gap-4 md:bg-bg-500 md:p-7 h-fit">
+    class="md:max-w-screen-sm mx-auto flex flex-col items-stretch gap-5 rounded-md border-1 border-transparent px-5 py-6 md:min-w-[35%] md:gap-4 md:p-7 h-fit <?= $isWrapped ? 'bg-secondary-400 md:bg-bg-500' : '' ?>">
     <h2 class="text-lg"><?= $escaper->escapeHtml(__('Join Our Newsletter.')) ?></h2>
+    <p class="text-text-500"><?= $escaper->escapeHtml($subtitle) ?></p>
     <form
         class="flex flex-col gap-3 items-stretch md:gap-4"
         action="<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>"
