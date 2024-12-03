@@ -32,7 +32,6 @@ export type ReviewFormType = {
   ratings: any;
   review: string | null;
   setErrorMessages(messages: string[]): void;
-  submitForm(): void;
   validate(): void;
   placeReview(): void;
 } & Magics<{}>;
@@ -60,12 +59,10 @@ export const ReviewForm = ({
     review: null,
     setErrorMessages: function (messages) {
       this.errorMessages = [messages];
-      console.log("errorMessages", this.errorMessages);
       this.displayErrorMessage = !!this.errorMessages.length;
     },
 
     validate: function () {
-      console.log('validate');
       this.nickname = (
         document.getElementById("nickname_field") as HTMLInputElement
       ).value;
