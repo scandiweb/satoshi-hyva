@@ -40,11 +40,6 @@ export const ReviewForm = ({ratings, messages, gqlQuery, sku, fieldName, formId,
     summary: null,
     ratings: [],
     review: null,
-    isLoading: false,
-    setErrorMessages(messages) {
-      this.errorMessages = messages;
-      this.displayErrorMessage = !!this.errorMessages.length;
-    },
 
     validate: function () {
       this.nickname = (
