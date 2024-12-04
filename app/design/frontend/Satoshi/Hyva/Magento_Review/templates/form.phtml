@@ -73,7 +73,7 @@ mutation createProductReviewMutation(
                     }
                 }"
                 action=""
-                x-data="ReviewForm({
+                x-data="Object.assign(Form('<?= $escaper->escapeHtmlAttr($formId) ?>'), ReviewForm({
                     ratings: <?= $escaper->escapeHtmlAttr(json_encode($block->getRatings()->getData())) ?>,
                     messages: {
                         required: '<?= $escaper->escapeJs(__('Please verify you\'ve entered all required information')) ?>',
@@ -84,7 +84,7 @@ mutation createProductReviewMutation(
                     fieldName: '<?= $recaptcha ? $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId)) : '' ?>',
                     formId: '<?= $escaper->escapeJs($formId) ?>',
                     storeCode: '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>'
-                })"
+                }))"
 
             >
                 <?= $block->getChildHtml('form_fields_before') ?>
