@@ -153,7 +153,11 @@ h3 {
 }
 
 .main-sidebar {
-  @apply relative col-span-1 md:pl-8 transition-all;
+  @apply relative col-span-1 transition-all;
+}
+
+.grid-columns-plp {
+  @apply md:pl-8;
 }
 
 .sidebar-additional {
