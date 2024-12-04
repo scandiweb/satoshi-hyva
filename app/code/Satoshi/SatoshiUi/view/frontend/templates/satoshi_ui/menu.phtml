@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Satoshi\SatoshiUi\Block\FAQ;
+use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
+
+/** @var FAQ $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var DecodeHelper $decodeHelper */
+$decodeHelper = $this->helper(DecodeHelper::class);
+$items = $block->getData('items');
+$items = $decodeHelper->decodeJSONHTMLEntity($items);
+$id = uniqid();
+?>
+<div
+    class="flex-1 py-2 md:flex md:flex-col md:gap-4 md:py-4"
+    x-data="Accordion(!$store.main.isMobile, 300, true)"
+>
+    <button
+        class="group flex h-11 w-full items-center rounded-md p-3 md:h-auto md:cursor-text md:px-[3px] md:py-0 md:hover:bg-inherit"
+        x-ref="AccordionButton"
+        :disabled="!$store.main.isMobile"
+        :aria-expanded="isExpanded && $store.main.isMobile"
+        aria-controls="<?= $escaper->escapeHtmlAttr($id) ?>_panel"
+        aria-labelledby="<?= $escaper->escapeHtmlAttr($id) ?>_label"
+        type="button"
+    >
+        <h2 class="grow text-left text-text-500" id="<?= $escaper->escapeHtmlAttr($id) ?>_label">
+            <?= $escaper->escapeHtml($block->getData('heading')) ?>
+        </h2>
+        <div class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable md:hidden">
+            <span x-ref="AccordionIcon">
+                <?= $hyvaicons->renderHtml('chevron', '-rotate-90') ?>
+            </span>
+        </div>
+    </button>
+    <?php if (count($items)): ?>
+        <div
+            x-cloak
+            x-ref="AccordionPanel"
+            class="overflow-hidden"
+            :class="{
+                'transition-none': $store.main.isReducedMotion,
+                'transition': $store.main.isReducedMotion,
+            }"
+            id="<?= $escaper->escapeHtmlAttr($id) ?>_panel"
+            role="region"
+            aria-labelledby="<?= $escaper->escapeHtmlAttr($id) ?>_label"
+        >
+            <div class="flex flex-col gap-3 px-3 pb-5 pt-2 md:p-[3px]">
+                <?php foreach ($items as $item): ?>
+                    <a
+                        :tabindex="isExpanded ? 0 : -1"
+                        href="<?= $escaper->escapeUrl($item['item_url']) ?>"
+                        class="group"
+                        x-element-transition-trigger
+                    >
+                        <span
+                            class="link border-transparent md:group-hover:border-current md:group-hover:text-text-500">
+                            <?= $escaper->escapeHtml($item['item_label']) ?>
+                        </span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
