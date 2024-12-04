@@ -195,6 +195,10 @@ h3 {
   @apply max-md:mb-28;
 }
 
+.pagebuilder-column-line {
+  @apply md:gap-5;
+}
+
 @layer components {
   @import "components/content-wrapper";
   @import "components/checkbox";

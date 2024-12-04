@@ -93,21 +93,11 @@
         <referenceContainer name="footer">
             <!-- Add "footer-wrapper" block so we can teleport footer inside it -->
             <block name="footer-wrapper" template="Magento_Theme::html/footer/wrapper.phtml"/>
-            <!-- Add a custom class and 3 CMS blocks to the "footer-content" block -->
+            <!-- Add a footer cms block to "footer-content" block -->
             <referenceBlock name="footer-content" class="Satoshi\Theme\Block\Html\Footer">
-                <block class="Magento\Cms\Block\Block" name="footer-cms-content-1">
+                <block class="Magento\Cms\Block\Block" name="satoshi-footer">
                     <arguments>
-                        <argument name="block_id" xsi:type="string">footer-content-1</argument>
-                    </arguments>
-                </block>
-                <block class="Magento\Cms\Block\Block" name="footer-cms-content-2">
-                    <arguments>
-                        <argument name="block_id" xsi:type="string">footer-content-2</argument>
-                    </arguments>
-                </block>
-                <block class="Magento\Cms\Block\Block" name="footer-cms-content-3">
-                    <arguments>
-                        <argument name="block_id" xsi:type="string">footer-content-3</argument>
+                        <argument name="block_id" xsi:type="string">footer</argument>
                     </arguments>
                 </block>
             </referenceBlock>
