@@ -1,4 +1,4 @@
-import type {Magics} from "alpinejs";
+import {FormType} from "./Form";
 
 type Rating = {
   rating_id: string;
@@ -20,45 +20,29 @@ type ReviewFormProps = {
 };
 
 export type ReviewFormType = {
-  isLoading: boolean;
   displayNickname: boolean;
   displaySuccessMessage: boolean;
   displayErrorMessage: boolean;
-  errorMessages: Array<string[]> | [];
-  errors: number;
-  hasCaptchaToken: number;
   nickname: string | null;
   summary: string | null;
   ratings: any;
   review: string | null;
-  setErrorMessages(messages: string[]): void;
   validate(): void;
   placeReview(): void;
-} & Magics<{}>;
+} & FormType;
 
-export const ReviewForm = ({
-                             ratings,
-                             messages,
-                             gqlQuery,
-                             sku,
-                             fieldName,
-                             formId,
-                             storeCode,
-                           }: ReviewFormProps) =>
+export const ReviewForm = ({ratings, messages, gqlQuery, sku, fieldName, formId, storeCode,}: ReviewFormProps) =>
   <ReviewFormType>{
-    isLoading: false,
     displayNickname: false,
     displaySuccessMessage: false,
     displayErrorMessage: false,
-    errorMessages: [],
-    errors: 0,
-    hasCaptchaToken: 0,
     nickname: null,
     summary: null,
     ratings: [],
     review: null,
-    setErrorMessages: function (messages) {
-      this.errorMessages = [messages];
+    isLoading: false,
+    setErrorMessages(messages) {
+      this.errorMessages = messages;
       this.displayErrorMessage = !!this.errorMessages.length;
     },
 
@@ -113,16 +97,16 @@ export const ReviewForm = ({
         summary: this.summary,
         review: this.review,
         ratings: Object.keys(this.ratings).map((key) => {
-          return { id: btoa(key), value_id: this.ratings[key] };
+          return {id: btoa(key), value_id: this.ratings[key]};
         }),
       };
 
       const form = document.querySelector(`#${formId}`) as HTMLFormElement;
       const elements = form.elements as Record<string, any>;
 
-      const recaptchaHeader: Record<string, string> =
+      const recaptchaHeader =
         fieldName && form && elements[fieldName]
-          ? { "X-ReCaptcha": elements[fieldName].value }
+          ? {"X-ReCaptcha": elements[fieldName].value}
           : {};
 
       fetch(`${BASE_URL}graphql`, {
@@ -132,10 +116,10 @@ export const ReviewForm = ({
             "Content-Type": "application/json;charset=utf-8",
             Store: storeCode,
           },
-          recaptchaHeader,
+          recaptchaHeader as Record<string, string>,
         ),
         credentials: "include",
-        body: JSON.stringify({ query: query, variables: variables }),
+        body: JSON.stringify({query: query, variables: variables}),
       })
         .then((response) => response.json())
         .then((data) => {
