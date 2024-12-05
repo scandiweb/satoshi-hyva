@@ -121,7 +121,6 @@ export const TransitionPreview = () =>
       }
 
       this.isActive = true;
-      this.$refs.transitionContent.focus();
       Alpine.store("transition").isPreviewActive = true;
       this.scrollToTop();
       freezeScroll();
