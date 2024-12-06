@@ -45,7 +45,7 @@ export default function (Alpine: AlpineType) {
           const nextPage = currentPage + 1;
           const nextUrl = `${window.location.pathname}?p=${nextPage}`;
           const fullUrl = window.location.pathname + window.location.search;
-          const html = await fetchPage(nextUrl);
+          const {html} = await fetchPage(nextUrl);
           appendPaginationContent(html);
           cachePage(fullUrl, document.documentElement.outerHTML);
           history.replaceState({ page: nextPage }, "", fullUrl);

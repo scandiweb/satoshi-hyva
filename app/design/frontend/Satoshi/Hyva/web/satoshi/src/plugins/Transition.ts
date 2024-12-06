@@ -351,9 +351,10 @@ export const fetchPage = (url: string) => {
   // Disable un-fade images (Added here to work with popstate & history.replace)
   enableFadeInImages();
 
-  return fetch(url).then((res) => {
+  return fetch(url).then(async (res) => {
     if (res.ok || res.status === 404) {
-      return res.text();
+      const html = await res.text();
+      return {html, redirectUrl: res.url};
     }
 
     throw new Error("Failed to get page for transition");
@@ -374,10 +375,10 @@ export const cachePage = (url: string, html: string) => {
 };
 
 export const fetchAndCachePage = async (url: string) => {
-  const html = await fetchPage(url);
-  cachePage(url, html);
+  const {html, redirectUrl} = await fetchPage(url); // Destructure to get html
+  cachePage(redirectUrl || url, html);
 
-  return html;
+  return {html, redirectUrl};
 };
 
 export const replaceMainContentWithTransition = async (
@@ -447,8 +448,7 @@ export const navigateWithTransition = (
       Alpine.store("popup").hideAllPopups();
       Alpine.store("resizable").hideAll();
       history.replaceState({ ...history.state, scrollPosition }, "");
-      pushStateAndNotify({ isPreview }, "", nextUrl!);
-      const html = await fetchAndCachePage(nextUrl!);
+      const {html, redirectUrl} = await fetchAndCachePage(nextUrl!);
 
       if (isPreview) {
         replacePreviewContent(html);
@@ -456,6 +456,8 @@ export const navigateWithTransition = (
         replaceMainContent(html);
         window.scrollTo(0, 0);
       }
+
+      pushStateAndNotify({isPreview}, "", redirectUrl || nextUrl!);
 
       Alpine.store("transition")._clearFallback();
       nProgress.done();
@@ -560,7 +562,7 @@ function TransitionPlugin(Alpine: AlpineType) {
       return;
     }
 
-    const html = await fetchAndCachePage(
+    const {html} = await fetchAndCachePage(
       window.location.pathname + window.location.search,
     );
 
