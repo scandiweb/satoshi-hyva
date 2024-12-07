@@ -12,7 +12,8 @@
   // pointer-events: none;
 }
 
-.card-product > a::before {
+.card-product > a::before,
+.card-category::before {
   position: absolute;
   top: -8px;
   right: -8px;
@@ -194,4 +195,12 @@
 }
 
 @media (min-width: 768px) {
+  .card-product:hover > a::before,
+  .card-category:hover::before {
+    opacity: 100%;
+  }
+
+  .group:hover .md\:group-hover\:scale-105 {
+    transform: scale(1.05);
+  }
 }
