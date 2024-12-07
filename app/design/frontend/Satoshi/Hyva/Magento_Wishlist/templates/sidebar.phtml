@@ -20,87 +20,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 ?>
 
 <?php if ($wishlistViewModel->isEnabled()): ?>
-    <script>
-        function initWishlistOnWishlistSidebar() {
-            function wishlistSidebarFetchHandler(body, postUrl, isRemoveAction = true) {
-                const messages = {
-                    "success": isRemoveAction
-                        ? "<?= $escaper->escapeJs(__("%1 has been removed from your Wish List.")) ?>"
-                        : "<?= $escaper->escapeJs(__("%1 has been added to your Wish List.")) ?>",
-                    "warning": isRemoveAction
-                        ? "<?= $escaper->escapeJs(__("Could not remove item from your Wish List.")) ?>"
-                        : "<?= $escaper->escapeJs(__('Could not add item to your Wish List.')) ?>",
-                }
-
-                const postHeaders = {
-                    "headers": {
-                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    },
-                    body: body,
-                    "method": "POST",
-                    "mode": "cors",
-                    "credentials": "include"
-                };
-
-                return fetch(postUrl, postHeaders).then(function (response) {
-                    if (response.redirected) {
-                        window.location.href = response.url;
-                    } else if (response.ok) {
-                        return response.json();
-                    } else {
-                        const message = { type: "warning", text: messages.warning };
-                        window.dispatchMessages && window.dispatchMessages([message], 5000);
-                    }
-                }).then(function (response) {
-                    if (!response) return;
-                    const message = {
-                        type: (response.success) ? "success" : "error",
-                        text: (response.success) ? messages.success : response.error_message
-                    }
-                    window.dispatchMessages && window.dispatchMessages([message], 5000);
-                    window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
-                }).catch(function (error) {
-                    const message = { type: "error", text: error };
-                    window.dispatchMessages && window.dispatchMessages([message], 5000);
-                });
-            }
-
-            return {
-                wishlistProducts: null,
-                itemCount: 0,
-                wishlistCountLabel: null,
-                wishlistItems: {},
-                receiveWishlistData: function (data) {
-                    if (data['wishlist']) {
-                        // Keep only 3 wishlist items
-                        const SIDEBAR_ITEMS_NUMBER = 3;
-                        const wishlistProducts = { ...data['wishlist'] };
-                        wishlistProducts.items = wishlistProducts.items.slice(0, SIDEBAR_ITEMS_NUMBER);
-
-                        this.wishlistProducts = wishlistProducts;
-                        this.wishlistCountLabel = this.wishlistProducts.counter;
-                        this.itemCount = this.wishlistProducts.items.length;
-                        this.wishlistItems = this.wishlistProducts.items;
-                    }
-                },
-                addToCart: function (json) {
-                    const obj = JSON.parse(json);
-                    const postUrl = obj.action;
-                    const body = "form_key=" + hyva.getFormKey() + "&item=" + obj.data.item + "&qty=" + obj.data.qty + "&uenc=" + hyva.getUenc();
-                    wishlistSidebarFetchHandler(body, postUrl, /* isRemoveAction */ false);
-                },
-                removeFromWishlist: function(json) {
-                    const obj = JSON.parse(json);
-                    const postUrl = obj.action;
-                    const body = "form_key=" + hyva.getFormKey() + "&item=" + obj.data.item+"&uenc=" + hyva.getUenc();
-                    wishlistSidebarFetchHandler(body, postUrl);
-                }
-            }
-        }
-    </script>
-
     <div
-        x-data="initWishlistOnWishlistSidebar()"
+        x-data="Wishlist({
+            itemAddedSuccessMessage: '<?= $escaper->escapeJs(__("%1 has been added to your Wish List.")) ?>',
+            itemRemovedSuccessMessage: '<?= $escaper->escapeJs(__("%1 has been removed from your Wish List.")) ?>',
+            itemAddedWarningMessage: '<?= $escaper->escapeJs(__("Could not add item to your Wish List.")) ?>',
+            itemRemovedWarningMessage: '<?= $escaper->escapeJs(__("Could not remove item from your Wish List.")) ?>'
+        })"
         @private-content-loaded.window="receiveWishlistData($event.detail.data)"
     >
         <template x-if="itemCount">
@@ -118,6 +44,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                 class="block mb-3 w-12 h-14 shrink-0 mr-4 rounded-xl overflow-hidden bg-[--fade-in-bg]"
                                 tabindex="-1"
                                 aria-hidden="true"
+                                x-element-transition-trigger
                             >
                                 <img
                                     :src="product.image.src"
@@ -128,7 +55,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             </a>
                             <div class="w-[calc(100%-102px)]">
                                 <strong class="block text-text-500 leading-5 font-bold mb-1 overflow-hidden text-ellipsis text-nowrap">
-                                    <a :href="product.product_url" :title="product.product_name" x-html="product.product_name"></a>
+                                    <a
+                                        :href="product.product_url"
+                                        x-element-transition-trigger
+                                        :title="product.product_name"
+                                        x-html="product.product_name"
+                                    ></a>
                                 </strong>
                                 <div class="font-normal mb-4 [&_.price]:text-text-400" x-html="product.product_price"></div>
                                 <template x-if="product.product_is_saleable_and_visible">
@@ -162,6 +94,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     href="<?= $escaper->escapeUrl($block->getUrl('wishlist')) ?>"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Go to Wish List page')); ?>"
                     class="button button--outline-primary bg-bg-400"
+                    x-element-transition-trigger
                 >
                     <?= $escaper->escapeHtml(__('Go to wish list')); ?>
                 </a>
