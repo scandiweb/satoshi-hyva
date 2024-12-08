@@ -1,0 +1,15 @@
+<div
+    class="pagebuilder-content-type"
+    data-bind="event: { mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+    attr="data.main.attributes"
+    ko-style="data.main.style"
+    css="data.main.css"
+>
+    <div
+        class="rendered-content"
+        html="widgetUnsanitizedHtml"
+        afterRender="onAfterRender"
+    ></div>
+
+    <render args="getOptions().template"></render>
+</div>

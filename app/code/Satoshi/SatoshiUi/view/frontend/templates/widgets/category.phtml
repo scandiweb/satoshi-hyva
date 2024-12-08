@@ -82,28 +82,26 @@ $slidesAmountInView = match (true) {
 };
 
 ?>
-<?php if ($exists || true): ?>
-    <?=
-    $template
-        ->setData([
-            'slides' => $slidesHtml,
-            'gap' => 16,
-            'slides_amount_in_view' => $autoResize ? $slidesAmountInView : ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 6],
-            'title' => $escaper->escapeHtml($block->getData('heading')),
-            'id' => 'collection-' . $block->getData('category_id'),
-            'is_full_page' => true,
-        ])
-        ->render('Magento_Catalog::html/slider.phtml')
-    ?>
-    <?php if ($displayViewAll && $block->collectionSize > $block->getData('max_products_count')): ?>
-        <div class="view-all mt-5 text-center">
-            <a
-                href="<?= $block->category->getUrl() ?>"
-                class="button button--filled-primary"
-                x-element-transition-trigger
-            >
-                <?= $escaper->escapeHtml(__('View all')) ?>
-            </a>
-        </div>
-    <?php endif; ?>
+<?=
+$template
+    ->setData([
+        'slides' => $slidesHtml,
+        'gap' => 16,
+        'slides_amount_in_view' => $autoResize ? $slidesAmountInView : ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 6],
+        'title' => $escaper->escapeHtml($block->getData('heading')),
+        'id' => 'collection-' . $block->getData('category_id'),
+        'is_full_page' => true,
+    ])
+    ->render('Magento_Catalog::html/slider.phtml')
+?>
+<?php if ($displayViewAll && $block->collectionSize > $block->getData('max_products_count')): ?>
+    <div class="view-all mt-5 text-center">
+        <a
+            href="<?= $block->category->getUrl() ?>"
+            class="button button--filled-primary"
+            x-element-transition-trigger
+        >
+            <?= $escaper->escapeHtml(__('View all')) ?>
+        </a>
+    </div>
 <?php endif; ?>
