@@ -1,3 +1,6 @@
+import { replaceMainContentWithTransition } from "../plugins/Transition";
+import { CartItem } from "../store/Cart.ts";
+
 export type WishlistType = {
   actionBtnText: string;
   isLoading: boolean;
@@ -7,30 +10,14 @@ export type WishlistType = {
   wishlistItems: Record<string, any>;
 
   setActionBtnText(text?: string): void;
-  wishlistSidebarFetchHandler(
-    body: string,
-    postUrl: string,
-    isRemoveAction?: boolean,
-  ): void;
+  wishlistSidebarFetchHandler(body: string, postUrl: string): void;
   receiveWishlistData(data: Record<string, any>): void;
-  addToCart(json: string): void;
+  addToCart(json: string, productSku: string): void;
   removeFromWishlist(json: string): void;
   focusOnCartAddedItems(addedProductSkus: string[]): void;
 };
 
-export const Wishlist = (
-  {
-    itemAddedSuccessMessage,
-    itemRemovedSuccessMessage,
-    itemAddedWarningMessage,
-    itemRemovedWarningMessage,
-  }: {
-    itemAddedSuccessMessage: string;
-    itemRemovedSuccessMessage: string;
-    itemAddedWarningMessage: string;
-    itemRemovedWarningMessage: string;
-  }
-) =>
+export const Wishlist = () =>
   <WishlistType>{
     actionBtnText: '',
     isLoading: false,
@@ -43,19 +30,10 @@ export const Wishlist = (
       this.actionBtnText = text || '';
     },
 
-    wishlistSidebarFetchHandler(body, postUrl, isRemoveAction = true) {
+    async wishlistSidebarFetchHandler(body, postUrl) {
       this.isLoading = true;
 
-      const messages = {
-        success: isRemoveAction
-          ? itemRemovedSuccessMessage
-          : itemAddedSuccessMessage,
-        warning: isRemoveAction
-          ? itemRemovedWarningMessage
-          : itemAddedWarningMessage,
-      };
-
-      fetch(postUrl, {
+      await fetch(postUrl, {
         "headers": {
           "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
         },
@@ -63,26 +41,10 @@ export const Wishlist = (
         "method": "POST",
         "mode": "cors",
         "credentials": "include"
-      }).then(function (response) {
-        if (response.redirected) {
-          window.location.href = response.url;
-        } else if (response.ok) {
-          return response.json();
-        } else {
-          const message = {type: "warning", text: messages.warning};
-          window.dispatchMessages && window.dispatchMessages([message], 5000);
-        }
-      }).then(function (response) {
-        if (!response) return;
-        const message = {
-          type: (response.success) ? "success" : "error",
-          text: (response.success) ? messages.success : response.error_message
-        }
-        window.dispatchMessages && window.dispatchMessages([message], 5000);
-        window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+      }).then(async (response) => {
+        await replaceMainContentWithTransition(response.url, await response.text());
       }).catch(function (error) {
-        const message = {type: "error", text: error};
-        window.dispatchMessages && window.dispatchMessages([message], 5000);
+        console.error("Wishlist action failed", error);
       })
         .finally(() => {
           this.isLoading = false;
@@ -90,7 +52,7 @@ export const Wishlist = (
         });
     },
 
-    receiveWishlistData: function (data) {
+    receiveWishlistData(data) {
       if (data['wishlist']) {
         // Keep only 3 wishlist items
         const SIDEBAR_ITEMS_NUMBER = 3;
@@ -104,19 +66,36 @@ export const Wishlist = (
       }
     },
 
-    addToCart: function (json) {
+    async addToCart(json, productSku) {
       const obj = JSON.parse(json);
       const postUrl = obj.action;
       const body = "form_key=" + window.hyva.getFormKey() + "&item=" + obj.data.item + "&qty=" + obj.data.qty + "&uenc=" + window.hyva.getUenc();
 
-      this.wishlistSidebarFetchHandler(body, postUrl, false);
+      await this.wishlistSidebarFetchHandler(body, postUrl);
+      this.focusOnCartAddedItems([productSku]);
     },
 
-    removeFromWishlist: function(json) {
+    removeFromWishlist(json) {
       const obj = JSON.parse(json);
       const postUrl = obj.action;
       const body = "form_key=" + window.hyva.getFormKey() + "&item=" + obj.data.item+"&uenc=" + window.hyva.getUenc();
 
       this.wishlistSidebarFetchHandler(body, postUrl);
+    },
+
+    focusOnCartAddedItems(addedProductSkus = [] as string[]) {
+      if (!addedProductSkus.length) return;
+
+      const cartItems = Alpine.store("cart").cartItems;
+
+      const itemIds = cartItems
+        .filter((item: CartItem) => addedProductSkus.includes(item.product_sku))
+        .map((item) => item.item_id);
+
+      if (itemIds.length) {
+        Alpine.store("cart").focusInCart(itemIds);
+      } else {
+        Alpine.store("cart").showCart();
+      }
     },
   };
