@@ -21,12 +21,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 <?php if ($wishlistViewModel->isEnabled()): ?>
     <div
-        x-data="Wishlist({
-            itemAddedSuccessMessage: '<?= $escaper->escapeJs(__("%1 has been added to your Wish List.")) ?>',
-            itemRemovedSuccessMessage: '<?= $escaper->escapeJs(__("%1 has been removed from your Wish List.")) ?>',
-            itemAddedWarningMessage: '<?= $escaper->escapeJs(__("Could not add item to your Wish List.")) ?>',
-            itemRemovedWarningMessage: '<?= $escaper->escapeJs(__("Could not remove item from your Wish List.")) ?>'
-        })"
+        x-data="Wishlist"
         @private-content-loaded.window="receiveWishlistData($event.detail.data)"
     >
         <template x-if="itemCount">
@@ -68,14 +63,14 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                         <template x-if="!product.product_has_required_options">
                                             <button
                                                 type="button"
-                                                @click.prevent='setActionBtnText("add-to-cart"); addToCart(product.add_to_cart_params)'
+                                                @click.prevent='setActionBtnText(`add-to-cart-${product.product_id}`); addToCart(product.add_to_cart_params, product.product_sku)'
                                                 class="button button--filled-primary"
                                                 :aria-label="hyva.str('<?= $escaper->escapeJs(__('Add to Cart %1'))  ?>', product.product_name)"
                                                 data-addto="cart"
                                                 :class="isLoading && 'button--disabled'"
                                                 :disabled="isLoading"
                                             >
-                                                <span x-text="isLoading && actionBtnText === 'add-to-cart' ?
+                                                <span x-text="isLoading && actionBtnText === `add-to-cart-${product.product_id}` ?
                                                       '<?= $escaper->escapeHtml(__('Adding...')) ?>' :
                                                       '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'">
                                                       <?= $escaper->escapeHtml(__('Add to Cart')) ?>
