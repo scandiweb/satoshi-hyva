@@ -1,10 +1,12 @@
 export type WishlistType = {
+  actionBtnText: string;
   isLoading: boolean;
   wishlistProducts: null | Record<string, any>;
   itemCount: number;
   wishlistCountLabel: null | string;
   wishlistItems: Record<string, any>;
 
+  setActionBtnText(text?: string): void;
   wishlistSidebarFetchHandler(
     body: string,
     postUrl: string,
@@ -13,6 +15,7 @@ export type WishlistType = {
   receiveWishlistData(data: Record<string, any>): void;
   addToCart(json: string): void;
   removeFromWishlist(json: string): void;
+  focusOnCartAddedItems(addedProductSkus: string[]): void;
 };
 
 export const Wishlist = (
@@ -29,11 +32,16 @@ export const Wishlist = (
   }
 ) =>
   <WishlistType>{
+    actionBtnText: '',
     isLoading: false,
     wishlistProducts: null,
     itemCount: 0,
     wishlistCountLabel: null,
     wishlistItems: {},
+
+    setActionBtnText(text) {
+      this.actionBtnText = text || '';
+    },
 
     wishlistSidebarFetchHandler(body, postUrl, isRemoveAction = true) {
       this.isLoading = true;
@@ -78,6 +86,7 @@ export const Wishlist = (
       })
         .finally(() => {
           this.isLoading = false;
+          this.setActionBtnText();
         });
     },
 
