@@ -68,12 +68,18 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                         <template x-if="!product.product_has_required_options">
                                             <button
                                                 type="button"
-                                                @click.prevent="addToCart(product.add_to_cart_params)"
+                                                @click.prevent='setActionBtnText("add-to-cart"); addToCart(product.add_to_cart_params)'
                                                 class="button button--filled-primary"
                                                 :aria-label="hyva.str('<?= $escaper->escapeJs(__('Add to Cart %1'))  ?>', product.product_name)"
                                                 data-addto="cart"
+                                                :class="isLoading && 'button--disabled'"
+                                                :disabled="isLoading"
                                             >
-                                                <?= $escaper->escapeHtml(__('Add to Cart')) ?>
+                                                <span x-text="isLoading && actionBtnText === 'add-to-cart' ?
+                                                      '<?= $escaper->escapeHtml(__('Adding...')) ?>' :
+                                                      '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'">
+                                                      <?= $escaper->escapeHtml(__('Add to Cart')) ?>
+                                                </span>
                                             </button>
                                         </template>
                                     </div>
@@ -84,6 +90,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                 @click.prevent="removeFromWishlist(product.delete_item_params)"
                                 :aria-label="hyva.str('<?= $escaper->escapeJs(__('Remove product "%1" from My Wish List')) ?>', product.product_name)"
                                 class="h-[30px] w-[30px] ml-auto inline-flex items-center justify-center text-primary-bg rounded-lg border"
+                                :class="isLoading && 'button--disabled'"
+                                :disabled="isLoading"
                             >
                                 <?= $hyvaicons->renderHtml('close', 'text-lg', attributes: ['title' => $escaper->escapeHtmlAttr(__('remove'))]); ?>
                             </button>
