@@ -37,7 +37,7 @@ h3 {
 }
 
 .main-wrapper {
-  @apply -mt-[72px] md:pb-7 max-md:pb-10 flex-1 md:-mt-[89px] max-md:overflow-hidden;
+  @apply -mt-[72px] pb-10 md:pb-7 flex-1 md:-mt-[89px] max-md:overflow-hidden;
 }
 
 .breadcrumb {
