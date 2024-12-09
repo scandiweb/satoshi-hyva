@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_PageBuilder:etc/content_type.xsd">
+    <type name="satoshi_image_with_text"
+          label="Image with text"
+          menu_section="satoshi_components"
+          component="Magento_PageBuilder/js/content-type"
+          preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-image-with-text/preview"
+          form="pagebuilder_satoshi_image_with_text_form"
+          icon="icon-pagebuilder-heading"
+          sortOrder="20"
+          translate="label">
+        <children default_policy="deny"/>
+        <parents default_policy="deny">
+            <parent name="column" policy="allow"/>
+            <parent name="row" policy="allow"/>
+        </parents>
+        <appearances>
+            <!-- Image first -->
+            <appearance name="image-first"
+                        default="true"
+                        preview_template="Satoshi_SatoshiUi/content-type/satoshi-image-with-text/image-first/preview"
+                        master_template="Satoshi_SatoshiUi/content-type/satoshi-image-with-text/default/master"
+                        reader="Magento_PageBuilder/js/master-format/read/configurable">
+                <elements>
+                    <element name="main">
+                        <style name="text_align" source="text_align"/>
+                        <style name="border" source="border_style"
+                               converter="Magento_PageBuilder/js/converter/style/border-style"/>
+                        <style name="border_color" source="border_color"/>
+                        <style name="background_color" source="background_color"/>
+                        <style name="background_image" source="background_image"
+                               converter="Magento_PageBuilder/js/converter/style/background-image"
+                               preview_converter="Magento_PageBuilder/js/converter/style/preview/background-image"/>
+                        <style name="border_width" source="border_width"
+                               converter="Magento_PageBuilder/js/converter/style/border-width"/>
+                        <style name="border_radius" source="border_radius"
+                               converter="Magento_PageBuilder/js/converter/style/remove-px"/>
+                        <style name="margins" storage_key="margins_and_padding"
+                               reader="Magento_PageBuilder/js/property/margins"
+                               converter="Magento_PageBuilder/js/converter/style/margins"/>
+                        <style name="padding" storage_key="margins_and_padding"
+                               reader="Magento_PageBuilder/js/property/paddings"
+                               converter="Magento_PageBuilder/js/converter/style/paddings"/>
+                        <style name="display" source="display"
+                               converter="Magento_PageBuilder/js/converter/style/display"
+                               preview_converter="Magento_PageBuilder/js/converter/style/preview/display"/>
+                        <attribute name="name" source="data-content-type"/>
+                        <attribute name="appearance" source="data-appearance"/>
+                        <css name="css_classes"/>
+                    </element>
+
+                    <!-- Map form elements here -->
+                    <element name="image">
+                        <attribute
+                            name="image"
+                            source="src"
+                            converter="Magento_PageBuilder/js/converter/attribute/src"
+                            preview_converter="Magento_PageBuilder/js/converter/attribute/preview/src"
+                        />
+                    </element>
+                    <element name="heading">
+                        <html name="heading" converter="Magento_PageBuilder/js/converter/html/decode"/>
+                    </element>
+                    <element name="content">
+                        <html name="content" preview_converter="Magento_PageBuilder/js/converter/html/directive"/>
+                    </element>
+                    <element name="button_label">
+                        <html name="button_label" converter="Magento_PageBuilder/js/converter/html/decode"/>
+                    </element>
+                    <element name="button_link">
+                        <attribute name="button_link" reader="Magento_PageBuilder/js/property/link"
+                                   persistence_mode="read"/>
+                        <attribute name="virtual_link_href" storage_key="button_link" source="href"
+                                   converter="Magento_PageBuilder/js/converter/attribute/link-href"
+                                   persistence_mode="write"/>
+                        <attribute name="virtual_link_target" storage_key="button_link" source="target"
+                                   converter="Magento_PageBuilder/js/converter/attribute/link-target"
+                                   persistence_mode="write"/>
+                        <attribute name="virtual_link_type" storage_key="button_link" source="data-link-type"
+                                   converter="Magento_PageBuilder/js/converter/attribute/link-type"
+                                   persistence_mode="write"/>
+                    </element>
+
+                    <element name="block_directive">
+                        <html name="block_directive" converter="Magento_PageBuilder/js/converter/html/tag-escaper"/>
+                    </element>
+                </elements>
+                <converters>
+                    <converter component="Satoshi_SatoshiUi/js/content-type/satoshi-image-with-text/block-directive"
+                               name="block_directive">
+                        <config>
+                            <item name="html_variable" value="block_directive"/>
+                            <item name="block_class" value="Satoshi\SatoshiUi\Block\ImageWithText"/>
+                        </config>
+                    </converter>
+                </converters>
+            </appearance>
+
+            <!-- Text first -->
+            <appearance name="text-first"
+                        preview_template="Satoshi_SatoshiUi/content-type/satoshi-image-with-text/text-first/preview"
+                        master_template="Satoshi_SatoshiUi/content-type/satoshi-image-with-text/default/master"
+                        reader="Magento_PageBuilder/js/master-format/read/configurable">
+                <elements>
+                    <element name="main">
+                        <style name="text_align" source="text_align"/>
+                        <style name="border" source="border_style"
+                               converter="Magento_PageBuilder/js/converter/style/border-style"/>
+                        <style name="border_color" source="border_color"/>
+                        <style name="background_color" source="background_color"/>
+                        <style name="background_image" source="background_image"
+                               converter="Magento_PageBuilder/js/converter/style/background-image"
+                               preview_converter="Magento_PageBuilder/js/converter/style/preview/background-image"/>
+                        <style name="border_width" source="border_width"
+                               converter="Magento_PageBuilder/js/converter/style/border-width"/>
+                        <style name="border_radius" source="border_radius"
+                               converter="Magento_PageBuilder/js/converter/style/remove-px"/>
+                        <style name="margins" storage_key="margins_and_padding"
+                               reader="Magento_PageBuilder/js/property/margins"
+                               converter="Magento_PageBuilder/js/converter/style/margins"/>
+                        <style name="padding" storage_key="margins_and_padding"
+                               reader="Magento_PageBuilder/js/property/paddings"
+                               converter="Magento_PageBuilder/js/converter/style/paddings"/>
+                        <style name="display" source="display"
+                               converter="Magento_PageBuilder/js/converter/style/display"
+                               preview_converter="Magento_PageBuilder/js/converter/style/preview/display"/>
+                        <attribute name="name" source="data-content-type"/>
+                        <attribute name="appearance" source="data-appearance"/>
+                        <css name="css_classes"/>
+                    </element>
+
+                    <!-- Map form elements here -->
+                    <element name="image">
+                        <attribute
+                            name="image"
+                            source="src"
+                            converter="Magento_PageBuilder/js/converter/attribute/src"
+                            preview_converter="Magento_PageBuilder/js/converter/attribute/preview/src"
+                        />
+                    </element>
+                    <element name="heading">
+                        <html name="heading" converter="Magento_PageBuilder/js/converter/html/decode"/>
+                    </element>
+                    <element name="content">
+                        <html name="content" preview_converter="Magento_PageBuilder/js/converter/html/directive"/>
+                    </element>
+                    <element name="button_label">
+                        <html name="button_label" converter="Magento_PageBuilder/js/converter/html/decode"/>
+                    </element>
+                    <element name="button_link">
+                        <attribute name="button_link" reader="Magento_PageBuilder/js/property/link"
+                                   persistence_mode="read"/>
+                        <attribute name="virtual_link_href" storage_key="button_link" source="href"
+                                   converter="Magento_PageBuilder/js/converter/attribute/link-href"
+                                   persistence_mode="write"/>
+                        <attribute name="virtual_link_target" storage_key="button_link" source="target"
+                                   converter="Magento_PageBuilder/js/converter/attribute/link-target"
+                                   persistence_mode="write"/>
+                        <attribute name="virtual_link_type" storage_key="button_link" source="data-link-type"
+                                   converter="Magento_PageBuilder/js/converter/attribute/link-type"
+                                   persistence_mode="write"/>
+                    </element>
+
+                    <element name="block_directive">
+                        <html name="block_directive" converter="Magento_PageBuilder/js/converter/html/tag-escaper"/>
+                    </element>
+                </elements>
+                <converters>
+                    <converter component="Satoshi_SatoshiUi/js/content-type/satoshi-image-with-text/block-directive"
+                               name="block_directive">
+                        <config>
+                            <item name="html_variable" value="block_directive"/>
+                            <item name="block_class" value="Satoshi\SatoshiUi\Block\ImageWithText"/>
+                        </config>
+                    </converter>
+                </converters>
+            </appearance>
+        </appearances>
+        <additional_data>
+            <item name="wysiwygConfig" xsi:type="array">
+                <item name="wysiwygConfigData" xsi:type="object">
+                    Magento\PageBuilder\Model\Config\ContentType\AdditionalData\Provider\Wysiwyg\Config
+                </item>
+            </item>
+        </additional_data>
+    </type>
+</config>

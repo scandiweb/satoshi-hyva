@@ -4,7 +4,7 @@
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">pagebuilder_satoshi_faq_form.pagebuilder_satoshi_faq_form_data_source</item>
         </item>
-        <item name="label" xsi:type="string" translate="true">Guarantees</item>
+        <item name="label" xsi:type="string" translate="true">FAQ</item>
     </argument>
     <settings>
         <deps>

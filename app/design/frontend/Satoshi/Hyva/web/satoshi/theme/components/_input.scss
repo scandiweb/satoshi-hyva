@@ -80,5 +80,9 @@ input[type="search"] {
     a {
       @apply border-b-1 border-current;
     }
+
+    .messages {
+      @apply text-[14px];
+    }
   }
 }
