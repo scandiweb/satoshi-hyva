@@ -1,4 +1,4 @@
-define(["uiRegistry", "Magento_Ui/js/form/element/ui-select"], function (
+define(["uiRegistry", "Magento_Catalog/js/components/product-ui-select"], function (
   uiRegistry,
   UiSelect,
 ) {

@@ -1,0 +1,166 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Satoshi\SatoshiUi\Block\Countdown;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
+use Satoshi\SatoshiUi\Helper\Link as LinkHelper;
+
+/** @var Countdown $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+/** @var LinkHelper */
+$linkHelper = $this->helper(LinkHelper::class);
+
+/** @var DecodeHelper $decodeHelper */
+$decodeHelper = $this->helper(DecodeHelper::class);
+$link_url = $decodeHelper->decodeJSONHTMLEntity($block->getData('button_link'));
+$linkHref = $linkHelper->getLinkHref($block, $link_url);
+
+$hideOnComplete = $block->getData('hide_on_complete') === 'true';
+$deadline = new DateTime($block->getData('deadline'));
+$now = new DateTime('now');
+$shouldHide = $hideOnComplete && $deadline < $now;
+$imageUrl = $block->getData('image');
+$overlayOpacity = $block->getData('overlay_opacity');
+$heading = $block->getData('heading');
+$description = $block->getData('description');
+$sectionHeight = $block->getData('section_height');
+$diff = $deadline->diff($now);
+
+?>
+<?php if(!$shouldHide): ?>
+    <div
+        x-data="
+            CountdownTimer(
+                '<?= $escaper->escapeHtmlAttr($block->getData('deadline')) ?>',
+                false,
+                {
+                    days: <?= $escaper->escapeHtmlAttr($diff->d) ?>,
+                    hours: <?= $escaper->escapeHtmlAttr($diff->h) ?>,
+                    minutes: <?= $escaper->escapeHtmlAttr($diff->i) ?>,
+                    seconds: <?= $escaper->escapeHtmlAttr($diff->s) ?>
+                }
+            )
+        "
+        x-show="isLoaded <?= $shouldHide ? '&& !isFinished' : '' ?>"
+        x-transition
+        class="relative bg-secondary-400 overflow-hidden [[data-appearance='contained']_&]:rounded-md"
+    >
+        <?php if(!empty($imageUrl)): ?>
+            <div
+                class="absolute left-0 top-0 z-10 h-full w-full bg-black"
+                style="opacity: <?= $escaper->escapeHtmlAttr($overlayOpacity) ?>"
+            ></div>
+            <img
+                src="<?= $escaper->escapeUrl($imageUrl) ?>"
+                alt="<?= $escaper->escapeHtmlAttr($heading) ?>"
+                class="absolute left-0 top-0 z-0 h-full w-full object-cover object-center"
+                width="100%"
+                height="100%"
+            />
+        <?php endif; ?>
+
+        <div
+            class="
+                flex w-full items-center
+                [[data-appearance='contained']_&]:content-wrapper [[data-appearance='contained']_&]:mx-auto [[data-appearance='contained']_&]:flex-col [[data-appearance='contained']_&]:md:flex-row [[data-appearance='contained']_&]:md:justify-between [[data-appearance='contained']_&]:md:items-center [[data-appearance='contained']_&]:rounded [[data-appearance='contained']_&]:md:px-12 [[data-appearance='contained']_&]:px-0 [[data-appearance='contained']_&]:w-auto [[data-appearance='contained']_&]:md:w-full
+                <?= match($sectionHeight) {
+                    'small' => 'py-[5vh] h-[40vh]',
+                    'medium' => 'py-[10vh] h-[60vh]',
+                    'large' => 'py-[20vh] h-[80vh]',
+                    default => 'py-16'
+                } ?>
+            "
+        >
+            <div
+                class="
+                    relative z-20 mx-auto flex flex-col
+                    [[data-appearance*='full']_&]:mx-auto [[data-appearance*='full']_&]:content-wrapper
+                    [[data-appearance='contained']_&]:mx-0 [[data-appearance='contained']_&]:items-start [[data-appearance='contained']_&]:w-full [[data-appearance='contained']_&]:px-5 [[data-appearance='contained']_&]:md:px-0
+                "
+            >
+                <h1 class="heading mb-5 text-2xl md:text-4xl max-md:text-center <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>">
+                    <?= $escaper->escapeHtml($heading) ?>
+                </h1>
+
+                <div class="mb-5 max-md:text-center <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>">
+                    <?= $escaper->escapeHtml($description) ?>
+                </div>
+
+                <div class="mb-12 mt-8 [[data-appearance='contained']_&]:md:ms-auto [[data-appearance='contained']_&]:md:-mt-14">
+                    <div class="flex flex-row justify-center gap-6 md:justify-start md:gap-12 [[data-appearance='contained']_&]:md:px-14">
+                        <div class="flex flex-col gap-2 text-center">
+                            <span
+                                x-text="remainingChunk.days"
+                                class="min-w-12 text-center text-4xl font-semibold <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>"
+                            >
+                                0
+                            </span>
+                            <span class="text-sm font-normal <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>">
+                                <?= $escaper->escapeHtml(__('Days')) ?>
+                            </span>
+                        </div>
+                        <div class="h-auto w-[1px] bg-text-700"></div>
+
+                        <div class="flex flex-col gap-2 text-center">
+                            <span
+                                x-text="remainingChunk.hours"
+                                class="min-w-12 text-center text-4xl font-semibold <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>"
+                            >
+                                0
+                            </span>
+                            <span class="text-sm font-normal <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>">
+                                <?= $escaper->escapeHtml(__('Hours')) ?>
+                            </span>
+                        </div>
+                        <div class="h-auto w-[1px] bg-text-700"></div>
+
+                        <div class="flex flex-col gap-2 text-center">
+                            <span
+                                x-text="remainingChunk.minutes"
+                                class="min-w-12 text-center text-4xl font-semibold <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>"
+                            >
+                                0
+                            </span>
+                            <span class="text-sm font-normal <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>">
+                                <?= $escaper->escapeHtml(__('Minutes')) ?>
+                            </span>
+                        </div>
+                        <div class="h-auto w-[1px] bg-text-700"></div>
+
+                        <div class="flex flex-col gap-2 text-center">
+                            <span
+                                x-text="remainingChunk.seconds"
+                                class="min-w-12 text-center text-4xl font-semibold <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>"
+                            >
+                                0
+                            </span>
+                            <span class="text-sm font-normal <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>">
+                                <?= $escaper->escapeHtml(__('Seconds')) ?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                    <a
+                        <?php if ($linkHref): ?>
+                            href="<?= $escaper->escapeUrl($linkHref); ?>"
+                            target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
+                        <?php endif; ?>
+                        x-element-transition-trigger
+                        class="text-center underline md:text-start <?= !empty($imageUrl) ? 'text-bg-50' : 'text-text-500' ?>"
+                    >
+                        <?= $escaper->escapeHtml($block->getData('button_label')) ?>
+                        <span class="button__icon ml-2">
+                            <?= $hyvaicons->renderHtml('button-link'); ?>
+                        </span>
+                    </a>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

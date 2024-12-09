@@ -131,18 +131,22 @@ $title = $block->getData('title');
           </div>
         </template>
         <?php else : ?>
-        <div
-          <?php if (!$cartItemsCount) : ?>
-          style="display: none"
-          <?php endif; ?>
-          class="relative overflow-x-clip px-4 md:rounded-b-md max-md:px-3 max-md:fixed bottom-0 left-0 right-0 md:w-[--minicart-width] md:h-full md:border md:rounded-sm"
-          x-show="!isCartEmpty"
-        >
-          <?=
-            $template
-              ->setData(['isCartPage' => $isCartPage])
-              ->render('Magento_Theme::html/header/cart/minicart-totals.phtml')
-          ?>
+        <div id="cart-totals" class="contents">
+          <template x-portal="$store.main.isMobile ? document.querySelector('body') : document.getElementById('cart-totals')">
+            <div
+              <?php if (!$cartItemsCount) : ?>
+              style="display: none"
+              <?php endif; ?>
+              class="relative overflow-x-clip px-4 md:rounded-b-md max-md:px-3 max-md:fixed bottom-0 left-0 right-0 md:w-[--minicart-width] md:h-full md:border md:rounded-sm"
+              x-show="!isCartEmpty"
+            >
+              <?=
+                $template
+                  ->setData(['isCartPage' => $isCartPage])
+                  ->render('Magento_Theme::html/header/cart/minicart-totals.phtml')
+              ?>
+            </div>
+          </template>
         </div>
         <?php endif; ?>
       </div>
