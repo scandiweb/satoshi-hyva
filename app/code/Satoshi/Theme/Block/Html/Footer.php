@@ -2,11 +2,12 @@
 
 namespace Satoshi\Theme\Block\Html;
 
-use Magento\Theme\Block\Html\Footer as SourceFooter;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Framework\App\Http\Context as HttpContext;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Cms\Api\BlockRepositoryInterface;
+use Magento\Framework\App\Http\Context as HttpContext;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Theme\Block\Html\Footer as SourceFooter;
 
 class Footer extends SourceFooter
 {
@@ -32,21 +33,12 @@ class Footer extends SourceFooter
     }
 
     /**
-     * Get footer CMS block ids
-     *
-     * @return array
-     */
-    public function getFooterCmsBlockIds()
-    {
-        return array('footer-content-1', 'footer-content-2', 'footer-content-3');
-    }
-
-    /**
      * Check if the CMS block is available and enabled
      *
      * @param string $id
      *
      * @return bool
+     * @throws LocalizedException
      */
     public function getIsCmsBlockAvailable(string $id)
     {
@@ -55,23 +47,6 @@ class Footer extends SourceFooter
             return $cmsBlock->isActive();
         } catch (NoSuchEntityException $e) {
             return false;
-        }
-    }
-
-    /**
-     * Get the cms block's title
-     *
-     * @param string $id
-     *
-     * @return string|null
-     */
-    public function getCmsBlockTitle(string $id)
-    {
-        try {
-            $cmsBlock = $this->blockRepository->getById($id);
-            return $cmsBlock->getTitle();
-        } catch (NoSuchEntityException $e) {
-            return null;
         }
     }
 

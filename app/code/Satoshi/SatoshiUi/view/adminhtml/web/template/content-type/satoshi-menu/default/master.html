@@ -1,0 +1,29 @@
+<div
+    attr="data.main.attributes"
+    css="data.main.css"
+    ko-style="data.main.style"
+>
+    <div data-is-page-builder-ignored-element="true">
+        <h1
+            attr="data.heading.attributes"
+            css="data.heading.css"
+            hidden
+            html="data.heading.html"
+            ko-style="data.heading.style"
+        ></h1>
+
+        <if args="data.menu_items.attributes().items.length > 0 && data.menu_items.attributes().items !== '[]'">
+            <div
+                css="data.menu_items.css"
+                data-bind="attr: { items: JSON.stringify(data.menu_items.attributes().items) }"
+                data-element="menu_items"
+                hidden
+                ko-style="data.menu_items.style"
+            ></div>
+        </if>
+    </div>
+    <div
+        attr="data.block_directive.attributes"
+        html="data.block_directive.html"
+    ></div>
+</div>

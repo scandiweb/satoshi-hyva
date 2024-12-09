@@ -39,7 +39,8 @@ $productListItemViewModel = $viewModels->require(ProductListItem::class);
                 <?php endif; ?>
             </div>
 
-            <div class="collage-info flex w-full flex-grow justify-between gap-7" style="filter:url(#border)">
+            <div class="collage-info flex flex-col sm:flex-row w-full flex-grow justify-between gap-7"
+                 style="filter:url(#border)">
                 <h2 class="flex-grow-1 truncate <?= $i === 0 ? 'text-2xl' : 'text-lg' ?>"><?= $escaper->escapeHtml($data['name']) ?></h2>
                 <?php if($entity_type === 'product'): ?>
                     <span class="font-medium">
