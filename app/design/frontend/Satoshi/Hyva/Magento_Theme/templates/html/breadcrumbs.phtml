@@ -122,7 +122,7 @@ $hideOnMobile = in_array($pageType, $mobilePageTypes, true);
           <div
             role="listitem"
             class="breadcrumb text-text-500"
-            x-text="hyva.strf('<?= __("Search results for: %0") ?>', `'${$store['transition'].pageData?.search}'`)"
+            x-text="hyva.strf('<?= __("Search results for: %0") ?>', `'${$store['transition'].pageData?.search ?? ''}'`)"
           ></div>
         </div>
       </template>
