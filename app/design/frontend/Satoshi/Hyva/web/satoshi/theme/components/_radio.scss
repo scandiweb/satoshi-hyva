@@ -2,7 +2,7 @@
   @apply mb-4 flex cursor-pointer items-center;
 
   &__control {
-    @apply inline-flex h-6 w-6 items-center justify-center rounded-full border border-solid border-text-400 text-md text-bg-500 transition-colors duration-200;
+    @apply flex-none inline-flex h-6 w-6 items-center justify-center rounded-full border border-solid border-text-400 text-md text-bg-500 transition-colors duration-200;
 
     .radio:hover & {
       @apply md:border-primary-500 md:bg-bg-400;

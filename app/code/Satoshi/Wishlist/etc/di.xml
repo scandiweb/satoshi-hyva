@@ -6,8 +6,16 @@
         type="Satoshi\Wishlist\Block\Customer\Wishlist\Item\Column\Info"
     />
     <preference
-        for="Magento\Wishlist\Controller\Index\Cart"
-        type="Satoshi\Wishlist\Controller\Index\Cart"
+        for="Magento\Wishlist\CustomerData\Wishlist"
+        type="Satoshi\Wishlist\CustomerData\Wishlist"
+    />
+    <preference
+        for="Magento\Wishlist\Controller\Index\Send"
+        type="Satoshi\Wishlist\Controller\Index\Send"
+    />
+    <preference
+        for="Magento\Wishlist\Block\Customer\Sharing"
+        type="Satoshi\Wishlist\Block\Customer\Sharing"
     />
     <preference
         for="Magento\Wishlist\Controller\Index\Update"

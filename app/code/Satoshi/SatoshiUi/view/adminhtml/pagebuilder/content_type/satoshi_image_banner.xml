@@ -8,7 +8,7 @@
         master_component="Magento_PageBuilder/js/content-type/master"
         form="pagebuilder_satoshi_image_banner_form"
         icon="icon-pagebuilder-heading"
-        sortOrder="10"
+          sortOrder="5"
         translate="label">
         <children default_policy="deny"/>
         <parents default_policy="deny">
@@ -40,22 +40,24 @@
 
                     <!-- Map form elements here -->
                     <element name="image">
-                        <attribute name="image"
-                                    source="src"
-                                    converter="Magento_PageBuilder/js/converter/attribute/src"
-                                    preview_converter="Magento_PageBuilder/js/converter/attribute/preview/src"/>
+                        <attribute
+                            name="image"
+                            source="src"
+                            converter="Magento_PageBuilder/js/converter/attribute/src"
+                            preview_converter="Magento_PageBuilder/js/converter/attribute/preview/src"
+                        />
                     </element>
                     <element name="overlay_opacity">
-                        <html name="overlay_opacity" converter="Magento_PageBuilder/js/converter/html/decode" />
+                        <style name="overlay_opacity" source="opacity" converter="Satoshi_SatoshiUi/js/converter/style/percentage"/>
                     </element>
                     <element name="banner_height">
-                        <html name="banner_height" converter="Magento_PageBuilder/js/converter/html/decode" />
+                        <attribute name="banner_height" source="data-banner-height" />
                     </element>
                     <element name="desktop_content_position">
-                        <html name="desktop_content_position" converter="Magento_PageBuilder/js/converter/html/decode" />
+                        <attribute name="desktop_content_position" source="data-desktop-position" />
                     </element>
                     <element name="mobile_content_alignment">
-                        <html name="mobile_content_alignment" converter="Magento_PageBuilder/js/converter/html/decode" />
+                        <attribute name="mobile_content_alignment" source="data-mobile-alignment" />
                     </element>
                     <element name="heading">
                         <html name="heading" converter="Magento_PageBuilder/js/converter/html/decode" />

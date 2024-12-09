@@ -2,10 +2,10 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
-use \Magento\LoginAsCustomerAssistance\ViewModel\ShoppingAssistanceViewModel;
-use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\LoginAsCustomerAssistance\ViewModel\ShoppingAssistanceViewModel;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
@@ -21,26 +21,15 @@ if (!$shoppingAssistanceViewModel->isLoginAsCustomerEnabled()) {
     return;
 }
 ?>
-<script>
-    function initAllowShippingAssistence() {
-        return {
+<div class="flex" x-data="{
             isAllowed: <?= $shoppingAssistanceViewModel->isAssistanceAllowed() ? 'true' : 'false' ?>,
             showTooltip: false,
             onChange(value) {
-                /**
-                 * assistance_allowed accepts 2 for "allowed" and 1 for "not allowed"
-                 * if assistance_allowed_checkbox is set to false, we cast it to 0 and add 1 === "1"
-                 * if assistance_allowed_checkbox is set to true, we cast it to 1 and add 1 === "2"
-                 */
                 this.$refs['assistance-input'].value = Number(value) + 1;
             }
-        }
-    }
-</script>
-<div class="flex" x-data="initAllowShippingAssistence()">
+        }">
     <label class="flex items-center gap-x-3 mx-4"
            for="assistance_allowed_checkbox"
-           x-data="initAllowShippingAssistence()"
     >
         <input type="checkbox"
                @change="onChange($event.target.checked)"

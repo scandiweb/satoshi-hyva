@@ -45,7 +45,7 @@ $mixBackground = true;
               </div>
             </template>
           </div>
-          <div class="flex min-w-0 flex-col items-stretch justify-center gap-5">
+          <div class="flex min-w-0 flex-col items-stretch justify-center gap-5 z-10">
             <div class="w-full">
               <h2 class="text-md text-text-500">
                 <span x-text="item.product_name"></span>
@@ -56,8 +56,8 @@ $mixBackground = true;
                   :key="o"
                 >
                   <p
-                    class="text-md mb-1 [&_.price]:text-primary-500 [&_.price]:block whitespace-nowrap text-ellipsis overflow-hidden"
-                    x-html="`${option.label}: ${option.value}`"
+                    class="text-[14px]"
+                    x-html="`${option.label}: ${Array.isArray(option.value) ? option.value.join(', ') : option.value}`"
                   ></p>
                 </template>
               </template>

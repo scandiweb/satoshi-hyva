@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Customer\Block\Account\AuthorizationLink;
+use Magento\Framework\Escaper;
+
+/**
+ * @var AuthorizationLink $block
+ * @var Escaper $escaper
+ */
+
+if ($block->isLoggedIn()): ?>
+    <?php $dataPostParam = $block->getPostParams(); ?>
+    <li x-data="Authentication">
+        <button <?= /* @noEscape */ $block->getLinkAttributes() ?>
+            :class="isLoading && 'button--disabled'"
+            :disabled="isLoading"
+            type="button"
+            @click.prevent="logout(<?= $escaper->escapeHtmlAttr($dataPostParam) ?>)"
+        >
+            <?= $escaper->escapeHtml($block->getLabel()) ?>
+        </button>
+    </li>
+<?php else: ?>
+    <li>
+        <a x-element-transition-trigger <?= /* @noEscape */ $block->getLinkAttributes() ?>>
+            <?= $escaper->escapeHtml($block->getLabel()) ?>
+        </a>
+    </li>
+<?php endif; ?>

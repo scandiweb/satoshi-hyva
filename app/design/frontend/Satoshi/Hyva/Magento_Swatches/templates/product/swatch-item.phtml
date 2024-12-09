@@ -27,7 +27,7 @@ if (!$productId || !$attributeId) {
 <template x-if="optionIsEnabled(<?= (int) $attributeId ?>, item.id)">
   <label
     :for="`attribute-option-<?= (int) $productId ?>-${item.id}`"
-    @click="changeOption(<?= (int) $attributeId ?>, item.id)"
+    @click="optionIsActive(<?= (int) $attributeId ?>, item.id) && changeOption(<?= (int) $attributeId ?>, item.id)"
     class="button button--size-sm select-none transition-all ease-in-out relative bg-bg-500"
     :class="
       {
@@ -61,6 +61,7 @@ if (!$productId || !$attributeId) {
       :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
       aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
       form="<?= $escaper->escapeHtmlAttr($formId) ?>"
+      :disabled="!optionIsActive(<?= (int) $attributeId ?>, item.id)"
     >
     <template x-if="isTextSwatch(<?= (int) $attributeId ?>, item.id)">
       <span class="line-clamp-2 text-wrap text-sm md:text-md" x-html="getSwatchText(<?= (int) $attributeId ?>, item.id)"></span>

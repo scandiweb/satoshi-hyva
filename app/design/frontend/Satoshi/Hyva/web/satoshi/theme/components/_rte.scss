@@ -1,4 +1,5 @@
-.rte:not(:has([data-element="block_directive"])) {
+.rte:not(:has([data-element="block_directive"])),
+[data-content-type="text"] {
   /**
    * Unreset CSS
    *
