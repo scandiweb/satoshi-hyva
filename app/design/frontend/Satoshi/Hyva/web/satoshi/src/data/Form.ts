@@ -1,4 +1,4 @@
-import { replaceMainContentWithTransition } from "../plugins/Transition";
+import {replaceMainContentWithTransition} from "../plugins/Transition";
 
 type PostParams = {
   action: string;
@@ -14,8 +14,8 @@ export type FormType = {
   errorMessages: string[];
 
   setErrorMessages(messages: string[]): void;
+  submitForm(): void;
   postForm(postParams: PostParams): Promise<void>;
-  submitForm(event: Event): void;
 };
 
 export const Form = (formId: string) => {
@@ -29,6 +29,37 @@ export const Form = (formId: string) => {
     setErrorMessages(messages) {
       this.errorMessages = messages;
       this.displayErrorMessage = !!this.errorMessages.length;
+    },
+
+    submitForm() {
+      const $form = document.getElementById(formId) as HTMLFormElement;
+      if (!$form) return;
+
+      const formData = new FormData($form);
+      this.isLoading = true;
+
+      const isGetMethod = $form.method.toLowerCase() === "get";
+      const query = isGetMethod ? new URLSearchParams(formData as any).toString() : '';
+      const formAction = $form.action + `?${query}`;
+
+      fetch(formAction, {
+        method: $form.method,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        ...(isGetMethod ? {} : {body: formData})
+      })
+        .then((response) => {
+          return response.text().then(async (content) => {
+            await replaceMainContentWithTransition(response.url, content);
+          });
+        })
+        .catch((error) => {
+          console.error("Form submission failed:", error);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
     },
 
     async postForm(postParams) {
@@ -69,33 +100,6 @@ export const Form = (formId: string) => {
         })
         .catch((error) => {
           console.error("Form submission failed", error);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
-
-    submitForm() {
-      const $form = document.getElementById(formId) as HTMLFormElement;
-      if (!$form) return;
-
-      const formData = new FormData($form);
-      this.isLoading = true;
-
-      fetch($form.action, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => {
-          return response.text().then(async (content) => {
-            await replaceMainContentWithTransition(response.url, content);
-          });
-        })
-        .catch((error) => {
-          console.error("Form submission failed:", error);
         })
         .finally(() => {
           this.isLoading = false;

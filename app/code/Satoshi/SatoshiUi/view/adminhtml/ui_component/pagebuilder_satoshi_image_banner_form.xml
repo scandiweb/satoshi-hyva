@@ -270,6 +270,15 @@
                 </imports>
             </settings>
         </urlInput>
+    </fieldset>
 
+    <fieldset name="advanced">
+        <field name="text_align">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="visible" xsi:type="boolean">false</item>
+                </item>
+            </argument>
+        </field>
     </fieldset>
 </form>

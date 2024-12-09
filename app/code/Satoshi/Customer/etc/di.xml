@@ -2,39 +2,43 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference
-            for="Magento\Customer\Controller\Account\LoginPost"
-            type="Satoshi\Customer\Controller\Account\LoginPost"
-    />
-    <preference
-            for="Magento\Customer\Controller\Account\CreatePost"
-            type="Satoshi\Customer\Controller\Account\CreatePost"
-    />
-    <preference
-            for="Magento\Customer\Controller\Account\ForgotPasswordPost"
-            type="Satoshi\Customer\Controller\Account\ForgotPasswordPost"
-    />
-    <preference
-            for="Magento\Customer\Block\Account\Forgotpassword"
-            type="Satoshi\Customer\Block\Account\ForgotPassword"
-    />
-    <preference
-            for="Magento\Customer\Block\Form\Login"
-            type="Satoshi\Customer\Block\Form\Login"
-    />
-    <preference
-            for="Magento\Customer\Block\Form\Register"
-            type="Satoshi\Customer\Block\Form\Register"
-    />
-    <preference
-        for="Magento\Customer\Controller\Account\EditPost"
-        type="Satoshi\Customer\Controller\Account\EditPost"
+        for="Magento\Customer\Controller\Account\LoginPost"
+        type="Satoshi\Customer\Controller\Account\LoginPost"
     />
     <preference
         for="Magento\Customer\Controller\Account\CreatePost"
         type="Satoshi\Customer\Controller\Account\CreatePost"
     />
     <preference
+        for="Magento\Customer\Controller\Account\ForgotPasswordPost"
+        type="Satoshi\Customer\Controller\Account\ForgotPasswordPost"
+    />
+    <preference
+        for="Magento\Customer\Block\Account\Forgotpassword"
+        type="Satoshi\Customer\Block\Account\ForgotPassword"
+    />
+    <preference
+        for="Magento\Customer\Block\Form\Login"
+        type="Satoshi\Customer\Block\Form\Login"
+    />
+    <preference
+        for="Magento\Customer\Block\Form\Register"
+        type="Satoshi\Customer\Block\Form\Register"
+    />
+    <preference
+        for="Magento\Customer\Controller\Account\EditPost"
+        type="Satoshi\Customer\Controller\Account\EditPost"
+    />
+    <preference
         for="Magento\Customer\Block\Form\Edit"
         type="Satoshi\Customer\Block\Form\Edit"
+    />
+    <preference
+        for="Magento\Customer\Block\Account\SortLink"
+        type="Satoshi\Customer\Block\Account\SortLink"
+    />
+    <preference
+        for="Magento\Customer\Block\Account\Dashboard\Info"
+        type="Satoshi\Customer\Block\Account\Dashboard\Info"
     />
 </config>

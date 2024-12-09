@@ -1,0 +1,47 @@
+<div
+    attr="data.main.attributes"
+    class="pagebuilder-content-type"
+    css="data.main.css"
+    event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+    ko-style="data.main.style"
+>
+    <div
+        class="satoshi-newsletter"
+        data-bind="css: {
+          'newsletter--wrapped': !!data.wrapped.attributes()['data-wrapped']
+        }"
+    >
+        <h2
+            attr="data.title.attributes"
+            class="newsletter__heading"
+            css="data.title.css"
+            data-bind="liveEdit: { field: 'title', placeholder: $t('Enter title') }"
+            ko-style="data.title.style"
+        ></h2>
+
+        <p
+            attr="data.subtitle.attributes"
+            class="newsletter__caption"
+            css="data.subtitle.css"
+            data-bind="liveEdit: { field: 'subtitle', placeholder: $t('Enter subtitle') }"
+            ko-style="data.subtitle.style"
+        ></p>
+
+        <label>
+            <input
+                class="newsletter__input"
+                data-bind="attr: { placeholder: $t('Email address') }"
+                type="text"
+            />
+        </label>
+
+        <button
+            attr="data.button_label.attributes"
+            class="newsletter__button"
+            data-bind="liveEdit: { field: 'button_label', placeholder: $t('Enter label'), selectAll: true }"
+        >
+        </button>
+    </div>
+
+    <render args="getOptions().template"/>
+</div>

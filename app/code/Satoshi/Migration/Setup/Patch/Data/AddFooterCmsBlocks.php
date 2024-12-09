@@ -2,12 +2,10 @@
 
 namespace Satoshi\Migration\Setup\Patch\Data;
 
-use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Cms\Model\BlockFactory;
 use Magento\Framework\Filesystem\DirectoryList;
-use Magento\Framework\File\Csv as FileCsv;
-use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Magento\Framework\Setup\Patch\DataPatchInterface;
 
 class AddFooterCmsBlocks implements DataPatchInterface
 {
@@ -52,32 +50,17 @@ class AddFooterCmsBlocks implements DataPatchInterface
 
         $basePath = $this->directoryList->getRoot() . '/app/code/Satoshi/Migration/view/data/html/cms/block/';
 
-        $cmsBlocks = [
-            [
-                'title' => 'Apparel',
-                'identifier' => 'footer-content-1',
-                'content' => file_get_contents($basePath . 'footer-content-1.html'),
-                'is_active' => 1,
-                'stores' => [0]
-            ],
-            [
-                'title' => 'Cosmetics',
-                'identifier' => 'footer-content-2',
-                'content' => file_get_contents($basePath . 'footer-content-2.html'),
-                'is_active' => 1,
-                'stores' => [0]
-            ],
-            [
-                'title' => 'Follow us',
-                'identifier' => 'footer-content-3',
-                'content' => file_get_contents($basePath . 'footer-content-3.html'),
-                'is_active' => 1,
-                'stores' => [0]
-            ]
-        ];
+        // Check if the block already exists
+        $existingBlock = $this->blockFactory->create()->load('footer', 'identifier');
 
-        foreach ($cmsBlocks as $data) {
-            $this->blockFactory->create()->setData($data)->save();
+        if (!$existingBlock->getId()) {
+            $this->blockFactory->create()->setData([
+                'title' => 'Footer',
+                'identifier' => 'footer',
+                'content' => file_get_contents($basePath . 'footer.html'),
+                'is_active' => 1,
+                'stores' => [0]
+            ])->save();
         }
 
         $this->moduleDataSetup->getConnection()->endSetup();
@@ -101,5 +84,10 @@ class AddFooterCmsBlocks implements DataPatchInterface
     public function getAliases()
     {
         return [];
+    }
+
+    public function getVersion()
+    {
+
     }
 }

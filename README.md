@@ -37,7 +37,7 @@ $template
 $resizable
   ->setData([
     'id' => 'menu-desktop',
-    'initialWidth' => 100,
+    'initialWidth' => 105,
     'initialHeight' => 56,
     'cssClass' => 'resizable--menu md:pointer-events-auto',
   ])

@@ -1,0 +1,115 @@
+.before-and-after {
+  --exposure: 50%;
+}
+
+.before-and-after__container {
+  overflow: hidden;
+  position: relative;
+}
+
+[data-appearance="contained"] .before-and-after__container {
+  border-radius: 12px;
+}
+
+.before-and-after__container-small {
+  height: 40vh;
+}
+
+.before-and-after__container-medium {
+  height: 60vh;
+}
+
+.before-and-after__container-large {
+  height: 80vh;
+}
+
+.before-and-after__wrapper {
+  height: 100%;
+}
+
+.before-and-after__wrapper img {
+  object-position: center;
+  object-fit: cover;
+  height: 100%;
+  color: transparent;
+}
+
+.before-and-after__after {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  clip-path: inset(0 var(--exposure) 0 0);
+}
+
+.before-and-after__handle {
+  background-color: #f5f8f6;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  touch-action: none;
+  width: 2px;
+  height: 100%;
+  right: var(--exposure);
+  top: 0;
+  position: absolute;
+}
+.before-and-after__handle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+.before-and-after__handle span {
+  color: #c4c6bf;
+  transform: translateX(-50%);
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  position: absolute;
+  height: 36px;
+  width: 36px;
+  min-width: 36px;
+  padding-left: 0;
+  padding-right: 0;
+  font-size: 20px;
+  background-color: #ffffff;
+  display: inline-flex;
+  cursor: pointer;
+  touch-action: manipulation;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 8px;
+  font-weight: 500;
+  line-height: 1.25;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.2s;
+}
+
+.before-and-after__handle span svg {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0;
+  height: 18px;
+  width: 18px;
+  transform: rotate(90deg);
+}
+
+.before-and-after__placeholder {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 300px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0;
+  height: 18px;
+  width: 18px;
+}

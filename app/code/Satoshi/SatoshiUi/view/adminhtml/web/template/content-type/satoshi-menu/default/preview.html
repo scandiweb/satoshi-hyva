@@ -1,0 +1,39 @@
+<div
+    attr="data.main.attributes"
+    class="pagebuilder-content-type"
+    css="data.main.css"
+    event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
+    ko-style="data.main.style"
+>
+    <div class="satoshi-menu">
+        <button event="{ click: handleClick }">
+            <h2
+                attr="data.heading.attributes"
+                class="faq__heading"
+                css="data.heading.css"
+                data-bind="liveEdit: { field: 'heading', placeholder: $t('Enter heading') }"
+                ko-style="data.heading.style"
+            ></h2>
+            <div>
+                <svg height="24" role="img" viewBox="0 0 24 24" width="24"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path>
+                </svg>
+            </div>
+        </button>
+
+        <if args="data.menu_items.attributes().items.length > 0 && data.menu_items.attributes().items !== '[]'">
+            <div class="menu__panel">
+                <div>
+                    <!-- ko foreach: data.menu_items.attributes().items -->
+                    <a>
+                        <span data-bind="text: item_label">
+                        </span>
+                    </a>
+                    <!-- /ko -->
+                </div>
+            </div>
+        </if>
+    </div>
+    <render args="getOptions().template"/>
+</div>
