@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ReCaptcha;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Newsletter\Block\Subscribe;
-use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Subscribe $block */
 /** @var Escaper $escaper */
@@ -19,10 +19,18 @@ use Hyva\Theme\ViewModel\SvgIcons;
 $recaptcha = $block->getData('viewModelRecaptcha');
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
+$title = $block->getData('title') ?? __('Join Our Newsletter.');
+$subtitle = $block->getData('subtitle');
+$buttonLabel = $block->getData('button_label') ?? __('Subscribe');
+$isWrapped = $block->getData('wrapped') == 'true';
 ?>
 
-<div class="flex flex-col items-stretch gap-5 rounded-md border-1 border-transparent bg-secondary-400 px-5 py-6 md:min-w-[35%] md:gap-4 md:bg-bg-500 md:p-7">
-    <h2 class="text-lg"><?= $escaper->escapeHtml(__('Join Our Newsletter.')) ?></h2>
+<div
+    class="md:max-w-screen-sm mx-auto flex flex-col items-stretch gap-5 rounded-md border-1 border-transparent px-5 py-6 md:min-w-[35%] md:gap-4 md:p-7 h-fit <?= $isWrapped ? 'bg-secondary-400 md:bg-bg-500' : '' ?>">
+    <h2 class="text-lg"><?= $escaper->escapeHtml($title) ?></h2>
+    <?php if (!empty($subtitle)): ?>
+        <p class="text-text-500"><?= $escaper->escapeHtml($subtitle) ?></p>
+    <?php endif; ?>
     <form
         class="flex flex-col gap-3 items-stretch md:gap-4"
         action="<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>"
@@ -71,12 +79,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </div>
 
         <?= $block->getBlockHtml('formkey') ?>
-        <div
-            id="newsletter-recaptcha-container"
-            class="origin-top-left scale-[0.8] max-w-[245px] sm:scale-100 sm:max-w-none md:scale-[0.65] lg:scale-90 xl:scale-100"
-        >
-            <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER) : '' ?>
-        </div>
+
+        <?php if ($recaptcha && $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER)): ?>
+            <div
+                id="newsletter-recaptcha-container"
+                class="origin-top-left scale-[0.8] max-w-[245px] sm:scale-100 sm:max-w-none md:scale-[0.65] lg:scale-90 xl:scale-100"
+            >
+                <?= $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_NEWSLETTER); ?>
+            </div>
+        <?php endif; ?>
+
         <button
             type="submit"
             class="button button--filled-primary w-full"
@@ -85,7 +97,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             }"
             :disabled="isLoading"
         >
-            <?= $escaper->escapeHtml(__('Subscribe')) ?>
+            <?= $escaper->escapeHtml($buttonLabel) ?>
         </button>
         <span
             class="newsletter-form__message newsletter-form__message--success form__message"

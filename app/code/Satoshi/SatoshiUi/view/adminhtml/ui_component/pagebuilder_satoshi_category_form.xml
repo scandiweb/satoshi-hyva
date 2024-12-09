@@ -4,7 +4,7 @@
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">pagebuilder_satoshi_category_form.pagebuilder_satoshi_category_form_data_source</item>
         </item>
-        <item name="label" xsi:type="string" translate="true">Image with text</item>
+        <item name="label" xsi:type="string" translate="true">Category</item>
     </argument>
     <settings>
         <deps>
@@ -132,60 +132,66 @@
             </settings>
         </field>
 
-        <field name="view_all_button" sortOrder="40" formElement="select" component="Magento_PageBuilder/js/form/element/dependent-visual-select">
+        <!-- View all button -->
+        <field name="view_all_button" sortOrder="40" formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="string">false</item>
+                </item>
+            </argument>
             <settings>
-                <dataType>text</dataType>
+                <dataType>boolean</dataType>
                 <label translate="true">View all button</label>
-                <elementTmpl>Magento_PageBuilder/form/element/visual-select</elementTmpl>
                 <dataScope>view_all_button</dataScope>
                 <notice translate="true">Enable "View all" button if collection has more products than shown.</notice>
             </settings>
             <formElements>
-                <select>
+                <checkbox>
                     <settings>
-                        <options>
-                            <option name="0" xsi:type="array">
-                                <item name="size" xsi:type="string">small</item>
-                                <item name="value" xsi:type="string">enabled</item>
-                                <item name="title" xsi:type="string" translate="true">Enabled</item>
-                            </option>
-                            <option name="1" xsi:type="array">
-                                <item name="size" xsi:type="string">small</item>
-                                <item name="value" xsi:type="string">disabled</item>
-                                <item name="title" xsi:type="string" translate="true">Disabled</item>
-                            </option>
-                        </options>
+                        <valueMap>
+                            <map name="false" xsi:type="string">false</map>
+                            <map name="true" xsi:type="string">true</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
                     </settings>
-                </select>
+                </checkbox>
             </formElements>
         </field>
 
-        <field name="auto_resize_items" sortOrder="50" formElement="select" component="Magento_PageBuilder/js/form/element/dependent-visual-select">
+        <!-- Auto resize slider items -->
+        <field name="auto_resize_items" sortOrder="50" formElement="checkbox">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="string">false</item>
+                </item>
+            </argument>
             <settings>
-                <dataType>text</dataType>
+                <dataType>boolean</dataType>
                 <label translate="true">Auto resize slider items</label>
-                <elementTmpl>Magento_PageBuilder/form/element/visual-select</elementTmpl>
                 <dataScope>auto_resize_items</dataScope>
                 <notice translate="true">If the slider typically shows 5 items but only 3 are available, the 3 items will stretch to cover the entire slider width.</notice>
             </settings>
             <formElements>
-                <select>
+                <checkbox>
                     <settings>
-                        <options>
-                            <option name="0" xsi:type="array">
-                                <item name="size" xsi:type="string">small</item>
-                                <item name="value" xsi:type="string">enabled</item>
-                                <item name="title" xsi:type="string" translate="true">Enabled</item>
-                            </option>
-                            <option name="1" xsi:type="array">
-                                <item name="size" xsi:type="string">small</item>
-                                <item name="value" xsi:type="string">disabled</item>
-                                <item name="title" xsi:type="string" translate="true">Disabled</item>
-                            </option>
-                        </options>
+                        <valueMap>
+                            <map name="false" xsi:type="string">false</map>
+                            <map name="true" xsi:type="string">true</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
                     </settings>
-                </select>
+                </checkbox>
             </formElements>
+        </field>
+    </fieldset>
+
+    <fieldset name="advanced">
+        <field name="text_align">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="visible" xsi:type="boolean">false</item>
+                </item>
+            </argument>
         </field>
     </fieldset>
 </form>

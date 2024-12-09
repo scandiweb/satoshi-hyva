@@ -1,4 +1,4 @@
-import type { Magics } from "alpinejs";
+import type {Magics} from "alpinejs";
 
 export type AccordionType = {
   [key: string | symbol]: any;
@@ -16,7 +16,11 @@ export type AccordionType = {
   _update(): void;
 } & Magics<{}>;
 
-export const Accordion = (isExpanded: unknown = false, duration: unknown = 0) =>
+export const Accordion = (
+  isExpanded: unknown = false,
+  duration: unknown = 0,
+  onlyMobile: boolean = false,
+) =>
   <AccordionType>{
     _buttonRef: null,
     _panelRef: null,
@@ -26,10 +30,15 @@ export const Accordion = (isExpanded: unknown = false, duration: unknown = 0) =>
     duration: Number(duration),
 
     init() {
-      this._initElements();
-      this._update();
+      if (onlyMobile && !Alpine.store("main").isMobile) {
+        return;
+      }
 
-      this.$watch("isExpanded", this._update.bind(this));
+      this._initElements();
+      Alpine.nextTick(() => {
+        this._update();
+        this.$watch("isExpanded", this._update.bind(this));
+      });
     },
 
     _initElements() {
@@ -60,7 +69,7 @@ export const Accordion = (isExpanded: unknown = false, duration: unknown = 0) =>
         this._panelRef.style.opacity = this.isExpanded ? "1" : "0";
         const containerMaxheight = this._panelRef.scrollHeight
           ? `${String(this._panelRef.scrollHeight)}px`
-          : "1000px";
+          : "10000px";
         this._panelRef.style.maxHeight = this.isExpanded
           ? containerMaxheight
           : "0";

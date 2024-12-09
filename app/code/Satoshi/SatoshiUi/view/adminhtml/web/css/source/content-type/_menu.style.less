@@ -1,0 +1,121 @@
+.satoshi-menu {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  flex: 1 1 0;
+}
+
+.satoshi-menu button {
+  padding: 8px;
+  border-radius: 12px;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+  display: flex;
+  background: none;
+  border: none;
+  text-align: inherit !important;
+}
+
+.satoshi-menu button h2 {
+  color: #363030 !important;
+  flex-grow: 1;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  font-size: 16px !important;
+}
+
+.satoshi-menu button div {
+  height: 28px;
+  width: 28px;
+  min-width: 28px;
+  padding-left: 0;
+  padding-right: 0;
+  font-size: 20px;
+  border-style: solid;
+  border-color: #514848;
+  background-color: transparent;
+  border-width: 1px;
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  touch-action: manipulation;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 8px;
+  font-weight: 500;
+  line-height: 1.25;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+  transition-duration: .2s;
+}
+
+.satoshi-menu button div svg {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0;
+  height: 16px;
+  width: 16px;
+  rotate: 90deg;
+}
+
+.satoshi-menu .menu__panel {
+  transition-duration: 300ms;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+}
+
+.satoshi-menu--open .menu__panel {
+  max-height: var(--max-height) !important;
+  opacity: 1 !important;
+}
+
+.satoshi-menu .menu__panel div {
+  padding: 4px 8px 16px;
+  gap: 8px;
+  flex-direction: column;
+  display: flex;
+}
+
+.satoshi-menu .menu__panel div a {
+  color: #363030;
+  text-decoration: none;
+}
+
+.satoshi-menu .menu__panel div span {
+  border-color: transparent;
+  border-bottom-width: 1px;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+  transition-duration: .2s;
+}
+
+@media (min-width: 768px) {
+  .satoshi-menu {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    gap: 12px;
+    flex-direction: column;
+    display: flex;
+  }
+
+  .satoshi-menu button {
+    padding: 0 3px;
+    cursor: text;
+    height: auto;
+  }
+
+  .satoshi-menu button div {
+    display: none;
+  }
+
+  .satoshi-menu .menu__panel div {
+    padding: 3px;
+  }
+
+  .satoshi-menu .menu__panel {
+    max-height: 10000px !important;
+    opacity: 1 !important;
+  }
+}
