@@ -72,7 +72,9 @@ $mixBackground = true;
           >
             <div class="w-full">
               <h2 class="text-md text-text-500">
-                <span x-text="item.product_name"></span>
+                  <!-- Decode HTML entities in item.product_name to render special characters correctly -->
+                  <span
+                      x-text="(new DOMParser()).parseFromString(item.product_name, 'text/html').documentElement.textContent"></span>
               </h2>
               <template x-if="item.options.length">
                 <template

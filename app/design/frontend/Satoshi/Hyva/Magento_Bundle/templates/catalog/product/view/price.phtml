@@ -8,6 +8,7 @@ use Hyva\Theme\ViewModel\ProductPrice;
 use Magento\Bundle\Model\Product\Price as BundlePrice;
 use Magento\Catalog\Block\Product\View;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Pricing\Price\BasePrice;
 use Magento\Catalog\Pricing\Price\FinalPrice;
 use Magento\Catalog\Pricing\Price\RegularPrice;
 use Magento\Catalog\Pricing\Price\TierPrice;
@@ -27,6 +28,7 @@ $productViewModel = $viewModels->require(ProductPage::class);
 
 $regularPrice = $productPriceViewModel->getPriceValue(RegularPrice::PRICE_CODE, $product);
 $finalPrice = $productPriceViewModel->getPriceValue(FinalPrice::PRICE_CODE, $product);
+$basePrice = $productPriceViewModel->getPriceValue(BasePrice::PRICE_CODE, $product);
 $tierPrices = $productPriceViewModel->getTierPrices(TierPrice::PRICE_CODE, $product);
 
 if ($productPriceViewModel->displayPriceInclAndExclTax()) {
@@ -43,7 +45,7 @@ $displayTax = $productPriceViewModel->displayPriceIncludingTax();
 <div
     x-data="BundlePrice({
         productId: <?= (int)$product->getId() ?>,
-        initialFinalPrice: <?= $isFixedPriceBundleProduct ? (float) $finalPrice : 0 ?>,
+        initialFinalPrice: <?= $isFixedPriceBundleProduct ? (float)$basePrice : 0 ?>,
         initialTierPrices: <?= /** @noEscape */ json_encode($tierPrices) ?>,
         <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
             initialBasePrice: <?= $isFixedPriceBundleProduct ? (float) $finalPriceExclTax : 0 ?>,
