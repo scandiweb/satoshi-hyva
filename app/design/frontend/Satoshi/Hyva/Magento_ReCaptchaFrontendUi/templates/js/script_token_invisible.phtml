@@ -42,9 +42,6 @@ $grecaptchaInstanceId = "grecaptchaInstance$instanceSuffix";
                 if (this.setErrorMessages) {
                     this.setErrorMessages([error])
                     this.displayErrorMessage = true;
-                } else {
-                    // TODO: Remove when tested for all forms using captcha
-                    window.dispatchMessages && window.dispatchMessages([{type: "error", text: error}], 5000);
                 }
             }
         }

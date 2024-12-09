@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Magento\Customer\Block\Account\Dashboard\Info;
+use Satoshi\Customer\Block\Account\Dashboard\Info;
 use Magento\Framework\Escaper;
 use Hyva\Theme\ViewModel\SvgIcons;
 
@@ -12,7 +12,19 @@ use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
+$successMessage = $block->getSuccessMessage();
+$errorMessage = $block->getErrorMessage();
 ?>
+
+<?php if ($successMessage): ?>
+    <div class="field-success -mt-3 mb-3">
+        <span><?= $successMessage ?></span>
+    </div>
+<?php elseif ($errorMessage): ?>
+    <div class="field-error -mt-3 mb-3">
+        <span class="messages"><?= $errorMessage ?></span>
+    </div>
+<?php endif; ?>
 
 <h2 class="text-text-500 text-lg font-bold mb-5">
     <?= $escaper->escapeHtml(__('Account Information')) ?>

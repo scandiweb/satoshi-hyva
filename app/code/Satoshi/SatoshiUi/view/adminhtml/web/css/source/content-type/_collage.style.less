@@ -24,6 +24,7 @@
   display: flex;
   position: relative;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .collage-item::before {
@@ -125,7 +126,9 @@
   }
 
   .collage--item:hover .collage-image > div,
-  .collage--item:hover .collage-image > svg {
+  .collage--item:hover .collage-image > svg,
+  .collage--featured:hover .collage-image > div,
+  .collage--featured:hover .collage-image > svg {
     transform: scaleX(1.05) scaleY(1.05);
   }
 }

@@ -7,14 +7,20 @@ use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Cart;
 /** @var Item $item */
 $item = $block->getItem();
 $product = $item->getProduct();
+$shouldRenderQtyInput = $item->canHaveQty() && $product->isVisibleInSiteVisibility();
 ?>
 
-<div class="flex justify-between items-center mb-5 [&_.price]:text-text-500 [&_.price]:text-lg [&_.price]:font-bold">
+<div
+    class="
+        flex justify-between items-center mb-5 [&_.price-box_.price]:text-text-500 [&_.price-box_.price]:text-lg [&_.price-box_.price]:font-bold
+        <?= $shouldRenderQtyInput ? '[&_.product-details-tooltip]:-translate-x-[60%]' : '[&_.product-details-tooltip]:-translate-x-full' ?>
+    "
+>
     <?php foreach ($block->getChildNames() as $childName): ?>
         <?= /* @noEscape */ $block->getLayout()->renderElement($childName, false) ?>
     <?php endforeach;?>
 
-    <?php if ($item->canHaveQty() && $product->isVisibleInSiteVisibility()): ?>
+    <?php if ($shouldRenderQtyInput): ?>
         <label
             class="sr-only"
             for="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"

@@ -39,7 +39,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
       <input
         type="search"
         placeholder="<?= __('Search') ?>"
-        class="input__field input__field--filled focus-visible:input__field--outline md:input__field--ghost md:focus-visible:input__field--ghost border-transparent pr-11 placeholder:text-text-500 md:order-2 md:px-2 md:placeholder:text-primary-500 md:focus-visible:border-transparent md:focus-visible:shadow-none md:focus-visible:outline-0"
+        class="input__field input__field--filled border-none focus-visible:input__field--outline md:input__field--ghost md:focus-visible:input__field--ghost pr-11 placeholder:text-text-500 md:order-2 md:px-2 md:placeholder:text-primary-500 md:focus-visible:border-transparent md:focus-visible:shadow-none md:focus-visible:outline-0"
         x-model="searchTermInput"
         @input.debounce.300ms="setSearchTerm"
         name="q"
@@ -53,7 +53,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         "
       >
       <div
-        class="max-md:icon-button--size-md md:button md:icon-button md:icon-button--size-lg  md:order-1 md:text-primary-500 max-md:pointer-events-none max-md:absolute max-md:right-0 max-md:top-0 max-md:z-10 max-md:flex max-md:items-center max-md:justify-center max-md:px-0 max-md:text-lg max-md:text-text-500"
+        class="max-md:icon-button--size-md md:button md:icon-button md:icon-button--size-lg md:order-1 md:text-primary-500 max-md:pointer-events-none max-md:absolute max-md:right-0 max-md:top-0 max-md:z-10 max-md:flex max-md:items-center max-md:justify-center max-md:px-0 max-md:text-lg max-md:text-text-500"
         x-show="!$store.main.isMobile || !searchTerm"
         :class="
           {
@@ -76,7 +76,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
           }
         "
       >
-        <?= $hyvaicons->renderHtml('close'); ?>
+          <?= $hyvaicons->renderHtml('close', attributes: ['title' => 'Clear']); ?>
       </button>
     </div>
   </form>
