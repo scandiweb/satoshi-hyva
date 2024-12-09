@@ -8,7 +8,7 @@ export type FormType = {
   errorMessages: string[];
 
   setErrorMessages(messages: string[]): void;
-  submitForm(event: Event): void;
+  submitForm(): void;
 };
 
 export const Form = (formId: string) => {
