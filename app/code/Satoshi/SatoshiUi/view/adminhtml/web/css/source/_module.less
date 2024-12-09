@@ -38,9 +38,7 @@
   }
 }
 
-.pagebuilder-content-type.pagebuilder-wysiwyg
-  .inline-wysiwyg
-  + .placeholder-text {
+.pagebuilder-content-type.pagebuilder-wysiwyg .inline-wysiwyg + .placeholder-text {
   left: 0;
   pointer-events: none;
   position: absolute;
@@ -49,4 +47,8 @@
 
 .pagebuilder-wygiwyg-text-content {
   position: relative;
+}
+
+.admin__action-multiselect-wrap._active .action-menu._active {
+  z-index: 10;
 }

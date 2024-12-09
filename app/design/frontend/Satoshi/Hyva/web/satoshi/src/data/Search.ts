@@ -37,7 +37,7 @@ export const Search = () =>
     productsSearchLimit: 4,
 
     getIsSearchActive() {
-        return !!this.searchTerm && !this.isNoResults;
+      return !!this.searchTerm && !this.isNoResults;
     },
 
     init() {
@@ -96,7 +96,6 @@ export const Search = () =>
     },
 
     goToSearchPage(path) {
-      // TODO: implement fallback
       navigateWithTransition(this.getSearchUrl(path), {
         type: "search",
         animate: true,
