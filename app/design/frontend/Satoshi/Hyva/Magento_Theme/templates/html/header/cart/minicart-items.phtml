@@ -80,8 +80,8 @@ $mixBackground = true;
                   :key="o"
                 >
                   <p
-                      class="text-[14px]"
-                    x-html="`${option.label}: ${option.value}`"
+                    class="text-[14px]"
+                    x-html="`${option.label}: ${Array.isArray(option.value) ? option.value.join(', ') : option.value}`"
                   ></p>
                 </template>
               </template>

@@ -1,0 +1,67 @@
+<?php
+
+use Magento\Framework\Escaper;
+use Magento\Wishlist\Block\Customer\Wishlist\Item\Options;
+
+/** @var Options $block */
+/** @var Escaper $escaper */
+?>
+
+<?php $options = $block->getOptionList(); ?>
+<?php if ($options): ?>
+    <div class="items-center justify-start flex tooltip my-2">
+        <div
+            x-data="{
+                showTooltip: false,
+                tooltipId: $id('product-details-tooltip')
+            }"
+            class="relative z-30 inline-flex"
+        >
+            <button
+                type="button"
+                @mouseover.prevent.stop="showTooltip = true"
+                @mouseleave.prevent.stop="showTooltip = false"
+                @focus="showTooltip = true"
+                @focusout="showTooltip = false"
+                @keydown.escape="showTooltip = false"
+                :aria-labelledby="tooltipId"
+            >
+                <?= $escaper->escapeHtml(__('See Details')) ?>
+            </button>
+            <div class="relative" x-cloak x-show="showTooltip">
+                <div class="shadow-lg">
+                    <div
+                        :id="tooltipId"
+                        class="
+                            product-details-tooltip absolute top-0 left-0 z-10 w-64 -mt-6 text-sm
+                            transform -translate-y-full bg-white rounded-lg shadow-lg p-4
+                        "
+                    >
+                        <span class="text-lg font-semibold text-text-500 leading-tight">
+                            <?= $escaper->escapeHtml(__('Options Details')) ?>
+                        </span>
+                        <div class="my-2">
+                            <?php foreach ($options as $option): ?>
+                                <p class="text-[14px]">
+                                    <?= $escaper->escapeHtml($option['label'] . ':') ?>
+                                    <?php if (is_array($option['value'])): ?>
+                                        <?= /* @noEscape */ implode(", ", $option['value']) ?>
+                                    <?php else: ?>
+                                        <?= /* @noEscape */ $option['value'] ?>
+                                    <?php endif; ?>
+                                </p>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <svg
+                        class="absolute z-10 w-8 h-8 text-white transform -translate-x-full -translate-y-8 fill-current stroke-current"
+                        width="12"
+                        height="12"
+                    >
+                        <rect x="12" y="-12" width="12" height="12" transform="rotate(45)" class="shadow-xl" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif ?>
