@@ -7,6 +7,7 @@ export type WishListPageType = {
   addAllItemsToCart(): Promise<void>;
   focusOnCartAddedItems(addedProductSkus: string[]): void;
   setActionBtnText(text?: string): void;
+  postForm(postParams: any): Promise<void>;
 } & Magics<{}>;
 
 export const WishListPage = (
