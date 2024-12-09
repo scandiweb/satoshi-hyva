@@ -5,4 +5,8 @@
         for="Magento\Newsletter\Controller\Subscriber\NewAction"
         type="Satoshi\Newsletter\Controller\Subscriber\NewAction"
     />
+    <preference
+        for="Magento\Newsletter\Controller\Manage\Save"
+        type="Satoshi\Newsletter\Controller\Manage\Save"
+    />
 </config>

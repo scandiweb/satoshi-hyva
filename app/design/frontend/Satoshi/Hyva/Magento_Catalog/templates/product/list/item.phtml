@@ -114,7 +114,8 @@ if ($product) {
 
                 <?php if ($product): ?>
                     <div
-                        class="aspect-product w-full h-full flex items-center justify-center transition-transform bg-[--fade-in-bg]">
+                        class="bg-[--fade-in-bg] aspect-product size-full flex min-h-0 items-center justify-center transition-transform md:group-hover:scale-105 <?= $isContain ? 'p-[2%]' : '' ?>"
+                    >
                         <img
                             class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
                             src="<?= $escaper->escapeUrl($imageUrl) ?>"

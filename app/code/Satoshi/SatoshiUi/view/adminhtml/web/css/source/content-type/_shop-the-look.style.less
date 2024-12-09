@@ -1,0 +1,99 @@
+.shop-the-look > h2 {
+  color: #363030 !important;
+  font-size: 30px !important;
+  line-height: 40px !important;
+  margin: 0 0 16px 0 !important;
+  font-weight: 700 !important;
+}
+
+.shop-the-look > div {
+  gap: 16px;
+  align-items: flex-start;
+  flex-direction: column;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  display: flex;
+}
+
+.shop-the-look-img {
+  width: 100%;
+  grid-column: span 3;
+  position: relative;
+}
+
+.shop-the-look-img svg {
+  background-color: #d0d2cc;
+  width: 100%;
+  min-height: 500px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0;
+  height: 16px;
+}
+
+.shop-the-look-img > div {
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.shop-the-look-img button {
+  transform: translate(-50%, -50%);
+  position: absolute;
+  background: none;
+  border: none;
+}
+
+.shop-the-look-img button:before {
+  content: "";
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.15s;
+  opacity: 0.45;
+  background-color: #f5f8f6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+
+.shop-the-look-img button:hover:before {
+  opacity: 0.75;
+}
+
+.shop-the-look-img button:after {
+  content: "";
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.15s;
+  background-color: #6a7a66;
+  border-radius: 50%;
+  transform-origin: center;
+  width: 24px;
+  height: 24px;
+  margin: auto;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  position: absolute;
+}
+
+.shop-the-look-img button:hover:after {
+  transform: scale(0.75);
+}
+
+.shop-the-look-slider {
+  width: 100%;
+  grid-column: span 2;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .shop-the-look > h2 {
+    font-size: 36px !important;
+  }
+
+  .shop-the-look > div {
+    display: grid;
+  }
+}

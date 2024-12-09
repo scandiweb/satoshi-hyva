@@ -146,7 +146,6 @@ export const ProductPage = () =>
     },
 
     get isProductBeingAdded() {
-      // TODO: Also check selected options
       return Alpine.store("cart").addingItemIds.includes(this.productId);
     },
 
@@ -327,7 +326,7 @@ export const ProductPage = () =>
       window.addEventListener(
         "private-content-loaded",
         (event: any) => {
-          const { cart: { items = [] } = {} } = event.detail.data || {};
+          const {cart: {items = []} = {}} = event.detail.data || {};
 
           // Grouped products
           if (this.groupedIds.length) {
@@ -362,7 +361,7 @@ export const ProductPage = () =>
             );
           }
         },
-        { once: true },
+        {once: true},
       );
 
       this.isLoadingCart = true;
@@ -419,7 +418,7 @@ export const ProductPage = () =>
       if (typeof this.scrollToPreviewTop !== "undefined") {
         this.scrollToPreviewTop();
       } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({top: 0, behavior: "smooth"});
       }
     },
 
@@ -547,7 +546,7 @@ export const ProductPage = () =>
 
         newAllowedAttributeOptions[attribute.id] = allAttributes[
           attribute.id
-        ].options.filter((option: Record<string, any>) => {
+          ].options.filter((option: Record<string, any>) => {
           return !!option.products.find((product: string) => {
             return availableIndexes.includes(product);
           });
@@ -634,7 +633,7 @@ export const ProductPage = () =>
 
     getSwatchConfig(attributeId, optionId) {
       return this.swatchConfig[attributeId] &&
-        this.swatchConfig[attributeId][optionId]
+      this.swatchConfig[attributeId][optionId]
         ? this.swatchConfig[attributeId][optionId]
         : false;
     },
@@ -733,12 +732,12 @@ export const ProductPage = () =>
     findProductIdsForPartialSelection(optionSelection) {
       const candidateProducts = Object.values(optionSelection).reduce(
         (candidates: any, optionId) => {
-          const newCandidates = this.getProductIdsForOption({ id: optionId });
+          const newCandidates = this.getProductIdsForOption({id: optionId});
           return candidates === null
             ? newCandidates
             : candidates.filter((productId: string) =>
-                newCandidates.includes(productId),
-              );
+              newCandidates.includes(productId),
+            );
         },
         null,
       );
@@ -782,11 +781,11 @@ export const ProductPage = () =>
         // if it is, filter all products to only include those that match the selected attribute value
         const productsWithAttributeMatch = selectedValues[attribute]
           ? productIndexIds.filter((productIndex) => {
-              return (
-                this.optionConfig!.index[productIndex][attribute] ===
-                this.selectedValues[attribute]
-              );
-            })
+            return (
+              this.optionConfig!.index[productIndex][attribute] ===
+              this.selectedValues[attribute]
+            );
+          })
           : [];
 
         // if we found matches, only keep the ones that match, otherwise, keep all products
@@ -819,11 +818,11 @@ export const ProductPage = () =>
       if (this.productIndex) {
         const images = this.optionConfig!.images[this.productIndex];
         images &&
-          window.dispatchEvent(
-            new CustomEvent("update-gallery", {
-              detail: this.sortImagesByPosition(images),
-            }),
-          );
+        window.dispatchEvent(
+          new CustomEvent("update-gallery", {
+            detail: this.sortImagesByPosition(images),
+          }),
+        );
       } else {
         window.dispatchEvent(new Event("reset-gallery"));
       }
@@ -833,8 +832,8 @@ export const ProductPage = () =>
         return x.position === y.position
           ? 0
           : parseInt(x.position) > parseInt(y.position)
-          ? 1
-          : -1;
+            ? 1
+            : -1;
       });
     },
   };

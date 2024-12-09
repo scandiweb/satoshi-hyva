@@ -62,7 +62,7 @@ $cartItemsCount = $cart->getCartItemsQty();
         $resizable
           ->setData([
             'id' => 'menu-desktop',
-            'initialWidth' => 100,
+            'initialWidth' => 105,
             'initialHeight' => 56,
             'cssClass' => 'resizable--menu md:pointer-events-auto',
           ])
@@ -94,6 +94,7 @@ $cartItemsCount = $cart->getCartItemsQty();
               'initialHeight' => 56,
               'right' => true,
               'cssClass' => 'resizable--search max-md:hidden md:pointer-events-auto',
+              'onTransitionEnd' => '$store.resizable.isVisible(`search-desktop`) ? document.querySelector(`#searchInput`).focus(): null',
             ])
             ->setChildTemplate('Magento_Theme::html/header/search/search-button.phtml')
             ->render()

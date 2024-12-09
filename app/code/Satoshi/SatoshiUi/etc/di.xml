@@ -7,6 +7,10 @@
             <argument name="renderers" xsi:type="array">
                 <item name="satoshi_collage" xsi:type="object">Magento\PageBuilder\Model\Stage\Renderer\WidgetDirective</item>
                 <item name="satoshi_category" xsi:type="object">Magento\PageBuilder\Model\Stage\Renderer\WidgetDirective</item>
+                <item name="satoshi_shop_the_look" xsi:type="object">Magento\PageBuilder\Model\Stage\Renderer\WidgetDirective</item>
+                <item name="satoshi_categories" xsi:type="object">
+                    Magento\PageBuilder\Model\Stage\Renderer\WidgetDirective
+                </item>
             </argument>
         </arguments>
     </type>

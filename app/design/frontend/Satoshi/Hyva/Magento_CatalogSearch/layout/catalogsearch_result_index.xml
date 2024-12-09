@@ -10,5 +10,7 @@
         <move element="preview.content" destination="product-grid-container"/>
         <move element="main" destination="columns" before="-" />
         <move element="page.main.title" destination="search.banner" />
+        <referenceContainer name="columns" htmlClass="grid-columns-plp"/>
+        <move element="div.sidebar.additional" destination="sidebar.main" after="-"/>
     </body>
 </page>
