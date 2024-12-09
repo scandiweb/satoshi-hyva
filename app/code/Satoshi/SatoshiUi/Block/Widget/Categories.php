@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\SatoshiUi\Block\Widget;
 
 use Magento\Catalog\Block\Product\Context;
@@ -113,5 +115,26 @@ class Categories extends Template implements BlockInterface
         return $this->serializer->unserialize(
             $this->normalizer->restoreReservedCharacters($value)
         );
+    }
+
+    /**
+     * @return bool|int|null
+     */
+    protected function getCacheLifetime()
+    {
+        return parent::getCacheLifetime() ?: 3600;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCacheKeyInfo()
+    {
+        return [
+            'SATOSHI_CATEGORIES_WIDGET',
+            $this->getData('categories'),
+            $this->getData('auto_resize_items'),
+            $this->getData('heading'),
+        ];
     }
 }
