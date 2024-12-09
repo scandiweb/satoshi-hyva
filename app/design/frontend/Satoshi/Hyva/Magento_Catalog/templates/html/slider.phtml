@@ -56,14 +56,19 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
                 <h1 class="slider__title"><?= $title ?></h1>
             <?php endif; ?>
             <div class="slider__actions">
-                <?php if ($customActions): ?>
-                    <template x-if="!$store.main.isMobile">
-                        <?= $customActions ?>
-                    </template>
-                <?php endif; ?>
-                <?php if (!$isActionsDisabled): ?>
-                    <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
-                <?php endif; ?>
+                <div x-show="!isPrevBtnDisabled || !isNextBtnDisabled"
+                     x-transition
+                     x-cloak
+                >
+                    <?php if ($customActions): ?>
+                        <template x-if="!$store.main.isMobile">
+                            <?= $customActions ?>
+                        </template>
+                    <?php endif; ?>
+                    <?php if (!$isActionsDisabled): ?>
+                        <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     <?php endif; ?>

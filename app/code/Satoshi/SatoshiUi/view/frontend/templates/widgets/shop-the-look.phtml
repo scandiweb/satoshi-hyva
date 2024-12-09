@@ -1,0 +1,89 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductListItem;
+use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
+use Magento\Framework\Escaper;
+use Satoshi\SatoshiUi\Block\Widget\ShopTheLook;
+use Satoshi\Theme\Block\Template;
+
+/** @var Escaper $escaper */
+/** @var ShopTheLook $block */
+/** @var Template $template */
+/** @var ViewModelRegistry $viewModels */
+/** @var ProductListItem $productListItemViewModel */
+
+$heading = $block->getData('heading');
+$image = $block->getImage();
+$products = $block->getProducts();
+$productsData = $block->getProductsData();
+
+$sliderItemRenderer = $block->getLayout()->getBlock('product_list_item') ?: $block->getLayout()->createBlock(Template::class);
+$productListItemViewModel = $viewModels->require(ProductListItem::class);
+$slidesHtml = array_reduce($productsData,
+    function ($acc, $product) use ($productListItemViewModel, $sliderItemRenderer, $block) {
+        $card = $productListItemViewModel->getItemHtmlWithRenderer(
+            $sliderItemRenderer,
+            $product,
+            $block,
+            'grid',
+            ProductReviewRenderer::SHORT_VIEW,
+            'category_page_grid',
+            false
+        );
+        return $acc . "<div class='slider__slide ps-3'>$card</div>";
+    }, '');
+?>
+
+<div class="shop-the-look" x-data="Slider()">
+    <?php if(!empty($heading)): ?>
+        <h2 class="heading mb-5 text-3xl text-text-500 md:text-4xl"><?= $escaper->escapeHtml($heading) ?></h2>
+    <?php endif; ?>
+
+    <div class="flex grid-cols-5 flex-col items-start gap-5 md:grid max-md:justify-center">
+        <div class="shop-the-look-img relative col-span-3 w-full">
+            <div class="relative overflow-hidden rounded-md">
+                <?php if(!empty($image[0]['url'])): ?>
+                    <img
+                        src="<?= $escaper->escapeUrl($image[0]['url']) ?>"
+                        alt="<?= $escaper->escapeHtmlAttr($heading) ?>"
+                        width="100%"
+                        height="100%"
+                    />
+                <?php else: ?>
+                    <svg class="w-full min-h-[500px] bg-secondary-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 525.5 525.5">
+                        <path d="M324.5 212.7H203c-1.6 0-2.8 1.3-2.8 2.8V308c0 1.6 1.3 2.8 2.8 2.8h121.6c1.6 0 2.8-1.3 2.8-2.8v-92.5c0-1.6-1.3-2.8-2.9-2.8zm1.1 95.3c0 .6-.5 1.1-1.1 1.1H203c-.6 0-1.1-.5-1.1-1.1v-92.5c0-.6.5-1.1 1.1-1.1h121.6c.6 0 1.1.5 1.1 1.1V308z"></path><path d="M210.4 299.5H240v.1s.1 0 .2-.1h75.2v-76.2h-105v76.2zm1.8-7.2l20-20c1.6-1.6 3.8-2.5 6.1-2.5s4.5.9 6.1 2.5l1.5 1.5 16.8 16.8c-12.9 3.3-20.7 6.3-22.8 7.2h-27.7v-5.5zm101.5-10.1c-20.1 1.7-36.7 4.8-49.1 7.9l-16.9-16.9 26.3-26.3c1.6-1.6 3.8-2.5 6.1-2.5s4.5.9 6.1 2.5l27.5 27.5v7.8zm-68.9 15.5c9.7-3.5 33.9-10.9 68.9-13.8v13.8h-68.9zm68.9-72.7v46.8l-26.2-26.2c-1.9-1.9-4.5-3-7.3-3s-5.4 1.1-7.3 3l-26.3 26.3-.9-.9c-1.9-1.9-4.5-3-7.3-3s-5.4 1.1-7.3 3l-18.8 18.8V225h101.4z"></path><path d="M232.8 254c4.6 0 8.3-3.7 8.3-8.3s-3.7-8.3-8.3-8.3-8.3 3.7-8.3 8.3 3.7 8.3 8.3 8.3zm0-14.9c3.6 0 6.6 2.9 6.6 6.6s-2.9 6.6-6.6 6.6-6.6-2.9-6.6-6.6 3-6.6 6.6-6.6z"></path>
+                    </svg>
+                <?php endif; ?>
+            </div>
+            <?php foreach($products as $i => $product): ?>
+                <button
+                    class="position-btn absolute -translate-x-1/2 -translate-y-1/2 before:block before:h-10 before:w-10 before:rounded-[50%] before:bg-bg-500 before:opacity-45 before:transition-all before:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:top-0 after:m-auto after:h-6 after:w-6 after:origin-center after:rounded-[50%] after:bg-primary-500 after:transition-all after:content-[''] md:hover:before:opacity-75 md:hover:after:scale-75"
+                    style="left: <?= $escaper->escapeHtmlAttr($product['x_position']) ?>%; top: <?= $escaper->escapeHtmlAttr($product['y_position']) ?>%;"
+                    @click="goToSlide(<?= $escaper->escapeHtmlAttr($i+1) ?>, true)"
+                    data-index="<?= $escaper->escapeHtmlAttr($i+1) ?>"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('View product')) ?>"
+                    type="button"
+                ></button>
+            <?php endforeach; ?>
+        </div>
+
+        <div class="shop-the-look-slider relative col-span-2 w-full">
+            <?php if (count($products)): ?>
+                <?=
+                    $template
+                        ->setData([
+                            'slides' => $slidesHtml,
+                            'gap' => 16,
+                            'slides_amount_in_view' => ['xs' => 2.2, 'sm' => 2.5, 'md' => 1.4, 'lg' => 1.4, 'xl' => 1.4, 'xxl' => 1.5],
+                            'is_custom_slider_x_data' => true,
+                        ])
+                        ->render('Magento_Catalog::html/slider.phtml')
+                ?>
+                <div class="absolute right-0 top-[34px] z-10 h-[calc(100%-34px)] w-12 bg-gradient-to-l from-bg-500 to-transparent max-md:hidden"></div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
