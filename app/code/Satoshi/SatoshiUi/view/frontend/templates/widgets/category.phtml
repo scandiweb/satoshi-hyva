@@ -75,10 +75,10 @@ if ($exists) {
 $count = count($products);
 $slidesAmountInView = match (true) {
     $count < 2 => ['xs' => $count, 'sm' => $count, 'md' => $count, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
-    $count < 3 => ['xs' => 1, 'sm' => 2, 'md' => $count, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
-    $count < 4 => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
-    $count < 4 => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => $count, 'xxl' => $count],
-    default => ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 6]
+    $count < 3 => ['xs' => 2.2, 'sm' => 2.5, 'md' => $count, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
+    $count < 4 => ['xs' => 2.2, 'sm' => 2.5, 'md' => 3, 'lg' => $count, 'xl' => $count, 'xxl' => $count],
+    $count < 5 => ['xs' => 2.2, 'sm' => 2.5, 'md' => 3, 'lg' => 4, 'xl' => $count, 'xxl' => $count],
+    default => ['xs' => 2.2, 'sm' => 2.5, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 5]
 };
 
 ?>
@@ -87,7 +87,7 @@ $template
     ->setData([
         'slides' => $slidesHtml,
         'gap' => 16,
-        'slides_amount_in_view' => $autoResize ? $slidesAmountInView : ['xs' => 1, 'sm' => 2, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 6],
+        'slides_amount_in_view' => $autoResize ? $slidesAmountInView : ['xs' => 2.2, 'sm' => 2.5, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 5],
         'title' => $escaper->escapeHtml($block->getData('heading')),
         'id' => 'collection-' . $block->getData('category_id'),
         'is_full_page' => true,
