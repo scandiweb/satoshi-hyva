@@ -33,4 +33,8 @@
         for="Magento\Customer\Block\Form\Edit"
         type="Satoshi\Customer\Block\Form\Edit"
     />
+    <preference
+        for="Magento\Customer\Block\Account\SortLink"
+        type="Satoshi\Customer\Block\Account\SortLink"
+    />
 </config>
