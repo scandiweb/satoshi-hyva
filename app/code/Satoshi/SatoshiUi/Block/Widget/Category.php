@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\SatoshiUi\Block\Widget;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
@@ -220,5 +222,31 @@ class Category extends ProductsList
         }
 
         return $this->getData('max_products_count');
+    }
+
+    /**
+     * @return bool|int|null
+     */
+    protected function getCacheLifetime()
+    {
+        return parent::getCacheLifetime() ?: 3600;
+    }
+
+    /**
+     * Get key pieces for caching block content
+     *
+     * @return array
+     * @SuppressWarnings(PHPMD.RequestAwareBlockMethod)
+     */
+    public function getCacheKeyInfo()
+    {
+        return [
+            'SATOSHI_CATEGORY_WIDGET',
+            $this->getData('heading'),
+            $this->getData('category_id'),
+            $this->getData('view_all_button'),
+            $this->getData('auto_resize_items'),
+            $this->getData('max_products_count'),
+        ];
     }
 }

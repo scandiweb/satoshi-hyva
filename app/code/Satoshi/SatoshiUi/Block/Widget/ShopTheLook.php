@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\SatoshiUi\Block\Widget;
 
 use Magento\Catalog\Block\Product\Context;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Data\Wysiwyg\Normalizer;
+use Magento\Framework\DataObject;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\View\Element\Template;
 use Magento\Widget\Block\BlockInterface;
-use \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 
 /**
  * Shop the look widget block
@@ -58,11 +61,17 @@ class ShopTheLook extends Template implements BlockInterface
         );
     }
 
+    /**
+     * @return array|bool|float|int|mixed|string|null
+     */
     public function getProducts()
     {
         return $this->getData('products') ? $this->decode($this->getData('products')) : [];
     }
 
+    /**
+     * @return DataObject[]
+     */
     public function getProductsData()
     {
         $products = $this->getProducts();
@@ -74,15 +83,43 @@ class ShopTheLook extends Template implements BlockInterface
         return $collection->getItems();
     }
 
+    /**
+     * @return array|bool|float|int|mixed|string|null
+     */
     public function getImage()
     {
         return $this->getData('image') ? $this->decode($this->getData('image')) : [];
     }
 
+    /**
+     * @param $value
+     * @return array|bool|float|int|mixed|string|null
+     */
     public function decode($value)
     {
         return $this->serializer->unserialize(
             $this->normalizer->restoreReservedCharacters($value)
         );
+    }
+
+    /**
+     * @return bool|int|null
+     */
+    protected function getCacheLifetime()
+    {
+        return parent::getCacheLifetime() ?: 3600;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCacheKeyInfo()
+    {
+        return [
+            'SATOSHI_SHOP_THE_LOOK_WIDGET',
+            $this->getData('heading'),
+            $this->getData('image'),
+            $this->getData('products')
+        ];
     }
 }
