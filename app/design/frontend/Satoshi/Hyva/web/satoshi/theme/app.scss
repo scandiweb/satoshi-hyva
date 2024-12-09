@@ -153,7 +153,11 @@ h3 {
 }
 
 .main-sidebar {
-  @apply relative col-span-1 md:pl-8 transition-all;
+  @apply relative col-span-1 transition-all;
+}
+
+.grid-columns-plp .main-sidebar {
+  @apply md:pl-8;
 }
 
 .sidebar-additional {
@@ -193,6 +197,10 @@ h3 {
 
 .cart-main + .product-slider {
   @apply max-md:mb-28;
+}
+
+.pagebuilder-column-line {
+  @apply md:gap-5;
 }
 
 @layer components {

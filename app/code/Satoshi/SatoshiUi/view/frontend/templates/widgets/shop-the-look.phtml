@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-use Satoshi\SatoshiUi\Block\Widget\ShopTheLook;
-use Hyva\Theme\ViewModel\ProductListItem;
-use Magento\Framework\Escaper;
 use Hyva\Theme\Model\ViewModelRegistry;
-use Satoshi\Theme\Block\Template;
+use Hyva\Theme\ViewModel\ProductListItem;
 use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
+use Magento\Framework\Escaper;
+use Satoshi\SatoshiUi\Block\Widget\ShopTheLook;
+use Satoshi\Theme\Block\Template;
 
 /** @var Escaper $escaper */
 /** @var ShopTheLook $block */
+/** @var Template $template */
 /** @var ViewModelRegistry $viewModels */
 /** @var ProductListItem $productListItemViewModel */
 

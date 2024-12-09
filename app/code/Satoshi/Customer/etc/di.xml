@@ -34,6 +34,10 @@
         type="Satoshi\Customer\Block\Form\Edit"
     />
     <preference
+        for="Magento\Customer\Block\Account\SortLink"
+        type="Satoshi\Customer\Block\Account\SortLink"
+    />
+    <preference
         for="Magento\Customer\Block\Account\Dashboard\Info"
         type="Satoshi\Customer\Block\Account\Dashboard\Info"
     />

@@ -8,7 +8,7 @@
           preview_component="Satoshi_SatoshiUi/js/content-type/satoshi-shop-the-look/preview"
           form="pagebuilder_satoshi_shop_the_look_form"
           icon="icon-pagebuilder-heading"
-          sortOrder="110"
+          sortOrder="55"
           translate="label">
         <children default_policy="deny"/>
         <parents default_policy="deny">

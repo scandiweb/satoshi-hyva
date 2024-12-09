@@ -47,6 +47,8 @@ import { ReviewList } from "./data/ReviewList.ts";
 import { AccountInformation } from "./data/AccountInformation";
 import { Recaptcha } from "./data/Recaptcha";
 import { PasswordValidation } from "./data/PasswordValidation";
+import { BundleOptions } from "./data/BundleOptions";
+import { ShareWishlist } from "./data/ShareWishlist";
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -94,4 +96,6 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("AccountInformation", AccountInformation);
   Alpine.data("Recaptcha", Recaptcha);
   Alpine.data("PasswordValidation", PasswordValidation);
+  Alpine.data("BundleOptions", BundleOptions);
+  Alpine.data("ShareWishlist", ShareWishlist);
 });
