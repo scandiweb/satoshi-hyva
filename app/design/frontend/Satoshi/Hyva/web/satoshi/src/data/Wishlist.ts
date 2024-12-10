@@ -1,7 +1,7 @@
 import { Magics } from "alpinejs";
 import { CartItem } from "../store/Cart.ts";
 
-export type WishListPageType = {
+export type WishlistType = {
   actionBtnText: string;
   addToCart(itemId: string, postParams: any, productId: string): Promise<void>;
   addAllItemsToCart(): Promise<void>;
@@ -10,10 +10,10 @@ export type WishListPageType = {
   postForm(postParams: any): Promise<void>;
 } & Magics<{}>;
 
-export const WishListPage = (
+export const Wishlist = (
   urlParams: { action: string, data: any },
 ) =>
-  <WishListPageType>{
+  <WishlistType>{
     actionBtnText: '',
 
     async addToCart(itemId, postParams, productSku) {

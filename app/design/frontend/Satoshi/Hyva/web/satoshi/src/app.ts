@@ -49,7 +49,7 @@ import { Recaptcha } from "./data/Recaptcha";
 import { PasswordValidation } from "./data/PasswordValidation";
 import { BundleOptions } from "./data/BundleOptions";
 import { ShareWishlist } from "./data/ShareWishlist";
-import { WishListPage } from "./data/WishListPage";
+import { Wishlist } from "./data/Wishlist";
 
 document.addEventListener("alpine:init", () => {
   Alpine.plugin(Portal);
@@ -99,5 +99,5 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("PasswordValidation", PasswordValidation);
   Alpine.data("BundleOptions", BundleOptions);
   Alpine.data("ShareWishlist", ShareWishlist);
-  Alpine.data("WishListPage", WishListPage);
+  Alpine.data("Wishlist", Wishlist);
 });
