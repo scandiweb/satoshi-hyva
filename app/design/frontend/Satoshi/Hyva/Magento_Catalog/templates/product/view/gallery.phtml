@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\StoreConfig;
 use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Hyva\Theme\ViewModel\HeroiconsSolid;
+use Hyva\Theme\ViewModel\StoreConfig;
 use Magento\Catalog\Block\Product\View\Gallery;
 use Magento\Catalog\Helper\Image;
 use Magento\Framework\Escaper;
@@ -39,7 +39,11 @@ $mixBackground = true;
 $productName = $block->getProduct()->getName();
 ?>
 
-<div class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8">
+<div
+    class="flex w-full flex-col gap-4 md:grid md:grid-cols-[repeat(auto-fit,1fr)] md:gap-5 md:pb-7 lg:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] max-md:-mt-8"
+    x-data="{ fadingIn: false }"
+    x-init="$nextTick(() => { fadingIn = true })"
+>
     <!-- Appended variant images  -->
     <template x-for="(image, index) in appendedImages" :key="index">
         <div class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl">
@@ -49,7 +53,7 @@ $productName = $block->getProduct()->getName();
                     :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
                     class="object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
                     :src="image.img"
-                />
+                    alt=""/>
 
                 <!-- Play button -->
                 <button
@@ -90,7 +94,7 @@ $productName = $block->getProduct()->getName();
         </div>
     </template>
 
-    <!-- Main image with anti blinking -->
+    <!-- Main image with anti-blinking -->
     <div
         class="relative flex aspect-product flex-shrink-0 items-center justify-center overflow-hidden bg-[--fade-in-bg] md:rounded-2xl max-md:hidden"
         :class="{
@@ -169,14 +173,18 @@ $productName = $block->getProduct()->getName();
 
     <!-- Other images  -->
     <template x-for="(image, index) in images.filter(img => img.img !== '<?= $mainImageUrl ?>')" :key="index">
-        <div class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl">
+        <div
+            class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl"
+            x-show="fadingIn"
+            x-transition
+        >
             <div class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
                 <img
                     :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
                     :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
                     class="object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
                     :src="image.img"
-                />
+                    alt=""/>
 
                 <!-- Play button -->
                 <button
@@ -218,9 +226,9 @@ $productName = $block->getProduct()->getName();
     </template>
 
     <?php if (count($images) > 2): // To eliminate images shifting when javascript loads ?>
-        <div :class="'hidden'"></div>
-        <div :class="'hidden'"></div>
+        <div x-show="!fadingIn"></div>
+        <div x-show="!fadingIn"></div>
     <?php elseif (count($images) > 1): ?>
-        <div :class="'hidden'"></div>
+        <div x-show="!fadingIn"></div>
     <?php endif; ?>
 </div>

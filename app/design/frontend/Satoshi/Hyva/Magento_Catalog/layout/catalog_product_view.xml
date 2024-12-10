@@ -2,6 +2,7 @@
 <page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
+        <referenceContainer name="main" htmlClass="h-full row-span-2 col-span-full flex-grow"/>
         <referenceBlock name="product.detail.page">
             <block class="Magento\Catalog\Block\Product\View\Gallery" name="product.details" template="Magento_Catalog::product/view/product-details.phtml">
                 <block class="Magento\Catalog\Block\Product\View" name="product.details.info" template="Magento_Catalog::product/view/product-details-info.phtml" />

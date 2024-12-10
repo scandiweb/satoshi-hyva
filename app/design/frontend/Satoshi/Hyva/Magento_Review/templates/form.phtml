@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use Hyva\GraphqlViewModel\ViewModel\GraphqlViewModel;
 use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\ViewModel\ReCaptcha;
 use Hyva\Theme\ViewModel\Store;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Review\Block\Form;
-use Hyva\Theme\ViewModel\ReCaptcha;
 
 /** @var Escaper $escaper */
 /** @var Form $block */
@@ -55,7 +55,7 @@ mutation createProductReviewMutation(
 ';
 
 ?>
-<div class="mx-auto content-wrapper md:p-0 my-8">
+<div class="mx-auto content-wrapper md:p-0 mb-8">
     <div class="flex flex-col items-center py-7 md:py-8 px-5 md:px-12 rounded-xl bg-secondary-500">
         <div class="mb-4 text-2xl text-text-500">
             <?= $escaper->escapeHtml(__('Write Your Own Review')) ?>

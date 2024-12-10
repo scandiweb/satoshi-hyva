@@ -5,9 +5,9 @@ declare(strict_types=1);
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Hyva\Theme\ViewModel\ProductPrice;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Downloadable\Block\Catalog\Product\Links as DownloadableLinks;
 use Magento\Framework\Escaper;
-use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var DownloadableLinks $block */
 /** @var Escaper $escaper */
@@ -56,7 +56,7 @@ $hasSamples               = $block->getProduct()->getTypeInstance()->hasSamples(
         )"
     <?php endif; ?>
 >
-    <div id="downloadable-links-list" class="flex flex-col gap-3">
+    <div id="downloadable-links-list" class="flex flex-col gap-3 md:mb-7">
         <?php foreach ($links as $link): ?>
             <div class="flex items-center justify-between">
                 <div>
