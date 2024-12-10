@@ -16,7 +16,7 @@ $errorMessage = $block->getErrorMessage();
 
 <?php if ($wishlistHelper->isAllow()): ?>
     <?= ($block->getChildHtml('wishlist.rss.link')) ?>
-    <div x-data="Form">
+    <div x-data="Form('wishlist-view-form')">
         <form id="wishlist-view-form"
               x-data="Wishlist(
                 <?= $escaper->escapeHtmlAttr($block->getAddAllToCartParams()) ?>
