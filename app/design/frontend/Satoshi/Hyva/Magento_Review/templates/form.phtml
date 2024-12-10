@@ -225,9 +225,9 @@ mutation createProductReviewMutation(
                             '!bg-primary-100': isLoading
                         }"
                 >
-                            <span>
-                                <?= $escaper->escapeHtml(__('Submit Review')) ?>
-                            </span>
+                    <span>
+                        <?= $escaper->escapeHtml(__('Submit Review')) ?>
+                    </span>
                 </button>
                 <?= $block->getChildHtml('form_additional_after') ?>
                 <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
