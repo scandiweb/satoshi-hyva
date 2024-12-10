@@ -18,7 +18,7 @@ $errorMessage = $block->getErrorMessage();
     <?= ($block->getChildHtml('wishlist.rss.link')) ?>
     <div x-data="Form">
         <form id="wishlist-view-form"
-              x-data="WishListPage(
+              x-data="Wishlist(
                 <?= $escaper->escapeHtmlAttr($block->getAddAllToCartParams()) ?>
               )"
               action="<?= $escaper->escapeUrl(
