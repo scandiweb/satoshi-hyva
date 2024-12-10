@@ -815,6 +815,8 @@ export const ProductPage = () =>
       );
     },
     updateGallery() {
+      window.dispatchEvent(new Event("reset-gallery"));
+
       if (this.productIndex) {
         const images = this.optionConfig!.images[this.productIndex];
         images &&
@@ -823,8 +825,6 @@ export const ProductPage = () =>
             detail: this.sortImagesByPosition(images),
           }),
         );
-      } else {
-        window.dispatchEvent(new Event("reset-gallery"));
       }
     },
     sortImagesByPosition(images) {
