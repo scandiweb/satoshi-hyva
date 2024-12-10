@@ -57,10 +57,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             <div
                                 class="animate-[bounce_2s_infinite] text-2xl text-text-50"
                                 :class="
-                  {
-                      'animate-none': $store.main.isReducedMotion
-                  }
-                "
+                                  {
+                                    'animate-none': $store.main.isReducedMotion
+                                  }
+                                "
                             >
                                 <div class="flex flex-col items-center [&>svg]:text-4xl">
                                     <?= $hyvaicons->renderHtml('scroll-mouse'); ?>
