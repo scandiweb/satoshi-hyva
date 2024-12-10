@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
-use Hyva\Theme\ViewModel\ProductPage;
-use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var SvgIcons $hyvaicons */
 /** @var ViewModelRegistry $viewModels */
@@ -30,17 +30,17 @@ $cssClasses = $block->getData('css_classes') ?? 'prose';
 ?>
 <div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion('true', 300)">
     <button
-        class="group flex items-center justify-between text-start"
+        class="group flex items-center justify-between text-start gap-3"
         x-ref="AccordionButton"
         type="button"
         :aria-expanded="isExpanded"
         aria-controls="attributes_panel"
         aria-labelledby="attributes_label"
     >
-        <p class="text-base font-semibold leading-tight text-text-500">
+        <div class="text-base font-semibold leading-tight text-text-500">
             <?= $escaper->escapeHtml(__('Description')) ?> /
             <?= $escaper->escapeHtml($product->getName()) ?>
-        </p>
+        </div>
         <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" style="rotate: -180deg;">
             <?= $hyvaicons->renderHtml('chevron', 'rotate-90', attributes: ['title' => '']); ?>
         </span>
@@ -52,7 +52,6 @@ $cssClasses = $block->getData('css_classes') ?? 'prose';
         class="overflow-hidden"
         id="description_panel"
         aria-labelledby="description_label"
-        x-cloak
     >
         <div class="rte mt-3 overflow-hidden">
             <?= $productViewModel->productAttributeHtml($product, $product->getDescription(), 'description') ?>

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ProductStockItem;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Block\Product\View;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
-use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var View $block */
 /** @var Escaper $escaper */
@@ -98,7 +98,7 @@ $isSmall = $block->getData('is_small') ?? false;
       <?php endif; ?>
       name="qty"
       :value="variantQty || <?= $block->getProductDefaultQty() * 1 ?>"
-      class="animate-on-transition input__field flex-shrink-0 basis-14 text-center md:h-auto bg-transparent <?= $isSmall ? 'h-9 px-3' : '' ?> <?= $isPopup ? 'max-sm:basis-8 max-sm:px-2' : '' ?>"
+      class="animate-on-transition input__field flex-shrink-0 basis-11 px-3 text-center md:h-auto bg-transparent <?= $isSmall ? 'h-9' : '' ?>"
       min="1"
       @change.lazy="setQuantity($event.target.value)"
       aria-label="<?= __('Quantity') ?>"
