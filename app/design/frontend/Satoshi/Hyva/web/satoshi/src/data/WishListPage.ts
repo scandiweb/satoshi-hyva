@@ -48,17 +48,24 @@ export const WishListPage = (
     focusOnCartAddedItems(addedProductSkus = [] as string[]) {
       if (!addedProductSkus.length) return;
 
-      const cartItems = Alpine.store("cart").cartItems;
+      window.addEventListener(
+        "private-content-loaded",
+        () => {
+          const cartItems = Alpine.store("cart").cartItems;
 
-      const itemIds = cartItems
-        .filter((item: CartItem) => addedProductSkus.includes(item.product_sku))
-        .map((item) => item.item_id);
+          const itemIds = cartItems
+            .filter((item: CartItem) => addedProductSkus.includes(item.product_sku))
+            .map((item) => item.item_id);
 
-      if (itemIds.length) {
-        Alpine.store("cart").focusInCart(itemIds);
-      } else {
-        Alpine.store("cart").showCart();
-      }
+          if (itemIds.length) {
+            setTimeout(
+              () => Alpine.store("cart").focusInCart(itemIds),
+              200,
+            );
+          }
+        },
+        {once: true},
+      );
     },
 
     setActionBtnText(text) {
