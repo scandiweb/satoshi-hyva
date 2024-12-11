@@ -1,0 +1,51 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Catalog\Pricing\Price\TierPrice;
+use Magento\Catalog\Pricing\Render\PriceBox;
+use Magento\Framework\Escaper;
+use Magento\Framework\Pricing\Render;
+
+/** @var PriceBox $block */
+/** @var Escaper $escaper */
+
+/** @var TierPrice $tierPriceModel */
+$tierPriceModel = $block->getPrice();
+$tierPrices = $tierPriceModel->getTierPriceList();
+$product = $block->getSaleableItem();
+?>
+
+<?php if (count($tierPrices)): ?>
+    <div class="<?= $escaper->escapeHtmlAttr($block->getListClass()) ?> mb-4">
+        <?php foreach ($tierPrices as $index => $price): ?>
+            <div role="alert"
+                 class="relative flex w-full gap-1.5">
+                <?php
+                $productId = $product->getId();
+                $isSaleable = $product->isSaleable();
+                $priceAmountBlock = $block->renderAmount(
+                    $price['price'],
+                    [
+                        'price_id' => $index,
+                        'id_suffix' => '-' . $index,
+                        'include_container' => true,
+                        'zone' => Render::ZONE_ITEM_OPTION
+                    ]
+                );
+                ?>
+                <?= /* @noEscape */
+                ($block->getShowDetailedPrice() !== false)
+                    ? __(
+                    'Buy %1 for %2 each and ' .
+                    '<strong class="benefit">save<span class="percent tier-%3">&nbsp;%4</span>%</strong>',
+                    $price['price_qty'],
+                    $priceAmountBlock,
+                    $index,
+                    $block->formatPercent($tierPriceModel->getSavePercent($price['price']))
+                )
+                    : __('Buy %1 for %2 each', $price['price_qty'], $priceAmountBlock);
+                ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

@@ -15,11 +15,13 @@
                    template="Magento_Catalog::product/view/product-actions.phtml"/>
         </referenceBlock>
         <move element="product.info.quantity" destination="product.actions" />
+        <move element="product.info.addtowishlist" destination="product.actions"/>
+        <move element="product.info.addtocompare" destination="product.actions"/>
+        <move element="product.info.emailtofriend" destination="product.actions"/>
 
         <move element="page.main.title" destination="product.info" as="product.title" />
         <move element="product.media" destination="product.details" />
         <move element="product.info" destination="product.details.info" />
-        <move element="product.info.options.wrapper.bottom" destination="product.info" after="product.info.form"/>
         <move element="product.info.details" destination="product.details.info" />
     </body>
 </page>
