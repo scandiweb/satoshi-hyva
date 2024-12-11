@@ -60,9 +60,9 @@ if (! $customer->customerLoggedIn()) {
                                                 <?= $hyvaicons->renderHtml('checkmark') ?>
                                             </span>
                                             <a
-                                                class="checkbox__label ml-0"
+                                                x-element-transition-trigger
+                                                class="checkbox__label ml-0 hover:underline"
                                                 :href="product.url"
-                                                :title="product.name"
                                                 :aria-describedby="!product.is_saleable || checkboxId + product.id"
                                                 x-text="product.name"
                                             ></a>
@@ -94,7 +94,9 @@ if (! $customer->customerLoggedIn()) {
                 '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'"><?= $escaper->escapeHtml(__('Add to Cart')) ?></span>
             </button>
         </template>
-        <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>#recentOrders"
+        <a
+            x-element-transition-trigger
+            href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>#recentOrders"
             class="button button--ghost-primary max-md:w-full max-md:mt-4"
             aria-label="<?= $escaper->escapeHtmlAttr(__('View all recent orders')) ?>"
         >
