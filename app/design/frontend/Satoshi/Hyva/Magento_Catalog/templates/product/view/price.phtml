@@ -60,7 +60,7 @@ if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPr
         productId: <?= (int)$product->getId() ?>,
         displayTax: <?= $displayTax ? 'true' : 'false' ?>,
         finalPrice: <?= (float)$finalPrice ?>,
-        tierPrices: <?= /** @noEscape */ json_encode($tierPrices) ?>,
+        tierPrices: <?= $escaper->escapeHtmlAttr(json_encode($tierPrices)) ?>,
         showRegularPriceLabel: <?= ($finalPrice < $regularPrice) ? 'true' : 'false' ?>,
         <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
             finalPriceExclTax: <?= (float)$finalPriceExclTax ?>,
@@ -75,10 +75,11 @@ if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPr
     <div x-show="!activeProductsPriceData && !isPriceHidden()" class="flex flex-col gap-2">
         <div class="flex items-end gap-2 md:text-lg">
             <!-- Final price -->
-            <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+            <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer"
+                 class="[.popup\_\_main_&]:flex [.popup\_\_main_&]:gap-1.5">
                 <?php if ($product->canConfigure() && is_int($product->getPrice())): ?>
                     <span class="price-label block">
-                        <?= $escaper->escapeHtml(__('As low as')) . ':' ?>
+                        <?= $escaper->escapeHtml(__('From')) . ':' ?>
                     </span>
                 <?php endif; ?>
                 <span id="product-price-<?= (int)$product->getId() ?>">
@@ -127,7 +128,7 @@ if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPr
                 <div>
                     <?php if ($product->canConfigure() && is_int($product->getPrice())): ?>
                         <span class="block" :class="{ 'hidden' : !showRegularPriceLabel }">
-                            <?= $escaper->escapeHtml(__('As low as')) ?>:
+                            <?= $escaper->escapeHtml(__('From')) ?>:
                         </span>
                     <?php endif; ?>
                     <span id="product-price-<?= (int)$product->getId() ?>">

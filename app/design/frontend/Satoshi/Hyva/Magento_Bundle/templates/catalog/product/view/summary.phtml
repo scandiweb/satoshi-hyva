@@ -57,7 +57,7 @@ $product = $block->getProduct();
                     </div>
                     <!-- Summary Content -->
                     <div>
-                        <?= $block->getChildHtml('product.info.form') ?>
+                        <?php // $block->getChildHtml('product.info.form') ?>
                         <?= $block->getChildHtml("product.price.tier") ?>
                         <div x-data="{
                                 selectedOptions: [],
