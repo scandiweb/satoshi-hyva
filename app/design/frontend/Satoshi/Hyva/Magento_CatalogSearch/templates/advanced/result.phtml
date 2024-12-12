@@ -1,0 +1,70 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\CatalogSearch\Block\Advanced\Result;
+use Magento\Framework\Escaper;
+
+/** @var Result $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** this changes need for valid apply filters and configuration before search process is started */
+
+$productList = $block->getProductListHtml();
+?>
+<?php if ($results = $block->getResultCount()): ?>
+    <div class="mb-2">
+        <?php if ($results == 1): ?>
+            <?= /* @noEscape */
+            __('<strong>%1 item</strong> was found using the following search criteria', $results) ?>
+        <?php else: ?>
+            <?= /* @noEscape */
+            __('<strong>%1 items</strong> were found using the following search criteria', $results) ?>
+        <?php endif; ?>
+    </div>
+<?php else: ?>
+    <div role="alert">
+        <div>
+            <?= $escaper->escapeHtml(__('We can\'t find any items matching these search criteria.')) ?>
+            <a href="<?= $escaper->escapeUrl($block->getFormUrl()) ?>"
+               x-element-transition-trigger
+               class="underline"
+            >
+                <span class="whitespace-nowrap"><?= $escaper->escapeHtml(__('Modify your search.')) ?></span>
+            </a>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php $searchCriterias = $block->getSearchCriterias(); ?>
+<div class="flex flex-col md:flex-row gap-y-2 gap-x-4 mb-4">
+    <?php foreach (['left', 'right'] as $side): ?>
+        <?php if (!empty($searchCriterias[$side])): ?>
+            <ul>
+                <?php foreach ($searchCriterias[$side] as $criteria): ?>
+                    <li><strong><?= $escaper->escapeHtml(__($criteria['name'])) ?>:</strong>
+                        <?= $escaper->escapeHtml($criteria['value']) ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</div>
+<?php if ($block->getResultCount()): ?>
+    <div class="mb-6">
+        <?= $escaper->escapeHtml(__("Don't see what you're looking for?")) ?>
+        <a href="<?= $escaper->escapeUrl($block->getFormUrl()) ?>"
+           x-element-transition-trigger
+           class="underline"
+        >
+            <span class="whitespace-nowrap"><?= $escaper->escapeHtml(__('Modify your search.')) ?></span>
+        </a>
+    </div>
+<?php endif; ?>
+<?php if ($block->getResultCount()): ?>
+    <div><?= /* @noEscape */
+        $productList ?></div>
+<?php endif; ?>
+<?php $block->getSearchCriterias(); ?>
