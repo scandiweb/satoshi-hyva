@@ -7,4 +7,7 @@
     <preference for="Magento\Sales\Block\Widget\Guest\Form"
                 type="Satoshi\Sales\Block\Widget\Guest\Form"
     />
+    <preference for="Magento\Sales\CustomerData\LastOrderedItems"
+                type="Satoshi\Sales\CustomerData\LastOrderedItems"
+    />
 </config>
