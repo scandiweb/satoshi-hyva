@@ -9,4 +9,8 @@
         for="Magento\Checkout\Controller\Cart\Add"
         type="Satoshi\Checkout\Controller\Cart\Add"
     />
+    <preference
+        for="Magento\Checkout\Controller\Cart\Addgroup"
+        type="Satoshi\Checkout\Controller\Cart\Addgroup"
+    />
 </config>
