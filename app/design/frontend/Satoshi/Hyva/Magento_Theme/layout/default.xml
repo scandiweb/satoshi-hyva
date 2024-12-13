@@ -29,7 +29,7 @@
         <move element="columns" destination="preview.content" before="-"/>
         <!-- END: Wrap content within preview-content comment -->
 
-        <referenceContainer name="columns" htmlClass="grid-columns content-wrapper mx-auto"/>
+        <referenceContainer name="columns" htmlClass="grid-columns"/>
         <referenceContainer name="main" htmlClass="h-full row-span-2 col-span-3 only:col-span-full flex-grow"/>
         <referenceContainer name="div.sidebar.main" htmlClass="main-sidebar"/>
 
