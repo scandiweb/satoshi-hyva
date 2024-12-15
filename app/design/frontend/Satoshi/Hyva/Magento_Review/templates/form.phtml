@@ -110,7 +110,7 @@ mutation createProductReviewMutation(
                                 <div id="product-review-table">
                                     <?php foreach ($block->getRatings() as $rating): ?>
                                         <div class="flex items-center">
-                                            <label
+                                            <h2
                                                 class="table-cell pr-6 align-middle text-left"
                                                 id="<?= $escaper->escapeHtml($rating->getRatingCode()) ?>_rating_label"
                                             >
@@ -121,7 +121,7 @@ mutation createProductReviewMutation(
                                                             <?= $escaper->escapeHtml($rating->getRatingCode()) ?>
                                                         <?php endif ?>
                                                     </span>
-                                            </label>
+                                            </h2>
                                             <div
                                                 class="flex grow-0"
                                                 x-data="{ clickedRatingId: 0 }"

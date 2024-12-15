@@ -35,6 +35,7 @@ $finalPrice = $productPriceViewModel->getPriceValue(FinalPrice::PRICE_CODE, $pro
 if ($productPriceViewModel->displayPriceInclAndExclTax()) {
     $basePrice = $productPriceViewModel->getPriceValueExclTax(FinalPrice::PRICE_CODE, $product);
 }
+$isPopup = $block->getData('is_popup');
 ?>
 <?php if ($product->isSaleable()): ?>
     <?php if (count($options)): ?>
@@ -77,12 +78,12 @@ if ($productPriceViewModel->displayPriceInclAndExclTax()) {
                         continue;
                     } ?>
                     <div>
-                        <label
+                        <h2
                             id="option-label-<?= $escaper->escapeHtmlAttr($option->getId()) ?>"
                             class="text-text-500 flex-grow font-semibold"
                         >
                             <?= $escaper->escapeHtml($option->getTitle()) ?>
-                        </label>
+                        </h2>
                         <div class="mt-2">
                             <?= $block->getOptionHtml($option); ?>
                         </div>

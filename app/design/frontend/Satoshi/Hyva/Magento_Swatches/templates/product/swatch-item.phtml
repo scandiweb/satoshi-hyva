@@ -22,11 +22,12 @@ if (!$productId || !$attributeId) {
     return '';
 }
 
+$isPopup = $block->getData('is_popup') ?? false;
 ?>
 
 <template x-if="optionIsEnabled(<?= (int)$attributeId ?>, item.id)">
     <label
-        :for="`attribute-option-<?= (int)$productId ?>-${item.id}`"
+        :for="`attribute-option-<?= (int)$productId ?>-${item.id}-<?= $isPopup ? 'mobile' : 'desktop' ?>`"
         @click="optionIsActive(<?= (int)$attributeId ?>, item.id) && changeOption(<?= (int)$attributeId ?>, item.id)"
         class="button button--size-sm select-none transition-all ease-in-out relative bg-bg-500"
         :class="{
@@ -54,7 +55,7 @@ if (!$productId || !$attributeId) {
         x-transition
     >
         <input
-            :id="`attribute-option-<?= (int)$productId ?>-${item.id}`"
+            :id="`attribute-option-<?= (int)$productId ?>-${item.id}-<?= $isPopup ? 'mobile' : 'desktop' ?>`"
             :value="item.id"
             name="super_attribute[<?= (int)$attributeId ?>]"
             class="-z-10 absolute opacity-0"

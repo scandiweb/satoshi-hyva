@@ -16,29 +16,32 @@ $selectedOptions = [];
 
 $default = $option->getDefaultSelection();
 list($defaultQty, $canChangeQty) = $block->getDefaultValues();
+$isPopup = $block->getData('is_popup');
 ?>
 <?php if ($block->showSingle()): ?>
-    <?= /* @noEscape */ $block->getSelectionQtyTitlePrice($selections[0]) ?>
+    <?= /* @noEscape */
+    $block->getSelectionQtyTitlePrice($selections[0]) ?>
     <input type="hidden"
            class="bundle-option-<?= (int)$optionId ?>  product bundle option"
            name="bundle_option[<?= (int)$optionId ?>]"
-           form="product_addtocart_form"
+           form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
            value="<?= (int)$selections[0]->getSelectionId() ?>"
            id="bundle-option-<?= (int)$optionId ?>-<?= (int)$selections[0]->getSelectionId() ?>"
            checked
-           data-option-id="<?= (int)$optionId ?>"
+           data-option-id="<?= (int)$optionId ?>-<?= $isPopup ? 'mobile' : 'desktop' ?>"
            data-selection-id="<?= (int)$selections[0]->getSelectionId() ?>"
     />
 <?php else: ?>
+    <label for="bundle-option-<?= (int)$optionId ?>" class="sr-only"><?= $escaper->escapeHtml(__('Select:')) ?></label>
     <select multiple="multiple"
             size="5"
             id="bundle-option-<?= (int)$optionId ?>"
             name="bundle_option[<?= (int)$optionId ?>][]"
-            form="product_addtocart_form"
+            form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
             class="w-full h-auto px-5 py-2 input__field"
-            <?php if ($option->getRequired()): ?>
-                required
-            <?php endif; ?>
+        <?php if ($option->getRequired()): ?>
+            required
+        <?php endif; ?>
             x-on:change="calculateTotalPrice()"
     >
         <?php if (!$option->getRequired()): ?>
@@ -54,9 +57,10 @@ list($defaultQty, $canChangeQty) = $block->getDefaultValues();
                 <?php if (!$selection->isSaleable()): ?>
                     disabled
                 <?php endif; ?>
-                    data-option-id="<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>"
+                    data-option-id="<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>-<?= $isPopup ? 'mobile' : 'desktop' ?>"
             >
-                <?= /* @noEscape */ $block->getSelectionQtyTitlePrice($selection, false) ?>
+                <?= /* @noEscape */
+                $block->getSelectionQtyTitlePrice($selection, false) ?>
             </option>
         <?php endforeach; ?>
     </select>

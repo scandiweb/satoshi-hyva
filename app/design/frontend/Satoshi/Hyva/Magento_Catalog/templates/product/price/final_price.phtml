@@ -1,0 +1,54 @@
+<?php
+
+use Magento\Catalog\Pricing\Render\FinalPriceBox;
+use Magento\Framework\Pricing\Price\PriceInterface;
+
+/** @var FinalPriceBox $block */
+
+/** ex: \Magento\Catalog\Pricing\Price\RegularPrice */
+/** @var PriceInterface $priceModel */
+$priceModel = $block->getPriceType('regular_price');
+
+/** ex: \Magento\Catalog\Pricing\Price\FinalPrice */
+/** @var PriceInterface $finalPriceModel */
+$finalPriceModel = $block->getPriceType('final_price');
+$idSuffix = $block->getIdSuffix() ? $block->getIdSuffix() : '';
+$schema = ($block->getZone() == 'item_view') ? true : false;
+?>
+<?php if ($block->hasSpecialPrice()) : ?>
+    <span class="special-price">
+        <?= /* @noEscape */
+        $block->renderAmount($finalPriceModel->getAmount(), [
+            'display_label' => __('Special Price'),
+            'price_id' => $block->getPriceId('product-price-' . $idSuffix),
+            'price_type' => 'finalPrice',
+            'include_container' => true,
+            'schema' => $schema
+        ]); ?>
+    </span>
+    <span class="old-price">
+        <?= /* @noEscape */
+        $block->renderAmount($priceModel->getAmount(), [
+            'display_label' => __('Regular Price'),
+            'price_id' => $block->getPriceId('old-price-' . $idSuffix),
+            'price_type' => 'oldPrice',
+            'include_container' => true,
+            'skip_adjustments' => true
+        ]); ?>
+    </span>
+<?php else : ?>
+    <?= /* @noEscape */
+    $block->renderAmount($finalPriceModel->getAmount(), [
+        'price_id' => $block->getPriceId('product-price-' . $idSuffix),
+        'price_type' => 'finalPrice',
+        'include_container' => true,
+        'schema' => $schema
+    ]); ?>
+<?php endif; ?>
+
+<?php if ($block->showMinimalPrice()) : ?>
+    <span class="minimal-price-link">
+        <?= /* @noEscape */
+        $block->renderAmountMinimal() ?>
+    </span>
+<?php endif; ?>
