@@ -4,13 +4,15 @@ declare(strict_types=1);
 namespace Satoshi\Theme\ViewModel\Cart;
 
 use Magento\Checkout\Model\Session;
-use Magento\Framework\View\Element\Block\ArgumentInterface;
-use Magento\Quote\Api\CartTotalRepositoryInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\JsonHexTag;
-use Magento\Tax\Model\Config;
-use Magento\Quote\Api\ShippingMethodManagementInterface as ShippingMethodManager;
+use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Quote\Api\CartTotalRepositoryInterface;
+use Magento\Quote\Api\ShippingMethodManagementInterface as ShippingMethodManager;
+use Magento\Tax\Model\Config;
 
 class Cart implements ArgumentInterface
 {
@@ -77,18 +79,18 @@ class Cart implements ArgumentInterface
     }
 
     /**
-     * Retrieve cart items quantity
-     *
-     * @return int
+     * @return float|mixed|null
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function getCartItemsQty() {
         return $this->checkoutSession->getQuote()->getItemsQty();
     }
 
     /**
-     * Retrieve cart totals
-     *
      * @return array
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function getCartTotals(): array
     {
@@ -135,9 +137,9 @@ class Cart implements ArgumentInterface
     }
 
     /**
-     * Get serialized cart totals
-     *
      * @return bool|string
+     * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function getSerializedCartTotals()
     {
