@@ -47,7 +47,7 @@ $isCartPage = $block->getData('isCartPage');
                 <h2 class="text-text-500"><?= __('Order summary') ?></h2>
                 <button type="button"
                         class="button button--outline-secondary icon-button icon-button--size-xs <?= $isCartPage ? 'md:hidden' : '' ?>"
-                        :aria-label="isTotalsExpanded ? `<?= __('Collapse') ?>` : `<?= __('Expand') ?>`"
+                        :aria-label="isTotalsExpanded ? '<?= __('Collapse') ?>' : '<?= __('Expand') ?>'"
                         @click="isTotalsExpanded = !isTotalsExpanded"
                         @transitionend.stop
                 >
@@ -111,7 +111,7 @@ $isCartPage = $block->getData('isCartPage');
             >
                 <div>
                     <p class="font-bold"
-                       x-text="hyva.formatPrice(cartTotals.grand_total)"
+                       x-text="hyva.formatPrice(cartTotals.grand_total || 0)"
                     ></p>
                 </div>
 
