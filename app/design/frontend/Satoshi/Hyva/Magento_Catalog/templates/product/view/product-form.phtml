@@ -24,7 +24,7 @@ $isPopup = $block->getData('is_popup') ?? false;
 <?php if ($product->isSaleable()): ?>
     <form method="post"
           action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
-          id="product_addtocart_form"
+          id="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
           class="animate-on-transition"
           @submit.prevent="addToCart($event)"
         <?php if ($product->getOptions()): ?>
@@ -36,8 +36,9 @@ $isPopup = $block->getData('is_popup') ?? false;
         <input type="hidden" name="related_product" id="related-products-field" value=""/>
         <input type="hidden" name="item" value="<?= (int)$block->getRequest()->getParam('id') ?>">
         <?= $block->getBlockHtml('formkey') ?>
-        <?= $block->getChildHtml() ?>
-        <?= $block->getChildHtml('product.info.bundle.options') ?>
-        <?= $block->getChildHtml('bundle.summary') ?>
+
+        <?php foreach ($block->getChildNames() as $name): ?>
+            <?= $block->getLayout()->getBlock($name)->setData('is_popup', $isPopup)->toHtml() ?>
+        <?php endforeach; ?>
     </form>
 <?php endif; ?>

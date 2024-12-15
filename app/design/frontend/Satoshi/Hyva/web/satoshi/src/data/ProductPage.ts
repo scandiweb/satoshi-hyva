@@ -41,6 +41,7 @@ export type ProductPageType = {
   increaseQty(): void;
   setQuantity(quantity: number): void;
   addToCart(event: Event): void;
+  listenAddedToCart(formData: FormData): void;
   showProductActions(): void;
   hideProductActions(): void;
   _handleStickyProductActionsClosure(): boolean | void;
@@ -300,9 +301,10 @@ export const ProductPage = () =>
       });
 
       if (!this.isGroupValid) {
+        const selector = Alpine.store('main').isMobile ? '#product_addtocart_form_mobile' : '#product_addtocart_form_desktop';
         // this triggers an immediate display of the form errors
         // @ts-ignore
-        document.querySelector("#product_addtocart_form")!.reportValidity();
+        document.querySelector(selector)!.reportValidity();
         return false;
       }
       return true;
@@ -323,10 +325,35 @@ export const ProductPage = () =>
         Alpine.store("cart").addingItemIds.push(this.productId);
       }
 
+      this.listenAddedToCart(formData);
+
+      this.isLoadingCart = true;
+      fetch(formEl.action, {
+        method: formEl.method,
+        body: formData,
+      })
+        .then((result) => {
+          return result.text();
+        })
+        .then((content) => {
+          window.hyva.replaceDomElement("#cart-button", content);
+          window.hyva.replaceDomElement("#product-actions", content);
+        })
+        .catch((error) => console.error("Error:", error))
+        .finally(() => {
+          Alpine.store("cart").addingItemIds = Alpine.store(
+            "cart",
+          ).addingItemIds.filter((itemId) => itemId !== this.productId);
+          this.hideProductActions();
+          this.isLoadingCart = false;
+        });
+    },
+
+    listenAddedToCart(formData) {
       window.addEventListener(
         "private-content-loaded",
         (event: any) => {
-          const {cart: {items = []} = {}} = event.detail.data || {};
+          const { cart: { items = [] } = {} } = event.detail.data || {};
 
           // Grouped products
           if (this.groupedIds.length) {
@@ -361,29 +388,8 @@ export const ProductPage = () =>
             );
           }
         },
-        {once: true},
+        { once: true },
       );
-
-      this.isLoadingCart = true;
-      fetch(formEl.action, {
-        method: formEl.method,
-        body: formData,
-      })
-        .then((result) => {
-          return result.text();
-        })
-        .then((content) => {
-          window.hyva.replaceDomElement("#cart-button", content);
-          window.hyva.replaceDomElement("#product-actions", content);
-        })
-        .catch((error) => console.error("Error:", error))
-        .finally(() => {
-          Alpine.store("cart").addingItemIds = Alpine.store(
-            "cart",
-          ).addingItemIds.filter((itemId) => itemId !== this.productId);
-          this.hideProductActions();
-          this.isLoadingCart = false;
-        });
     },
 
     showProductActions() {
@@ -416,7 +422,7 @@ export const ProductPage = () =>
 
     scrollToTop() {
       if (typeof this.scrollToPreviewTop !== "undefined") {
-        this.scrollToPreviewTop();
+        this.scrollToPreviewTop()
       } else {
         window.scrollTo({top: 0, behavior: "smooth"});
       }
@@ -701,7 +707,7 @@ export const ProductPage = () =>
       }
 
       // Otherwise - if no config is present for the target option - use the type of the first option
-      // with a type property from the attribute, thus assuming its the same type as the target option.
+      // with a type property from the attribute, thus assuming it's the same type as the target option.
       // (This edge case condition can occur on single swatch products if some options are not salable)
       return this.getTypeOfFirstOption(attributeId);
     },

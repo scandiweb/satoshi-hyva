@@ -90,28 +90,24 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
     <div>
         <!-- Desktop options -->
-        <div class="animate-on-transition max-md:hidden" id="desktop-options-<?= $productId ?>">
-            <div :class="'hidden'">
-                <!-- TODO: Add a skeleton for layout shifting -->
-            </div>
+        <div class="animate-on-transition max-md:hidden">
+            <?= $block->getChildHtml('product.info.form') ?>
         </div>
 
         <!-- Quantity and action desktop buttons -->
         <div class="flex flex-col sm:flex-row items-end max-md:mb-5">
+            <div
+                class="relative flex flex-grow flex-wrap justify-stretch gap-3 w-full max-md:px-2"
+                id="product-actions"
+                x-transition
+                x-intersect:enter="toggleStickyProductActions(false)"
+                x-intersect:leave="toggleStickyProductActions(true)"
+            >
+                <?= $block->getChildHtml('product.actions') ?>
+            </div>
+            <?= $block->getChildHtml('product.info.additional.actions') ?>
             <?php if ($product->isSaleable()): ?>
-                <div
-                    class="relative flex flex-grow flex-wrap justify-stretch gap-3 w-full max-md:px-2"
-                    id="product-actions"
-                    x-transition
-                    x-intersect:enter="toggleStickyProductActions(false)"
-                    x-intersect:leave="toggleStickyProductActions(true)"
-                >
-                    <?= $block->getChildHtml('product.actions') ?>
-                </div>
-                <?= $block->getChildHtml('product.info.additional.actions') ?>
-                <?php if ($product->isSaleable()): ?>
-                    <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
-                <?php endif; ?>
+                <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
             <?php endif; ?>
         </div>
     </div>
@@ -123,35 +119,39 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 $priceHtml = '';
 if (!empty($block->getChildHtml("product.info.price"))) {
     $priceHtml = <<<HTML
-                        <div
-                            class="ml-3 flex flex-grow gap-3"
-                            x-show="!isVariantInCart"
-                            x-transition
-                        >
-                            {$block->getChildHtml("product.info.price")}
-                        </div>
-                    HTML;
+        <div
+            class="ml-3 flex flex-grow gap-3"
+            x-show="!isVariantInCart"
+            x-transition
+        >
+            {$block->getChildHtml("product.info.price")}
+        </div>
+    HTML;
 }
 $stickyActions = <<<HTML
-                    <div class="h-9 [.page-product-bundle_&]:h-11"></div>
-                    <template x-portal="document.getElementById('popup-fixed-content-portal')">
-                        <div
-                            id="ProductBottomActionsPopup"
-                            x-show="\$store.popup.currentPopup == 'product_bottom_actions'"
-                            class="sticky-actions flex w-full items-center justify-end gap-3 bg-bg-500"
-                        >
-                            {$priceHtml}
-                            <div
-                                class="flex flex-grow justify-stretch gap-3"
-                                :class="{
-                                    'w-full': isVariantInCart
-                                }"
-                            >
-                                {$block->getChildBlock('product.actions')->setData(['is_small' => true, 'is_popup' => false])->toHtml()}
-                            </div>
-                        </div>
-                    </template>
-                HTML;
+    <template x-if="\$store.main.isMobile && \$store.popup.currentPopup === 'product_bottom_actions'">
+        <div class="contents">
+            <div class="h-9 [.page-product-bundle_&]:h-11"></div>
+            <template x-portal="document.getElementById('popup-fixed-content-portal')">
+                <div
+                    id="ProductBottomActionsPopup"
+                    x-show="\$store.popup.currentPopup == 'product_bottom_actions'"
+                    class="sticky-actions flex w-full items-center justify-end gap-3 bg-bg-500"
+                >
+                    {$priceHtml}
+                    <div
+                        class="flex flex-grow justify-stretch gap-3"
+                        :class="{
+                            'w-full': isVariantInCart
+                        }"
+                    >
+                        {$block->getChildBlock('product.actions')->setData(['is_small' => true, 'is_popup' => false])->toHtml()}
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+HTML;
 
 echo $popup
     ->setData(['id' => 'product_bottom_actions'])
@@ -168,20 +168,22 @@ if ($product->isSaleable()) {
     $minHeight = $product->getTypeId() === 'bundle' ? 'min-h-40' : 'min-h-20';
 
     $productActions = <<<HTML
-        <div class="contents">
-            <div class="max-md:mx-2" id="mobile-options-{$productId}">
-                {$options}
-            </div>
-
-            <div class="{$minHeight} md:hidden"></div>
-            <template x-portal="document.getElementById('popup-fixed-content-portal')">
-                <div x-show="\$store.popup.currentPopup === productActionsPopup">
-                    <div class="bg-bg-500 relative z-10">
-                        {$block->getChildBlock('product.actions')->setData(['is_popup' => true, 'is_small' => false])->toHtml()}
-                    </div>
+        <template x-if="\$store.main.isMobile">
+            <div class="contents">
+                <div class="max-md:mx-2">
+                    {$options}
                 </div>
-            </template>
-        </div>
+
+                <div class="{$minHeight} md:hidden"></div>
+                <template x-portal="document.getElementById('popup-fixed-content-portal')">
+                    <div x-show="\$store.popup.currentPopup === productActionsPopup">
+                        <div class="bg-bg-500 relative z-10">
+                            {$block->getChildBlock('product.actions')->setData(['is_popup' => true, 'is_small' => false])->toHtml()}
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
     HTML;
 
     echo $popup
@@ -189,7 +191,6 @@ if ($product->isSaleable()) {
             'id' => $popup_id,
             'isFocused' => true,
             'isFullScreen' => $productType === 'bundle',
-            'desktopTarget' => 'desktop-options-' . $productId
         ])
         ->setChildHtml($productActions)
         ->render();
