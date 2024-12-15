@@ -6,7 +6,9 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\LayeredNavigation\Block\Navigation;
+use Satoshi\Theme\Block\Popup;
 
+/** @var Popup $popup */
 /** @var Navigation $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
@@ -98,7 +100,7 @@ if ($sorter) {
                                     'transition': $store.main.isReducedMotion
                                 }"
                             >
-                                <div class="md:pb-3 md:pt-2">
+                                <div class="md:pb-3 md:pt-2" :inert="!isExpanded">
                                     <div class="flex flex-col gap-4 py-3">
                                         <div role="radiogroup" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
                                             <?php foreach ($sortOptions as $sortOption): ?>
@@ -150,7 +152,7 @@ if ($sorter) {
                                             'transition': $store.main.isReducedMotion
                                         }"
                                     >
-                                        <div class="md:pb-3 md:pt-2">
+                                        <div class="md:pb-3 md:pt-2" :inert="!isExpanded">
                                             <div class="flex flex-col gap-4 py-3">
                                                 <?= /* @noEscape */ $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
                                             </div>

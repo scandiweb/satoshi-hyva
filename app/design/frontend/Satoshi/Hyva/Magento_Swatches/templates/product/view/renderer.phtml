@@ -37,12 +37,13 @@ $swatchItemBlock->setData('product_id', $productId);
 
 $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
 
-$index = 0;
+$isPopup = $block->getData('is_popup');
 ?>
 <?php if ($product->isSaleable() && count($attributes)): ?>
     <div class="md:mb-7 min-h-[152px]"
          x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)">
         <div class="flex flex-col gap-5">
+            <?php $index = 0; ?>
             <?php foreach ($attributes as $i => $attribute): ?>
                 <?php $index++ ?>
                 <?php $attributeId = $attribute->getAttributeId(); ?>
@@ -81,7 +82,8 @@ $index = 0;
                                     <?= /* @noEscape */
                                     $swatchItemBlock
                                         ->setData('attribute_id', $attributeId)
-                                        ->setData('form_id', 'product_addtocart_form')
+                                        ->setData('form_id', 'product_addtocart_form_' . ($isPopup ? 'mobile' : 'desktop'))
+                                        ->setData('is_popup', $isPopup)
                                         ->toHtml() ?>
                                 </template>
                             </article>

@@ -65,18 +65,22 @@ $productViewModel = $viewModels->require(ProductPage::class);
     }"
     x-bind="eventListeners"
 >
-    <template x-if="getConfiguredTierPrices()">
-        <div class="mb-4">
-            <template x-for="tierPrice in getConfiguredTierPrices()">
-                <div role="alert"
-                     class="relative flex w-full gap-1.5">
-                    <span x-html="getItemHtml(tierPrice)"></span>
-                    <strong class="benefit">
-                        <?= $escaper->escapeHtml(__('save')) ?>
-                        <span class="percent" x-text="tierPrice.percentage + '%'"></span>
-                    </strong>
-                </div>
-            </template>
-        </div>
-    </template>
+    <div x-show="getConfiguredTierPrices()"
+         x-transition
+    >
+        <template x-for="(tierPrice, index) in getConfiguredTierPrices()">
+            <div role="alert"
+                 class="relative flex w-full gap-1.5"
+                 :class="{
+                    'mb-4': (index+1) === getConfiguredTierPrices().length
+                }"
+            >
+                <span x-html="getItemHtml(tierPrice)"></span>
+                <strong class="benefit">
+                    <?= $escaper->escapeHtml(__('save')) ?>
+                    <span class="percent" x-text="tierPrice.percentage + '%'"></span>
+                </strong>
+            </div>
+        </template>
+    </div>
 </div>
