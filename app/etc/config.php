@@ -373,6 +373,7 @@ return [
         'Satoshi_Newsletter' => 1,
         'Satoshi_Sales' => 1,
         'Satoshi_SatoshiUi' => 1,
+        'Satoshi_Swatches' => 1,
         'Satoshi_Theme' => 1,
         'Satoshi_Wishlist' => 1,
         'Temando_ShippingRemover' => 1
