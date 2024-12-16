@@ -22,6 +22,9 @@ list($defaultQty, $canChangeQty) = $block->getDefaultValues();
 $optionId = $option->getId();
 $activeSelectOptions = [];
 
+$product = $block->getProduct();
+$productId = $product->getId();
+
 $isPopup = $block->getData('is_popup');
 ?>
 <div class="flex justify-between items-center gap-3">
@@ -29,7 +32,7 @@ $isPopup = $block->getData('is_popup');
         <input type="hidden"
                id="bundle-option-<?= (int)$optionId ?>-<?= (int)$selections[0]->getSelectionId() ?>"
                name="bundle_option[<?= (int)$optionId ?>]"
-               form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+               form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
                value="<?= (int)$selections[0]->getSelectionId() ?>"
                checked
                data-option-id="<?= (int)$optionId ?>-<?= $isPopup ? 'mobile' : 'desktop' ?>"
@@ -55,7 +58,7 @@ $isPopup = $block->getData('is_popup');
                         <input type="radio"
                                id="bundle-option-<?= (int)$optionId ?>-<?= $isPopup ? 'mobile' : 'desktop' ?>"
                                name="bundle_option[<?= (int)$optionId ?>]"
-                               form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                               form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
                                class="radio__input"
                                :checked="activeSelectOptions['<?= (int)$optionId ?>'] == ''"
                                value=""
@@ -81,7 +84,7 @@ $isPopup = $block->getData('is_popup');
                     <input type="radio"
                            id="bundle-option-<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>-<?= $isPopup ? 'mobile' : 'desktop' ?>"
                            name="bundle_option[<?= (int)$optionId ?>]"
-                           form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                           form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
                            class="radio__input"
                         <?= $option->getRequired() ? 'required' : '' ?>
                            :checked="activeSelectOptions['<?= (int)$optionId ?>'] == '<?= (int)$selectionId ?>'"
@@ -119,7 +122,7 @@ $isPopup = $block->getData('is_popup');
         <input
             aria-describedby="option-label-<?= (int)$optionId ?>"
             id="bundle-option-<?= (int)$optionId ?>-qty-input-<?= $isPopup ? 'mobile' : 'desktop' ?>"
-            form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+            form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
             name="bundle_option_qty[<?= (int)$optionId ?>]"
             class="input__field flex-shrink-0 basis-14 text-center bg-transparent h-9 px-3 disabled:opacity-75"
             type="number"

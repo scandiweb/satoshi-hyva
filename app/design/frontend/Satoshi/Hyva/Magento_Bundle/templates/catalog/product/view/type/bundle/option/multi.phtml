@@ -8,6 +8,9 @@ use Magento\Framework\Escaper;
 /** @var Multi $block */
 /** @var Escaper $escaper */
 
+$product = $block->getProduct();
+$productId = $product->getId();
+
 $option = $block->getOption();
 $selections = $option->getSelections();
 
@@ -24,7 +27,7 @@ $isPopup = $block->getData('is_popup');
     <input type="hidden"
            class="bundle-option-<?= (int)$optionId ?>  product bundle option"
            name="bundle_option[<?= (int)$optionId ?>]"
-           form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+           form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
            value="<?= (int)$selections[0]->getSelectionId() ?>"
            id="bundle-option-<?= (int)$optionId ?>-<?= (int)$selections[0]->getSelectionId() ?>"
            checked
@@ -37,7 +40,7 @@ $isPopup = $block->getData('is_popup');
             size="5"
             id="bundle-option-<?= (int)$optionId ?>"
             name="bundle_option[<?= (int)$optionId ?>][]"
-            form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+            form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
             class="w-full h-auto px-5 py-2 input__field"
         <?php if ($option->getRequired()): ?>
             required

@@ -12,6 +12,7 @@ use Magento\Framework\Escaper;
 /** @var Product $product */
 $product = $block->getProduct();
 $productType = $product->getTypeId();
+$productId = $product->getId();
 
 /**
  * @see \Magento\Checkout\Block\Cart\Item\Configure::_prepareLayout
@@ -24,7 +25,7 @@ $isPopup = $block->getData('is_popup') ?? false;
 <?php if ($product->isSaleable()): ?>
     <form method="post"
           action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
-          id="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+          id="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
           class="animate-on-transition"
           @submit.prevent="addToCart($event)"
         <?php if ($product->getOptions()): ?>
