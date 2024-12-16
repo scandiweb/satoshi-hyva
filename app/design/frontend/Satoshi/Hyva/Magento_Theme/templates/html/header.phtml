@@ -90,17 +90,18 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     ->setChildTemplate('Magento_Theme::html/header/search/search-button.phtml')
                     ->render()
                 ?>
-                <?=
-                $resizable
-                    ->setData([
-                        'id' => 'wishlist-desktop',
-                        'initialWidth' => 56,
-                        'initialHeight' => 56,
-                        'right' => true,
-                        'cssClass' => 'resizable--wishlist md:pointer-events-auto',
-                    ])
-                    ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-button.phtml')
-                    ->render()
+                <?php
+                // Temporarily disabled wishlist
+                // $resizable
+                //     ->setData([
+                //         'id' => 'wishlist-desktop',
+                //         'initialWidth' => 56,
+                //         'initialHeight' => 56,
+                //         'right' => true,
+                //         'cssClass' => 'resizable--wishlist md:pointer-events-auto',
+                //     ])
+                //     ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-button.phtml')
+                //     ->render()
                 ?>
                 <?=
                 $resizable
@@ -147,16 +148,17 @@ $popup
     ->render()
 ?>
 
-<?=
-$popup
-    ->setData([
-        'id' => 'wishlist',
-        'isFocused' => true,
-        'isFullScreen' => true,
-        'desktopTarget' => 'wishlist-desktop',
-    ])
-    ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-overlay.phtml')
-    ->toHtml()
+<?php
+// Disable wishlist temporarily
+// $popup
+//     ->setData([
+//         'id' => 'wishlist',
+//         'isFocused' => true,
+//         'isFullScreen' => true,
+//         'desktopTarget' => 'wishlist-desktop',
+//     ])
+//     ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-overlay.phtml')
+//     ->toHtml()
 ?>
 
 <?=
