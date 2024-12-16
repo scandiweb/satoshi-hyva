@@ -46,7 +46,13 @@ $productName = $block->getProduct()->getName();
 >
     <!-- Appended variant images  -->
     <template x-for="(image, index) in appendedImages" :key="index">
-        <div class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl">
+        <div
+            class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl"
+            x-data="{ fadeInAppend: false }"
+            x-init="$nextTick(() => { fadeInAppend = true })"
+            x-show="fadeInAppend"
+            x-transition
+        >
             <div class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
                 <img
                     :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"

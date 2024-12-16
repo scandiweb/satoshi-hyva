@@ -15,102 +15,115 @@ list($defaultQty, $canChangeQty) = $block->getDefaultValues();
 
 $optionId = $option->getId();
 $activeSelectOptions = [];
+
+$product = $block->getProduct();
+$productId = $product->getId();
+
+$isPopup = $block->getData('is_popup');
 ?>
 <?php if ($block->showSingle()): ?>
-  <div class="flex justify-between items-center gap-3">
-    <div>
-      <?= /* @noEscape */ $block->getSelectionTitlePrice($selections[0]) ?>
-      <?= /* @noEscape */ $block->getTierPriceRenderer()->renderTierPrice($selections[0]) ?>
-      <input type="hidden"
-            class="bundle-option-<?= (int)$optionId ?>  product bundle option"
-            name="bundle_option[<?= (int)$optionId ?>]"
-            value="<?= (int)$selections[0]->getSelectionId() ?>"
-            id="bundle-option-<?= (int)$optionId ?>-<?= (int)$selections[0]->getSelectionId() ?>"
-            checked
-            form="product_addtocart_form"
-            data-option-id="<?= (int)$optionId ?>"
-            data-selection-id="<?= (int)$selections[0]->getSelectionId() ?>"
-      />
-      <?php if ((int)$selections[0]->getSelectionId()) {
-          array_push($activeSelectOptions, (int)$selections[0]->getSelectionId());
-      } ?>
-    </div>
+    <div class="flex justify-between items-center gap-3">
+        <div>
+            <?= /* @noEscape */
+            $block->getSelectionTitlePrice($selections[0]) ?>
+            <?= /* @noEscape */
+            $block->getTierPriceRenderer()->renderTierPrice($selections[0]) ?>
+            <input type="hidden"
+                   class="bundle-option-<?= (int)$optionId ?>  product bundle option"
+                   name="bundle_option[<?= (int)$optionId ?>]"
+                   value="<?= (int)$selections[0]->getSelectionId() ?>"
+                   id="bundle-option-<?= (int)$optionId ?>-<?= (int)$selections[0]->getSelectionId() ?>"
+                   checked
+                   form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                   data-option-id="<?= (int)$optionId ?>-<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                   data-selection-id="<?= (int)$selections[0]->getSelectionId() ?>"
+            />
+            <?php if ((int)$selections[0]->getSelectionId()) {
+                array_push($activeSelectOptions, (int)$selections[0]->getSelectionId());
+            } ?>
+        </div>
 
-    <div class="contents">
-      <label for="bundle-option-<?= (int)$optionId ?>-qty-input" class="sr-only tracking-widest">
-        <?= $escaper->escapeHtml(__('Quantity')) ?>
-      </label>
+        <div class="contents">
+            <label for="bundle-option-<?= (int)$optionId ?>-qty-input-<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                   class="sr-only tracking-widest">
+                <?= $escaper->escapeHtml(__('Quantity')) ?>
+            </label>
 
-      <input
-        id="bundle-option-<?= (int)$optionId ?>-qty-input"
-        class="input__field flex-shrink-0 basis-14 text-center bg-transparent h-9 px-3 disabled:opacity-75"
-        type="number"
-        min="0"
-        name="bundle_option_qty[<?= (int)$optionId ?>]"
-        value="<?= $escaper->escapeHtmlAttr($defaultQty) ?>"
-        :value="getQtyValue(<?= (int)$optionId ?>)"
-        form="product_addtocart_form"
-        x-on:change="
-            setQtyValue(<?= (int)$optionId ?>, $event.target.value);
-            calculateTotalPrice($dispatch)"
-        <?php if (!$canChangeQty): ?> disabled <?php endif; ?>
-        :disabled="getQtyDisabled(<?= (int)$optionId ?>)"
-      />
+            <input
+                id="bundle-option-<?= (int)$optionId ?>-qty-input-<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                class="input__field flex-shrink-0 basis-14 text-center bg-transparent h-9 px-3 disabled:opacity-75"
+                type="number"
+                min="0"
+                name="bundle_option_qty[<?= (int)$optionId ?>]"
+                value="<?= $escaper->escapeHtmlAttr($defaultQty) ?>"
+                :value="getQtyValue(<?= (int)$optionId ?>)"
+                form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                x-on:change="
+                    setQtyValue(<?= (int)$optionId ?>, $event.target.value);
+                    calculateTotalPrice($dispatch)"
+                <?php if (!$canChangeQty): ?> disabled <?php endif; ?>
+                :disabled="getQtyDisabled(<?= (int)$optionId ?>)"
+            />
+        </div>
     </div>
-  </div>
 <?php else: ?>
-  <div class="flex justify-between items-center gap-3">
-    <select id="bundle-option-<?= (int)$optionId ?>"
+    <div class="flex justify-between items-center gap-3">
+        <label for="bundle-option-<?= (int)$optionId ?>"
+               class="sr-only"><?= $escaper->escapeHtml(__('Select:')) ?></label>
+        <select
+            id="bundle-option-<?= (int)$optionId ?>"
             name="bundle_option[<?= (int)$optionId ?>]"
             class="w-full h-9 px-5 input__field"
-            form="product_addtocart_form"
+            form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
             x-on:change="
                 activeSelectOptions['<?= (int)$optionId ?>'] = [$event.target.value];
                 $nextTick(() => {calculateTotalPrice()});
             "
-        <?= $option->getRequired() ? 'required' : '' ?>
-    >
-        <option value=""><?= $escaper->escapeHtml(__('Choose a selection...')) ?></option>
-        <?php foreach ($selections as $selection): ?>
-            <?php $selectionId = $selection->getSelectionId(); ?>
-            <?php $optionSelectionId = $optionId . '-' . $selectionId ?>
-            <option value="<?= (int) $selectionId ?>"
-                <?php if ($block->isSelected($selection)) {
-                    array_push($activeSelectOptions, $selectionId);
-                    echo 'selected = "selected"';
-                } ?>
-                <?php if (!$selection->isSaleable()): ?>
-                    disabled
-                <?php endif; ?>
-                data-option-id="<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>"
-            >
-                <?= /* @noEscape */ $block->getSelectionTitlePrice($selection, false) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+            <?= $option->getRequired() ? 'required' : '' ?>
+        >
+            <option value=""><?= $escaper->escapeHtml(__('Choose a selection...')) ?></option>
+            <?php foreach ($selections as $selection): ?>
+                <?php $selectionId = $selection->getSelectionId(); ?>
+                <?php $optionSelectionId = $optionId . '-' . $selectionId ?>
+                <option value="<?= (int)$selectionId ?>"
+                    <?php if ($block->isSelected($selection)) {
+                        array_push($activeSelectOptions, $selectionId);
+                        echo 'selected = "selected"';
+                    } ?>
+                    <?php if (!$selection->isSaleable()): ?>
+                        disabled
+                    <?php endif; ?>
+                        data-option-id="<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>-<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                >
+                    <?= /* @noEscape */
+                    $block->getSelectionTitlePrice($selection, false) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
 
-    <div class="contents">
-      <label for="bundle-option-<?= (int)$optionId ?>-qty-input" class="sr-only tracking-widest">
-        <?= $escaper->escapeHtml(__('Quantity')) ?>
-      </label>
+        <div class="contents">
+            <label for="bundle-option-<?= (int)$optionId ?>-qty-input-<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                   class="sr-only tracking-widest">
+                <?= $escaper->escapeHtml(__('Quantity')) ?>
+            </label>
 
-      <input
-        id="bundle-option-<?= (int)$optionId ?>-qty-input"
-        class="input__field flex-shrink-0 basis-14 text-center bg-transparent h-9 px-3 disabled:opacity-75"
-        type="number"
-        min="0"
-        name="bundle_option_qty[<?= (int)$optionId ?>]"
-        value="<?= $escaper->escapeHtmlAttr($defaultQty) ?>"
-        :value="getQtyValue(<?= (int)$optionId ?>)"
-        form="product_addtocart_form"
-        x-on:change="
-            setQtyValue(<?= (int)$optionId ?>, $event.target.value);
-            calculateTotalPrice($dispatch)"
-        <?php if (!$canChangeQty): ?> disabled <?php endif; ?>
-        :disabled="getQtyDisabled(<?= (int)$optionId ?>)"
-      />
+            <input
+                id="bundle-option-<?= (int)$optionId ?>-qty-input-<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                class="input__field flex-shrink-0 basis-14 text-center bg-transparent h-9 px-3 disabled:opacity-75"
+                type="number"
+                min="0"
+                name="bundle_option_qty[<?= (int)$optionId ?>]"
+                value="<?= $escaper->escapeHtmlAttr($defaultQty) ?>"
+                :value="getQtyValue(<?= (int)$optionId ?>)"
+                form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                x-on:change="
+                    setQtyValue(<?= (int)$optionId ?>, $event.target.value);
+                    calculateTotalPrice($dispatch)"
+                <?php if (!$canChangeQty): ?> disabled <?php endif; ?>
+                :disabled="getQtyDisabled(<?= (int)$optionId ?>)"
+            />
+        </div>
     </div>
-  </div>
 
     <div id="option-tier-prices-<?= (int)$optionId ?>"
          class="option-tier-prices"
@@ -120,12 +133,13 @@ $activeSelectOptions = [];
             <?php $optionSelectionId = $optionId . '-' . $selectionId ?>
             <div data-role="selection-tier-prices"
                  class="selection-tier-prices" x-cloak
-                 x-show="activeSelectOptions[<?= (int) $optionId ?>] &&
-                    activeSelectOptions[<?= (int) $optionId ?>].includes(
+                 x-show="activeSelectOptions[<?= (int)$optionId ?>] &&
+                    activeSelectOptions[<?= (int)$optionId ?>].includes(
                         '<?= (int)$selectionId ?>'
                     )"
-                    >
-                <?= /* @noEscape */ $block->getTierPriceRenderer()->renderTierPrice($selection) ?>
+            >
+                <?= /* @noEscape */
+                $block->getTierPriceRenderer()->renderTierPrice($selection) ?>
             </div>
         <?php endforeach; ?>
     </div>

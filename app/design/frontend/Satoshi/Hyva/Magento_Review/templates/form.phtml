@@ -63,6 +63,16 @@ mutation createProductReviewMutation(
         <?php if ($block->getAllowWriteReviewFlag()): ?>
             <form
                 class="w-full max-w-sm"
+                id="<?= $escaper->escapeHtmlAttr($formId) ?>"
+                @submit.prevent="function($event) {
+                    const $form = $event.target;
+                    this.validate();
+                    <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW)) : '' ?>
+                    if (this.errors === 0) {
+                      this.placeReview();
+                    }
+                }"
+                action=""
                 x-data="Object.assign(Form('<?= $escaper->escapeHtmlAttr($formId) ?>'), ReviewForm({
                     ratings: <?= $escaper->escapeHtmlAttr(json_encode($block->getRatings()->getData())) ?>,
                     messages: {
@@ -72,21 +82,10 @@ mutation createProductReviewMutation(
                     gqlQuery: `<?= $escaper->escapeHtmlAttr($gqlViewModel->query('create_product_review_mutation', $gqlCreateProductReviewMutation)) ?>`,
                     sku: '<?= $escaper->escapeJs($block->getProductInfo()->getSku()) ?>',
                     fieldName: '<?= $recaptcha ? $escaper->escapeJs($recaptcha->getResultTokenFieldName($formId)) : '' ?>',
+                    formId: '<?= $escaper->escapeJs($formId) ?>',
                     storeCode: '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>'
                 }))"
-                id="<?= $escaper->escapeHtmlAttr($formId) ?>"
-                @submit.prevent="function($event) {
-                    // do not rename $form, the variable is the expected name in the recaptcha output
-                    const $form = $event.target;
-                    this.validate();
 
-                    <?= $recaptcha ? $escaper->escapeHtmlAttr($recaptcha->getValidationJsHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW)) : '' ?>
-
-                    if (this.errors === 0) {
-                        this.placeReview();
-                    }
-                }"
-                action=""
             >
                 <?= $block->getChildHtml('form_fields_before') ?>
                 <fieldset class="w-full flex flex-col items-center justify-center">
@@ -102,7 +101,7 @@ mutation createProductReviewMutation(
                     </legend>
                     <?php if ($block->getRatings() && $block->getRatings()->getSize()): ?>
                         <fieldset name="rating-group">
-                            <div class="flex flex-col mb-7">
+                            <div class="flex flex-col mb-4">
                                 <div
                                     class="text-md <?php if ($block->getRatings()->getSize() <= 1): ?>hidden<?php endif ?>">
                                     <?= $escaper->escapeHtml(__('Your Rating')) ?>:
@@ -110,7 +109,7 @@ mutation createProductReviewMutation(
                                 <div id="product-review-table">
                                     <?php foreach ($block->getRatings() as $rating): ?>
                                         <div class="flex items-center">
-                                            <label
+                                            <h2
                                                 class="table-cell pr-6 align-middle text-left"
                                                 id="<?= $escaper->escapeHtml($rating->getRatingCode()) ?>_rating_label"
                                             >
@@ -121,7 +120,7 @@ mutation createProductReviewMutation(
                                                             <?= $escaper->escapeHtml($rating->getRatingCode()) ?>
                                                         <?php endif ?>
                                                     </span>
-                                            </label>
+                                            </h2>
                                             <div
                                                 class="flex grow-0"
                                                 x-data="{ clickedRatingId: 0 }"
@@ -138,7 +137,8 @@ mutation createProductReviewMutation(
                                                             for="<?= $escaper->escapeHtmlAttr($rating->getRatingCode() . '_' . $option->getValue()) ?>"
                                                             id="<?= $escaper->escapeHtmlAttr($rating->getRatingCode() . '_' . $option->getValue()) ?>_label"
                                                         >
-                                                                <span :class="<?= (int)$iterator ?> <= clickedRatingId ? 'text-primary-500' : 'text-secondary-400'">
+                                                                <span
+                                                                    :class="<?= (int)$iterator ?> <= clickedRatingId ? 'text-primary-500' : 'text-secondary-400'">
                                                                     <?= $hyvaicons->renderHtml('star', 'text-xl') ?>
                                                                 </span>
                                                             <input
@@ -166,48 +166,33 @@ mutation createProductReviewMutation(
                             </div>
                         </fieldset>
                     <?php endif ?>
-                    <div
-                        x-cloak
-                        x-show="displaySuccessMessage"
-                        class="field-success -mt-3 mb-3"
-                    >
+                    <div x-cloak
+                         x-show="displaySuccessMessage"
+                         class="field-success mb-4">
                         <p>
                             <?= $escaper->escapeHtml(__('You submitted your review for moderation.')) ?>
                         </p>
                     </div>
-                    <template x-if="displayErrorMessage">
-                        <p class="field-error -mt-3 mb-3">
-                            <template x-for="errorMessage in errorMessages">
-                                <span class="messages" x-html="errorMessage"></span>
-                            </template>
-                        </p>
-                    </template>
-
                     <div class="w-full">
                         <div class="input mb-3">
                             <label for="nickname_field" class="sr-only tracking-widest">
                                 <span><?= $escaper->escapeHtml(__('Nickname')) ?></span>
                             </label>
-                            <input
-                                class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                                required
-                                placeholder="<?= $escaper->escapeHtmlAttr(__('Nickname') . '*') ?>" type="text"
-                                name="nickname"
-                                id="nickname_field"
-                            />
+                            <input class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                                   required
+                                   placeholder="<?= $escaper->escapeHtmlAttr(__('Nickname') . '*') ?>" type="text"
+                                   name="nickname" id="nickname_field"/>
                         </div>
                         <div class="input mb-3">
                             <label for="summary_field" class="sr-only">
                                 <span><?= $escaper->escapeHtml(__('Summary')) ?></span>
                             </label>
                             <div>
-                                <input
-                                    class="input__field input__field--outline bg-bg-500 px-5 py-4"
-                                    required
-                                    placeholder="<?= $escaper->escapeHtml(__('Summary') . '*') ?>" type="text"
-                                    name="title"
-                                    id="summary_field"
-                                />
+                                <input class="input__field input__field--outline bg-bg-500 px-5 py-4"
+                                       required
+                                       placeholder="<?= $escaper->escapeHtml(__('Summary') . '*') ?>" type="text"
+                                       name="title"
+                                       id="summary_field"/>
                             </div>
                         </div>
                         <div class="input mb-4">
@@ -226,22 +211,24 @@ mutation createProductReviewMutation(
                         </div>
                     </div>
                 </fieldset>
-
                 <?= $recaptcha ? $recaptcha->getInputHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
-
-                <div class="mt-4">
-                    <button
-                        type="submit"
-                        class="button button--filled-primary w-full mb-4"
-                        :class="{
+                <template x-if="displayErrorMessage">
+                    <template x-for="errorMessage in errorMessages">
+                        <p x-text="errorMessage" class="text-error items-center mt-4">
+                        </p>
+                    </template>
+                </template>
+                <button
+                    type="submit"
+                    class="button button--filled-primary w-full my-4"
+                    :class="{
                             '!bg-primary-100': isLoading
                         }"
-                    >
-                        <span>
-                            <?= $escaper->escapeHtml(__('Submit Review')) ?>
-                        </span>
-                    </button>
-                </div>
+                >
+                    <span>
+                        <?= $escaper->escapeHtml(__('Submit Review')) ?>
+                    </span>
+                </button>
                 <?= $block->getChildHtml('form_additional_after') ?>
                 <?= $recaptcha ? $recaptcha->getLegalNoticeHtml(ReCaptcha::RECAPTCHA_FORM_ID_PRODUCT_REVIEW) : '' ?>
             </form>

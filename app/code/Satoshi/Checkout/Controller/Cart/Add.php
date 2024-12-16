@@ -11,6 +11,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Filter\LocalizedToNormalized;
@@ -69,7 +70,7 @@ class Add extends SourceAdd
             ?? ObjectManager::getInstance()->get(RequestQuantityProcessor::class);
     }
 
-  /**
+    /**
      * Add product to shopping cart action
      *
      * @return ResponseInterface|ResultInterface
@@ -136,7 +137,7 @@ class Add extends SourceAdd
                         ]);
                     }
                 }
-                return $this->goBack(null, $product);
+                return $this->goToCart();
             }
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             if ($this->_checkoutSession->getUseNotice(true)) {
@@ -170,6 +171,16 @@ class Add extends SourceAdd
         }
 
         return $this->getResponse();
+    }
+
+    /**
+     * @return Redirect
+     */
+    protected function goToCart()
+    {
+        $resultRedirect = $this->resultRedirectFactory->create();
+        $resultRedirect->setUrl($this->getCartUrl());
+        return $resultRedirect;
     }
 
     /**

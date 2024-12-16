@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template as Block;
 use Satoshi\Theme\Block\Template;
-use Magento\Framework\Escaper;
 
 /** @var Block $block */
 /** @var Template $template */
@@ -57,6 +57,7 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
             <?php endif; ?>
             <div class="slider__actions">
                 <div x-show="!isPrevBtnDisabled || !isNextBtnDisabled"
+                     class="whitespace-nowrap"
                      x-transition
                      x-cloak
                 >

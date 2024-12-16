@@ -1,4 +1,4 @@
-import { FormType } from "./Form";
+import {FormType} from "./Form";
 
 type Rating = {
   rating_id: string;
@@ -15,6 +15,7 @@ type ReviewFormProps = {
   gqlQuery: string;
   sku: string;
   fieldName: string;
+  formId: string;
   storeCode: string;
 };
 
@@ -27,17 +28,10 @@ export type ReviewFormType = {
   ratings: any;
   review: string | null;
   validate(): void;
-  placeReview(event: Event): void;
+  placeReview(): void;
 } & FormType;
 
-export const ReviewForm = ({
-  ratings,
-  messages,
-  gqlQuery,
-  sku,
-  fieldName,
-  storeCode,
-}: ReviewFormProps) =>
+export const ReviewForm = ({ratings, messages, gqlQuery, sku, fieldName, formId, storeCode,}: ReviewFormProps) =>
   <ReviewFormType>{
     displayNickname: false,
     displaySuccessMessage: false,
@@ -87,7 +81,7 @@ export const ReviewForm = ({
         this.hasCaptchaToken = 0;
       }
     },
-    placeReview: function (event) {
+    placeReview: function () {
       this.isLoading = true;
       this.displayErrorMessage = false;
 
@@ -98,16 +92,16 @@ export const ReviewForm = ({
         summary: this.summary,
         review: this.review,
         ratings: Object.keys(this.ratings).map((key) => {
-          return { id: btoa(key), value_id: this.ratings[key] };
+          return {id: btoa(key), value_id: this.ratings[key]};
         }),
       };
 
-      const form = event.target as HTMLFormElement;
+      const form = document.querySelector(`#${formId}`) as HTMLFormElement;
       const elements = form.elements as Record<string, any>;
 
       const recaptchaHeader =
         fieldName && form && elements[fieldName]
-          ? { "X-ReCaptcha": elements[fieldName].value }
+          ? {"X-ReCaptcha": elements[fieldName].value}
           : {};
 
       fetch(`${BASE_URL}graphql`, {
@@ -120,7 +114,7 @@ export const ReviewForm = ({
           recaptchaHeader as Record<string, string>,
         ),
         credentials: "include",
-        body: JSON.stringify({ query: query, variables: variables }),
+        body: JSON.stringify({query: query, variables: variables}),
       })
         .then((response) => response.json())
         .then((data) => {

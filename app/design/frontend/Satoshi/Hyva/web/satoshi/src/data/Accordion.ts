@@ -1,4 +1,4 @@
-import type {Magics} from "alpinejs";
+import type { Magics } from "alpinejs";
 
 export type AccordionType = {
   [key: string | symbol]: any;
@@ -6,6 +6,7 @@ export type AccordionType = {
   _buttonRef: HTMLElement | null;
   _panelRef: HTMLElement | null;
   _iconRef: HTMLElement | null;
+  __mutationObserver: MutationObserver | null;
 
   isExpanded: boolean;
   duration: number;
@@ -14,6 +15,7 @@ export type AccordionType = {
   _initElements(): void;
   _toggle(): void;
   _update(): void;
+  destroy(): void;
 } & Magics<{}>;
 
 export const Accordion = (
@@ -25,6 +27,7 @@ export const Accordion = (
     _buttonRef: null,
     _panelRef: null,
     _iconRef: null,
+    __mutationObserver: null,
 
     isExpanded: Boolean(isExpanded),
     duration: Number(duration),
@@ -39,6 +42,18 @@ export const Accordion = (
         this._update();
         this.$watch("isExpanded", this._update.bind(this));
       });
+
+      this.__mutationObserver = new MutationObserver(() => {
+        this._update();
+      });
+
+      this.__mutationObserver.observe(
+        this._panelRef!,
+        {
+          childList: true,
+          subtree: true,
+        },
+      );
     },
 
     _initElements() {
@@ -79,4 +94,9 @@ export const Accordion = (
         this._iconRef.style.rotate = this.isExpanded ? "-180deg" : "";
       }
     },
+
+    destroy() {
+      this.__mutationObserver?.disconnect();
+      this.__mutationObserver = null;
+    }
   };
