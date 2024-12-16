@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ProductListItem;
+use Hyva\Theme\ViewModel\ProductPage;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Helper\Image;
-use Magento\Framework\Escaper;
-use Hyva\Theme\ViewModel\ProductPage;
 use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
+use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
@@ -67,11 +67,13 @@ if ($product) {
                 <?php if ($product->getImage()): ?>
                     'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
                 <?php endif ?>
-                'title': '<?= $escaper->escapeHtmlAttr($product->getName()) ?>',
+                'title': `<?= $escaper->escapeHtmlAttr($product->getName()) ?>`,
                 'mediaCount': <?= $product?->getMediaGalleryImages()->count() ?? 3 ?>,
                 'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
                 'finalPrice': <?= $product->getFinalPrice() ?>,
-                'regularPrice': <?= $product->getPrice() ?>,
+                <?php if ($product->getPrice()): ?>
+                    'regularPrice': <?= $product->getPrice() ?>,
+                <?php endif; ?>
             }
         "
         href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"

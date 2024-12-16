@@ -16,7 +16,7 @@ $product = $block->getProduct();
 
 ?>
 <?php if ($product->isSaleable() && $block->hasOptions()): ?>
-    <div id="bundleSummary">
+    <div id="bundleSummary-<?= $product->getId() ?>">
         <div class="hidden [.popup\_\_fixed-content-portal--visible_&]:contents md:contents"
              x-data="{ isSummaryExpanded: false }"
         >
@@ -57,7 +57,6 @@ $product = $block->getProduct();
                     </div>
                     <!-- Summary Content -->
                     <div>
-                        <?= $block->getChildHtml('product.info.form') ?>
                         <?= $block->getChildHtml("product.price.tier") ?>
                         <div x-data="{
                                 selectedOptions: [],
