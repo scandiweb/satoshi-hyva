@@ -320,6 +320,7 @@ export const ProductPage = () =>
 
       const formEl = event.target as HTMLFormElement;
       const formData = new FormData(formEl);
+      formData.set('form_key', window.hyva.getFormKey())
 
       if (!Alpine.store("cart").addingItemIds.includes(this.productId)) {
         Alpine.store("cart").addingItemIds.push(this.productId);
