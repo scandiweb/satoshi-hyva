@@ -337,7 +337,6 @@ export const ProductPage = () =>
         })
         .then((content) => {
           window.hyva.replaceDomElement("#cart-button", content);
-          window.hyva.replaceDomElement("#product-actions", content);
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => {
