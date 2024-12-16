@@ -5,6 +5,7 @@ import { unfreezeScroll } from "../utils/scroll2";
 export type PrivateContentData = {
   cart: {
     items: any;
+    cartTotals: any;
   };
   wishlist: {
     counter: string | null;
@@ -61,8 +62,11 @@ export const Main = <MainStoreType>{
 
   updatePrivateContent(data) {
     this.isUserLoggedIn = Boolean(data.customer?.signin_token);
-    Alpine.store("cart").setCartItems(data.cart?.items || []);
     Alpine.store("wishlist").setWishlistItems(data.wishlist?.items || []);
+    Alpine.store("cart").setCartItems(data.cart?.items || []);
+    if (data.cart?.cartTotals) {
+      Alpine.store("cart").setCartTotals(data.cart?.cartTotals || []);
+    }
   },
 
   onResize() {
