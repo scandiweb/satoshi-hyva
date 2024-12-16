@@ -17,6 +17,9 @@ $option = $block->getOption();
 $selections = $option->getSelections();
 $default = $option->getDefaultSelection();
 
+$product = $block->getProduct();
+$productId = $product->getId();
+
 $optionId = $option->getId();
 $isPopup = $block->getData('is_popup');
 ?>
@@ -28,7 +31,7 @@ $isPopup = $block->getData('is_popup');
     <input type="hidden"
            class="bundle-option-<?= (int)$optionId ?>  product bundle option"
            name="bundle_option[<?= (int)$optionId ?>]"
-           form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+           form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
            value="<?= (int)$selections[0]->getSelectionId() ?>"
            id="bundle-option-<?= (int)$optionId ?>-<?= (int)$selections[0]->getSelectionId() ?>"
            checked
@@ -46,7 +49,7 @@ $isPopup = $block->getData('is_popup');
                 class="checkbox__input"
                 id="bundle-option-<?= $escaper->escapeHtmlAttr($optionSelectionId) ?>-<?= $isPopup ? 'mobile' : 'desktop' ?>"
                 name="bundle_option[<?= (int)$optionId ?>][<?= (int)$selectionId ?>]"
-                form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
                 type="checkbox"
                 <?php if ($block->isSelected($selection)) {
                     echo ' checked';

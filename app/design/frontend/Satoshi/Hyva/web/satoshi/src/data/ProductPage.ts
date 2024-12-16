@@ -301,7 +301,7 @@ export const ProductPage = () =>
       });
 
       if (!this.isGroupValid) {
-        const selector = Alpine.store('main').isMobile ? '#product_addtocart_form_mobile' : '#product_addtocart_form_desktop';
+        const selector = Alpine.store('main').isMobile ? `#product_addtocart_form_${this.productId}_mobile` : `#product_addtocart_form_${this.productId}_desktop`;
         // this triggers an immediate display of the form errors
         // @ts-ignore
         document.querySelector(selector)!.reportValidity();

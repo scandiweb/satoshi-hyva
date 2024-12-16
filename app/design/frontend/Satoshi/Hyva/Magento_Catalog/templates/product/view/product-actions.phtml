@@ -152,7 +152,7 @@ if (!$inStock) {
                     aria-label="<?= __('Quantity') ?>"
                     id="quantity <?= $isPopup ? 'mobile' : 'desktop' ?>"
                     :disabled="!<?= (int)$inStock ?>"
-                    form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                    form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
                 >
 
                 <button
@@ -192,7 +192,7 @@ if (!$inStock) {
                 'button--disabled': isProductBeingAdded || isProductBeingRemoved
             }"
             type="submit"
-            form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+            form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
             title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
             data-addto="cart"
             x-a11y-trap-target.end="$store.popup.currentPopup === productActionsPopup"

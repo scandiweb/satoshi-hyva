@@ -82,7 +82,7 @@ $isPopup = $block->getData('is_popup');
                                     <?= /* @noEscape */
                                     $swatchItemBlock
                                         ->setData('attribute_id', $attributeId)
-                                        ->setData('form_id', 'product_addtocart_form_' . ($isPopup ? 'mobile' : 'desktop'))
+                                        ->setData('form_id', "product_addtocart_form_{$productId}_" . ($isPopup ? 'mobile' : 'desktop'))
                                         ->setData('is_popup', $isPopup)
                                         ->toHtml() ?>
                                 </template>

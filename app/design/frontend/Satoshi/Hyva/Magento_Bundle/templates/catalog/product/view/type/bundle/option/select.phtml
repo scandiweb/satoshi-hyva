@@ -15,8 +15,11 @@ list($defaultQty, $canChangeQty) = $block->getDefaultValues();
 
 $optionId = $option->getId();
 $activeSelectOptions = [];
-$isPopup = $block->getData('is_popup');
 
+$product = $block->getProduct();
+$productId = $product->getId();
+
+$isPopup = $block->getData('is_popup');
 ?>
 <?php if ($block->showSingle()): ?>
     <div class="flex justify-between items-center gap-3">
@@ -31,7 +34,7 @@ $isPopup = $block->getData('is_popup');
                    value="<?= (int)$selections[0]->getSelectionId() ?>"
                    id="bundle-option-<?= (int)$optionId ?>-<?= (int)$selections[0]->getSelectionId() ?>"
                    checked
-                   form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                   form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
                    data-option-id="<?= (int)$optionId ?>-<?= $isPopup ? 'mobile' : 'desktop' ?>"
                    data-selection-id="<?= (int)$selections[0]->getSelectionId() ?>"
             />
@@ -54,7 +57,7 @@ $isPopup = $block->getData('is_popup');
                 name="bundle_option_qty[<?= (int)$optionId ?>]"
                 value="<?= $escaper->escapeHtmlAttr($defaultQty) ?>"
                 :value="getQtyValue(<?= (int)$optionId ?>)"
-                form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
                 x-on:change="
                     setQtyValue(<?= (int)$optionId ?>, $event.target.value);
                     calculateTotalPrice($dispatch)"
@@ -71,7 +74,7 @@ $isPopup = $block->getData('is_popup');
             id="bundle-option-<?= (int)$optionId ?>"
             name="bundle_option[<?= (int)$optionId ?>]"
             class="w-full h-9 px-5 input__field"
-            form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+            form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
             x-on:change="
                 activeSelectOptions['<?= (int)$optionId ?>'] = [$event.target.value];
                 $nextTick(() => {calculateTotalPrice()});
@@ -112,7 +115,7 @@ $isPopup = $block->getData('is_popup');
                 name="bundle_option_qty[<?= (int)$optionId ?>]"
                 value="<?= $escaper->escapeHtmlAttr($defaultQty) ?>"
                 :value="getQtyValue(<?= (int)$optionId ?>)"
-                form="product_addtocart_form_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+                form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
                 x-on:change="
                     setQtyValue(<?= (int)$optionId ?>, $event.target.value);
                     calculateTotalPrice($dispatch)"
