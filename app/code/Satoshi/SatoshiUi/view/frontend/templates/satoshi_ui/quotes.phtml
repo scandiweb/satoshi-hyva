@@ -59,8 +59,14 @@ foreach ($quotes as $quote) {
             <h1 class="heading text-text-500">
                 <?= $escaper->escapeHtml($block->getData('heading')) ?>
             </h1>
-        <div>
-            <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
+            <div class="min-h-9">
+                <div x-show="!isPrevBtnDisabled || !isNextBtnDisabled"
+                     class="whitespace-nowrap"
+                     x-transition
+                     x-cloak
+                >
+                    <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
+                </div>
         </div>
     </div>
 
