@@ -18,4 +18,16 @@ class Coupon extends CoreCoupon
         $this->_checkoutSession->unsCouponMessage();
         return $message;
     }
+
+    /**
+     * Cart flash message.
+     *
+     * @return string
+     */
+    public function getCartMessage()
+    {
+        $message = $this->_checkoutSession->getCartMessage();
+        $this->_checkoutSession->unsCartMessage();
+        return $message;
+    }
 }

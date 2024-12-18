@@ -16,7 +16,16 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 $hasCouponCode = (bool) strlen($block->getCouponCode() ?: "");
 $couponMessage = $block->getCouponMessage();
+$errorMessage = $block->getCartMessage();
 ?>
+
+<div class="col-span-full" id="cart-error-message">
+    <?php if (!empty($errorMessage['error'])): ?>
+        <div class="field-error">
+            <span class="messages"><?= $errorMessage['error'] ?></span>
+        </div>
+    <?php endif; ?>
+</div>
 
 <div
     class="col-span-full"

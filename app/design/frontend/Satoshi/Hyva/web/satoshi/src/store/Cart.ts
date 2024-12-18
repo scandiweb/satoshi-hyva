@@ -142,6 +142,7 @@ export const CartStore = <CartStoreType>{
       })
       .then((content) => {
         window.hyva.replaceDomElement("#cart-button", content);
+        window.hyva.replaceDomElement("#cart-error-message", content);
         this.isLoading = false;
         this.removingItemId = null;
         this.cartItems = this.cartItems.filter((item) => item.qty);
