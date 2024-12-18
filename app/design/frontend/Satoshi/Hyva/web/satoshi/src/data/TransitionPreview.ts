@@ -73,6 +73,10 @@ export const TransitionPreview = () =>
         }
       });
 
+      document.addEventListener('DOMContentLoaded', () => {
+        window.history.state.isPreview = false;
+      })
+
       this.$refs.scrollContainer.addEventListener("scroll", () => {
         const percentOfMaxScroll = Math.min(
           this.$refs.scrollContainer.scrollTop / this.maxScroll,
