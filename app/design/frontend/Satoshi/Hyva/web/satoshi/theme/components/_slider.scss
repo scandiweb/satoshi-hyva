@@ -54,7 +54,8 @@
   }
 
   /* TODO: maybe be more abstract and use content-wrapper */
-  &--full-width:not(.transition-preview .slider--full-width) {
+  &--full-width:not(.transition-preview .slider--full-width),
+  [data-appearance*='full'] &--pagebuilder:not(.transition-preview .slider--full-width) {
     @apply overflow-x-hidden;
 
     --content-wrapper-padding-x: 32px;
