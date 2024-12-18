@@ -36,7 +36,7 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
 ?>
 
 <div
-    class="slider <?= $isFullPage ? 'slider--full-width' : '' ?>"
+    class="slider <?= $isFullPage ? 'slider--full-width' : '' ?> <?= $class ?>"
     x-init="
         configureAndStart({
             slidesAmountInView: <?= $escaper->escapeUrl(json_encode($slidesAmountInViewArray)) ?>,
@@ -47,7 +47,6 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
     "
     <?= $isCustomSliderXData ? '' : 'x-data="Slider()"' ?>
     <?= $id ? "id='$id'" : '' ?>
-    :class="'<?= $class ?>'"
     style="--slide-gap: <?= $gap ?>px; <?= $convertedSlidesAmountInView ?>"
 >
     <?php if (!$isHeaderDisabled): ?>
