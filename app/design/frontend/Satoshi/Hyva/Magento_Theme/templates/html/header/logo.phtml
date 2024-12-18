@@ -44,7 +44,7 @@ $estimated_width = $text_length * 12;
         style="filter: url(#border); max-width: <?= $logoWidth > 500 ? 500 : $logoWidth ?>px"
         x-data="{ initialHeight: $el.clientHeight || 56 }"
         :style="{
-            'height': (initialHeight >= 56 && $store.main.isHeaderShadowVisible) ? '56px' : `${initialHeight}px`
+            'max-height': (initialHeight >= 56 && $store.main.isHeaderShadowVisible) ? '56px' : `${initialHeight}px`
         }"
     />
 
