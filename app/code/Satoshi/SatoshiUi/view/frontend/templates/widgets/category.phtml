@@ -16,7 +16,7 @@ use Satoshi\Theme\Block\Template;
 /** @var ProductListItem $productListItemViewModel */
 
 $exists = $block->getProductCollection() && $block->getProductCollection()->getSize();
-$products = $block->getProductCollection()->getItems();
+$products = $block->getProductCollection()->addMediaGalleryData()->getItems();
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
 $sliderItemRenderer = $block->getLayout()->getBlock('product_list_item') ?: $block->getLayout()->createBlock(Template::class);
 $displayViewAll = $block->getData('view_all_button') === 'true';
