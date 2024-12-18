@@ -20,14 +20,14 @@ class Coupon extends CoreCoupon
     }
 
     /**
-     * Cart flash message.
+     * Retrieve and clear the error message from the session
      *
-     * @return string
+     * @return string|null
      */
-    public function getCartMessage()
+    public function getErrorMessage()
     {
-        $message = $this->_checkoutSession->getCartMessage();
-        $this->_checkoutSession->unsCartMessage();
-        return $message;
+        $errorMessage = $this->_checkoutSession->getErrorMessage();
+        $this->_checkoutSession->unsErrorMessage();
+        return $errorMessage;
     }
 }

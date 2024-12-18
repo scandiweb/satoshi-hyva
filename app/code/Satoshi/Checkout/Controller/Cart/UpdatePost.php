@@ -18,11 +18,6 @@ class UpdatePost extends SourceUpdatePost
     private $quantityProcessor;
 
     /**
-     * @var \Magento\Checkout\Model\Session
-     */
-    protected $_checkoutSession;
-
-    /**
      * @param \Magento\Framework\App\Action\Context $context
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Checkout\Model\Session $checkoutSession
@@ -51,7 +46,6 @@ class UpdatePost extends SourceUpdatePost
         );
 
         $this->quantityProcessor = $quantityProcessor ?: $this->_objectManager->get(RequestQuantityProcessor::class);
-        $this->_checkoutSession = $checkoutSession;
     }
 
     /**
@@ -64,13 +58,9 @@ class UpdatePost extends SourceUpdatePost
         try {
             $this->cart->truncate()->save();
         } catch (\Magento\Framework\Exception\LocalizedException $exception) {
-            $this->_checkoutSession->setCartMessage([
-                'error' => $exception->getMessage()
-            ]);
+            $this->_checkoutSession->setErrorMessage($exception->getMessage());
         } catch (\Exception $exception) {
-            $this->_checkoutSession->setCartMessage([
-                'error' => $exception->getMessage() ?? __('We can\'t update the shopping cart.')
-            ]);
+            $this->_checkoutSession->setErrorMessage($exception->getMessage() ?? __('We can\'t update the shopping cart.'));
         }
     }
 
@@ -92,13 +82,9 @@ class UpdatePost extends SourceUpdatePost
                 $this->cart->updateItems($cartData)->save();
             }
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            $this->_checkoutSession->setCartMessage([
-                'error' => $this->_objectManager->get(\Magento\Framework\Escaper::class)->escapeHtml($e->getMessage())
-            ]);
+            $this->_checkoutSession->setErrorMessage($this->_objectManager->get(\Magento\Framework\Escaper::class)->escapeHtml($e->getMessage()));
         } catch (\Exception $e) {
-            $this->_checkoutSession->setCartMessage([
-                'error' => $e->getMessage() ?? __('We can\'t update the shopping cart.')
-            ]);
+            $this->_checkoutSession->setErrorMessage($e->getMessage() ?? __('We can\'t update the shopping cart.'));
             $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
         }
     }
