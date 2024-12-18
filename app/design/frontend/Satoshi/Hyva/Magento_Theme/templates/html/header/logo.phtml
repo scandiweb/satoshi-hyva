@@ -2,9 +2,10 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Logo\LogoPathResolver;
 use Hyva\Theme\ViewModel\Logo\LogoSizeResolver;
 use Magento\Framework\Escaper;
-use Satoshi\Theme\Block\Html\Header\Logo;
+use Magento\Theme\Block\Html\Header\Logo;
 
 /** @var Logo $block */
 /** @var Escaper $escaper */
@@ -21,7 +22,11 @@ $logoHeight = $logoSizeResolver && $logoSizeResolver->getHeight()
     ? $logoSizeResolver->getHeight()
     : $block->getLogoHeight();
 
-$logoSrc = $block->getLogoSrc();
+/** @var LogoPathResolver $logoPathResolver */
+$logoPathResolver = $block->getData('logoPathResolver');
+$logoSrc = $logoPathResolver && method_exists($logoPathResolver, 'getLogoSrc')
+    ? $logoPathResolver->getLogoSrc($block->getData('logo_file'))
+    : $block->getLogoSrc();
 
 $text_length = strlen($storeName);
 $estimated_width = $text_length * 12;
@@ -37,7 +42,7 @@ $estimated_width = $text_length * 12;
         height="<?= $escaper->escapeHtmlAttr($logoHeight ?? 200) ?>"
         class="height-[56px] w-auto transition-all max-md:hidden"
         style="filter: url(#border); max-width: <?= $logoWidth > 500 ? 500 : $logoWidth ?>px"
-        x-data="{ initialHeight: $el.clientHeight }"
+        x-data="{ initialHeight: $el.clientHeight || 56 }"
         :style="{
             'height': (initialHeight >= 56 && $store.main.isHeaderShadowVisible) ? '56px' : `${initialHeight}px`
         }"
