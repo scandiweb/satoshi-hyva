@@ -31,19 +31,27 @@ class IsAnySourceItemInStockCondition extends SourceIsAnySourceItemInStockCondit
     private $productSalableResultFactory;
 
     /**
+     * @var \Magento\Catalog\Api\ProductRepositoryInterface
+     */
+    private $productRepository;
+
+    /**
      * @param IsAnySourceItemInStock $isAnySourceInStockCondition
      * @param ProductSalabilityErrorInterfaceFactory $productSalabilityErrorFactory
      * @param ProductSalableResultInterfaceFactory $productSalableResultFactory
+     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
      */
     public function __construct(
         IsAnySourceItemInStock                 $isAnySourceInStockCondition,
         ProductSalabilityErrorInterfaceFactory $productSalabilityErrorFactory,
-        ProductSalableResultInterfaceFactory   $productSalableResultFactory
+        ProductSalableResultInterfaceFactory            $productSalableResultFactory,
+        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
     )
     {
         $this->isAnySourceInStockCondition = $isAnySourceInStockCondition;
         $this->productSalabilityErrorFactory = $productSalabilityErrorFactory;
         $this->productSalableResultFactory = $productSalableResultFactory;
+        $this->productRepository = $productRepository;
 
         parent::__construct(
             $isAnySourceInStockCondition,
@@ -61,10 +69,20 @@ class IsAnySourceItemInStockCondition extends SourceIsAnySourceItemInStockCondit
     {
         $errors = [];
 
+        try {
+            $product = $this->productRepository->get($sku);
+            $productName = sprintf("'%s' (SKU: %s)", $product->getName(), $sku);
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            $productName = sprintf("SKU: '%s'", $sku);
+        }
+
         if (!$this->isAnySourceInStockCondition->execute($sku, $stockId)) {
             $data = [
                 'code' => 'is_any_source_item_in_stock-no_source_items_in_stock',
-                'message' => __('This product is currently unavailable in any stock location')
+                'message' => __(
+                    'The product %1 is out of stock across all locations. Please update the quantity or check back later.',
+                    $productName,
+                )
             ];
             $errors[] = $this->productSalabilityErrorFactory->create($data);
         }
