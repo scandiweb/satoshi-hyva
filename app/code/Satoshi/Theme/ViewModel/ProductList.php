@@ -4,35 +4,38 @@ declare(strict_types=1);
 
 namespace Satoshi\Theme\ViewModel;
 
+use Hyva\Theme\ViewModel\ProductList as SourceProductList;
 use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\CategoryFactory;
 use Magento\Catalog\Model\Config as CatalogConfig;
+use Magento\Catalog\Model\Product\Link;
 use Magento\Catalog\Model\Product\LinkFactory as ProductLinkFactory;
 use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
 use Magento\Catalog\Model\ResourceModel\Product\Collection as ProductCollection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Product\Link\Product\Collection as ProductLinkCollection;
 use Magento\Catalog\Model\ResourceModel\Product\Link\Product\CollectionFactory as ProductLinkCollectionFactory;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SortOrderBuilder;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\EntityManager\MetadataPool as EntityMetadataPool;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Review\Model\ResourceModel\Review\Summary as ReviewSummaryResource;
 use Magento\Review\Model\Review;
-use Hyva\Theme\ViewModel\ProductList as SourceProductList;
 
 /**
  * @SuppressWarnings(PHPMD.LongVariable)
  * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
- * 
+ *
  * Extended to eager load media gallery
  */
 class ProductList extends SourceProductList
@@ -156,7 +159,8 @@ class ProductList extends SourceProductList
     }
 
     /**
-     * @return ProductInterface[]
+     * @return array|ProductInterface[]
+     * @throws LocalizedException
      */
     public function getItems(): array
     {
@@ -168,6 +172,11 @@ class ProductList extends SourceProductList
         return $collection->getItems();
     }
 
+    /**
+     * @param SearchCriteriaInterface $criteria
+     * @param AbstractDb $collection
+     * @return void
+     */
     private function applyCriteria(SearchCriteriaInterface $criteria, AbstractDb $collection): void
     {
         $this->collectionProcessor->process($criteria, $collection);
@@ -178,6 +187,9 @@ class ProductList extends SourceProductList
         $this->categoryIdFilter = null;
     }
 
+    /**
+     * @return ProductCollection
+     */
     private function createProductCollection(): ProductCollection
     {
         $collection = $this->productCollectionFactory->create();
@@ -190,6 +202,11 @@ class ProductList extends SourceProductList
         return $collection;
     }
 
+    /**
+     * @param ProductCollection $collection
+     * @return void
+     * @throws LocalizedException
+     */
     private function loadReviewSummariesIfEnabled(ProductCollection $collection): void
     {
         if ($this->isIncludingReviewSummary) {
@@ -201,6 +218,9 @@ class ProductList extends SourceProductList
         }
     }
 
+    /**
+     * @return Category
+     */
     private function getCategory(): Category
     {
         if ($this->useAnchorAttribute) {
@@ -221,5 +241,48 @@ class ProductList extends SourceProductList
         $category->setData($category->getIdFieldName(), $this->categoryIdFilter);
 
         return $category;
+    }
+
+    /**
+     * @param string $linkType
+     * @param array $productIds
+     * @return ProductLinkCollection
+     * @throws LocalizedException
+     */
+    private function createProductLinkCollection(string $linkType, array $productIds): ProductLinkCollection
+    {
+        $collection = $this->productLinkCollectionFactory->create(['productIds' => $productIds]);
+        $collection->setLinkModel($this->getLinkTypeModel($linkType))
+            ->setIsStrongMode()
+            ->setPositionOrder()
+            ->addStoreFilter()
+            ->setVisibility($this->productVisibility->getVisibleInCatalogIds())
+            ->addAttributeToSelect($this->catalogConfig->getProductAttributes())
+            ->addMediaGalleryData();
+
+        $this->loadReviewSummariesIfEnabled($collection);
+
+        return $collection;
+    }
+
+    /**
+     * @param string $linkType
+     * @return Link
+     */
+    private function getLinkTypeModel(string $linkType): Link
+    {
+        $linkModel = $this->productLinkFactory->create();
+        switch ($linkType) {
+            case 'crosssell':
+                $linkModel->useCrossSellLinks();
+                break;
+            case 'related':
+                $linkModel->useRelatedLinks();
+                break;
+            case 'upsell':
+                $linkModel->useUpSellLinks();
+                break;
+        }
+        return $linkModel;
     }
 }

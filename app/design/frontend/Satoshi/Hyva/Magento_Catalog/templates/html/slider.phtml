@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template as Block;
 use Satoshi\Theme\Block\Template;
-use Magento\Framework\Escaper;
 
 /** @var Block $block */
 /** @var Template $template */
@@ -36,7 +36,7 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
 ?>
 
 <div
-    class="slider <?= $isFullPage ? 'slider--full-width' : '' ?>"
+    class="slider <?= $isFullPage ? 'slider--full-width' : '' ?> <?= $class ?>"
     x-init="
         configureAndStart({
             slidesAmountInView: <?= $escaper->escapeUrl(json_encode($slidesAmountInViewArray)) ?>,
@@ -47,7 +47,6 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
     "
     <?= $isCustomSliderXData ? '' : 'x-data="Slider()"' ?>
     <?= $id ? "id='$id'" : '' ?>
-    :class="'<?= $class ?>'"
     style="--slide-gap: <?= $gap ?>px; <?= $convertedSlidesAmountInView ?>"
 >
     <?php if (!$isHeaderDisabled): ?>
@@ -57,6 +56,7 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
             <?php endif; ?>
             <div class="slider__actions">
                 <div x-show="!isPrevBtnDisabled || !isNextBtnDisabled"
+                     class="whitespace-nowrap"
                      x-transition
                      x-cloak
                 >

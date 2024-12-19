@@ -10,15 +10,18 @@ use Magento\Wishlist\Model\Item;
 /** @var Item $item */
 $item = $block->getItem();
 $product = $item->getProduct();
+$imageUrl = $block->getImage($block->getProductForThumbnail($item), 'wishlist_thumbnail')->getImageUrl();
 ?>
 <a
-    class="
-        flex items-center justify-center overflow-hidden rounded-xl bg-[--fade-in-bg] mb-5
-        [&_img]:mix-blend-darken [&_img]:object-center [&_img]:max-h-full [&_img]:object-cover [&_img]:h-full [&_img]:w-full
-    "
+    class="flex overflow-hidden rounded-xl bg-[--fade-in-bg] aspect-product mb-5"
     tabindex="-1"
     href="<?= $escaper->escapeUrl($block->getProductUrl($item)) ?>"
     title="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
 >
-    <?= $block->getImage($block->getProductForThumbnail($item), 'wishlist_thumbnail')->toHtml() ?>
+    <img
+        class="mix-blend-darken object-center object-cover h-full w-full"
+        src="<?= $escaper->escapeUrl($imageUrl) ?>"
+        alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
+        loading="lazy"
+    />
 </a>

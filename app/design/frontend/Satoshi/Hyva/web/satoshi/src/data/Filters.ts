@@ -175,9 +175,7 @@ export const Filters = (
 
     onResetButtonClick() {
       this.hideFilters();
-      if (this.isTopLevel) {
-        this.clearAllFilters();
-      }
+      this.clearAllFilters();
     },
 
     clearAllFilters() {

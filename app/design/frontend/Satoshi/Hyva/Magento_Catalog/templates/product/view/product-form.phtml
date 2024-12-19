@@ -12,6 +12,7 @@ use Magento\Framework\Escaper;
 /** @var Product $product */
 $product = $block->getProduct();
 $productType = $product->getTypeId();
+$productId = $product->getId();
 
 /**
  * @see \Magento\Checkout\Block\Cart\Item\Configure::_prepareLayout
@@ -24,13 +25,11 @@ $isPopup = $block->getData('is_popup') ?? false;
 <?php if ($product->isSaleable()): ?>
     <form method="post"
           action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
-          id="product_addtocart_form"
-        <?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
+          id="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+          class="animate-on-transition"
           @submit.prevent="addToCart($event)"
-        <?php if (!$isPopup): ?>
-            class="animate-on-transition max-md:hidden"
-        <?php else: ?>
-            class="max-md:mx-2"
+        <?php if ($product->getOptions()): ?>
+            enctype="multipart/form-data"
         <?php endif; ?>
     >
         <input type="hidden" name="product" value="<?= (int)$product->getId() ?>"/>
@@ -39,7 +38,8 @@ $isPopup = $block->getData('is_popup') ?? false;
         <input type="hidden" name="item" value="<?= (int)$block->getRequest()->getParam('id') ?>">
         <?= $block->getBlockHtml('formkey') ?>
 
-        <?= $block->getChildHtml() ?>
-
+        <?php foreach ($block->getChildNames() as $name): ?>
+            <?= $block->getLayout()->getBlock($name)->setData('is_popup', $isPopup)->toHtml() ?>
+        <?php endforeach; ?>
     </form>
 <?php endif; ?>

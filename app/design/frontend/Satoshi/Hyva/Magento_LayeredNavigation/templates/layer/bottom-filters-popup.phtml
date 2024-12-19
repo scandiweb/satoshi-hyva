@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
-use Satoshi\Theme\Block\Template;
-use Magento\Framework\Escaper;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
@@ -34,7 +34,7 @@ $selectedSort = $block->getData('selected_sort') ?? [];
                 </button>
 
                 <?php if (!count($filters) && !count($selectedSort)): ?>
-                    <p class="pr-3 text-center">
+                    <p class="shrink-0 grow pr-3 text-center">
                         <?= $escaper->escapeHtml(__('The selected filters will appear here.')) ?>
                     </p>
                 <?php else: ?>
@@ -54,25 +54,26 @@ $selectedSort = $block->getData('selected_sort') ?? [];
                         <?php endif; ?>
 
                         <?php foreach ($filters as $filter): ?>
-                            <?php if ($filter->getItemsCount()): ?>
-                                <?php
-                                    $filterName = $filter->getName();
-                                    $filterLabel = $block->stripTags($filter->getLabel());
-                                ?>
-                                <a
-                                    href="<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>"
-                                    class="button button--outline-secondary button--size-sm shrink-0"
-                                    title="<?= /* @noEscape */ $escaper->escapeHtmlAttr(__('Remove active %1 filter: %2', $filterName, $filterLabel)) ?>"
-                                    x-element-transition-trigger
-                                >
-                                    <span class="mr-2"><?= $escaper->escapeHtml(__($filterName)) ?>:</span>
-                                    <span><?= $escaper->escapeHtml($filterLabel) ?></span>
-                                    <span class="ml-3 text-lg">
-                                        <?= $hyvaicons->renderHtml('close'); ?>
-                                    </span>
-                                </a>
-                            <?php endif; ?>
+                            <?php
+                            $filterName = $filter->getName();
+                            $filterLabel = $block->stripTags($filter->getLabel());
+                            ?>
+                            <a
+                                href="<?= $escaper->escapeUrl($filter->getRemoveUrl()) ?>"
+                                class="button button--outline-secondary button--size-sm shrink-0"
+                                title="<?= /* @noEscape */
+                                $escaper->escapeHtmlAttr(__('Remove active %1 filter: %2', $filterName, $filterLabel)) ?>"
+                                x-element-transition-trigger
+                            >
+                                <span class="mr-2"><?= $escaper->escapeHtml(__($filterName)) ?>:</span>
+                                <span><?= $escaper->escapeHtml($filterLabel) ?></span>
+                                <span class="ml-3 text-lg">
+                                    <?= $hyvaicons->renderHtml('close'); ?>
+                                </span>
+                            </a>
                         <?php endforeach; ?>
+
+                        <div class="sticky bottom-0 right-0 top-0 z-10 h-9 shrink-0 basis-20 bg-gradient-to-l from-bg-500 to-transparent pointer-events-none"></div>
                     </div>
                 <?php endif; ?>
             </div>

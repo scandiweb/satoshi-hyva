@@ -16,7 +16,7 @@ use Satoshi\Theme\Block\Template;
 /** @var ProductListItem $productListItemViewModel */
 
 $exists = $block->getProductCollection() && $block->getProductCollection()->getSize();
-$products = $block->getProductCollection()->getItems();
+$products = $block->getProductCollection()->addMediaGalleryData()->getItems();
 $productListItemViewModel = $viewModels->require(ProductListItem::class);
 $sliderItemRenderer = $block->getLayout()->getBlock('product_list_item') ?: $block->getLayout()->createBlock(Template::class);
 $displayViewAll = $block->getData('view_all_button') === 'true';
@@ -90,7 +90,8 @@ $template
         'slides_amount_in_view' => $autoResize ? $slidesAmountInView : ['xs' => 2.2, 'sm' => 2.5, 'md' => 3, 'lg' => 4, 'xl' => 5, 'xxl' => 5],
         'title' => $escaper->escapeHtml($block->getData('heading')),
         'id' => 'collection-' . $block->getData('category_id'),
-        'is_full_page' => true,
+        'is_full_page' => false,
+        'class' => 'slider--pagebuilder'
     ])
     ->render('Magento_Catalog::html/slider.phtml')
 ?>

@@ -151,7 +151,7 @@ export const PopupStore = <PopupStoreType>{
           {
             childList: true,
             subtree: true,
-            attributeFilter: ["class"],
+            attributeFilter: ["class", "style"],
           },
         );
       } else {
