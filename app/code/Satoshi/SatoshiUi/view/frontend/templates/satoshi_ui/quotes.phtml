@@ -59,18 +59,20 @@ foreach ($quotes as $quote) {
             <h1 class="heading text-text-500">
                 <?= $escaper->escapeHtml($block->getData('heading')) ?>
             </h1>
-            <div class="min-h-9">
-                <div x-show="!isPrevBtnDisabled || !isNextBtnDisabled"
-                     class="whitespace-nowrap"
-                     x-transition
-                     x-cloak
-                >
-                    <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
+            <?php if (count($quotes) > 1): ?>
+                <div class="min-h-9">
+                    <div x-show="!isPrevBtnDisabled || !isNextBtnDisabled"
+                         class="whitespace-nowrap"
+                         x-transition
+                         x-cloak
+                    >
+                        <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
+                    </div>
                 </div>
+            <?php endif; ?>
         </div>
-    </div>
 
-    <?= $template
+        <?= $template
             ->setData([
                 'slides' => $slidesHtml,
                 'gap' => 16,
@@ -80,4 +82,5 @@ foreach ($quotes as $quote) {
                 'is_scrollbar_hidden' => true
             ])
             ->render('Magento_Catalog::html/slider.phtml'); ?>
+    </div>
 </div>
