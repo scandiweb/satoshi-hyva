@@ -76,7 +76,11 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             </template>
                         </select>
                     </div>
+                </div>
 
+                <div
+                    class="my-3 flex flex-col gap-3 md:flex-row"
+                >
                     <template x-if="hasAvailableRegions()">
                         <div class="w-full">
                             <label
@@ -107,12 +111,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                             </select>
                         </div>
                     </template>
-                </div>
 
-                <div
-                    class="my-3 flex flex-col gap-3"
-                    :class="{'md:flex-row': directoryData && !hasAvailableRegions()}"
-                >
                     <template x-if="directoryData && !hasAvailableRegions()">
                         <div class="w-full">
                             <label
