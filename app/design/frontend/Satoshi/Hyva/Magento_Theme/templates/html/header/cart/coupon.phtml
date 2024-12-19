@@ -19,9 +19,9 @@ $couponMessage = $block->getCouponMessage();
 $errorMessage = $block->getErrorMessage();
 ?>
 
-<div class="col-span-full" id="cart-error-message">
+<div id="alert-message-container" class="col-span-full">
     <?php if ($errorMessage): ?>
-        <div class="field-error">
+        <div class="field-error max-md:px-4">
             <span class="messages"><?= $errorMessage ?></span>
         </div>
     <?php endif; ?>

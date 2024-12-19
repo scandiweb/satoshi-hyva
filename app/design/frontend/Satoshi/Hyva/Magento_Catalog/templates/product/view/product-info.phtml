@@ -8,10 +8,10 @@ use Hyva\Theme\ViewModel\ProductPage;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
 use Satoshi\Theme\Block\Popup;
+use Satoshi\Catalog\Block\Product\View;
 
-/** @var Template $block */
+/** @var View $block */
 /** @var \Satoshi\Theme\Block\Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
@@ -28,7 +28,8 @@ $productId = $product->getId();
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
-
+$successMessage = $block->getSuccessMessage();
+$errorMessage = $block->getErrorMessage();
 ?>
 <h1 class="heading mb-1 ps-4 text-md leading-tight text-text-500 md:px-0 md:text-4xl max-md:pe-[--price-width]">
     <?= $block->getChildBlock('product.title')->getPageHeading() ?>
@@ -88,7 +89,19 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </div>
     </div>
 
-    <div>
+    <div class="space-y-3">
+        <div id="alert-message-container" class="col-span-full">
+            <?php if ($errorMessage): ?>
+                <div class="field-error max-md:px-4">
+                    <span class="messages"><?= $errorMessage ?></span>
+                </div>
+            <?php elseif ($successMessage): ?>
+                <div class="field-success max-md:px-4">
+                    <span><?= $successMessage ?></span>
+                </div>
+            <?php endif; ?>
+        </div>
+
         <!-- Desktop options -->
         <div class="animate-on-transition max-md:hidden">
             <?= $block->getChildHtml('product.info.form') ?>

@@ -9,7 +9,7 @@
             </block>
         </referenceBlock>
 
-        <referenceBlock name="product.info">
+        <referenceBlock name="product.info" class="Satoshi\Catalog\Block\Product\View">
             <!-- Product actions -->
             <block class="Magento\Catalog\Block\Product\View" name="product.actions"
                    template="Magento_Catalog::product/view/product-actions.phtml"/>
