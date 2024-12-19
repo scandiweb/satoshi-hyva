@@ -13,4 +13,23 @@ class Quotes extends Template
      */
     protected $_template = 'Satoshi_SatoshiUi::satoshi_ui/quotes.phtml';
 
+
+    /**
+     * @return bool|int|null
+     */
+    protected function getCacheLifetime()
+    {
+        return parent::getCacheLifetime() ?: 3600;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCacheKeyInfo()
+    {
+        return [
+            'SATOSHI_QUOTES',
+            uniqid()
+        ];
+    }
 }
