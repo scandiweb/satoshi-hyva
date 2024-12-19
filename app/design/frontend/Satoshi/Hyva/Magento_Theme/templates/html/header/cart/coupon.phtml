@@ -16,16 +16,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 $hasCouponCode = (bool) strlen($block->getCouponCode() ?: "");
 $couponMessage = $block->getCouponMessage();
-$errorMessage = $block->getErrorMessage();
 ?>
-
-<div id="alert-message-container" class="col-span-full">
-    <?php if ($errorMessage): ?>
-        <div class="field-error max-md:px-4">
-            <span class="messages"><?= $errorMessage ?></span>
-        </div>
-    <?php endif; ?>
-</div>
 
 <div
     class="col-span-full"

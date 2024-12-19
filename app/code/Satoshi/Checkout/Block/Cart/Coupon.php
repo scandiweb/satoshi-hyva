@@ -18,16 +18,4 @@ class Coupon extends CoreCoupon
         $this->_checkoutSession->unsCouponMessage();
         return $message;
     }
-
-    /**
-     * Retrieve and clear the error message from the session
-     *
-     * @return string|null
-     */
-    public function getErrorMessage()
-    {
-        $errorMessage = $this->_checkoutSession->getErrorMessage();
-        $this->_checkoutSession->unsErrorMessage();
-        return $errorMessage;
-    }
 }
