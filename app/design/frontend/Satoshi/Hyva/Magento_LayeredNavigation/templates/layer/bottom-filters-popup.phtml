@@ -34,7 +34,7 @@ $selectedSort = $block->getData('selected_sort') ?? [];
                 </button>
 
                 <?php if (!count($filters) && !count($selectedSort)): ?>
-                    <p class="pr-3 text-center">
+                    <p class="shrink-0 grow pr-3 text-center">
                         <?= $escaper->escapeHtml(__('The selected filters will appear here.')) ?>
                     </p>
                 <?php else: ?>
@@ -72,6 +72,8 @@ $selectedSort = $block->getData('selected_sort') ?? [];
                                 </span>
                             </a>
                         <?php endforeach; ?>
+
+                        <div class="sticky bottom-0 right-0 top-0 z-10 h-9 shrink-0 basis-20 bg-gradient-to-l from-bg-500 to-transparent pointer-events-none"></div>
                     </div>
                 <?php endif; ?>
             </div>
