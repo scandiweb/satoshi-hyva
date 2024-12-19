@@ -22,6 +22,8 @@ $decodeHelper = $this->helper(DecodeHelper::class);
 $quotes = $block->getData('quotes');
 $quotes = $decodeHelper->decodeJSONHTMLEntity($quotes);
 $id = uniqid();
+// Test cache
+$block->setData('cache_tags', [$id]);
 
 $slidesHtml = '';
 foreach ($quotes as $quote) {
