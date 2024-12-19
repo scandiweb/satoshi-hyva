@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Customer;
 use Magento\Framework\Escaper;
@@ -21,7 +23,7 @@ if (! $customer->customerLoggedIn()) {
 
 ?>
 
-<div x-data="RecentOrders('<?= $escaper->escapeJs(__("Cannot add product to cart")) ?>')"
+<div x-data="RecentOrders('<?= $escaper->escapeJs(__("Cannot add product to cart.")) ?>')"
     @private-content-loaded.window="receiveReorderData($event.detail.data)"
     class="hidden mb-7"
     :class="{ 'hidden': !itemCount }"
@@ -41,29 +43,30 @@ if (! $customer->customerLoggedIn()) {
                 <template x-if="itemCount">
                     <div>
                         <ol id="cart-sidebar-reorder" class="px-4 flex flex-col gap-3">
-                            <template x-for="product in reorderItems" :key="product.id">
+                            <template x-for="product in reorderItems" :key="product.product_sku">
                                 <li>
-                                    <label class="flex items-center gap-3" :for="checkboxId + product.id">
+                                    <label class="flex items-center gap-3" :for="checkboxId + product.product_sku">
                                         <input
-                                        type="checkbox"
-                                        name="order_items[]"
-                                        :id="checkboxId + product.id"
-                                        :value="product.id"
-                                        :aria-label="product.is_saleable
-                                            ? hyva.str('<?= $escaper->escapeJs(__('Select product "%1" to reorder')) ?>', product.name)
-                                            : hyva.str('<?= $escaper->escapeJs(__('Product "%1" is not salable')) ?>', product.name)
-                                        "
-                                        :disabled="!product.is_saleable"
-                                        class="checkbox__input"
+                                            type="checkbox"
+                                            name="order_items[]"
+                                            :id="checkboxId + product.product_sku"
+                                            :value="product.id"
+                                            :aria-label="product.is_saleable
+                                                ? hyva.str('<?= $escaper->escapeJs(__('Select product "%1" to reorder')) ?>', product.name)
+                                                : hyva.str('<?= $escaper->escapeJs(__('Product "%1" is not salable')) ?>', product.name)
+                                            "
+                                            :disabled="!product.is_saleable"
+                                            class="checkbox__input"
+                                            @change="onCheckboxesChange($event)"
                                         >
                                             <span class="checkbox__control" aria-hidden="true">
                                                 <?= $hyvaicons->renderHtml('checkmark') ?>
                                             </span>
                                             <a
-                                                class="checkbox__label ml-0"
+                                                x-element-transition-trigger
+                                                class="checkbox__label ml-0 hover:underline"
                                                 :href="product.url"
-                                                :title="product.name"
-                                                :aria-describedby="!product.is_saleable || checkboxId + product.id"
+                                                :aria-describedby="!product.is_saleable || checkboxId + product.product_sku"
                                                 x-text="product.name"
                                             ></a>
                                     </label>
@@ -79,13 +82,19 @@ if (! $customer->customerLoggedIn()) {
     </div>
 
     <div class="mt-5">
+        <template x-if="errorMessage">
+            <p class="field-error -mt-3 mb-3">
+                <span class="messages" x-html="errorMessage"></span>
+            </p>
+        </template>
+
         <template x-if="isShowAddToCart">
             <button
                 type="button"
                 @click.prevent="addToCart('<?= $escaper->escapeUrl($block->getFormActionUrl()) ?>')"
                 class="button button--filled-primary max-md:w-full"
-                :class="isLoading && 'button--disabled'"
-                :disabled="isLoading"
+                :class="{'button--disabled': isLoading || !isCheckedItems()}"
+                :disabled="isLoading || !isCheckedItems()"
                 aria-label="<?= $escaper->escapeHtmlAttr(__('Add to cart selected products from list')) ?>"
                 data-addto="cart"
             >
@@ -94,7 +103,9 @@ if (! $customer->customerLoggedIn()) {
                 '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'"><?= $escaper->escapeHtml(__('Add to Cart')) ?></span>
             </button>
         </template>
-        <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>#recentOrders"
+        <a
+            x-element-transition-trigger
+            href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>#recentOrders"
             class="button button--ghost-primary max-md:w-full max-md:mt-4"
             aria-label="<?= $escaper->escapeHtmlAttr(__('View all recent orders')) ?>"
         >
