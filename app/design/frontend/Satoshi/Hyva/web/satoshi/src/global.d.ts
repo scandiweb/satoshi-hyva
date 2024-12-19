@@ -19,6 +19,7 @@ declare global {
       strf: function;
       getBrowserStorage: function;
       releaseFocus: function;
+      postForm: function;
       str(validationMessage: string, missing: number): any | boolean;
     };
     grecaptchaInstanceNewsletter?: number;
