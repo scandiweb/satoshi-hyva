@@ -1,3 +1,5 @@
+import { ProductPageType } from "./ProductPage.ts";
+
 export type OptionSelection = {
   qty: number;
   customQty: string;
@@ -34,7 +36,6 @@ export type BundleOptionsType = {
   basePriceKey?: string;
   productFinalPrice: boolean | Record<string, any>;
   activeSelectOptions: Record<string, any>;
-  selectedBundleOptions?: any[];
   calculateTotalPrice(): void;
   dispatchFinalPrice(): void;
   dispatchOptionSelection(): void;
@@ -42,7 +43,7 @@ export type BundleOptionsType = {
   getSelectionOptionConfig(optionId: string): any;
   getQtyDisabled(optionId: string): boolean;
   setQtyValue(optionId: string, value: string): void;
-};
+} & ProductPageType;
 
 export const BundleOptions = (
   optionConfig: OptionConfig,
@@ -57,19 +58,18 @@ export const BundleOptions = (
     basePriceKey,
     productFinalPrice: false,
     activeSelectOptions: {},
-    selectedBundleOptions: [],
 
     calculateTotalPrice() {
       let selectedProductsPerOption: Record<string, any[]> = {};
 
       // Iterate over all options
       Object.entries(this.optionConfig.options).forEach(([optionId, option]) => {
+        const isMobile = Alpine.store('main').isMobile;
         const optionElement = document.querySelector(
-          `[data-option-id="${optionId}"]`
+          `[data-option-id="${optionId}-${isMobile ? 'mobile' : 'desktop'}"]`
         ) as HTMLInputElement | HTMLSelectElement | null;
-        const qtyElement = document.getElementById(
-          'bundle-option-' + optionId + '-qty-input'
-        ) as HTMLInputElement | null;
+        const id = 'bundle-option-' + optionId + '-qty-input-' + (isMobile ? 'mobile' : 'desktop');
+        const qtyElement = document.getElementById(id) as HTMLInputElement | null;
 
         let selectedOption = selectedProductsPerOption[optionId] || [];
 
@@ -89,7 +89,7 @@ export const BundleOptions = (
           // Handle multi-option selections
           Object.entries(option.selections).forEach(([selectionId, selection]) => {
             const selectionElement = document.querySelector(
-              `[data-option-id="${optionId}-${selectionId}"]`
+              `[data-option-id="${optionId}-${selectionId}-${isMobile ? 'mobile' : 'desktop'}"]`
             ) as HTMLInputElement | HTMLSelectElement | null;
             if (selectionElement && (('checked' in selectionElement && selectionElement.checked) || ('selected' in selectionElement && selectionElement.selected))) {
               selectedOption.push({
@@ -161,6 +161,7 @@ export const BundleOptions = (
     // Dispatch the final price event to update the UI
     dispatchFinalPrice() {
       window.dispatchEvent(new CustomEvent('update-bundle-option-prices', {detail: this.productFinalPrice}));
+      this._updateSelectedVariantCartState();
     },
 
     // Dispatch the selected bundle options event

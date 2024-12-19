@@ -1,9 +1,13 @@
 <?php
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\Block\Template;
 use Satoshi\Theme\ViewModel\Cart\Cart;
 
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
@@ -14,50 +18,50 @@ $cartTotals = $cart->getSerializedCartTotals();
 ?>
 
 <button
-  x-init='$store.cart.setCartTotals(<?= $cartTotals ?>)'
-  id="cart-button"
-  class="contrast-border md:button--filled-secondary button ghost-primary icon-button icon-button--size-lg col-start-5"
-  x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
-  @click="!isCartVisible ? $store.cart.showCart() : $store.cart.hideCart()"
-  type="button"
-  aria-label="<?= __('View shopping cart') ?>"
-  :class="{'hidden': !$store.main.isMobile &&   $store.resizable.isVisible('cart-desktop')}"
+    x-init='$store.cart.setCartTotals(<?= $cartTotals ?>)'
+    id="cart-button"
+    class="contrast-border md:button--filled-secondary button ghost-primary icon-button icon-button--size-lg col-start-5"
+    x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
+    @click="!isCartVisible ? $store.cart.showCart() : $store.cart.hideCart()"
+    type="button"
+    aria-label="<?= __('View shopping cart') ?>"
+    :class="{'hidden': !$store.main.isMobile &&   $store.resizable.isVisible('cart-desktop')}"
 >
-  <div
-    class="contents"
-    x-show="!isCartVisible"
-  >
-    <span
-      <?php if ($cartItemsCount > 0) : ?>
-      style="display: none"
-      <?php endif; ?>
-      x-show="$store.main.totalCartQty === 0"
+    <div
+        class="contents"
+        x-show="!isCartVisible"
     >
-      <?= $hyvaicons->renderHtml('cart-empty') ?>
-    </span>
-    <span
-      <?php if ($cartItemsCount !== 1) : ?>
-      style="display: none"
-      <?php endif; ?>
-      x-show="$store.main.totalCartQty === 1"
+        <span
+            <?php if ($cartItemsCount > 0) : ?>
+                style="display: none"
+            <?php endif; ?>
+            x-show="$store.main.totalCartQty === 0"
+        >
+            <?= $hyvaicons->renderHtml('cart-empty') ?>
+        </span>
+        <span
+            <?php if ($cartItemsCount !== 1) : ?>
+                style="display: none"
+            <?php endif; ?>
+            x-show="$store.main.totalCartQty === 1"
+        >
+            <?= $hyvaicons->renderHtml('cart') ?>
+        </span>
+        <span
+            <?php if ($cartItemsCount < 2) : ?>
+                style="display: none"
+            <?php endif; ?>
+            x-show="$store.main.totalCartQty > 1"
+            class="-scale-x-100"
+        >
+            <?= $hyvaicons->renderHtml('carts') ?>
+        </span>
+    </div>
+    <div
+        class="contents"
+        x-show="isCartVisible"
+        style="display: none;"
     >
-      <?= $hyvaicons->renderHtml('cart') ?>
-    </span>
-    <span
-      <?php if ($cartItemsCount < 2) : ?>
-      style="display: none"
-      <?php endif; ?>
-      x-show="$store.main.totalCartQty > 1"
-      class="-scale-x-100"
-    >
-      <?= $hyvaicons->renderHtml('carts') ?>
-    </span>
-  </div>
-  <div
-    class="contents"
-    x-show="isCartVisible"
-    style="display: none;"
-  >
-    <?= $hyvaicons->renderHtml('close') ?>
-  </div>
+        <?= $hyvaicons->renderHtml('close') ?>
+    </div>
 </button>

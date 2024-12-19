@@ -51,6 +51,7 @@ define([
       );
 
       data.heading = attributes.heading;
+      data.auto_resize_items = attributes.auto_resize_items;
       data.categories =
         attributes.categories === ""
           ? ""
@@ -75,6 +76,7 @@ define([
       var attributes = {
         type: "Satoshi\\SatoshiUi\\Block\\Widget\\Categories",
         heading: data.heading,
+        auto_resize_items: data.auto_resize_items,
         categories: this.encodeWysiwygCharacters(data.categories || ""),
       };
 
