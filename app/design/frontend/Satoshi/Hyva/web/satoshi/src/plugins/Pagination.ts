@@ -51,6 +51,7 @@ export default function (Alpine: AlpineType) {
           appendPaginationContent(html);
           cachePage(nextUrl, document.documentElement.outerHTML);
           history.replaceState({ page: nextPage }, "", nextUrl);
+
           currentPage = nextPage;
 
           if (nextPage === lastPage) {
