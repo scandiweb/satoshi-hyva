@@ -73,6 +73,7 @@ export const TransitionPreview = () =>
         }
       });
 
+      // Code below is added to set isPreview to false when page is reloaded
       document.addEventListener('DOMContentLoaded', () => {
         window.history.state.isPreview = false;
       })
