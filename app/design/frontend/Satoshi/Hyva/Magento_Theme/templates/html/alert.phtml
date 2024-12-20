@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Alert;
+
+/** @var Alert $block */
+/** @var Escaper $escaper */
+
+$alertMessage = $block->getAlertMessage();
+?>
+<div id="alert-message-container"
+     class="fixed inset-x-0 top-[4.5rem] md:top-20 z-[90] md:content-wrapper max-md:px-4 m-auto w-full">
+    <?php if (!empty($alertMessage['status'])): ?>
+        <div
+            class="field-<?= $escaper->escapeHtml($alertMessage['status']) ?> bg-bg-400 rounded-md px-3 py-3"
+            x-data="{ show: true }"
+            x-init="setTimeout(() => show = false, 5000)"
+            x-show="show"
+            x-transition.opacity.duration.500ms
+        >
+            <span class="messages"><?= $escaper->escapeHtml($alertMessage['message']) ?></span>
+        </div>
+    <?php endif; ?>
+</div>

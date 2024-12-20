@@ -58,9 +58,15 @@ class UpdatePost extends SourceUpdatePost
         try {
             $this->cart->truncate()->save();
         } catch (\Magento\Framework\Exception\LocalizedException $exception) {
-            $this->_checkoutSession->setErrorMessage($exception->getMessage());
+            $this->_checkoutSession->setAlertMessage([
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ]);
         } catch (\Exception $exception) {
-            $this->_checkoutSession->setErrorMessage($exception->getMessage() ?? __('We can\'t update the shopping cart.'));
+            $this->_checkoutSession->setAlertMessage([
+                'status' => 'error',
+                'message' => $exception->getMessage() ?? __('We can\'t update the shopping cart.')
+            ]);
         }
     }
 
@@ -82,9 +88,15 @@ class UpdatePost extends SourceUpdatePost
                 $this->cart->updateItems($cartData)->save();
             }
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
-            $this->_checkoutSession->setErrorMessage($this->_objectManager->get(\Magento\Framework\Escaper::class)->escapeHtml($e->getMessage()));
+            $this->_checkoutSession->setAlertMessage([
+                'status' => 'error',
+                'message' => $this->_objectManager->get(\Magento\Framework\Escaper::class)->escapeHtml($e->getMessage())
+            ]);
         } catch (\Exception $e) {
-            $this->_checkoutSession->setErrorMessage($e->getMessage() ?? __('We can\'t update the shopping cart.'));
+            $this->_checkoutSession->setAlertMessage([
+                'status' => 'error',
+                'message' => $e->getMessage() ?? __('We can\'t update the shopping cart.')
+            ]);
             $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
         }
     }

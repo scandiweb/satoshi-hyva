@@ -33,7 +33,10 @@
         <referenceContainer name="main" htmlClass="h-full row-span-2 col-span-3 only:col-span-full flex-grow"/>
         <referenceContainer name="div.sidebar.main" htmlClass="main-sidebar"/>
 
-        <referenceContainer name="header.container" htmlClass="page-header contents"/>
+        <referenceContainer name="header.container" htmlClass="page-header contents">
+            <block class="Satoshi\Theme\Block\Alert" name="alert.message"
+                   template="Magento_Theme::html/alert.phtml" before="-"/>
+        </referenceContainer>
         <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-bg-500">
             <container name="main.wrapper" as="main.wrapper" htmlTag="div" htmlClass="main-wrapper">
                 <block class="Magento\Framework\View\Element\Template" name="main-content" template="Magento_Theme::html/layout/main-content.phtml" before="-" />

@@ -90,17 +90,15 @@ $errorMessage = $block->getErrorMessage();
     </div>
 
     <div class="space-y-3">
-        <div id="alert-message-container" class="col-span-full">
-            <?php if ($errorMessage): ?>
-                <div class="field-error max-md:px-4">
-                    <span class="messages"><?= $errorMessage ?></span>
-                </div>
-            <?php elseif ($successMessage): ?>
-                <div class="field-success max-md:px-4">
-                    <span><?= $successMessage ?></span>
-                </div>
-            <?php endif; ?>
-        </div>
+        <?php if ($errorMessage): ?>
+            <div class="field-error max-md:px-4 col-span-full">
+                <span class="messages"><?= $errorMessage ?></span>
+            </div>
+        <?php elseif ($successMessage): ?>
+            <div class="field-success max-md:px-4 col-span-full">
+                <span><?= $successMessage ?></span>
+            </div>
+        <?php endif; ?>
 
         <!-- Desktop options -->
         <div class="animate-on-transition max-md:hidden">
