@@ -43,7 +43,9 @@ export default function (Alpine: AlpineType) {
 
         if (currentPage < lastPage) {
           const nextPage = currentPage + 1;
-          const nextUrl = `${window.location.pathname}?p=${nextPage}`;
+          const url = new URL(window.location.href);
+          url.searchParams.set("p", nextPage.toString());
+          const nextUrl = url.pathname + url.search;
           const fullUrl = window.location.pathname + window.location.search;
           const html = await fetchPage(nextUrl);
           appendPaginationContent(html);
