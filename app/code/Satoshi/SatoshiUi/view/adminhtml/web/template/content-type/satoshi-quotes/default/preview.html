@@ -5,7 +5,6 @@
   css="data.main.css"
   event="{ mouseover: onMouseOver, mouseout: onMouseOut }, mouseoverBubble: false"
 >
-
   <div class="quotes__heading">
     <h1
       attr="data.heading.attributes"
@@ -13,7 +12,7 @@
       css="data.heading.css"
       data-bind="liveEdit: { field: 'heading', placeholder: $t('Enter heading') }"
     ></h1>
-    <div>
+    <div if="data.quotes_slides.attributes().quotes.length > 1">
       <button
         class="quotes__button"
         event="{ click: scrollPrev }"

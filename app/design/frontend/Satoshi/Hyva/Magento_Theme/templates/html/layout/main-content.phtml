@@ -18,27 +18,21 @@ $class = match($page_type) {
 ?>
 
 <!-- main-content -->
-<main
-  id="MainContent"
-  class="content-for-layout focus-none flex h-full origin-top flex-col transition-transform duration-500 will-change-transform motion-reduce:transition-none"
-  :class="
-      {
-        'is-transition': $store['transition'].isAnimating
-      }
-    "
-  role="main"
-  tabindex="-1"
-  :style="
-      {
-        transform: ($store.popup.isCurrentPopupFocused && !$store.main.isReducedMotion)
-          ? `scale(${$store.main.scaleFactor}) translateY(${$store.main.yOffset}px)`
-          : 'scale(1)'
-      }
-    "
-  @scroll.window="$store.main.setTransformValues"
+<main id="MainContent"
+      class="content-for-layout focus-none flex h-full origin-top flex-col transition-transform duration-500 will-change-transform motion-reduce:transition-none"
+      :class="{
+            'is-transition': $store['transition'].isAnimating
+        }"
+      role="main"
+      tabindex="-1"
+      :style="{
+            transform: ($store.popup.isCurrentPopupFocused && !$store.main.isReducedMotion)
+            ? `scale(${$store.main.scaleFactor}) translateY(${$store.main.yOffset}px)`
+            : 'scale(1)'
+        }"
+      @scroll.window="$store.main.setTransformValues"
 >
-  <!-- TODO: Remove in my account pages -->
-  <div class="<?= $class ?>"></div>
-  <?= $block->getChildHtml() ?>
+    <div class="<?= $class ?>"></div>
+    <?= $block->getChildHtml() ?>
 </main>
 <!-- end-main-content -->

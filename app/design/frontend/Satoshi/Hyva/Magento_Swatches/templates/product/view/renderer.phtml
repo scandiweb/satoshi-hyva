@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Configurable product variant selector in PDP.
+ */
+
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
@@ -33,97 +37,103 @@ $swatchItemBlock->setData('product_id', $productId);
 
 $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
 
-
-$index = 0;
+$isPopup = $block->getData('is_popup');
 ?>
 <?php if ($product->isSaleable() && count($attributes)): ?>
-  <div x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)">
-    <div class="flex flex-col gap-5">
-      <?php foreach ($attributes as $i => $attribute): ?>
-        <?php $index++ ?>
-        <?php $attributeId = $attribute->getAttributeId(); ?>
-        <?php $productAttribute = $attribute->getProductAttribute(); ?>
-        <div
-          role="radiogroup"
-          aria-required="true"
-          aria-label="<?= $escaper->escapeHtmlAttr(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>"
-          class="flex h-full w-full flex-col items-center justify-between gap-3 <?= $escaper->escapeHtmlAttr($productAttribute->getAttributeCode()) ?>"
-        >
-          <?php if ($swatchRendererViewModel->isSwatchAttribute($productAttribute)): ?>
-            <div class="contents">
-              <div class="relative flex h-full w-full flex-row items-center justify-between">
-                <span class="font-semibold text-text-500" id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>">
-                  <?= $escaper->escapeHtml(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>
-                </span>
-
-                <?php if ($index === 1): ?>
-                  <button
-                    type="button"
-                    class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
-                    aria-label="<?= __('Close') ?>"
-                    @click.prevent="hideProductActions()"
-                  >
-                    <?= $hyvaicons->renderHtml('close') ?>
-                  </button>
-                <?php endif; ?>
-              </div>
-
-              <article class="flex h-fit w-full flex-wrap gap-3">
-                <template
-                  x-for="(item, index) in optionConfig.attributes[<?= (int) $attributeId ?>].options"
-                  :key="item.id"
+    <div class="md:mb-7 min-h-[152px]"
+         x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)">
+        <div class="flex flex-col gap-5">
+            <?php $index = 0; ?>
+            <?php foreach ($attributes as $i => $attribute): ?>
+                <?php $index++ ?>
+                <?php $attributeId = $attribute->getAttributeId(); ?>
+                <?php $productAttribute = $attribute->getProductAttribute(); ?>
+                <div
+                    role="radiogroup"
+                    aria-required="true"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>"
+                    class="flex h-full w-full flex-col items-center justify-between gap-3 <?= $escaper->escapeHtmlAttr($productAttribute->getAttributeCode()) ?>"
                 >
-                  <?= /* @noEscape */
-                  $swatchItemBlock
-                    ->setData('attribute_id', $attributeId)
-                    ->setData('form_id', 'product_addtocart_form')
-                    ->toHtml() ?>
-                </template>
-              </article>
-            </div>
-          <?php else: ?>
-            <div class="relative flex h-full w-full flex-row items-center justify-between">
-              <label for="attribute_<?= $attribute->getAttributeId() ?>" class="font-semibold text-text-500">
-                <?= $escaper->escapeHtml(__('Select your %1', strtolower($attribute->getProductAttribute()->getStoreLabel()))) ?>
-              </label>
+                    <?php if ($swatchRendererViewModel->isSwatchAttribute($productAttribute)): ?>
+                        <div class="contents">
+                            <div class="relative flex h-full w-full flex-row items-center justify-between">
+                                <span class="font-semibold text-text-500"
+                                      id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>">
+                                  <?= $escaper->escapeHtml(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>
+                                </span>
 
-              <?php if ($index === 1): ?>
-                <button
-                  type="button"
-                  class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
-                  aria-label="<?= __('Close') ?>"
-                  @click.prevent="hideProductActions()"
-                >
-                  <?= $hyvaicons->renderHtml('close') ?>
-                </button>
-              <?php endif; ?>
-            </div>
-            <article class="flex h-fit w-full flex-wrap gap-3">
-              <select
-                name="super_attribute[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>]"
-                id="attribute_<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>"
-                class="w-full h-9 px-5 input__field"
-                x-on:change="changeOption(<?= (int) $attribute->getAttributeId() ?>, event.target.value)"
-                required
-              >
-                <option value="">
-                  <?= $escaper->escapeHtml(__('Choose an Option...')) ?>
-                </option>
-                <template
-                  x-for="(item, index) in allowedAttributeOptions[<?= (int) $attribute->getAttributeId() ?>]"
-                  :key="item.id"
-                >
-                  <option
-                    :value="item.id"
-                    x-html="item.label"
-                    :selected="selectedValues[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>] === item.id">
-                  </option>
-                </template>
-              </select>
-            </article>
-          <?php endif; ?>
+                                <?php if ($index === 1): ?>
+                                    <button
+                                        type="button"
+                                        class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+                                        aria-label="<?= __('Close') ?>"
+                                        @click.prevent="hideProductActions()"
+                                    >
+                                        <?= $hyvaicons->renderHtml('close') ?>
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+
+                            <article class="flex h-fit w-full flex-wrap gap-3 md:min-h-9">
+                                <template
+                                    x-for="(item, index) in optionConfig.attributes[<?= (int)$attributeId ?>].options"
+                                    :key="item.id"
+                                >
+                                    <?= /* @noEscape */
+                                    $swatchItemBlock
+                                        ->setData('attribute_id', $attributeId)
+                                        ->setData('form_id', "product_addtocart_form_{$productId}_" . ($isPopup ? 'mobile' : 'desktop'))
+                                        ->setData('is_popup', $isPopup)
+                                        ->toHtml() ?>
+                                </template>
+                            </article>
+                        </div>
+                    <?php else: ?>
+                        <div class="relative flex h-full w-full flex-row items-center justify-between">
+                            <label for="attribute_<?= $attribute->getAttributeId() ?>"
+                                   class="font-semibold text-text-500">
+                                <?= $escaper->escapeHtml(__('Select your %1', strtolower($attribute->getProductAttribute()->getStoreLabel()))) ?>
+                            </label>
+
+                            <?php if ($index === 1): ?>
+                                <button
+                                    type="button"
+                                    class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+                                    aria-label="<?= __('Close') ?>"
+                                    @click.prevent="hideProductActions()"
+                                >
+                                    <?= $hyvaicons->renderHtml('close') ?>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                        <article class="flex h-fit w-full flex-wrap gap-3 md:min-h-9">
+                            <label class="sr-only"
+                                   for="attribute_<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>"></label>
+                            <select
+                                name="super_attribute[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>]"
+                                id="attribute_<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>"
+                                class="w-full h-9 px-5 input__field"
+                                x-on:change="changeOption(<?= (int)$attribute->getAttributeId() ?>, event.target.value)"
+                                required
+                            >
+                                <option value="">
+                                    <?= $escaper->escapeHtml(__('Choose an Option...')) ?>
+                                </option>
+                                <template
+                                    x-for="(item, index) in allowedAttributeOptions[<?= (int)$attribute->getAttributeId() ?>]"
+                                    :key="item.id"
+                                >
+                                    <option
+                                        :value="item.id"
+                                        x-html="item.label"
+                                        :selected="selectedValues[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>] === item.id">
+                                    </option>
+                                </template>
+                            </select>
+                        </article>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
         </div>
-      <?php endforeach; ?>
     </div>
-  </div>
 <?php endif; ?>

@@ -2,180 +2,172 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
-use Satoshi\Theme\ViewModel\Cart\Cart;
+use Magento\Framework\Escaper;
+use Magento\Theme\Block\Html\Header;
+use Satoshi\Theme\Block\Popup;
+use Satoshi\Theme\Block\Resizable;
 
+/** @var Escaper $escaper */
+/** @var Header $block */
 /** @var Resizable $resizable */
 /** @var Popup $popup */
+/** @var ViewModelRegistry $viewModels */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
-/** @var Cart $cartItems */
-$cart = $viewModels->require(Cart::class);
-$cartItemsCount = $cart->getCartItemsQty();
-
 ?>
 
-<div
-  x-intersect:enter="$store.main.isHeaderShadowVisible = false"
-  x-intersect:leave="$store.main.isHeaderShadowVisible = true"
-></div>
+<div x-intersect:enter="$store.main.isHeaderShadowVisible = false"
+     x-intersect:leave="$store.main.isHeaderShadowVisible = true"></div>
 
-<header
-  x-data="
-    {
-      isMenuVisible: false,
-      isCartVisible: false,
-      isWishlistVisible: false
-    }
-  "
-  x-init="
-    $watch('$store.popup.currentPopup', (value) => {
-      isMenuVisible = value === 'menu';
-      isCartVisible = value === 'cart';
-      isWishlistVisible = value === 'wishlist';
-    })
-  "
-  class="header sticky left-0 right-0 top-0 z-[36] flex flex-col justify-items-stretch p-3 md:pointer-events-none"
+<header x-data="{
+            isMenuVisible: false,
+            isCartVisible: false,
+            isWishlistVisible: false
+        }"
+        x-init="
+            $watch('$store.popup.currentPopup', (value) => {
+                isMenuVisible = value === 'menu';
+                isCartVisible = value === 'cart';
+                isWishlistVisible = value === 'wishlist';
+            })
+        "
+        class="header sticky left-0 right-0 top-0 z-[36] flex flex-col justify-items-stretch p-3 md:pointer-events-none"
 >
-  <div
-    id="header-shadow"
-    class="pointer-events-none absolute -top-1 left-0 right-0 -z-10 h-[calc(100%+20px)] -translate-y-full bg-gradient-to-b from-shadow to-transparent transition-all duration-300 ease-linear will-change-transform md:hidden"
-    :class="
-      {
-        'translate-y-0': $store.main.isHeaderShadowVisible,
-        '-translate-y-full': !$store.main.isHeaderShadowVisible
-      }
-    "
-  ></div>
+    <div id="header-shadow"
+         class="pointer-events-none absolute -top-1 left-0 right-0 -z-10 h-[calc(100%+20px)] -translate-y-full bg-gradient-to-b from-shadow to-transparent transition-all duration-300 ease-linear will-change-transform md:hidden"
+         :class="{
+            'translate-y-0': $store.main.isHeaderShadowVisible,
+            '-translate-y-full': !$store.main.isHeaderShadowVisible
+        }"
+    ></div>
 
-  <div
-    class="content-wrapper col-start-1 m-auto grid w-full grid-cols-header items-center rounded-md bg-bg-500 py-3 md:flex md:bg-transparent md:px-3"
-    x-data="{n:0}"
-  >
-    <div
-      class="transition-all md:flex"
-      :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}"
+    <div class="content-wrapper col-start-1 m-auto grid w-full grid-cols-header items-center rounded-md bg-bg-500 py-3 md:flex md:bg-transparent md:px-3"
+         x-data="{n:0}"
     >
-      <?=
-        $resizable
-          ->setData([
-            'id' => 'menu-desktop',
-            'initialWidth' => 100,
-            'initialHeight' => 56,
-            'cssClass' => 'resizable--menu md:pointer-events-auto',
-          ])
-          ->setChildTemplate('Magento_Theme::html/header/menu/menu-button.phtml')
-          ->render()
-      ?>
-    </div>
+        <div class="transition-all md:flex"
+             :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}"
+        >
+            <?=
+            $resizable
+                ->setData([
+                    'id' => 'menu-desktop',
+                    'initialWidth' => 105,
+                    'initialHeight' => 56,
+                    'cssClass' => 'resizable--menu md:pointer-events-auto',
+                ])
+                ->setChildTemplate('Magento_Theme::html/header/menu/menu-button.phtml')
+                ->render()
+            ?>
+        </div>
 
-    <div class="col-start-3 flex items-center justify-center md:hidden">
-      <a
-        href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
-        x-element-transition-trigger
-        class="rounded-sm px-3 py-2 text-xl font-semibold"
-        aria-label="<?= __('Go to Home page') ?>"
-      >
-        <?= $block->getChildHtml('logo') ?>
-      </a>
+        <div class="col-start-3 flex items-center justify-center md:hidden">
+            <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
+               x-element-transition-trigger
+               class="rounded-sm px-3 py-2 text-xl font-semibold"
+               aria-label="<?= __('Go to Home page') ?>"
+            >
+                <?= $block->getChildHtml('logo') ?>
+            </a>
+        </div>
+        <div class="contents md:flex md:flex-grow md:justify-end">
+            <div class="col-start-5 transition-all md:flex md:items-center z-10"
+                 :class="{ 'md:drop-shadow-lg': $store.main.isHeaderShadowVisible }"
+            >
+                <?=
+                $resizable
+                    ->setData([
+                        'id' => 'search-desktop',
+                        'initialWidth' => 56,
+                        'initialHeight' => 56,
+                        'right' => true,
+                        'cssClass' => 'resizable--search max-md:hidden md:pointer-events-auto',
+                        'onTransitionEnd' => '$store.resizable.isVisible(`search-desktop`) ? document.querySelector(`#searchInput`).focus(): null',
+                    ])
+                    ->setChildTemplate('Magento_Theme::html/header/search/search-button.phtml')
+                    ->render()
+                ?>
+                <?php
+                // Temporarily disabled wishlist
+                // $resizable
+                //     ->setData([
+                //         'id' => 'wishlist-desktop',
+                //         'initialWidth' => 56,
+                //         'initialHeight' => 56,
+                //         'right' => true,
+                //         'cssClass' => 'resizable--wishlist md:pointer-events-auto',
+                //     ])
+                //     ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-button.phtml')
+                //     ->render()
+                ?>
+                <?=
+                $resizable
+                    ->setData([
+                        'id' => 'cart-desktop',
+                        'initialWidth' => 56,
+                        'initialHeight' => 56,
+                        'right' => true,
+                        'cssClass' => 'resizable--cart md:pointer-events-auto',
+                    ])
+                    ->setChildTemplate('Magento_Theme::html/header/cart/minicart-button.phtml')
+                    ->render()
+                ?>
+            </div>
+        </div>
     </div>
-    <div class="contents md:flex md:flex-grow md:justify-end">
-      <div
-        class="transition-all flex items-center z-10"
-        :class="{ 'md:drop-shadow-lg': $store.main.isHeaderShadowVisible }"
-      >
-        <?=
-          $resizable
-            ->setData([
-              'id' => 'search-desktop',
-              'initialWidth' => 56,
-              'initialHeight' => 56,
-              'right' => true,
-              'cssClass' => 'resizable--search max-md:hidden md:pointer-events-auto',
-            ])
-            ->setChildTemplate('Magento_Theme::html/header/search/search-button.phtml')
-            ->render()
-        ?>
-        <?=
-          $resizable
-            ->setData([
-              'id' => 'wishlist-desktop',
-              'initialWidth' => 56,
-              'initialHeight' => 56,
-              'right' => true,
-              'cssClass' => 'resizable--wishlist md:pointer-events-auto',
-            ])
-            ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-button.phtml')
-            ->render()
-        ?>
-        <?=
-          $resizable
-            ->setData([
-              'id' => 'cart-desktop',
-              'initialWidth' => 56,
-              'initialHeight' => 56,
-              'right' => true,
-              'cssClass' => 'resizable--cart md:pointer-events-auto',
-            ])
-            ->setChildTemplate('Magento_Theme::html/header/cart/minicart-button.phtml')
-            ->render()
-        ?>
-      </div>
-    </div>
-  </div>
-  <div id="end-of-header"></div>
+    <div id="end-of-header"></div>
 </header>
 
 <div class="pointer-events-none sticky top-[88px] z-30 h-[1px] max-md:hidden">
-  <div
-    class="absolute inset-x-0 -top-[72px] col-start-3 flex min-h-[56px] items-center justify-center text-primary-500">
-    <a
-      href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
-      x-element-transition-trigger
-      class="heading pointer-events-auto rounded-sm px-3 py-2 text-xl text-primary-500 transition-all"
-      :class="{'md:drop-shadow-xl': $store.main.isHeaderShadowVisible}"
-      tabindex="3"
-      x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
-      aria-label="<?= __('Go to Home page') ?>"
-    >
-      <?= $block->getChildHtml('logo') ?>
-    </a>
-  </div>
+    <div class="absolute inset-x-0 -top-[72px] col-start-3 flex min-h-[56px] items-center justify-center text-primary-500">
+        <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
+           x-element-transition-trigger
+           class="heading pointer-events-auto rounded-sm px-3 py-2 text-xl text-primary-500 transition-all"
+           :class="{'md:drop-shadow-xl': $store.main.isHeaderShadowVisible}"
+           tabindex="3"
+           x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
+           aria-label="<?= __('Go to Home page') ?>"
+        >
+            <?= $block->getChildHtml('logo') ?>
+        </a>
+    </div>
 </div>
 
 <?=
-  $popup
+$popup
     ->setData([
-      'id' => 'menu',
-      'isFocused' => true,
-      'isFullScreen' => true,
-      'desktopTarget' => 'menu-desktop',
+        'id' => 'menu',
+        'isFocused' => true,
+        'isFullScreen' => true,
+        'desktopTarget' => 'menu-desktop',
     ])
     ->setChildTemplate('Magento_Theme::html/header/menu/menu.phtml')
     ->render()
 ?>
 
-<?=
-  $popup
-    ->setData([
-      'id' => 'wishlist',
-      'isFocused' => true,
-      'isFullScreen' => true,
-      'desktopTarget' => 'wishlist-desktop',
-    ])
-    ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-overlay.phtml')
-    ->toHtml()
+<?php
+// Disable wishlist temporarily
+// $popup
+//     ->setData([
+//         'id' => 'wishlist',
+//         'isFocused' => true,
+//         'isFullScreen' => true,
+//         'desktopTarget' => 'wishlist-desktop',
+//     ])
+//     ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-overlay.phtml')
+//     ->toHtml()
 ?>
 
 <?=
-  $popup
+$popup
     ->setData([
-      'id' => 'cart',
-      'isFocused' => true,
-      'isFullScreen' => true,
-      'desktopTarget' => 'cart-desktop',
+        'id' => 'cart',
+        'isFocused' => true,
+        'isFullScreen' => true,
+        'desktopTarget' => 'cart-desktop',
     ])
     ->setChildTemplate('Magento_Theme::html/header/cart/minicart-overlay.phtml')
     ->toHtml()

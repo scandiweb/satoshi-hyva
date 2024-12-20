@@ -1,0 +1,86 @@
+<?php
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Hyva\Theme\ViewModel\ProductPage;
+use Hyva\Theme\ViewModel\ProductPrice;
+use Magento\Catalog\Block\Product\View;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+
+/** @var View $block */
+/** @var Escaper $escaper */
+/** @var Product $product */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPrice $productPriceViewModel */
+$productPriceViewModel = $viewModels->require(ProductPrice::class);
+
+/** @var ViewModelRegistry $viewModels */
+$currentProduct = $viewModels->require(CurrentProduct::class);
+
+$product = $currentProduct->get();
+
+if (!$product) {
+    return '';
+}
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+?>
+<div
+    x-data="{
+        activeProductsPriceData: false,
+        getConfiguredTierPrices() {
+            if (this.activeProductsPriceData && this.activeProductsPriceData.tierPrices) {
+                return this.activeProductsPriceData.tierPrices.map((tierPrice) => {
+                    return {
+                        qty: tierPrice.qty,
+                        price: tierPrice.price,
+                        basePrice: tierPrice.basePrice,
+                        percentage: tierPrice.percentage
+                    }
+                })
+            }
+            return false;
+        },
+        getItemHtml(item) {
+            const price = <?php if ($productPriceViewModel->displayPriceInclAndExclTax()): ?>
+                `${hyva.formatPrice(item.price)} (<?= $escaper->escapeJs(__('Excl. Tax')) ?>: ${hyva.formatPrice(item.basePrice)})`;
+            <?php else: ?>
+            hyva.formatPrice(item.price);
+            <?php endif; ?>
+            return '<?= $escaper->escapeHtml(__('Buy %1 for %2 each and', '%1', '%2')) ?>'
+                .replace('%1', item.qty)
+                .replace('%2', price)
+
+        },
+        eventListeners: {
+            ['@update-prices-<?= (int)$product->getId() ?>.window'](event) {
+                this.activeProductsPriceData = event.detail;
+            }
+        }
+    }"
+    x-bind="eventListeners"
+>
+    <div x-show="getConfiguredTierPrices()"
+         x-transition
+    >
+        <template x-for="(tierPrice, index) in getConfiguredTierPrices()">
+            <div role="alert"
+                 class="relative flex w-full gap-1.5"
+                 :class="{
+                    'mb-4': (index+1) === getConfiguredTierPrices().length
+                }"
+            >
+                <span x-html="getItemHtml(tierPrice)"></span>
+                <strong class="benefit">
+                    <?= $escaper->escapeHtml(__('save')) ?>
+                    <span class="percent" x-text="tierPrice.percentage + '%'"></span>
+                </strong>
+            </div>
+        </template>
+    </div>
+</div>

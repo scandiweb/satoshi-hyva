@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Hyva\Theme\ViewModel\StoreConfig;
 use Magento\Catalog\Block\Product\View\Gallery;
+use Magento\Catalog\Helper\Image;
 use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
-use Magento\Catalog\Helper\Image;
-use Hyva\Theme\ViewModel\HeroiconsSolid;
 
 /** @var Template $template */
 /** @var Escaper $escaper */
@@ -93,8 +93,6 @@ if ($product) {
                     width="100%"
                     class="max-h-full w-auto object-center object-cover h-full mix-blend-darken"
                     alt="<?= $escaper->escapeHtmlAttr($mainImage ? $mainImage->getData('label') : $productName) ?>"
-                    class=" inset-0 object-contain object-center w-full h-full m-auto"
-                    loading="lazy"
                     src="<?= $mainImageUrl ?>"
                 >
                 <?= $template->setData(['product' => $product, 'class' => 'md:hidden bottom left'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>

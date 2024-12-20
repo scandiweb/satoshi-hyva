@@ -22,11 +22,6 @@ define([
   "Magento_PageBuilder/js/utils/object",
 ], function (_widgetDirectiveAbstract, _object) {
   /**
-   * Copyright © Magento, Inc. All rights reserved.
-   * See COPYING.txt for license details.
-   */
-
-  /**
    * @api
    */
   var WidgetDirective = /*#__PURE__*/ (function (_widgetDirectiveAbstr) {
@@ -54,7 +49,7 @@ define([
         config,
       );
 
-      data.collage_items = JSON.parse(
+      data.collage_items = attributes.collage_items === "" ? "" : JSON.parse(
         this.decodeWysiwygCharacters(attributes.collage_items || ""),
       );
 

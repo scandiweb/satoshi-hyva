@@ -41,6 +41,7 @@ export type ProductPageType = {
   increaseQty(): void;
   setQuantity(quantity: number): void;
   addToCart(event: Event): void;
+  listenAddedToCart(formData: FormData): void;
   showProductActions(): void;
   hideProductActions(): void;
   _handleStickyProductActionsClosure(): boolean | void;
@@ -146,7 +147,6 @@ export const ProductPage = () =>
     },
 
     get isProductBeingAdded() {
-      // TODO: Also check selected options
       return Alpine.store("cart").addingItemIds.includes(this.productId);
     },
 
@@ -301,9 +301,10 @@ export const ProductPage = () =>
       });
 
       if (!this.isGroupValid) {
+        const selector = Alpine.store('main').isMobile ? `#product_addtocart_form_${this.productId}_mobile` : `#product_addtocart_form_${this.productId}_desktop`;
         // this triggers an immediate display of the form errors
         // @ts-ignore
-        document.querySelector("#product_addtocart_form")!.reportValidity();
+        document.querySelector(selector)!.reportValidity();
         return false;
       }
       return true;
@@ -319,11 +320,36 @@ export const ProductPage = () =>
 
       const formEl = event.target as HTMLFormElement;
       const formData = new FormData(formEl);
+      formData.set('form_key', window.hyva.getFormKey())
 
       if (!Alpine.store("cart").addingItemIds.includes(this.productId)) {
         Alpine.store("cart").addingItemIds.push(this.productId);
       }
 
+      this.listenAddedToCart(formData);
+
+      this.isLoadingCart = true;
+      fetch(formEl.action, {
+        method: formEl.method,
+        body: formData,
+      })
+        .then((result) => {
+          return result.text();
+        })
+        .then((content) => {
+          window.hyva.replaceDomElement("#cart-button", content);
+        })
+        .catch((error) => console.error("Error:", error))
+        .finally(() => {
+          Alpine.store("cart").addingItemIds = Alpine.store(
+            "cart",
+          ).addingItemIds.filter((itemId) => itemId !== this.productId);
+          this.hideProductActions();
+          this.isLoadingCart = false;
+        });
+    },
+
+    listenAddedToCart(formData) {
       window.addEventListener(
         "private-content-loaded",
         (event: any) => {
@@ -331,7 +357,12 @@ export const ProductPage = () =>
 
           // Grouped products
           if (this.groupedIds.length) {
-            const itemIds = this.groupedIds
+            const groupedIdsWithQty = this.groupedIds.filter(groupId => {
+              const quantity = formData.get(`super_group[${groupId}]`);
+              return parseInt(<string>quantity) > 0;
+            });
+
+            const itemIds = groupedIdsWithQty
               .map(
                 (id) =>
                   items.find((item: CartItem) => item.product_id === id)
@@ -359,27 +390,6 @@ export const ProductPage = () =>
         },
         { once: true },
       );
-
-      this.isLoadingCart = true;
-      fetch(formEl.action, {
-        method: formEl.method,
-        body: formData,
-      })
-        .then((result) => {
-          return result.text();
-        })
-        .then((content) => {
-          window.hyva.replaceDomElement("#cart-button", content);
-          window.hyva.replaceDomElement("#product-actions", content);
-        })
-        .catch((error) => console.error("Error:", error))
-        .finally(() => {
-          Alpine.store("cart").addingItemIds = Alpine.store(
-            "cart",
-          ).addingItemIds.filter((itemId) => itemId !== this.productId);
-          this.hideProductActions();
-          this.isLoadingCart = false;
-        });
     },
 
     showProductActions() {
@@ -412,9 +422,9 @@ export const ProductPage = () =>
 
     scrollToTop() {
       if (typeof this.scrollToPreviewTop !== "undefined") {
-        this.scrollToPreviewTop();
+        this.scrollToPreviewTop()
       } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({top: 0, behavior: "smooth"});
       }
     },
 
@@ -542,7 +552,7 @@ export const ProductPage = () =>
 
         newAllowedAttributeOptions[attribute.id] = allAttributes[
           attribute.id
-        ].options.filter((option: Record<string, any>) => {
+          ].options.filter((option: Record<string, any>) => {
           return !!option.products.find((product: string) => {
             return availableIndexes.includes(product);
           });
@@ -629,7 +639,7 @@ export const ProductPage = () =>
 
     getSwatchConfig(attributeId, optionId) {
       return this.swatchConfig[attributeId] &&
-        this.swatchConfig[attributeId][optionId]
+      this.swatchConfig[attributeId][optionId]
         ? this.swatchConfig[attributeId][optionId]
         : false;
     },
@@ -697,7 +707,7 @@ export const ProductPage = () =>
       }
 
       // Otherwise - if no config is present for the target option - use the type of the first option
-      // with a type property from the attribute, thus assuming its the same type as the target option.
+      // with a type property from the attribute, thus assuming it's the same type as the target option.
       // (This edge case condition can occur on single swatch products if some options are not salable)
       return this.getTypeOfFirstOption(attributeId);
     },
@@ -728,12 +738,12 @@ export const ProductPage = () =>
     findProductIdsForPartialSelection(optionSelection) {
       const candidateProducts = Object.values(optionSelection).reduce(
         (candidates: any, optionId) => {
-          const newCandidates = this.getProductIdsForOption({ id: optionId });
+          const newCandidates = this.getProductIdsForOption({id: optionId});
           return candidates === null
             ? newCandidates
             : candidates.filter((productId: string) =>
-                newCandidates.includes(productId),
-              );
+              newCandidates.includes(productId),
+            );
         },
         null,
       );
@@ -777,11 +787,11 @@ export const ProductPage = () =>
         // if it is, filter all products to only include those that match the selected attribute value
         const productsWithAttributeMatch = selectedValues[attribute]
           ? productIndexIds.filter((productIndex) => {
-              return (
-                this.optionConfig!.index[productIndex][attribute] ===
-                this.selectedValues[attribute]
-              );
-            })
+            return (
+              this.optionConfig!.index[productIndex][attribute] ===
+              this.selectedValues[attribute]
+            );
+          })
           : [];
 
         // if we found matches, only keep the ones that match, otherwise, keep all products
@@ -814,11 +824,11 @@ export const ProductPage = () =>
       if (this.productIndex) {
         const images = this.optionConfig!.images[this.productIndex];
         images &&
-          window.dispatchEvent(
-            new CustomEvent("update-gallery", {
-              detail: this.sortImagesByPosition(images),
-            }),
-          );
+        window.dispatchEvent(
+          new CustomEvent("update-gallery", {
+            detail: this.sortImagesByPosition(images),
+          }),
+        );
       } else {
         window.dispatchEvent(new Event("reset-gallery"));
       }
@@ -828,8 +838,8 @@ export const ProductPage = () =>
         return x.position === y.position
           ? 0
           : parseInt(x.position) > parseInt(y.position)
-          ? 1
-          : -1;
+            ? 1
+            : -1;
       });
     },
   };

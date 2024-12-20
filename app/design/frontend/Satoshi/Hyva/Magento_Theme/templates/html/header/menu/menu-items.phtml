@@ -35,7 +35,8 @@ if (!$menuItems) {
     :class="{
         'menu__level--current': history[history.length - 1] === '<?= $id ?>',
         'menu__level--visible': history.includes('<?= $id ?>'),
-        'menu__level--same-depth': <?= $level ?> <= delayedLevel
+        'menu__level--same-depth': <?= $level ?> <= delayedLevel,
+        'hidden': !$store.resizable.isVisible('menu-desktop'),
     }"
     :inert="!history.includes('<?= $id ?>')"
     data-menu-level="<?= $id ?>"
@@ -52,7 +53,6 @@ if (!$menuItems) {
                         aria-label="<?= __('Close menu') ?>"
                         aria-controls="menu-desktop"
                         :aria-expanded="$store.resizable.isVisible('menu-desktop')"
-                        :class="{'hidden': !$store.resizable.isVisible('menu-desktop')}"
                     >
                         <div class="contents">
                             <?= $hyvaicons->renderHtml('close'); ?>

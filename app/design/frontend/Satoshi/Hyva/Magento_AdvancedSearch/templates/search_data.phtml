@@ -1,0 +1,45 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\AdvancedSearch\Block\SearchData;
+use Magento\Framework\Escaper;
+use Magento\Framework\Locale\LocaleFormatter;
+use Magento\Search\Model\QueryResult;
+
+/** @var Escaper $escaper */
+/** @var LocaleFormatter $localeFormatter */
+/** @var QueryResult[] $data */
+/** @var SearchData $block */
+
+// The translated title "Related search terms" returned by the \Magento\AdvancedSearch\Block\Suggestions::getTitle() originates in magento/module-advanced-search/etc/di.xml
+// It can be adjusted with di.xml or in the theme with layout XML by declaring `title` argument on the `search_recommendations` block.
+
+$title = $block->getData('title') ? __($block->getData('title')) : $block->getTitle();
+
+?>
+<?php if (count($block->getItems())): ?>
+    <div class="my-6">
+        <h3 class="mb-3 font-bold"><?= $escaper->escapeHtml($title) ?></h3>
+        <div class="flex flex-wrap gap-3">
+            <?php foreach ($block->getItems() as $additionalInfo): ?>
+                <a
+                    class="button button--outline-primary bg-bg-400"
+                    href="<?= $escaper->escapeUrl($block->getLink($additionalInfo->getQueryText())) ?>"
+                    x-element-transition-trigger
+                >
+                    <span><?= $escaper->escapeHtml($additionalInfo->getQueryText()) ?></span>
+                    <?php if ($block->isShowResultsCount()): ?>
+                        <?php $resultsCount = $localeFormatter->formatNumber((int) $additionalInfo->getResultsCount()) ?>
+                        <span
+                            class="count"
+                            aria-label="<?= $escaper->escapeHtmlAttr($resultsCount > 1
+                                ? __('%1 search results', $resultsCount)
+                                : __('1 search result')) ?>"
+                        >(<?= /* @noEscape */ $resultsCount ?>)</span>
+                    <?php endif; ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>

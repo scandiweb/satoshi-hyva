@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Satoshi\SatoshiUi\Block\Quotes;
-use Satoshi\Theme\Block\Template;
 use Satoshi\SatoshiUi\Helper\Decode as DecodeHelper;
-use Hyva\Theme\ViewModel\SvgIcons;
+use Satoshi\Theme\Block\Template;
 
 /** @var Quotes $block */
 /** @var Template $template */
@@ -51,19 +52,27 @@ foreach ($quotes as $quote) {
 ?>
 <div>
     <div
-        class="rounded-md bg-secondary-400 px-7 py-8 md:p-12"
+        class="[[data-appearance='contained']_&]:rounded-md bg-secondary-400 px-7 py-8 md:p-12"
         x-data="Slider()"
     >
         <div class="mb-7 flex w-full items-center justify-between md:mb-8">
             <h1 class="heading text-text-500">
                 <?= $escaper->escapeHtml($block->getData('heading')) ?>
             </h1>
-        <div>
-            <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
+            <?php if (count($quotes) > 1): ?>
+                <div class="min-h-9">
+                    <div x-show="!isPrevBtnDisabled || !isNextBtnDisabled"
+                         class="whitespace-nowrap"
+                         x-transition
+                         x-cloak
+                    >
+                        <?= $template->render('Magento_Catalog::html/slider-buttons.phtml') ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
-    </div>
 
-    <?= $template
+        <?= $template
             ->setData([
                 'slides' => $slidesHtml,
                 'gap' => 16,
@@ -73,4 +82,5 @@ foreach ($quotes as $quote) {
                 'is_scrollbar_hidden' => true
             ])
             ->render('Magento_Catalog::html/slider.phtml'); ?>
+    </div>
 </div>

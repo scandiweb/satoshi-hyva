@@ -9,4 +9,28 @@
         for="Magento\Wishlist\CustomerData\Wishlist"
         type="Satoshi\Wishlist\CustomerData\Wishlist"
     />
+    <preference
+        for="Magento\Wishlist\Controller\Index\Send"
+        type="Satoshi\Wishlist\Controller\Index\Send"
+    />
+    <preference
+        for="Magento\Wishlist\Block\Customer\Sharing"
+        type="Satoshi\Wishlist\Block\Customer\Sharing"
+    />
+    <preference
+        for="Magento\Wishlist\Controller\Index\Update"
+        type="Satoshi\Wishlist\Controller\Index\Update"
+    />
+    <preference
+        for="Magento\Wishlist\Controller\Index\Remove"
+        type="Satoshi\Wishlist\Controller\Index\Remove"
+    />
+    <preference
+        for="Magento\Wishlist\Model\ItemCarrier"
+        type="Satoshi\Wishlist\Model\ItemCarrier"
+    />
+    <preference
+        for="Magento\Wishlist\Block\Customer\Wishlist"
+        type="Satoshi\Wishlist\Block\Customer\Wishlist"
+    />
 </config>

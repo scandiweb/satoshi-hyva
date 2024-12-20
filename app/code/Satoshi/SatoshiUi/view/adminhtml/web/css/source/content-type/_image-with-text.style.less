@@ -52,6 +52,20 @@
   object-position: center;
 }
 
+.image-with-text__image svg {
+  width: 100%;
+  object-fit: cover;
+  background-color: #d0d2cc;
+  min-height: 300px;
+  object-position: center;
+}
+
+.image-with-text__wysiwyg {
+  color: #363030 !important;
+  margin-bottom: 12px !important;
+  font-size: 16px !important;
+}
+
 @media (min-width: 768px) {
   .image-with-text {
     display: grid;
@@ -85,6 +99,10 @@
   }
 
   .image-with-text__image img {
+    height: 100%;
+  }
+
+  .image-with-text__image svg {
     height: 100%;
   }
 }

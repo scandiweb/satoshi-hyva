@@ -34,7 +34,7 @@ define([
   _delayUntil,
   _editor,
   _factory,
-  _preview,
+  _preview
 ) {
   /**
    * Copyright © Magento, Inc. All rights reserved.
@@ -184,7 +184,7 @@ define([
         };
       }
       wysiwygConfig.adapter.settings.fixed_toolbar_container =
-        "#" + this.contentType.id + " .pagebuilder-rich-text-text-content";
+        "#" + this.contentType.id + " .pagebuilder-wygiwyg-text-content";
 
       return (0, _factory)(
         this.contentType.id,
@@ -193,7 +193,7 @@ define([
         wysiwygConfig,
         this.contentType.dataStore,
         "content",
-        this.contentType.stageId,
+        this.contentType.stageId
       ).then(function (wysiwyg) {
         _this3.wysiwyg = wysiwyg;
         return wysiwyg;
@@ -232,7 +232,7 @@ define([
                 function () {
                   return _this4.element.classList.contains("mce-edit-focus");
                 },
-                10,
+                10
               );
             })
             .catch(function (error) {
@@ -260,7 +260,7 @@ define([
       var targetIndex = (0, _editor.findNodeIndex)(
         this.element,
         event.target.tagName,
-        event.target,
+        event.target
       );
       this.handledDoubleClick = true;
       this.wysiwygDeferred.then(function () {
@@ -270,7 +270,7 @@ define([
           target = (0, _editor.getNodeByIndex)(
             _this5.element,
             event.target.tagName,
-            targetIndex,
+            targetIndex
           );
         }
 
@@ -311,7 +311,7 @@ define([
 
     _proto.onTextareaFocus = function onTextareaFocus() {
       (0, _jquery)(this.textarea)
-        .closest(".pagebuilder-rich-text-text-content")
+        .closest(".pagebuilder-wygiwyg-text-content")
         .addClass("pagebuilder-toolbar-active");
 
       _events.trigger("stage:interactionStart");
@@ -322,7 +322,7 @@ define([
 
     _proto.onTextareaBlur = function onTextareaBlur() {
       (0, _jquery)(this.textarea)
-        .closest(".pagebuilder-rich-text-text-content")
+        .closest(".pagebuilder-wygiwyg-text-content")
         .removeClass("pagebuilder-toolbar-active");
 
       _events.trigger("stage:interactionStop");
@@ -361,7 +361,7 @@ define([
       this.contentType.dataStore.subscribe(function (state) {
         var sanitizedContent = (0,
         _editor.replaceDoubleQuoteWithSingleQuoteWithinVariableDirective)(
-          (0, _editor.escapeDoubleQuoteWithinWidgetDirective)(state.content),
+          (0, _editor.escapeDoubleQuoteWithinWidgetDirective)(state.content)
         );
 
         if (sanitizedContent !== state.content) {
@@ -369,7 +369,7 @@ define([
         }
       }); // After drop of new content type open TinyMCE and focus
 
-      _events.on("text:dropAfter", function (args) {
+      _events.on("satoshi_rich_text:dropAfter", function (args) {
         if (args.id === _this7.contentType.id) {
           _this7.afterRenderDeferred.then(function () {
             if (_this7.isWysiwygSupported()) {
@@ -389,7 +389,7 @@ define([
         var scrollHeight = this.textarea.scrollHeight;
         var minHeight = parseInt(
           (0, _jquery)(this.textarea).css("min-height"),
-          10,
+          10
         );
 
         if (scrollHeight === minHeight) {

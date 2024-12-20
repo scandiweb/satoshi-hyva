@@ -9,4 +9,11 @@
         for="Magento\Checkout\Controller\Cart\Add"
         type="Satoshi\Checkout\Controller\Cart\Add"
     />
+    <preference
+        for="Magento\Checkout\Controller\Cart\Addgroup"
+        type="Satoshi\Checkout\Controller\Cart\Addgroup"
+    />
+    <type name="Magento\Checkout\CustomerData\Cart">
+        <plugin name="cartdata.carttotals" type="Satoshi\Checkout\CustomerData\CartPlugin"/>
+    </type>
 </config>

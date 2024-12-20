@@ -16,6 +16,10 @@
         type="Satoshi\Theme\ViewModel\ProductListItem"
     />
     <preference
+        for="Hyva\Theme\ViewModel\SvgIcons"
+        type="Satoshi\Theme\ViewModel\SvgIcons"
+    />
+    <preference
         for="Magento\Theme\Block\Html\Footer"
         type="Satoshi\Theme\Block\Html\Footer"
     />

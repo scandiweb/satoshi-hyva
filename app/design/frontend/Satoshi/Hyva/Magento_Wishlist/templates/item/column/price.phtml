@@ -7,14 +7,21 @@ use Magento\Wishlist\Block\Customer\Wishlist\Item\Column\Cart;
 /** @var Item $item */
 $item = $block->getItem();
 $product = $item->getProduct();
+$shouldRenderQtyInput = $item->canHaveQty() && $product->isVisibleInSiteVisibility();
 ?>
 
-<div class="flex justify-between items-center mb-5 [&_.price]:text-text-500 [&_.price]:text-lg [&_.price]:font-bold">
+<div
+    class="
+        flex justify-between items-center mb-5 [&_.price-box_.price]:text-text-500 [&_.price-box_.price]:text-lg [&_.price-box_.price]:font-bold
+        <?= $shouldRenderQtyInput ? '[&_.product-details-tooltip]:-translate-x-[60%]' : '[&_.product-details-tooltip]:-translate-x-full' ?>
+    "
+>
     <?php foreach ($block->getChildNames() as $childName): ?>
-        <?= /* @noEscape */ $block->getLayout()->renderElement($childName, false) ?>
-    <?php endforeach;?>
+        <?= /* @noEscape */
+        $block->getLayout()->renderElement($childName, false) ?>
+    <?php endforeach; ?>
 
-    <?php if ($item->canHaveQty() && $product->isVisibleInSiteVisibility()): ?>
+    <?php if ($shouldRenderQtyInput): ?>
         <label
             class="sr-only"
             for="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
@@ -27,9 +34,11 @@ $product = $item->getProduct();
             type="number"
             x-ref="product-qty-<?= $escaper->escapeHtmlAttr($item->getId()) ?>"
             data-role="qty"
+            data-product-sku="<?= $escaper->escapeHtmlAttr($product->getSku()) ?>"
             id="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
             name="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
-            value="<?= /* @noEscape */ $block->getAddToCartQty($item) * 1 ?>"
+            value="<?= /* @noEscape */
+            $block->getAddToCartQty($item) * 1 ?>"
             class="input__field input__field--outline px-5 py-2.5 border-bg-600 placeholder:text-border-color w-20"
             <?= $product->isSaleable() ? '' : 'disabled' ?>
         >
