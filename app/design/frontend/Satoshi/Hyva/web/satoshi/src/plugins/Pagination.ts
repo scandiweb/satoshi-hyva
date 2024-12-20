@@ -48,14 +48,13 @@ export default function (Alpine: AlpineType) {
           urlParams.set("p", nextPage.toString());
 
           const nextUrl = `${window.location.pathname}?${urlParams.toString()}`;
-          const fullUrl = `${window.location.pathname}?${urlParams.toString()}`;
 
           const html = await fetchPage(nextUrl);
           appendPaginationContent(html);
 
-          cachePage(fullUrl, document.documentElement.outerHTML);
+          cachePage(nextUrl, document.documentElement.outerHTML);
 
-          history.replaceState({ page: nextPage }, "", fullUrl);
+          history.replaceState({ page: nextPage }, "", nextUrl);
           currentPage = nextPage;
 
           if (nextPage === lastPage) {
