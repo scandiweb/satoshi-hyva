@@ -278,11 +278,8 @@ export const ProductPage = () =>
     },
 
     setQuantity(quantity: number) {
-      //update dom when variantQty is 0
-      if (Math.max(0, Number(quantity)) === 0 && this.variantQty === 0) {
-        this.variantQty = Number(quantity);
-      }
       this.variantQty = Math.max(0, Number(quantity));
+      if (this.variantQty === 0) this.variantQty = this.variantQty++;
       Alpine.store("cart").setQty(quantity, this.cartItemKey!);
     },
 
