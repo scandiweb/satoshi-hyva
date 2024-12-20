@@ -45,7 +45,7 @@ export default function (Alpine: AlpineType) {
           const nextPage = currentPage + 1;
 
           const urlParams = new URLSearchParams(window.location.search);
-          urlParams.set("p", nextPage.toString()); // Convert nextPage to a string
+          urlParams.set("p", nextPage.toString());
 
           const nextUrl = `${window.location.pathname}?${urlParams.toString()}`;
           const fullUrl = `${window.location.pathname}?${urlParams.toString()}`;
