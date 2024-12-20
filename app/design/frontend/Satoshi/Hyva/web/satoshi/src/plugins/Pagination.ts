@@ -43,17 +43,13 @@ export default function (Alpine: AlpineType) {
 
         if (currentPage < lastPage) {
           const nextPage = currentPage + 1;
-
           const urlParams = new URLSearchParams(window.location.search);
           urlParams.set("p", nextPage.toString());
-
           const nextUrl = `${window.location.pathname}?${urlParams.toString()}`;
-
           const html = await fetchPage(nextUrl);
+
           appendPaginationContent(html);
-
           cachePage(nextUrl, document.documentElement.outerHTML);
-
           history.replaceState({ page: nextPage }, "", nextUrl);
           currentPage = nextPage;
 
