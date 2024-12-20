@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Magento\Framework\Escaper;
 use Magento\Wishlist\Block\Customer\Wishlist\Button;
 
@@ -13,7 +15,20 @@ use Magento\Wishlist\Block\Customer\Wishlist\Button;
         name="do"
         title="<?= $escaper->escapeHtmlAttr(__('Update wish list')) ?>"
         class="button button--outline-primary bg-bg-400"
+        :class="isLoading && 'button--disabled'"
+        :disabled="isLoading"
+        @click="
+            setActionBtnText('update-wish-list');
+            const updateOrShareInput = document.getElementById('update-or-share');
+            if (updateOrShareInput) {
+              updateOrShareInput.setAttribute('name', 'do');
+            }
+        "
     >
-        <span><?= $escaper->escapeHtml(__('Update wish list')) ?></span>
+        <span x-text="isLoading && actionBtnText === 'update-wish-list' ?
+            '<?= $escaper->escapeHtml(__('Updating...')) ?>' :
+            '<?= $escaper->escapeHtml(__('Update Wish List')) ?>'">
+            <?= $escaper->escapeHtml(__('Update Wish List')) ?>
+        </span>
     </button>
-<?php endif;?>
+<?php endif; ?>
