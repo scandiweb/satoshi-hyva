@@ -1,0 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+?>
+
+<?php //if ($isLoggedIn && ($hasRecentOrders || $hasWishlistItems)): ?>
+    <aside class="sidebar sidebar-additional">
+        <?= $block->getChildHtml() ?>
+    </aside>
+<?php //endif; ?>
