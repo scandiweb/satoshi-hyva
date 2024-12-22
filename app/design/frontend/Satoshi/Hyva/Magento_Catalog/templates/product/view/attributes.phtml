@@ -25,7 +25,7 @@ $product = $block->getProduct();
 
 
 <?php if ($attributes = $block->getAdditionalData()): ?>
-    <div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion('true', 300)">
+    <div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion(false, 300)">
         <button
             class="group flex items-center justify-between text-start gap-3"
             x-ref="AccordionButton"
@@ -37,7 +37,8 @@ $product = $block->getProduct();
             <div class="text-base font-semibold leading-tight text-text-500">
                 <?= $block->getTitle() ? $escaper->escapeHtml($block->getTitle()) : '&nbsp;' ?>
             </div>
-            <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" style="rotate: -180deg;">
+            <span x-ref="AccordionIcon"
+                  class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
                 <?= $hyvaicons->renderHtml('chevron', 'rotate-90', attributes: ['title' => '']); ?>
             </span>
         </button>
@@ -48,6 +49,7 @@ $product = $block->getProduct();
             class="overflow-hidden"
             id="attributes_panel"
             aria-labelledby="attributes_label"
+            style="max-height: 0;"
         >
             <div class="mt-3 overflow-hidden">
                 <div class="table-wrapper max-w-prose overflow-x-auto" id="product-attributes">
