@@ -70,9 +70,12 @@ if ($product) {
     >
         <!-- Mobile main image -->
         <div class="mb-4 md:hidden">
-            <div class="relative flex aspect-product min-h-0 justify-center bg-[--fade-in-bg]" :class="{'hidden': mobileFeaturedImage}">
+            <div
+                class="relative z-[50] flex aspect-product min-h-0 justify-center bg-[--fade-in-bg]"
+                :class="{'hidden': mobileFeaturedImage}"
+            >
                 <div
-                    class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center transition-opacity delay-1000 duration-300 bg-[--fade-in-bg]"
+                    class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center bg-[--fade-in-bg] transition-opacity delay-1000 duration-300"
                     x-data="TransitionImage({
                         src: '<?= $mainImageUrl ?>',
                         imageId: 'mobile-image'
@@ -87,14 +90,16 @@ if ($product) {
                         :src="src"
                     >
                 </div>
-                <img
-                    id="mobile-image"
-                    height="100%"
-                    width="100%"
-                    class="max-h-full w-auto object-center object-cover h-full mix-blend-darken"
-                    alt="<?= $escaper->escapeHtmlAttr($mainImage ? $mainImage->getData('label') : $productName) ?>"
-                    src="<?= $mainImageUrl ?>"
-                >
+                <div class="flex items-center justify-center">
+                    <img
+                        id="mobile-image"
+                        height="100%"
+                        width="100%"
+                        class="no-fade object-center w-auto object-cover h-full"
+                        alt="<?= $escaper->escapeHtmlAttr($mainImage ? $mainImage->getData('label') : $productName) ?>"
+                        src="<?= $mainImageUrl ?>"
+                    >
+                </div>
                 <?= $template->setData(['product' => $product, 'class' => 'md:hidden bottom left'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
 
                 <?php if($mainImage && $mainImage->getData('media_type') && str_contains($mainImage->getData('media_type'), 'video')): ?>
