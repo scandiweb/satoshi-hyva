@@ -10,6 +10,10 @@
         type="Satoshi\Checkout\Controller\Cart\Add"
     />
     <preference
+        for="Magento\Checkout\Controller\Cart\UpdatePost"
+        type="Satoshi\Checkout\Controller\Cart\UpdatePost"
+    />
+    <preference
         for="Magento\Checkout\Controller\Cart\Addgroup"
         type="Satoshi\Checkout\Controller\Cart\Addgroup"
     />

@@ -132,7 +132,7 @@ class Add extends SourceAdd
                 if ($this->cart->getQuote()->getHasError()) {
                     $errors = $this->cart->getQuote()->getErrors();
                     foreach ($errors as $error) {
-                        $this->_checkoutSession->setCartErrorMessage($error->getText());
+                        $this->_checkoutSession->setMiniCartErrorMessage($error->getText());
                     }
                 }
                 return $this->goToCart();
