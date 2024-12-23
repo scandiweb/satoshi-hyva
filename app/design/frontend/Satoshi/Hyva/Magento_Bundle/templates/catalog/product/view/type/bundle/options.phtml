@@ -37,62 +37,60 @@ if ($productPriceViewModel->displayPriceInclAndExclTax()) {
 }
 $isPopup = $block->getData('is_popup');
 ?>
-<?php if ($product->isSaleable()): ?>
-    <?php if (count($options)): ?>
-        <div x-data="BundleOptions(
-              JSON.parse('<?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>'),
-              '<?= $displayTax ? 'oldPrice' : 'baseOldPrice' ?>',
-              '<?= $displayTax ? 'finalPrice' : 'basePrice' ?>'
-            )"
-             x-init="
-                  calculateTotalPrice();
-                  $nextTick(() => {
-                      dispatchFinalPrice();
-                      dispatchOptionSelection();
-                      $dispatch('set-selected-options', {});
-                  })"
-             x-defer="intersect"
-             class="w-full mb-6">
+<?php if (count($options)): ?>
+    <div x-data="BundleOptions(
+          JSON.parse('<?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>'),
+          '<?= $displayTax ? 'oldPrice' : 'baseOldPrice' ?>',
+          '<?= $displayTax ? 'finalPrice' : 'basePrice' ?>'
+        )"
+         x-init="
+              calculateTotalPrice();
+              $nextTick(() => {
+                  dispatchFinalPrice();
+                  dispatchOptionSelection();
+                  $dispatch('set-selected-options', {});
+              })"
+         x-defer="intersect"
+         class="w-full mb-6">
 
-            <!-- Title & close button -->
-            <div class="flex justify-between items-center pb-3 max-md:sticky max-md:top-0 max-md:bg-bg-500 z-10">
-                <h2 class="font-semibold text-text-500">
-                    <?= $escaper->escapeHtml(__('Customize %1', $product->getName())) ?>
-                </h2>
-                <button
-                    type="button"
-                    class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
-                    aria-label="<?= __('Close') ?>"
-                    @click.prevent="hideProductActions()"
-                >
-                    <?= $hyvaicons->renderHtml('close') ?>
-                </button>
-            </div>
-
-            <?= $block->getChildHtml('product_info_bundle_options_top') ?>
-
-            <!-- Bundle items -->
-            <div class="flex flex-col gap-5 mt-3">
-                <?php foreach ($options as $option): ?>
-                    <?php if (!$option->getSelections()) {
-                        continue;
-                    } ?>
-                    <div>
-                        <h2
-                            id="option-label-<?= $escaper->escapeHtmlAttr($option->getId()) ?>"
-                            class="text-text-500 flex-grow font-semibold"
-                        >
-                            <?= $escaper->escapeHtml($option->getTitle()) ?>
-                        </h2>
-                        <div class="mt-2">
-                            <?= $block->getOptionHtml($option); ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-            <?= $block->getChildHtml('product_info_bundle_options_bottom') ?>
+        <!-- Title & close button -->
+        <div class="flex justify-between items-center pb-3 max-md:sticky max-md:top-0 max-md:bg-bg-500 z-10">
+            <h2 class="font-semibold text-text-500">
+                <?= $escaper->escapeHtml(__('Customize %1', $product->getName())) ?>
+            </h2>
+            <button
+                type="button"
+                class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+                aria-label="<?= __('Close') ?>"
+                @click.prevent="hideProductActions()"
+            >
+                <?= $hyvaicons->renderHtml('close') ?>
+            </button>
         </div>
-    <?php else: ?>
-        <p class="empty"><?= $escaper->escapeHtml(__('No options of this product are available.')) ?></p>
-    <?php endif; ?>
+
+        <?= $block->getChildHtml('product_info_bundle_options_top') ?>
+
+        <!-- Bundle items -->
+        <div class="flex flex-col gap-5 mt-3">
+            <?php foreach ($options as $option): ?>
+                <?php if (!$option->getSelections()) {
+                    continue;
+                } ?>
+                <div>
+                    <h2
+                        id="option-label-<?= $escaper->escapeHtmlAttr($option->getId()) ?>"
+                        class="text-text-500 flex-grow font-semibold"
+                    >
+                        <?= $escaper->escapeHtml($option->getTitle()) ?>
+                    </h2>
+                    <div class="mt-2">
+                        <?= $block->getOptionHtml($option); ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?= $block->getChildHtml('product_info_bundle_options_bottom') ?>
+    </div>
+<?php else: ?>
+    <p class="empty"><?= $escaper->escapeHtml(__('No options of this product are available.')) ?></p>
 <?php endif; ?>
