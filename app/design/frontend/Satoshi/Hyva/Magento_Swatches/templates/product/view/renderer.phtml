@@ -39,7 +39,7 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
 
 $isPopup = $block->getData('is_popup');
 ?>
-<?php if ($product->isSaleable() && count($attributes)): ?>
+<?php if (count($attributes)): ?>
     <div class="md:mb-7 min-h-[152px]"
          x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)">
         <div class="flex flex-col gap-5">

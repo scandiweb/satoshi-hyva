@@ -1,13 +1,17 @@
 <?php
 
+use Magento\Checkout\Block\Cart;
+use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Template;
 
+/** @var Cart $block */
+/** @var Escaper $escaper */
 /** @var Template $template */
 
 $title = $block->getLayout()->createBlock('Magento\Theme\Block\Html\Title')->getPageHeading();
 ?>
 
-<div class="cart-main md:content-wrapper mt-[72px] md:mx-auto md:pb-10 max-md:h-[calc(100vh-106px)] max-md:overflow-y-scroll">
+<div class="cart-main md:content-wrapper mt-[72px] md:mx-auto md:pb-10 max-md:min-h-[calc(100vh-106px)]">
   <?=
     $template
       ->setData([

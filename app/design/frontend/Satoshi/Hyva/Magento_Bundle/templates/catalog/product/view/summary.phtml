@@ -15,7 +15,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 $product = $block->getProduct();
 
 ?>
-<?php if ($product->isSaleable() && $block->hasOptions()): ?>
+<?php if ($block->hasOptions()): ?>
     <div id="bundleSummary-<?= $product->getId() ?>">
         <div class="hidden [.popup\_\_fixed-content-portal--visible_&]:contents md:contents"
              x-data="{ isSummaryExpanded: false }"

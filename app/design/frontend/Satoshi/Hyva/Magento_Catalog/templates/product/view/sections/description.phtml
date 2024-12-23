@@ -28,7 +28,7 @@ if (!$product->getDescription()) {
 $cssClasses = $block->getData('css_classes') ?? 'prose';
 
 ?>
-<div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion('true', 300)">
+<div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion(true, 300)">
     <button
         class="group flex items-center justify-between text-start gap-3"
         x-ref="AccordionButton"
