@@ -1,6 +1,7 @@
 import { withXAttributes } from "alpinejs";
 import { POPUP_OVERLAY_CLICK_EVENT } from "../store/Popup";
 import { CartItem } from "../store/Cart";
+import { replaceContent } from "../plugins/Transition.ts";
 
 export type ProductPageType = {
   [key: string | symbol]: any;
@@ -41,6 +42,7 @@ export type ProductPageType = {
   increaseQty(): void;
   setQuantity(quantity: number): void;
   addToCart(event: Event): void;
+  displayErrorMessage(content: string): boolean;
   listenAddedToCart(formData: FormData): void;
   showProductActions(): void;
   hideProductActions(): void;
@@ -337,16 +339,39 @@ export const ProductPage = () =>
           return result.text();
         })
         .then((content) => {
-          window.hyva.replaceDomElement("#cart-button", content);
+          if (!this.displayErrorMessage(content)) {
+            window.hyva.replaceDomElement("#cart-button", content);
+            this.hideProductActions();
+          }
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => {
           Alpine.store("cart").addingItemIds = Alpine.store(
             "cart",
           ).addingItemIds.filter((itemId) => itemId !== this.productId);
-          this.hideProductActions();
           this.isLoadingCart = false;
         });
+    },
+
+    displayErrorMessage(content) {
+      const isMobile = Alpine.store('main').isMobile;
+      const breakpoint = isMobile ? 'mobile' : 'desktop';
+      const wrapper = document.querySelector(`#${breakpoint}-cart-error-${this.productId}`) as HTMLElement;
+
+      if (content.includes('-cart-error -->') && wrapper) {
+        // error exist.
+        replaceContent(
+          content,
+          `${breakpoint}-cart-error`,
+          wrapper
+        );
+        Alpine.store('popup').__updatePopupHeight(this.productActionsPopup)
+        return true;
+      } else {
+        // remove error message.
+        wrapper.innerHTML = `<!-- ${breakpoint}-cart-error --><!-- end-${breakpoint}-cart-error -->`
+        return false;
+      }
     },
 
     listenAddedToCart(formData) {
