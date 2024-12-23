@@ -367,11 +367,11 @@ export const ProductPage = () =>
         );
         Alpine.store('popup').__updatePopupHeight(this.productActionsPopup)
         return true;
-      } else {
+      } else if (wrapper) {
         // remove error message.
         wrapper.innerHTML = `<!-- ${breakpoint}-cart-error --><!-- end-${breakpoint}-cart-error -->`
-        return false;
       }
+      return false;
     },
 
     listenAddedToCart(formData) {
