@@ -3,5 +3,6 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="columns" htmlClass="content-wrapper mx-auto"/>
+        <referenceContainer name="div.sidebar.additional" remove="true"/>
     </body>
 </page>
