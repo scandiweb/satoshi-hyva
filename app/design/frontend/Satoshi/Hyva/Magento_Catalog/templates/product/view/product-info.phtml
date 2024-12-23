@@ -6,13 +6,14 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ProductAttributes;
 use Hyva\Theme\ViewModel\ProductPage;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Catalog\Block\Product\View;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
 use Satoshi\Theme\Block\Popup;
+use Satoshi\Theme\Block\Template;
 
-/** @var Template $block */
-/** @var \Satoshi\Theme\Block\Template $template */
+/** @var View $block */
+/** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 /** @var Popup $popup */
@@ -28,7 +29,7 @@ $productId = $product->getId();
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
-
+$cartErrMsg = $escaper->escapeHtml($block->getCartErrorMessage());
 ?>
 <h1 class="heading mb-1 ps-4 text-md leading-tight text-text-500 md:px-0 md:text-4xl max-md:pe-[--price-width]">
     <?= $block->getChildBlock('product.title')->getPageHeading() ?>
@@ -110,6 +111,11 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
             <?php endif; ?>
         </div>
+        <div class="mt-2 -mb-2 text-error" id="desktop-cart-error-<?= $productId ?>">
+            <!-- desktop-cart-error -->
+            <?= $cartErrMsg; ?>
+            <!-- end-desktop-cart-error -->
+        </div>
     </div>
 </div>
 
@@ -164,13 +170,18 @@ echo $popup
 <?php
 $popup_id = "product_actions-$productId";
 $options = $block->getChildBlock('product.info.form')->setData(['is_popup' => true])->toHtml();
-$minHeight = $product->getTypeId() === 'bundle' ? 'min-h-40' : 'min-h-20';
+$minHeight = $product->getTypeId() === 'bundle' ? 'min-h-40' : 'min-h-16';
 
 $productActions = <<<HTML
     <template x-if="\$store.main.isMobile">
         <div class="contents">
             <div class="max-md:mx-2">
                 {$options}
+                <div class="min-h-3 mt-2 text-error" id="mobile-cart-error-{$productId}">
+                    <!-- mobile-cart-error -->
+                        {$cartErrMsg}
+                    <!-- end-mobile-cart-error -->
+                </div>
             </div>
 
             <div class="{$minHeight} md:hidden"></div>
