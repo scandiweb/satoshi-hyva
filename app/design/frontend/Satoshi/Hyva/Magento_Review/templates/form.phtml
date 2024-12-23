@@ -20,7 +20,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 /** @var Store $viewModelStore */
 $viewModelStore = $viewModels->require(Store::class);
 
-$formId = 'review_form';
+$formId = 'review-form';
 
 /** @var GraphqlViewModel $gqlViewModel */
 $gqlViewModel = $viewModels->require(GraphqlViewModel::class);
@@ -85,7 +85,7 @@ mutation createProductReviewMutation(
                     formId: '<?= $escaper->escapeJs($formId) ?>',
                     storeCode: '<?= $escaper->escapeJs($viewModelStore->getStoreCode()) ?>'
                 }))"
-
+                tabindex="-1"
             >
                 <?= $block->getChildHtml('form_fields_before') ?>
                 <fieldset class="w-full flex flex-col items-center justify-center">
