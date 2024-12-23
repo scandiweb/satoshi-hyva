@@ -3,7 +3,7 @@
     <body>
         <referenceContainer name="columns" htmlClass="grid-columns content-wrapper mx-auto">
             <referenceContainer name="div.sidebar.additional" remove="true"/>
-            <block class="Magento\Framework\View\Element\Template" name="sidebar.additional.wrapper"
+            <block class="Satoshi\Theme\Block\SidebarAdditional" name="sidebar.additional.wrapper"
                    template="Magento_Theme::html/layout/sidebar-additional-wrapper.phtml" after="main"/>
         </referenceContainer>
         <move element="sidebar.additional" destination="sidebar.additional.wrapper"/>
