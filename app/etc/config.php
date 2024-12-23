@@ -346,7 +346,6 @@ return [
         'Magento_WishlistAnalytics' => 1,
         'Magento_WishlistGraphQl' => 1,
         'Magento_WishlistSampleData' => 1,
-        'Graycore_Cors' => 1,
         'Hyva_Email' => 1,
         'Hyva_GraphqlTokens' => 1,
         'Hyva_GraphqlViewModel' => 1,
