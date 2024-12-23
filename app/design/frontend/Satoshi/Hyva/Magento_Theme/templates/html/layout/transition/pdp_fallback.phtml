@@ -15,12 +15,6 @@ $mixBackground = true;
 ?>
 
 <template x-fallback-template-type="product">
-    <div class="md:[&:not(.transition-preview_&)]:mt-[89px]"></div>
-
-    <div class="max-md:hidden [.transition-preview_&]:hidden">
-        <?= $block->getChildHtml('product.breadcrumbs.placeholder') ?>
-    </div>
-
     <div
         class="md:content-wrapper relative z-30 mx-auto flex w-full flex-col justify-center gap-4 md:grid md:grid-cols-[1fr_250px] md:items-start md:gap-8 lg:grid-cols-[1fr_330px] xl:grid-cols-[1fr_400px] xl:gap-16"
         x-data="{
@@ -32,10 +26,10 @@ $mixBackground = true;
 
             <!-- Mobile Featured Image -->
             <div class="relative md:hidden">
-                <div class="relative aspect-product bg-[--fade-in-bg]">
+                <div class="relative aspect-product min-h-0 flex bg-[--fade-in-bg]">
                     <div
                         x-element-transition-dest="img"
-                        class="flex size-full flex-col items-center justify-center"
+                        class="relative w-full"
                         <?php if ($isContain): ?>
                             :class="{
                                 'p-[4%]': !!mobileImg
@@ -45,13 +39,14 @@ $mixBackground = true;
                         <img
                             :src="mobileImg"
                             class="
-                                object-center
+                                object-cover object-center size-full absolute inset-0 m-auto
                                 <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>
                                 <?= $mixBackground ? 'mix-blend-darken' : '' ?>
                             "
                             width="100%"
                             height="100%"
                             :alt="$store['transition'].pageData?.title"
+                            alt=""
                         >
                     </div>
                 </div>
@@ -83,6 +78,7 @@ $mixBackground = true;
                     class="<?= $isContain ? 'object-contain max-h-full w-auto' : 'object-cover h-full w-full' ?> rounded-2xl object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
                     width="100%"
                     height="100%"
+                    alt=""
                 >
             </div>
             <template x-if="$store['transition'].pageData?.mediaCount >= 3">
