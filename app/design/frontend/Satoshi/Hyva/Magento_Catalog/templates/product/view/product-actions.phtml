@@ -411,7 +411,7 @@ if (!$inStock) {
             class="
                 animate-on-transition button button--disabled button--outline-secondary flex-grow
                 <?= $isSmall ? 'button--size-sm' : '' ?>
-                <?= ($inStock || (!$isPopup && $hasVariants)) ? 'max-md:hidden' : '' ?>
+                <?= ($inStock || (!$isPopup && ($hasVariants || $productType === 'grouped'))) ? 'max-md:hidden' : '' ?>
                 <?= $inStock ? 'md:hidden' : '' ?>
                 <?= $isPopup ? 'max-sm:px-3' : '' ?>
             "
