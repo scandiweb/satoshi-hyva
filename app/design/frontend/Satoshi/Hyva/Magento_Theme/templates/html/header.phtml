@@ -6,6 +6,7 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Theme\Block\Html\Header;
+use Satoshi\Theme\Block\Minicart;
 use Satoshi\Theme\Block\Popup;
 use Satoshi\Theme\Block\Resizable;
 
@@ -112,7 +113,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                         'right' => true,
                         'cssClass' => 'resizable--cart md:pointer-events-auto',
                     ])
-                    ->setChildTemplate('Magento_Theme::html/header/cart/minicart-button.phtml')
+                    ->setChildBlock($this->getLayout()->createBlock(Minicart::class))
                     ->render()
                 ?>
             </div>
