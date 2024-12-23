@@ -48,7 +48,7 @@ $isPopup = $block->getData('is_popup') ?? false;
 $isSmall = $block->getData('is_small') ?? false;
 
 $isProductInCart = false;
-if (in_array($productType, ['simple', 'virtual'])) {
+if (in_array($productType, ['simple', 'virtual', 'downloadable'])) {
     $items = $this->helper(Cart::class)->getQuote()->getAllItems();
 
     foreach ($items as $item) {
@@ -319,10 +319,10 @@ if (!$inStock) {
         <!-- Show links, for downloadable products -->
         <?php if ($productType === 'downloadable'): ?>
             <button
-                <?php if (!$inStock | $isPopup): ?>
+                <?php if ($isProductInCart || !$inStock || $isPopup): ?>
                     style="display: none"
                 <?php endif; ?>
-                x-show="<?= (int)!$isPopup ?>"
+                x-show="<?= (int)!$isPopup ?> && !isVariantInCart"
                 class="animate-on-transition button button--filled-primary w-full md:hidden <?= $isSmall ? 'button--size-sm' : '' ?>"
                 @click.prevent="showProductActions()"
                 type="button"

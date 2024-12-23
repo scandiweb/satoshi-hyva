@@ -121,7 +121,7 @@ if ($product) {
                         <img
                             class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
                             src="<?= $escaper->escapeUrl($imageUrl) ?>"
-                            alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>" loading="lazy">
+                            alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>">
                     </div>
                 <?php else: ?>
                     <div
@@ -130,7 +130,6 @@ if ($product) {
                             :src="product.media_gallery?.[0]?.url || '<?= $escaper->escapeUrl($placeholderImageUrl) ?>'"
                             :alt="product.image?.label"
                             class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
-                            loading="lazy"
                             width=""
                             height=""
                         />

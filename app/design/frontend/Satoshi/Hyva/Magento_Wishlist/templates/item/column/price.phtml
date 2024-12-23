@@ -17,8 +17,9 @@ $shouldRenderQtyInput = $item->canHaveQty() && $product->isVisibleInSiteVisibili
     "
 >
     <?php foreach ($block->getChildNames() as $childName): ?>
-        <?= /* @noEscape */ $block->getLayout()->renderElement($childName, false) ?>
-    <?php endforeach;?>
+        <?= /* @noEscape */
+        $block->getLayout()->renderElement($childName, false) ?>
+    <?php endforeach; ?>
 
     <?php if ($shouldRenderQtyInput): ?>
         <label
@@ -33,9 +34,11 @@ $shouldRenderQtyInput = $item->canHaveQty() && $product->isVisibleInSiteVisibili
             type="number"
             x-ref="product-qty-<?= $escaper->escapeHtmlAttr($item->getId()) ?>"
             data-role="qty"
+            data-product-sku="<?= $escaper->escapeHtmlAttr($product->getSku()) ?>"
             id="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
             name="qty[<?= $escaper->escapeHtmlAttr($item->getId()) ?>]"
-            value="<?= /* @noEscape */ $block->getAddToCartQty($item) * 1 ?>"
+            value="<?= /* @noEscape */
+            $block->getAddToCartQty($item) * 1 ?>"
             class="input__field input__field--outline px-5 py-2.5 border-bg-600 placeholder:text-border-color w-20"
             <?= $product->isSaleable() ? '' : 'disabled' ?>
         >

@@ -1,31 +1,37 @@
 import type { Magics } from "alpinejs";
 import { navigateWithTransition } from "../plugins/Transition";
+import { CartItem } from "../store/Cart.ts";
 
 export type RecentOrdersType = {
-  reorderProducts: {
-    items: any[];
-    data_id: number;
-  } | null;
+  reorderProducts: { items: any[]; data_id: number } | null;
   itemCount: number;
   reorderItems: any[];
+  checkedItems: { [key: string]: string };
   isShowAddToCart: boolean;
-  checkboxId: string;
   isLoading: boolean;
+  checkboxId: string;
+  errorMessage: string;
 
   receiveReorderData(data: any): void;
   addToCart(postUrl: string): void;
-  reorderSidebarFetchHandler(body: string, postUrl: string): any;
+  reorderSidebarFetchHandler(body: string, postUrl: string, addedProductSkus: string[]): any;
+  focusOnCartAddedItems(addedProductSkus: string[]): void;
   onReorder(event: Event): void;
+  onCheckboxesChange(event: Event): void;
+  isCheckedItems(): boolean;
+  setErrorMessage(message: string): void;
 } & Magics<{}>;
 
-export const RecentOrders = (messageText: string) =>
+export const RecentOrders = (errorMessageText: string) =>
   <RecentOrdersType>{
     reorderProducts: null,
     itemCount: 0,
     reorderItems: {},
-    isShowAddToCart: false,
+    checkedItems: {},
     checkboxId: "reorder-item-",
+    isShowAddToCart: false,
     isLoading: false,
+    errorMessage: '',
 
     receiveReorderData(data) {
       if (data["last-ordered-items"]) {
@@ -38,19 +44,38 @@ export const RecentOrders = (messageText: string) =>
       }
     },
 
-    addToCart(postUrl) {
-      let params = "";
-      const checkboxes: any = document.getElementsByName("order_items[]");
-      for (let i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-          params += "&order_items[]=" + checkboxes[i].value;
-        }
+    onCheckboxesChange(event) {
+      const target = event.target as HTMLInputElement;
+      const checkboxId = target.id;
+
+      if (target.checked) {
+        this.checkedItems = {...this.checkedItems, [checkboxId]: target.value};
+      } else {
+        delete this.checkedItems[checkboxId];
       }
-      params = "form_key=" + window.hyva.getFormKey() + params;
-      this.reorderSidebarFetchHandler(params, postUrl);
     },
 
-    reorderSidebarFetchHandler(body, postUrl) {
+    isCheckedItems() {
+      return Object.keys(this.checkedItems).length > 0;
+    },
+
+    addToCart(postUrl) {
+      let params = "";
+      const addedProductSkus = Object.entries(this.checkedItems)
+        .map(([key, value]) => {
+          params += `&order_items[]=${value}`;
+          return key.slice(this.checkboxId.length);
+        });
+
+      if (!params.includes('order_items')) {
+        return;
+      }
+
+      params = "form_key=" + window.hyva.getFormKey() + params;
+      this.reorderSidebarFetchHandler(params, postUrl, addedProductSkus);
+    },
+
+    reorderSidebarFetchHandler(body, postUrl, addedProductSkus) {
       const postHeaders: Record<string, any> = {
         headers: {
           "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -68,13 +93,10 @@ export const RecentOrders = (messageText: string) =>
             const content = await response.text();
             window.hyva.replaceDomElement("#recent-orders-sidebar", content);
           } else if (response.ok) {
+            this.setErrorMessage("");
             return response.json();
           } else {
-            window.dispatchMessages &&
-              window.dispatchMessages(
-                [{ type: "warning", text: messageText }],
-                5000,
-              );
+            this.setErrorMessage(errorMessageText);
           }
         })
         .then((result) => {
@@ -89,18 +111,32 @@ export const RecentOrders = (messageText: string) =>
           const message = { type: "error", text: error };
           window.dispatchMessages && window.dispatchMessages([message], 5000);
         }).finally(() => {
+          this.focusOnCartAddedItems(addedProductSkus);
           this.isLoading = false;
-          const cartItems = Alpine.store("cart").cartItems;
-          const itemIds = this.reorderItems
-            .map((reorderItem: any) => 
-              cartItems.find((cartItem: any) => cartItem.product_id === reorderItem.product_id)?.item_id
-            )
-            .filter((itemId): itemId is string => !!itemId);
-
-          if(itemIds.length) {
-            Alpine.store("cart").showCart();
-          }
         });
+    },
+
+    focusOnCartAddedItems(addedProductSkus = [] as string[]) {
+      if (!addedProductSkus.length) return;
+
+      window.addEventListener(
+        "private-content-loaded",
+        () => {
+          const cartItems = Alpine.store("cart").cartItems;
+
+          const itemIds = cartItems
+            .filter((item: CartItem) => addedProductSkus.includes(item.product_sku))
+            .map((item) => item.item_id);
+
+          if (itemIds.length) {
+            setTimeout(
+              () => Alpine.store("cart").focusInCart(itemIds),
+              200,
+            );
+          }
+        },
+        {once: true},
+      );
     },
 
     onReorder(event) {
@@ -125,5 +161,9 @@ export const RecentOrders = (messageText: string) =>
       }).finally(() => {
           this.isLoading = false;
       });
+    },
+
+    setErrorMessage(message) {
+      this.errorMessage = message || "";
     },
   };
