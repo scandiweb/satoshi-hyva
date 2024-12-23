@@ -55,8 +55,9 @@ export type CartStoreType = {
   addingItemIds: string[];
   removingItemId: string | null;
   abortController: AbortController | null;
-  errors: Record<string, string[]>;
+  errorMessage: string;
   setCartTotals(cartTotals: CartTotals): void;
+  setErrorMessage(message: string): void;
   updateCartTotals(cartTotals: CartTotals): void;
   setCartItems(cartItems: CartItem[]): void;
   addCartItems(cartItems: CartItem[]): void;
@@ -74,7 +75,7 @@ export type CartStoreType = {
 const CART_RESIZABLE_ID = "cart-desktop";
 const CART_POPUP_ID = "cart";
 const ABORT_ERROR_NAME = "AbortError";
-const CHECKOKUT_URL = BASE_URL + 'checkout/cart';
+const CHECKOUT_URL = BASE_URL + 'checkout/cart';
 
 export const CartStore = <CartStoreType>{
   cartItems: [],
@@ -83,7 +84,7 @@ export const CartStore = <CartStoreType>{
   addingItemIds: [],
   removingItemId: null,
   abortController: null,
-  errors: {},
+  errorMessage: '',
 
   setCartTotals(cartTotals: CartTotals) {
     this.cartTotals = cartTotals;
@@ -93,6 +94,10 @@ export const CartStore = <CartStoreType>{
       ...this.cartTotals,
       ...cartTotals,
     };
+  },
+
+  setErrorMessage(message) {
+    this.errorMessage = message;
   },
 
   setCartItems(cartItems: CartItem[]) {
@@ -132,7 +137,7 @@ export const CartStore = <CartStoreType>{
       formData.append(`cart[${item.item_id}][qty]`, item.qty.toString());
     });
 
-    fetch(`/checkout/cart/updatePost?return_url=${CHECKOKUT_URL}`, {
+    fetch(`/checkout/cart/updatePost?return_url=${CHECKOUT_URL}`, {
       method: "POST",
       body: formData,
       signal: this.abortController.signal

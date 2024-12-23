@@ -2,41 +2,78 @@
 
 namespace Satoshi\Theme\Block;
 
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Framework\View\Element\Text;
 
 class Resizable extends Template
 {
-  protected $_template = 'Satoshi_Theme::resizable.phtml';
 
-  public function __construct(
-    Context $context,
-    array $data = []
-  ) {
-    parent::__construct($context, $data);
-  }
+    /**
+     * @var string
+     */
+    protected $_template = 'Satoshi_Theme::resizable.phtml';
 
-  public function setChildTemplate(string $childTemplate)
-  {
-    $this->setChild(
-      'resizable-content',
-      $this->getLayout()->createBlock(Template::class)->setTemplate($childTemplate)
-    );
-    return $this;
-  }
+    /**
+     * @param Context $context
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        array   $data = []
+    )
+    {
+        parent::__construct($context, $data);
+    }
 
-  public function setChildHtml(string $childHtml)
-  {
-    $this->setChild(
-      'resizable-content',
-      $this->getLayout()->createBlock(Text::class)->setText($childHtml)
-    );
-    return $this;
-  }
+    /**
+     * @param string $childTemplate
+     * @return $this
+     * @throws LocalizedException
+     */
+    public function setChildTemplate(string $childTemplate)
+    {
+        $this->setChild(
+            'resizable-content',
+            $this->getLayout()->createBlock(Template::class)->setTemplate($childTemplate)
+        );
+        return $this;
+    }
 
-  public function render()
-  {
-    return $this->toHtml();
-  }
+    /**
+     * @param AbstractBlock|string $childBlock
+     * @return $this
+     */
+    public function setChildBlock(AbstractBlock|string $childBlock)
+    {
+        $this->setChild(
+            'resizable-content',
+            $childBlock
+        );
+        return $this;
+    }
+
+    /**
+     * @param string $childHtml
+     * @return $this
+     * @throws LocalizedException
+     */
+    public function setChildHtml(string $childHtml)
+    {
+        $this->setChild(
+            'resizable-content',
+            $this->getLayout()->createBlock(Text::class)->setText($childHtml)
+        );
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function render()
+    {
+        return $this->toHtml();
+    }
 }

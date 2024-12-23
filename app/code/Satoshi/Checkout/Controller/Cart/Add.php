@@ -14,6 +14,7 @@ use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Data\Form\FormKey\Validator;
+use Magento\Framework\Escaper;
 use Magento\Framework\Filter\LocalizedToNormalized;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -131,27 +132,18 @@ class Add extends SourceAdd
                 if ($this->cart->getQuote()->getHasError()) {
                     $errors = $this->cart->getQuote()->getErrors();
                     foreach ($errors as $error) {
-                        $this->_checkoutSession->setCartMessage([
-                            'status' => 'error',
-                            'message' => $error->getText()
-                        ]);
+                        $this->_checkoutSession->setMiniCartErrorMessage($error->getText());
                     }
                 }
                 return $this->goToCart();
             }
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             if ($this->_checkoutSession->getUseNotice(true)) {
-                $this->_checkoutSession->setCartMessage([
-                    'status' => 'error',
-                    'message' => $this->_objectManager->get(\Magento\Framework\Escaper::class)->escapeHtml($e->getMessage())
-                ]);
+                $this->_checkoutSession->setCartErrorMessage($this->_objectManager->get(Escaper::class)->escapeHtml($e->getMessage()));
             } else {
                 $messages = array_unique(explode("\n", $e->getMessage()));
                 foreach ($messages as $message) {
-                    $this->_checkoutSession->setCartMessage([
-                        'status' => 'error',
-                        'message' => $this->_objectManager->get(\Magento\Framework\Escaper::class)->escapeHtml($message)
-                    ]);
+                    $this->_checkoutSession->setCartErrorMessage($this->_objectManager->get(Escaper::class)->escapeHtml($message));
                 }
             }
 
@@ -162,10 +154,7 @@ class Add extends SourceAdd
 
             return $this->goBack($url);
         } catch (\Exception $e) {
-            $this->_checkoutSession->setCartMessage([
-                'status' => 'error',
-                'message' => __('We can\'t add this item to your shopping cart right now.')
-            ]);
+            $this->_checkoutSession->setCartErrorMessage(__('We can\'t add this item to your shopping cart right now.'));
             $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
             return $this->goBack();
         }
