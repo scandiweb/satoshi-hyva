@@ -1,11 +1,12 @@
 import type { Alpine as AlpineType } from "alpinejs";
 
 type ElementWithXAttributes<T extends HTMLElement> = T & {
-  _x_currId: string;
   _x_endScroll: number;
   _x_currPos: number;
   _x_screenHeight: number;
   _x_stickyElementHeight: number;
+  _x_scroll_listener: () => void;
+  _x_resize_listener: () => void;
 };
 
 const TOP_VAR = "--scroll-top";
@@ -15,12 +16,10 @@ export default function (Alpine: AlpineType) {
     "sticky-scroll",
     (stickyElement, { expression }, { evaluate, cleanup }) => {
       const {
-        id,
         container,
         top: topGap,
         bottom: bottomGap,
       } = evaluate(expression) as {
-        id: string;
         container: HTMLElement | any;
         top: number;
         bottom: number;
@@ -35,8 +34,8 @@ export default function (Alpine: AlpineType) {
         container instanceof HTMLElement
           ? (container as ElementWithXAttributes<HTMLElement>)
           : (document.getElementById(
-              "MainContent",
-            ) as ElementWithXAttributes<HTMLElement>);
+            "MainContent",
+          ) as ElementWithXAttributes<HTMLElement>);
 
       const getScrollTargetScrollY = () => {
         if (container instanceof HTMLElement) {
@@ -108,52 +107,53 @@ export default function (Alpine: AlpineType) {
         propertyTarget._x_currPos = getScrollTargetScrollY();
       };
 
-      const updateSticky = () => {
-        if (propertyTarget._x_currId !== id) {
-          return;
-        }
-
+      function updateSticky() {
         propertyTarget._x_screenHeight = getHeightOfTarget();
         propertyTarget._x_stickyElementHeight = stickyElement.offsetHeight;
         positionStickySidebar();
-      };
-
-      const onResize = () => {
-        if (propertyTarget._x_currId !== id) {
-          return;
-        }
-
-        // this breaks the sticky sidebar for some reason
-        propertyTarget._x_currPos = getScrollTargetScrollY();
-        updateSticky();
-      };
-
-      if (propertyTarget._x_currId !== id) {
-        propertyTarget._x_currId = id;
-        propertyTarget._x_endScroll =
-          getHeightOfTarget() - stickyElement.offsetHeight - 500;
-        propertyTarget._x_currPos = getScrollTargetScrollY();
-        propertyTarget._x_screenHeight = getHeightOfTarget();
-        propertyTarget._x_stickyElementHeight = stickyElement.offsetHeight;
-        propertyTarget.style.setProperty(TOP_VAR, `${topGap.toString()}px`);
-
-        window.addEventListener("resize", onResize);
-
-        scrollTarget.addEventListener("scroll", updateSticky, {
-          capture: true,
-          passive: true,
-        });
       }
 
+      function onResize() {
+        propertyTarget._x_currPos = getScrollTargetScrollY();
+        updateSticky();
+      }
+
+      propertyTarget._x_endScroll =
+        getHeightOfTarget() - stickyElement.offsetHeight - 500;
+      propertyTarget._x_currPos = getScrollTargetScrollY();
+      propertyTarget._x_screenHeight = getHeightOfTarget();
+      propertyTarget._x_stickyElementHeight = stickyElement.offsetHeight;
+      propertyTarget.style.setProperty(TOP_VAR, `${topGap.toString()}px`);
+      propertyTarget._x_scroll_listener = updateSticky;
+      propertyTarget._x_resize_listener = onResize;
+
+      window.addEventListener("resize", propertyTarget._x_resize_listener);
+
+      scrollTarget.addEventListener(
+        "scroll",
+        propertyTarget._x_scroll_listener,
+        {
+          capture: true,
+          passive: true,
+        },
+      );
+
       cleanup(() => {
-        // TODO: investigate why this is not called
+        scrollTarget.removeEventListener(
+          "scroll",
+          propertyTarget._x_scroll_listener,
+          {
+            capture: true,
+          },
+        );
+
+        window.removeEventListener("resize", propertyTarget._x_resize_listener);
+
         propertyTarget._x_endScroll = 0;
         propertyTarget._x_currPos = 0;
         propertyTarget._x_screenHeight = 0;
         propertyTarget._x_stickyElementHeight = 0;
         propertyTarget.style.removeProperty(TOP_VAR);
-        scrollTarget.removeEventListener("scroll", updateSticky);
-        window.removeEventListener("resize", onResize);
       });
     },
   );

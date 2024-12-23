@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Magento\Framework\Escaper;
 use Magento\Wishlist\Block\Customer\Wishlist\Button;
 
@@ -13,9 +15,20 @@ use Magento\Wishlist\Block\Customer\Wishlist\Button;
         name="save_and_share"
         title="<?= $escaper->escapeHtmlAttr(__('Share wish list')) ?>"
         class="button button--outline-primary bg-bg-400"
+        :class="isLoading && 'button--disabled'"
+        :disabled="isLoading"
+        @click="
+            setActionBtnText('share-wish-list');
+            const updateOrShareInput = document.getElementById('update-or-share');
+            if (updateOrShareInput) {
+              updateOrShareInput.setAttribute('name', 'save_and_share');
+            }
+        "
     >
-        <span>
-            <?= $escaper->escapeHtml(__('Share wish list')) ?>
+        <span x-text="isLoading && actionBtnText === 'share-wish-list' ?
+            '<?= $escaper->escapeHtml(__('Sharing...')) ?>' :
+            '<?= $escaper->escapeHtml(__('Share Wish List')) ?>'">
+            <?= $escaper->escapeHtml(__('Share Wish List')) ?>
         </span>
     </button>
-<?php endif;?>
+<?php endif; ?>

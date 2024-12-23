@@ -2,9 +2,10 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Logo\LogoPathResolver;
+use Hyva\Theme\ViewModel\Logo\LogoSizeResolver;
 use Magento\Framework\Escaper;
 use Magento\Theme\Block\Html\Header\Logo;
-use Hyva\Theme\ViewModel\Logo\LogoSizeResolver;
 
 /** @var Logo $block */
 /** @var Escaper $escaper */
@@ -21,7 +22,7 @@ $logoHeight = $logoSizeResolver && $logoSizeResolver->getHeight()
     ? $logoSizeResolver->getHeight()
     : $block->getLogoHeight();
 
-/** @var \Hyva\Theme\ViewModel\Logo\LogoPathResolver $logoPathResolver */
+/** @var LogoPathResolver $logoPathResolver */
 $logoPathResolver = $block->getData('logoPathResolver');
 $logoSrc = $logoPathResolver && method_exists($logoPathResolver, 'getLogoSrc')
     ? $logoPathResolver->getLogoSrc($block->getData('logo_file'))
@@ -30,24 +31,30 @@ $logoSrc = $logoPathResolver && method_exists($logoPathResolver, 'getLogoSrc')
 $text_length = strlen($storeName);
 $estimated_width = $text_length * 12;
 
-$logoWidth = $logoWidth ?? 100;
-$logoHeight = $logoHeight ?? 150;
-
 ?>
 
 <?php if ($logoSrc): ?>
+    <!-- Desktop logo -->
     <img
         src="<?= $escaper->escapeUrl($logoSrc) ?>"
-        alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : __('Store logo')) ?>"
-        width="<?= $escaper->escapeHtmlAttr($logoWidth) ?>"
-        height="<?= $escaper->escapeHtmlAttr($logoHeight) ?>"
-        style="filter:url(#border); --max-logo-width: <?= $logoWidth ?>px"
-        <?php if($logoHeight > 56): ?>
-            :style="{
-                '--logo-height': $store.main.isHeaderShadowVisible ? '56px' : '<?= $escaper->escapeHtmlAttr($logoHeight) ?>px',
-            }"
-        <?php endif ?>
-        class="max-md:h-[32px] w-auto transition-all md:max-w-[--max-logo-width] <?php if ($logoHeight > 56): ?>md:h-[--logo-height]<?php endif ?>"
+        alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : $storeName) ?>"
+        width="<?= $escaper->escapeHtmlAttr($logoWidth ?? 200) ?>"
+        height="<?= $escaper->escapeHtmlAttr($logoHeight ?? 200) ?>"
+        class="height-[56px] w-full transition-all max-md:hidden"
+        style="filter: url(#border); max-width: <?= $logoWidth > 500 ? 500 : $logoWidth ?>px"
+        x-data="{ initialHeight: $el.clientHeight || 56 }"
+        :style="{
+            'max-height': (initialHeight >= 56 && $store.main.isHeaderShadowVisible) ? '56px' : `${initialHeight}px`
+        }"
+    />
+
+    <!-- Mobile logo -->
+    <img
+        class="object-contain h-[32px] w-auto md:hidden"
+        src="<?= $escaper->escapeUrl($logoSrc) ?>"
+        alt="<?= $escaper->escapeHtmlAttr($block->getLogoAlt() ? $block->getLogoAlt() : $storeName) ?>"
+        width="<?= $escaper->escapeHtmlAttr($logoWidth ?? 200) ?>"
+        height="<?= $escaper->escapeHtmlAttr($logoHeight ?? 200) ?>"
     />
 <?php else: ?>
     <svg
