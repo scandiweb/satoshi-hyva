@@ -73,7 +73,7 @@ export const TransitionPreview = () =>
         }
       });
 
-      // Code below is added to set isPreview to false when page is reloaded
+      // Set isPreview to false when page is reloaded to prevent product preview closing issue inside the PDP
       document.addEventListener('DOMContentLoaded', () => {
         window.history.state.isPreview = false;
       })
