@@ -161,7 +161,7 @@ h3 {
 }
 
 .sidebar-additional {
-  @apply transition-all md:max-w-[275px] whitespace-nowrap overflow-hidden;
+  @apply transition-all md:max-w-[275px] md:whitespace-nowrap md:overflow-hidden;
 }
 
 .plp-grid-wrapper--full {
@@ -178,7 +178,7 @@ h3 {
   @apply flex flex-col gap-1 md:gap-2;
 
   .sticky-actions & {
-    @apply text-[14px];
+    @apply flex-row;
   }
 }
 
