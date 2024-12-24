@@ -53,16 +53,13 @@ if ($sorter) {
 
 <!-- Desktop filters -->
 <div
-    class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:sticky md:top-[--scroll-top] md:block"
+    class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:block"
     :class="{
         'max-w-[275px]': $store.productList.isFiltersSidebarExpanded,
         'max-w-0': !$store.productList.isFiltersSidebarExpanded
     }"
-    x-sticky-scroll="{
-        top: 90,
-        bottom: 24,
-    }"
 >
+
     <div
         id="filters-sidebar"
         class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"
