@@ -1,5 +1,5 @@
 import { MainStoreType } from "../store/Main";
-import { replaceMainContentWithTransition } from "../plugins/Transition";
+import {replaceMainContentWithTransition, navigateWithTransition} from "../plugins/Transition";
 
 type RegisterProps = {
   telephoneErrorMessage: string;
@@ -27,6 +27,7 @@ export type AuthenticationType = {
   hasAvailableRegions(): boolean;
   isLoading: boolean;
   logout(postData: { action: string }): void;
+  logoutSuccess(): void;
 } & MainStoreType;
 
 export const Authentication = () => {
@@ -182,5 +183,12 @@ export const Authentication = () => {
           this.isLoading = false;
         });
     },
+    logoutSuccess(url: string) {
+      setTimeout(function () {
+        if (window.location.pathname.includes('logoutSuccess')) {
+          navigateWithTransition(url);
+        }
+      }, 5000);
+    }
   };
 };
