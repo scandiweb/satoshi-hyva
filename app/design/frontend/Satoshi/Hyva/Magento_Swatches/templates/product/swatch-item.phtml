@@ -19,52 +19,56 @@ $attributeId = $block->getAttributeId();
 $formId = $block->getFormId();
 
 if (!$productId || !$attributeId) {
-  return '';
+    return '';
 }
 
+$isPopup = $block->getData('is_popup') ?? false;
 ?>
 
-<template x-if="optionIsEnabled(<?= (int) $attributeId ?>, item.id)">
-  <label
-    :for="`attribute-option-<?= (int) $productId ?>-${item.id}`"
-    @click="changeOption(<?= (int) $attributeId ?>, item.id)"
-    class="button button--size-sm select-none transition-all ease-in-out relative bg-bg-500"
-    :class="
-      {
-        'button--outline-primary button--disabled': !optionIsActive(<?= (int)$attributeId ?>, item.id),
-        'button--outline-primary border-2': selectedValues[<?= (int)$attributeId ?>] === item.id,
-        'button--outline-secondary': selectedValues[<?= (int) $attributeId ?>] !== item.id,
-      }
-    "
-    role="radio"
-    aria-label="getSwatchText(<?= (int) $attributeId ?>, item.id)"
-    :tabindex="selectedValues[<?= (int) $attributeId ?>] ? (selectedValues[<?= (int) $attributeId ?>] === item.id ? '0' : '-1') : (index === 0) - 1"
-    :aria-checked="selectedValues[<?= (int) $attributeId ?>] ? (selectedValues[<?= (int) $attributeId ?>] === item.id ? 'true' : 'false') : (index === 0)"
-    x-a11y-radio
-    :style="getSwatchBackgroundStyle(<?= (int) $attributeId ?>, item.id)"
-    :disabled="selectedValues[<?= (int) $attributeId ?>] === item.id || !optionIsActive(<?= (int) $attributeId ?>, item.id)"
-    <?php if ($configurableViewModel->getShowSwatchTooltip()): ?>
-      @mouseenter.self="activeTooltipItem = {
-            attribute: '<?= (int) $attributeId ?>',
-            item: item.id,
-            index
-        }; tooltipPositionElement = $event.target;"
-      @mouseleave.self="activeTooltipItem = false"
-    <?php endif; ?>
-  >
-    <input
-      :id="`attribute-option-<?= (int) $productId ?>-${item.id}`"
-      :value="item.id"
-      name="super_attribute[<?= (int) $attributeId ?>]"
-      class="-z-10 absolute opacity-0"
-      type="radio"
-      :required="getAllowedAttributeOptions(<?= (int) $attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
-      :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
-      aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
-      form="<?= $escaper->escapeHtmlAttr($formId) ?>"
+<template x-if="optionIsEnabled(<?= (int)$attributeId ?>, item.id)">
+    <label
+        :for="`attribute-option-<?= (int)$productId ?>-${item.id}-<?= $isPopup ? 'mobile' : 'desktop' ?>`"
+        @click="optionIsActive(<?= (int)$attributeId ?>, item.id) && changeOption(<?= (int)$attributeId ?>, item.id)"
+        class="button button--size-sm select-none transition-all ease-in-out relative bg-bg-500"
+        :class="{
+            'button--outline-primary border-2 button--disabled !opacity-100': selectedValues[<?= (int)$attributeId ?>] === item.id || !optionIsActive(<?= (int)$attributeId ?>, item.id),
+            'button--outline-secondary': selectedValues[<?= (int)$attributeId ?>] !== item.id,
+        }"
+        role="radio"
+        aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
+        :tabindex="selectedValues[<?= (int)$attributeId ?>] ? (selectedValues[<?= (int)$attributeId ?>] === item.id ? '0' : '-1') : (index === 0) - 1"
+        :aria-checked="selectedValues[<?= (int)$attributeId ?>] ? (selectedValues[<?= (int)$attributeId ?>] === item.id ? 'true' : 'false') : (index === 0)"
+        x-a11y-radio
+        :style="getSwatchBackgroundStyle(<?= (int)$attributeId ?>, item.id)"
+        :disabled="selectedValues[<?= (int)$attributeId ?>] === item.id || !optionIsActive(<?= (int)$attributeId ?>, item.id)"
+        <?php if ($configurableViewModel->getShowSwatchTooltip()): ?>
+            @mouseenter.self="activeTooltipItem = {
+                attribute: '<?= (int)$attributeId ?>',
+                item: item.id,
+                index
+            }; tooltipPositionElement = $event.target;"
+            @mouseleave.self="activeTooltipItem = false"
+        <?php endif; ?>
+        x-data="{ show: false }"
+        x-init="$nextTick(() => { show = true })"
+        x-show="show"
+        x-transition
     >
-    <template x-if="isTextSwatch(<?= (int) $attributeId ?>, item.id)">
-      <span class="line-clamp-2 text-wrap text-sm md:text-md" x-html="getSwatchText(<?= (int) $attributeId ?>, item.id)"></span>
-    </template>
-  </label>
+        <input
+            :id="`attribute-option-<?= (int)$productId ?>-${item.id}-<?= $isPopup ? 'mobile' : 'desktop' ?>`"
+            :value="item.id"
+            name="super_attribute[<?= (int)$attributeId ?>]"
+            class="-z-10 absolute opacity-0"
+            type="radio"
+            :required="getAllowedAttributeOptions(<?= (int)$attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
+            :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
+            aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
+            form="<?= $escaper->escapeHtmlAttr($formId) ?>"
+            :disabled="!optionIsActive(<?= (int)$attributeId ?>, item.id)"
+        >
+        <template x-if="isTextSwatch(<?= (int)$attributeId ?>, item.id)">
+            <span class="line-clamp-2 text-wrap text-sm md:text-md"
+                  x-html="getSwatchText(<?= (int)$attributeId ?>, item.id)"></span>
+        </template>
+    </label>
 </template>
