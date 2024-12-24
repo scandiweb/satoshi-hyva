@@ -151,7 +151,7 @@ export const PopupStore = <PopupStoreType>{
           {
             childList: true,
             subtree: true,
-            attributeFilter: ["class"],
+            attributeFilter: ["class", "style"],
           },
         );
       } else {
@@ -253,7 +253,7 @@ export const PopupStore = <PopupStoreType>{
 
     document.removeEventListener("keydown", this._onKeyDown);
 
-    this.originalFocusableEl?.focus();
+    this.originalFocusableEl?.focus({preventScroll: true});
     this.originalFocusableEl = null;
 
     const popup = this.__currentPopupRef;

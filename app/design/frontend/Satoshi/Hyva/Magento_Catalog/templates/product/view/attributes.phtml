@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use Magento\Framework\Escaper;
-use Magento\Catalog\Helper\Output as CatalogOutputHelper;
-use Magento\Catalog\Block\Product\View\Attributes;
-use Magento\Catalog\Model\Product;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Catalog\Block\Product\View\Attributes;
+use Magento\Catalog\Helper\Output as CatalogOutputHelper;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
 
 /** @var Escaper $escaper */
 /** @var CatalogOutputHelper $output */
@@ -25,19 +25,20 @@ $product = $block->getProduct();
 
 
 <?php if ($attributes = $block->getAdditionalData()): ?>
-    <div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion('true', 300)">
+    <div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion(false, 300)">
         <button
-            class="group flex items-center justify-between text-start"
+            class="group flex items-center justify-between text-start gap-3"
             x-ref="AccordionButton"
             type="button"
             :aria-expanded="isExpanded"
             aria-controls="attributes_panel"
             aria-labelledby="attributes_label"
         >
-            <p class="text-base font-semibold leading-tight text-text-500">
+            <div class="text-base font-semibold leading-tight text-text-500">
                 <?= $block->getTitle() ? $escaper->escapeHtml($block->getTitle()) : '&nbsp;' ?>
-            </p>
-            <span x-ref="AccordionIcon" class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" style="rotate: -180deg;">
+            </div>
+            <span x-ref="AccordionIcon"
+                  class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
                 <?= $hyvaicons->renderHtml('chevron', 'rotate-90', attributes: ['title' => '']); ?>
             </span>
         </button>
@@ -48,7 +49,7 @@ $product = $block->getProduct();
             class="overflow-hidden"
             id="attributes_panel"
             aria-labelledby="attributes_label"
-            x-cloak
+            style="max-height: 0;"
         >
             <div class="mt-3 overflow-hidden">
                 <div class="table-wrapper max-w-prose overflow-x-auto" id="product-attributes">

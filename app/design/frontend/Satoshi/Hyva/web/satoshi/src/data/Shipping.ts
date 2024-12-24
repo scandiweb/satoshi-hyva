@@ -96,6 +96,14 @@ export const Shipping = () =>
     receiveCustomerData(data: Data) {
       if (data.cart) {
         this.cart = data.cart;
+        if (data.cart.cartTotals) {
+          const selectedShippingMethod = data.cart.cartTotals.selected_shipping_method;
+          if (selectedShippingMethod) {
+            this.shippingMethod = `${selectedShippingMethod.carrier_code}_${selectedShippingMethod.method_code}`;
+          } else {
+            this.shippingMethod = false;
+          }
+        }
       }
       if (data.customer) {
         this.customer = data.customer;

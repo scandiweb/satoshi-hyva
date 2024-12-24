@@ -37,7 +37,7 @@ h3 {
 }
 
 .main-wrapper {
-  @apply -mt-[72px] flex-1 md:-mt-[89px] max-md:overflow-hidden;
+  @apply -mt-[72px] pb-10 md:pb-7 flex-1 md:-mt-[89px] max-md:overflow-hidden;
 }
 
 .breadcrumb {
@@ -139,13 +139,39 @@ h3 {
   @apply -mt-[88px] flex-1 max-md:overflow-hidden;
 }
 
-.product-page {
+.product-info-main {
   @apply max-md:pb-10;
 }
 
 .grid-columns {
   @apply h-full flex flex-col md:grid grid-rows-[auto_minmax(0,1fr)] gap-x-8 gap-y-5;
   grid-template-columns: 275px repeat(2, minmax(0, 1fr)) 275px;
+}
+
+.grid-columns-plp {
+  @apply h-full flex flex-col md:flex-row gap-y-5;
+}
+
+.main-sidebar {
+  @apply relative col-span-1 transition-all;
+}
+
+.grid-columns-plp .main-sidebar {
+  @apply md:pl-8;
+}
+
+.sidebar-additional {
+  @apply transition-all md:max-w-[275px] whitespace-nowrap overflow-hidden;
+}
+
+.plp-grid-wrapper--full {
+  .main-sidebar {
+    @apply pl-0;
+  }
+
+  .sidebar-additional {
+    @apply max-w-0;
+  }
 }
 
 .price-box {
@@ -169,6 +195,14 @@ h3 {
   @apply sr-only;
 }
 
+.cart-main + .product-slider {
+  @apply max-md:mb-28;
+}
+
+.pagebuilder-column-line {
+  @apply md:gap-5;
+}
+
 @layer components {
   @import "components/content-wrapper";
   @import "components/checkbox";
@@ -190,6 +224,7 @@ h3 {
   @import "components/link";
   @import "components/page-builder";
 }
+
 @import "components/progress-bar";
 
 @layer base {

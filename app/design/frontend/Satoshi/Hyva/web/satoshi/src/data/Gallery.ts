@@ -208,6 +208,7 @@ export const Gallery = (
 
         if (!newImages.length) {
           this.mobileFeaturedImage = null;
+          this.appendedImages = [];
           return;
         }
 

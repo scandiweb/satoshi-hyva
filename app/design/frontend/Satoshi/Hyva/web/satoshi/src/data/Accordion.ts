@@ -6,6 +6,7 @@ export type AccordionType = {
   _buttonRef: HTMLElement | null;
   _panelRef: HTMLElement | null;
   _iconRef: HTMLElement | null;
+  __mutationObserver: MutationObserver | null;
 
   isExpanded: boolean;
   duration: number;
@@ -14,22 +15,45 @@ export type AccordionType = {
   _initElements(): void;
   _toggle(): void;
   _update(): void;
+  destroy(): void;
 } & Magics<{}>;
 
-export const Accordion = (isExpanded: unknown = false, duration: unknown = 0) =>
+export const Accordion = (
+  isExpanded: unknown = false,
+  duration: unknown = 0,
+  onlyMobile: boolean = false,
+) =>
   <AccordionType>{
     _buttonRef: null,
     _panelRef: null,
     _iconRef: null,
+    __mutationObserver: null,
 
     isExpanded: Boolean(isExpanded),
     duration: Number(duration),
 
     init() {
-      this._initElements();
-      this._update();
+      if (onlyMobile && !Alpine.store("main").isMobile) {
+        return;
+      }
 
-      this.$watch("isExpanded", this._update.bind(this));
+      this._initElements();
+      Alpine.nextTick(() => {
+        this._update();
+        this.$watch("isExpanded", this._update.bind(this));
+      });
+
+      this.__mutationObserver = new MutationObserver(() => {
+        this._update();
+      });
+
+      this.__mutationObserver.observe(
+        this._panelRef!,
+        {
+          childList: true,
+          subtree: true,
+        },
+      );
     },
 
     _initElements() {
@@ -60,7 +84,7 @@ export const Accordion = (isExpanded: unknown = false, duration: unknown = 0) =>
         this._panelRef.style.opacity = this.isExpanded ? "1" : "0";
         const containerMaxheight = this._panelRef.scrollHeight
           ? `${String(this._panelRef.scrollHeight)}px`
-          : "1000px";
+          : "10000px";
         this._panelRef.style.maxHeight = this.isExpanded
           ? containerMaxheight
           : "0";
@@ -70,4 +94,9 @@ export const Accordion = (isExpanded: unknown = false, duration: unknown = 0) =>
         this._iconRef.style.rotate = this.isExpanded ? "-180deg" : "";
       }
     },
+
+    destroy() {
+      this.__mutationObserver?.disconnect();
+      this.__mutationObserver = null;
+    }
   };

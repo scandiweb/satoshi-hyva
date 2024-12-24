@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Magento\Catalog\Block\Product\View;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
+use Satoshi\Catalog\Block\Product\View;
 
 /** @var View $block */
 /** @var Escaper $escaper */
@@ -13,6 +13,7 @@ use Magento\Framework\Escaper;
 $product = $block->getProduct();
 $productType = $product->getTypeId();
 $isConfigurableProduct = $productType === 'configurable';
+$productId = $product->getId();
 
 /**
  * @see \Magento\Checkout\Block\Cart\Item\Configure::_prepareLayout
@@ -22,28 +23,23 @@ $isPopup = $block->getData('is_popup') ?? false;
 
 ?>
 
-<?php if ($product->isSaleable()): ?>
-  <template x-if="!$store.main.isMobile || <?= (int) ($isPopup || in_array($productType, ['simple', 'virtual'])) ?>">
-    <form method="post"
-          action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
-          id="product_addtocart_form"
-          <?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
-          @submit.prevent="addToCart($event)"
-          <?php if ($isConfigurableProduct): ?> x-init="selectFirstInStockConfigurableOption" <?php endif; ?>
-          <?php if (!$isPopup): ?>
-            class="animate-on-transition md:mb-5 max-md:hidden"
-          <?php else: ?>
-            class="max-md:mx-2"
-          <?php endif; ?>
-    >
-      <input type="hidden" name="product" value="<?= (int) $product->getId() ?>"/>
-      <input type="hidden" name="selected_configurable_option" value=""/>
-      <input type="hidden" name="related_product" id="related-products-field" value=""/>
-      <input type="hidden" name="item" value="<?= (int) $block->getRequest()->getParam('id') ?>">
-      <?= $block->getBlockHtml('formkey') ?>
+<form method="post"
+      action="<?= $escaper->escapeUrl($productInfoBlock->getSubmitUrl($product)) ?>"
+      id="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+      class="animate-on-transition"
+      @submit.prevent="addToCart($event)"
+    <?php if ($product->getOptions()): ?>
+        enctype="multipart/form-data"
+    <?php endif; ?>
+    <?php if ($isConfigurableProduct): ?> x-init="selectFirstInStockConfigurableOption" <?php endif; ?>
+>
+    <input type="hidden" name="product" value="<?= (int)$product->getId() ?>"/>
+    <input type="hidden" name="selected_configurable_option" value=""/>
+    <input type="hidden" name="related_product" id="related-products-field" value=""/>
+    <input type="hidden" name="item" value="<?= (int)$block->getRequest()->getParam('id') ?>">
+    <?= $block->getBlockHtml('formkey') ?>
 
-      <?= $block->getChildHtml() ?>
-
-    </form>
-  </template>
-<?php endif; ?>
+    <?php foreach ($block->getChildNames() as $name): ?>
+        <?= $block->getLayout()->getBlock($name)->setData('is_popup', $isPopup)->toHtml() ?>
+    <?php endforeach; ?>
+</form>

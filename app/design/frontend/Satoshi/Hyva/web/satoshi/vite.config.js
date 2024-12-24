@@ -1,9 +1,6 @@
 import { defineConfig } from "vite";
 import path from "path";
 
-/*
- *TODO: Configure so styles will be in assets folder. Currently it is made in css since
-*/
 export default defineConfig({
   plugins: [
     // Add any necessary plugins here

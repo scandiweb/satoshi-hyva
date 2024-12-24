@@ -1,22 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Satoshi\SatoshiUi\Block\Widget;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Block\Product\Context;
 use Magento\Catalog\Model\Product\Visibility;
+use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\CatalogWidget\Block\Product\ProductsList;
 use Magento\CatalogWidget\Model\Rule;
 use Magento\Framework\App\Http\Context as HttpContext;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Framework\Url\EncoderInterface;
 use Magento\Framework\View\LayoutFactory;
+use Magento\Rule\Model\Condition\Combine;
 use Magento\Rule\Model\Condition\Sql\Builder as SqlBuilder;
 use Magento\Widget\Helper\Conditions;
-use Magento\Catalog\Api\Data\CategoryInterface;
 
 /**
  * Category widget block
@@ -45,35 +50,36 @@ class Category extends ProductsList
     private $categoryRepository;
 
     /**
-     * @param  Context  $context
-     * @param  CollectionFactory  $productCollectionFactory
-     * @param  Visibility  $catalogProductVisibility
-     * @param  HttpContext  $httpContext
-     * @param  SqlBuilder  $sqlBuilder
-     * @param  Rule  $rule
-     * @param  Conditions  $conditionsHelper
-     * @param  array  $data
-     * @param  Json|null  $json
-     * @param  LayoutFactory|null  $layoutFactory
-     * @param  EncoderInterface|null  $urlEncoder
-     * @param  CategoryRepositoryInterface|null  $categoryRepository
+     * @param Context $context
+     * @param CollectionFactory $productCollectionFactory
+     * @param Visibility $catalogProductVisibility
+     * @param HttpContext $httpContext
+     * @param SqlBuilder $sqlBuilder
+     * @param Rule $rule
+     * @param Conditions $conditionsHelper
+     * @param array $data
+     * @param Json|null $json
+     * @param LayoutFactory|null $layoutFactory
+     * @param EncoderInterface|null $urlEncoder
+     * @param CategoryRepositoryInterface|null $categoryRepository
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        Context $context,
+        Context           $context,
         CollectionFactory $productCollectionFactory,
-        Visibility $catalogProductVisibility,
-        HttpContext $httpContext,
-        SqlBuilder $sqlBuilder,
-        Rule $rule,
-        Conditions $conditionsHelper,
-        array $data = [],
-        Json $json = null,
-        LayoutFactory $layoutFactory = null,
-        EncoderInterface $urlEncoder = null,
+        Visibility        $catalogProductVisibility,
+        HttpContext       $httpContext,
+        SqlBuilder        $sqlBuilder,
+        Rule              $rule,
+        Conditions        $conditionsHelper,
+        array             $data = [],
+        Json              $json = null,
+        LayoutFactory     $layoutFactory = null,
+        EncoderInterface  $urlEncoder = null,
         CategoryRepositoryInterface $categoryRepository = null
-    ) {
+    )
+    {
         $this->categoryRepository = $categoryRepository ?? ObjectManager::getInstance()->get(CategoryRepositoryInterface::class);
         parent::__construct(
             $context,
@@ -114,9 +120,9 @@ class Category extends ProductsList
          * one by one and sorting by created_at is indeterministic in this case.
          */
         $collection = $this->_addProductAttributesAndPrices($collection)
-                           ->addStoreFilter()
-                           ->addAttributeToSort('entity_id', 'desc')
-                           ->setPageSize($this->getProductsCount());
+            ->addStoreFilter()
+            ->addAttributeToSort('entity_id', 'desc')
+            ->setPageSize($this->getProductsCount());
 
         $conditions = $this->getConditions();
         $conditions->collectValidatedAttributes($collection);
@@ -174,7 +180,7 @@ class Category extends ProductsList
     /**
      * Update conditions if the category is an anchor category
      *
-     * @param  array  $condition
+     * @param array $condition
      * @return array
      */
     private function updateAnchorCategoryConditions(array $condition): array
@@ -216,5 +222,31 @@ class Category extends ProductsList
         }
 
         return $this->getData('max_products_count');
+    }
+
+    /**
+     * @return bool|int|null
+     */
+    protected function getCacheLifetime()
+    {
+        return parent::getCacheLifetime() ?: 3600;
+    }
+
+    /**
+     * Get key pieces for caching block content
+     *
+     * @return array
+     * @SuppressWarnings(PHPMD.RequestAwareBlockMethod)
+     */
+    public function getCacheKeyInfo()
+    {
+        return [
+            'SATOSHI_CATEGORY_WIDGET',
+            $this->getData('heading'),
+            $this->getData('category_id'),
+            $this->getData('view_all_button'),
+            $this->getData('auto_resize_items'),
+            $this->getData('max_products_count'),
+        ];
     }
 }

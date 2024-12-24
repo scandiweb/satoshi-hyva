@@ -5,8 +5,8 @@
 
 @media (min-width: 768px) {
   .slider ::-webkit-scrollbar {
-    height: 0.25rem;
-    width: 0.25rem;
+    height: 4px;
+    width: 4px;
   }
 
   .slider ::-webkit-scrollbar-track {
@@ -85,12 +85,12 @@
   padding-top: 20px;
   padding-bottom: 20px;
   gap: var(--slide-gap);
+  position: relative;
 }
 
 .slider__slide {
   scroll-snap-align: start;
-  --xxx: "aa";
-  flex: 0 0 calc((1024px - 32px - 16px * (4 - 1)) / 4);
+  flex: 0 0 1000px;
   max-width: calc((1024px - 32px - 16px * (4 - 1)) / 4);
 }
 

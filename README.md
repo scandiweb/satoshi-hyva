@@ -37,7 +37,7 @@ $template
 $resizable
   ->setData([
     'id' => 'menu-desktop',
-    'initialWidth' => 100,
+    'initialWidth' => 105,
     'initialHeight' => 56,
     'cssClass' => 'resizable--menu md:pointer-events-auto',
   ])
@@ -73,3 +73,9 @@ $popup
 ### PLP
 
 1. Add an option to switch between grid and list layout
+
+### PDP
+
+1. email to a friend
+2. add to compare
+3. add to cart shortcuts (ie: pay later paypal btn)

@@ -10,9 +10,10 @@ use Magento\Sales\Block\Widget\Guest\Form;
 
 $errorMessage = $block->getErrorMessage();
 ?>
-<div class="mx-auto mb-16 w-[412px] px-4 h-full flex items-center md:px-0 max-w-full">
+<div class="mx-auto mb-16 w-[412px] px-4 h-full flex md:items-center md:px-0 max-w-full">
     <form
-        x-data="Object.assign(Form(), {
+        id="order-info"
+        x-data="Object.assign(Form('order-info'), {
             authenticateBy: 'email'
         })"
         class="w-full"

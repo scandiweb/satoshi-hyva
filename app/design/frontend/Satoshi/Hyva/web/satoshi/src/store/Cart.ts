@@ -55,8 +55,9 @@ export type CartStoreType = {
   addingItemIds: string[];
   removingItemId: string | null;
   abortController: AbortController | null;
-  errors: Record<string, string[]>;
+  errorMessage: string;
   setCartTotals(cartTotals: CartTotals): void;
+  setErrorMessage(message: string): void;
   updateCartTotals(cartTotals: CartTotals): void;
   setCartItems(cartItems: CartItem[]): void;
   addCartItems(cartItems: CartItem[]): void;
@@ -65,7 +66,6 @@ export type CartStoreType = {
   increaseQty(item_id: string): void;
   decreaseQty(item_id: string): void;
   setQty(qty: number, item_id: string): void;
-  addToCart(): void;
   applyCoupon(form: HTMLFormElement): void;
   showCart(): void;
   hideCart(): void;
@@ -75,6 +75,7 @@ export type CartStoreType = {
 const CART_RESIZABLE_ID = "cart-desktop";
 const CART_POPUP_ID = "cart";
 const ABORT_ERROR_NAME = "AbortError";
+const CHECKOUT_URL = BASE_URL + 'checkout/cart';
 
 export const CartStore = <CartStoreType>{
   cartItems: [],
@@ -83,7 +84,7 @@ export const CartStore = <CartStoreType>{
   addingItemIds: [],
   removingItemId: null,
   abortController: null,
-  errors: {},
+  errorMessage: '',
 
   setCartTotals(cartTotals: CartTotals) {
     this.cartTotals = cartTotals;
@@ -95,6 +96,10 @@ export const CartStore = <CartStoreType>{
     };
   },
 
+  setErrorMessage(message) {
+    this.errorMessage = message;
+  },
+
   setCartItems(cartItems: CartItem[]) {
     this.cartItems = cartItems;
     Alpine.store("main").totalCartQty = cartItems.length;
@@ -102,40 +107,6 @@ export const CartStore = <CartStoreType>{
 
   addCartItems(cartItems: CartItem[]) {
     this.setCartItems([...cartItems, ...this.cartItems]);
-  },
-
-  addToCart() {
-    // const { id } = itemProps;
-    // if (!this.addingItemIds.includes(id)) {
-    //   this.addingItemIds.push(id);
-    // }
-    // const formData = {
-    //   items: [itemProps],
-    // };
-    // fetch(`${window.Shopify.routes.root}cart/add.js`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(formData),
-    // })
-    //   .then((response) => response.json())
-    //   .then((response) => {
-    //     if (response.status === 422) {
-    //       this.errors = response.errors;
-    //       return;
-    //     }
-    //     const items = this.processCartItems(response.items);
-    //     this.addCartItems(items);
-    //     this.focusInCart(response.items[0]?.key);
-    //     this.errors = {};
-    //   })
-    //   .catch((error) => console.error("Error:", error))
-    //   .finally(() => {
-    //     this.addingItemIds = this.addingItemIds.filter(
-    //       (itemId) => itemId !== id,
-    //     );
-    //   });
   },
 
   updateCartItem(item_id) {
@@ -166,10 +137,10 @@ export const CartStore = <CartStoreType>{
       formData.append(`cart[${item.item_id}][qty]`, item.qty.toString());
     });
 
-    fetch(`/checkout/cart/updatePost`, {
+    fetch(`/checkout/cart/updatePost?return_url=${CHECKOUT_URL}`, {
       method: "POST",
       body: formData,
-      signal: this.abortController.signal,
+      signal: this.abortController.signal
     })
       .then((result) => {
         return result.text();

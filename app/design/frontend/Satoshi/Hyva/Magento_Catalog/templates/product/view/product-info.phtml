@@ -6,12 +6,14 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ProductAttributes;
 use Hyva\Theme\ViewModel\ProductPage;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Catalog\Block\Product\View;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
 use Satoshi\Theme\Block\Popup;
+use Satoshi\Theme\Block\Template;
 
-/** @var Template $block */
+/** @var View $block */
+/** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 /** @var Popup $popup */
@@ -23,91 +25,126 @@ $attributesViewModel = $viewModels->require(ProductAttributes::class);
 /** @var Product $product */
 $product = $productViewModel->getProduct();
 $productType = $product->getTypeId();
+$productId = $product->getId();
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
-
+$cartErrMsg = $escaper->escapeHtml($block->getCartErrorMessage());
 ?>
 <h1 class="heading mb-1 ps-4 text-md leading-tight text-text-500 md:px-0 md:text-4xl max-md:pe-[--price-width]">
     <?= $block->getChildBlock('product.title')->getPageHeading() ?>
 </h1>
 <div class="animate-on-transition px-4 leading-tight md:px-0 md:text-base mb-4 md:mb-7 max-md:pe-[--price-width]">
-  <?= $block->getChildHtml('product.info.review') ?>
+    <?= $block->getChildHtml('product.info.review') ?>
 </div>
-
-<!-- TODO: What is this?, test it! -->
-<?= $block->getChildHtml("alert.urls") ?>
 
 <!-- Price -->
-<div class="animate-on-transition px-4 ps-2 leading-tight z-10 md:px-0 max-md:absolute max-md:right-0 <?= $block->getChildHtml("product.info.price") === '' ? '' : 'md:mb-8' ?>" x-ref="ProductPrice">
-  <div role="group" class="flex gap-2 items-center" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
-    <?= $block->getChildHtml("product.info.price") ?>
-    <?php if ($productType === 'bundle'): ?>
-      <span class="sr-only"><?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?></span>
-    <?php endif; ?>
-    <?= $template->setData(['product' => $product, 'class' => 'ms-3 static max-md:hidden !bg-secondary-500'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
-  </div>
+<div
+    class="animate-on-transition px-4 ps-2 leading-tight z-10 md:px-0 max-md:absolute max-md:right-0 <?= $block->getChildHtml("product.info.price") === '' ? '' : 'md:mb-5' ?>"
+    x-ref="ProductPrice">
+    <div role="group" class="flex gap-2 items-center" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
+        <?= $block->getChildHtml("product.info.price") ?>
+        <?php if ($productType === 'bundle'): ?>
+            <span class="sr-only"><?= $escaper->escapeHtml(__('The price depends on the chosen options')) ?></span>
+        <?php endif; ?>
+        <?= $template->setData(['product' => $product, 'class' => 'ms-3 static max-md:hidden !bg-secondary-500'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
+    </div>
 </div>
 
-<div class="flex flex-col-reverse md:flex-col">
-  <div class="animate-on-transition max-md:px-4">
-    <!-- Short Description -->
-      <?php if ($shortDescription = $product->getShortDescription()): ?>
-      <div class="mb-4"><?= $shortDescription ?></div>
-    <?php endif; ?>
+<div class="flex flex-col-reverse md:flex-col md:mb-8">
+    <div class="animate-on-transition max-md:px-4 mb-8">
+        <?php if ($tierPriceBlock = $block->getChildHtml("product.price.tier")): ?>
+            <?= /** @noEscape */
+            $tierPriceBlock ?>
+        <?php endif; ?>
 
-    <!-- Attributes table -->
-    <dl class="mb-8">
-      <?php foreach ($block->getAttributes() as $attributeConfig):
-        $attribute = $attributesViewModel->getAttributeFromLayoutConfig($attributeConfig); ?>
-        <?php if ($value = $attribute['value'] ?? null): ?>
-          <div class="flex border-t first:border-t-0 border-gray-300 py-2 last:border-b">
-            <dt class="w-1/2"><?= $escaper->escapeHtml($attribute['label']) ?></dt>
-            <dd class="w-1/2 ml-2"><?= $escaper->escapeHtml($value) ?></dd>
-          </div>
-        <?php endif ?>
-      <?php endforeach; ?>
-    </dl>
-  </div>
+        <!-- Stock and price alerts -->
+        <?php if ($alerts = $block->getChildHtml("alert.urls")): ?>
+            <div class="flex flex-col gap-1">
+                <?= $alerts ?>
+            </div>
+        <?php endif; ?>
 
-  <div>
-    <!-- Options -->
-    <template x-if="!$store.main.isMobile || <?= (int) in_array($productType, ['simple', 'virtual']) ?>">
-      <div class="animate-on-transition md:mb-5 max-md:hidden">
-        <?= $block->getChildHtml('product.info.form') ?>
-        <?= $block->getChildHtml('product_options_wrapper_bottom') ?>
-      </div>
-    </template>
+        <div class="md:mt-5">
+            <!-- Short Description -->
+            <?php if ($shortDescription = $product->getShortDescription()): ?>
+                <div class="mb-4"><?= $shortDescription ?></div>
+            <?php endif; ?>
 
-    <div class="flex flex-col sm:flex-row items-end mb-4">
-      <?php if ($product->isSaleable()): ?>
-        <div
-          class="relative flex flex-grow flex-wrap justify-stretch gap-3 w-full"
-          id="product-actions"
-          x-transition
-          x-intersect:enter="toggleStickyProductActions(false)"
-          x-intersect:leave="toggleStickyProductActions(true)"
-        >
-          <?= $block->getChildHtml('product.actions') ?>
+            <!-- Attributes table -->
+            <dl>
+                <?php foreach ($block->getAttributes() as $attributeConfig):
+                    $attribute = $attributesViewModel->getAttributeFromLayoutConfig($attributeConfig); ?>
+                    <?php if ($value = $attribute['value'] ?? null): ?>
+                    <div class="flex border-t first:border-t-0 border-gray-300 py-2 last:border-b">
+                        <dt class="w-1/2"><?= $escaper->escapeHtml($attribute['label']) ?></dt>
+                        <dd class="w-1/2 ml-2"><?= $escaper->escapeHtml($value) ?></dd>
+                    </div>
+                <?php endif ?>
+                <?php endforeach; ?>
+            </dl>
+
+            <!-- Additional info -->
+            <?= $block->getChildHtml("product.info.additional") ?>
+        </div>
+    </div>
+
+    <div>
+        <!-- Desktop options -->
+        <div class="animate-on-transition max-md:hidden">
+            <?= $block->getChildHtml('product.info.form') ?>
         </div>
 
-        <!-- StickyProductActionsPopup -->
-        <?php
-        $stickyActions = <<<HTML
+        <!-- Quantity and action desktop buttons -->
+        <div class="flex flex-col sm:flex-row items-end max-md:mb-5">
+            <div
+                class="relative flex flex-grow flex-wrap justify-stretch gap-3 w-full max-md:px-2"
+                id="product-actions"
+                x-transition
+                x-intersect:enter="toggleStickyProductActions(false)"
+                x-intersect:leave="toggleStickyProductActions(true)"
+            >
+                <?= $block->getChildHtml('product.actions') ?>
+            </div>
+            <?= $block->getChildHtml('product.info.additional.actions') ?>
+            <?php if ($product->isSaleable()): ?>
+                <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
+            <?php endif; ?>
+        </div>
+        <div class="mt-2 -mb-2 text-error" id="desktop-cart-error-<?= $productId ?>">
+            <!-- desktop-cart-error -->
+            <?= $cartErrMsg; ?>
+            <!-- end-desktop-cart-error -->
+        </div>
+    </div>
+</div>
+
+
+<!-- StickyProductActionsPopup -->
+<?php
+$priceHtml = '';
+if (!empty($block->getChildHtml("product.info.price"))) {
+    $priceHtml = <<<HTML
+        <div
+            class="ml-3 flex flex-grow gap-3"
+            x-show="!isVariantInCart"
+            x-transition
+        >
+            {$block->getChildHtml("product.info.price")}
+        </div>
+    HTML;
+}
+$stickyActions = <<<HTML
+    <template x-if="\$store.main.isMobile && \$store.popup.currentPopup === 'product_bottom_actions'">
+        <div class="contents">
             <div class="h-9 [.page-product-bundle_&]:h-11"></div>
             <template x-portal="document.getElementById('popup-fixed-content-portal')">
                 <div
                     id="ProductBottomActionsPopup"
                     x-show="\$store.popup.currentPopup == 'product_bottom_actions'"
-                    class="sticky-actions flex w-full items-center justify-end gap-3 bg-bg-500 px-3"
+                    class="sticky-actions flex w-full items-center justify-end gap-3 bg-bg-500"
                 >
-                    <div
-                        class="ml-3 flex flex-grow gap-3"
-                        x-show="!isVariantInCart"
-                        x-transition
-                    >
-                        {$block->getChildHtml("product.info.price")}
-                    </div>
+                    {$priceHtml}
                     <div
                         class="flex flex-grow justify-stretch gap-3"
                         :class="{
@@ -118,81 +155,54 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                     </div>
                 </div>
             </template>
-        HTML;
-        ?>
+        </div>
+    </template>
+HTML;
 
-        <?= $popup
-          ->setData(['id' => 'product_bottom_actions'])
-          ->setChildHtml($stickyActions)
-          ->render() ?>
-        <!-- StickyProductActionsPopup -->
+echo $popup
+    ->setData(['id' => 'product_bottom_actions'])
+    ->setChildHtml($stickyActions)
+    ->render()
+?>
+<!-- StickyProductActionsPopup -->
 
-        <!-- Product actions popup -->
-        <?php
-        $popup_id = 'product_actions-' . $product->getId();
-        $options = $block->getChildBlock('product.info.form') ? $block->getChildBlock('product.info.form')->setData(['is_popup' => true])->toHtml() : '';
-        $options .= $block->getChildHtml('product_options_wrapper_bottom');
-        $minHeight = $product->getTypeId() === 'bundle' ? 'min-h-24' : 'min-h-20';
+<!-- Product actions popup -->
+<?php
+$popup_id = "product_actions-$productId";
+$options = $block->getChildBlock('product.info.form')->setData(['is_popup' => true])->toHtml();
+$minHeight = $product->getTypeId() === 'bundle' ? 'min-h-40' : 'min-h-16';
 
-        $productActions = <<<HTML
-            <template x-if="\$store.main.isMobile">
-              <div class="contents">
-                <div class="max-md:mx-2" id="product-options">
-                  {$options}
+$productActions = <<<HTML
+    <template x-if="\$store.main.isMobile">
+        <div class="contents">
+            <div class="max-md:mx-2">
+                {$options}
+                <div class="min-h-3 mt-2 text-error" id="mobile-cart-error-{$productId}">
+                    <!-- mobile-cart-error -->
+                        {$cartErrMsg}
+                    <!-- end-mobile-cart-error -->
                 </div>
+            </div>
 
-                <div class="{$minHeight} md:hidden"></div>
-                  <template x-portal="document.getElementById('popup-fixed-content-portal')">
-                    <div x-show="\$store.popup.currentPopup === productActionsPopup">
-                      <div class="bg-bg-500 relative z-10">
+            <div class="{$minHeight} md:hidden"></div>
+            <template x-portal="document.getElementById('popup-fixed-content-portal')">
+                <div x-show="\$store.popup.currentPopup === productActionsPopup">
+                    <div class="bg-bg-500 relative z-10">
                         {$block->getChildBlock('product.actions')->setData(['is_popup' => true, 'is_small' => false])->toHtml()}
-                      </div>
                     </div>
-                  </template>
                 </div>
-              </div>
             </template>
-        HTML;
-        ?>
-        <?= $popup
-          ->setData([
-            'id' => $popup_id,
-            'isFocused' => true
-          ])
-          ->setChildHtml($productActions)
-          ->render() ?>
-        <!-- Product actions popup -->
-      <?php endif; ?>
-    </div>
+        </div>
+    </template>
+HTML;
 
-    <!-- TODO: What is this? -->
-    <?php if ($product->isSaleable()): ?>
-      <div class="flex mt-4 justify-end">
-        <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
-      </div>
-    <?php endif; ?>
-
-    <div class="flex mt-4 justify-end">
-      <?php
-        // TODO: Implement add to wishtlist / add to compare
-        // echo $block->getChildHtml('product.info.addtowishlist');
-        // echo $block->getChildHtml('product.info.addtocompare');
-      ?>
-    <!-- TODO: What is this? -->
-      <?= $block->getChildHtml('product.info.emailtofriend') ?>
-    <!-- TODO: What is this? -->
-      <?= $block->getChildHtml('product.info.additional.actions') ?>
-    </div>
-
-    <!-- TODO: What is this? -->
-    <?php if ($tierPriceBlock = $block->getChildHtml("product.price.tier")): ?>
-      <div class="py-4 my-2 tier-price-container">
-        <?= /** @noEscape */
-        $tierPriceBlock ?>
-      </div>
-    <?php endif; ?>
-
-    <!-- TODO: What is this? -->
-    <?= $block->getChildHtml("product.info.additional") ?>
-  </div>
-</div>
+echo $popup
+    ->setData([
+        'id' => $popup_id,
+        'isFocused' => true,
+        'isFullScreen' => $productType === 'bundle',
+    ])
+    ->setChildHtml($productActions)
+    ->render();
+?>
+<!-- Product actions popup -->

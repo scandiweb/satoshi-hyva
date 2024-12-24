@@ -357,6 +357,8 @@ return [
         'PayPal_BraintreeGraphQl' => 1,
         'ReadyMage_Logger' => 1,
         'ReadyMage_Maintenance' => 1,
+        'Satoshi_Bundle' => 1,
+        'Satoshi_Catalog' => 1,
         'Satoshi_CatalogGraphQl' => 1,
         'Satoshi_CatalogSearch' => 1,
         'Satoshi_Checkout' => 1,
@@ -368,6 +370,7 @@ return [
         'Satoshi_Newsletter' => 1,
         'Satoshi_Sales' => 1,
         'Satoshi_SatoshiUi' => 1,
+        'Satoshi_Swatches' => 1,
         'Satoshi_Theme' => 1,
         'Satoshi_Wishlist' => 1,
         'Temando_ShippingRemover' => 1
