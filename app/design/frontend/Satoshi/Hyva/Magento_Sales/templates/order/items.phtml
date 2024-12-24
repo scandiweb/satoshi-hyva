@@ -21,6 +21,12 @@ $cols = $block->getData('is_context_shipment') ? 3 : 5;
     <?php $items = $block->getOrder()->getAllItems(); ?>
     <?php $giftMessage = '' ?>
     <?php foreach ($items as $item): ?>
+        <?php
+        $parentItem = $item->getParentItem();
+        if ($parentItem && $parentItem->getData('product_type') === Configurable::TYPE_CODE) {
+            continue;
+        }
+        ?>
         <div class="pt-5 pb-3 lg:py-7 border-b">
             <div class="hidden mb-2 lg:grid grid-cols-<?= $escaper->escapeHtmlAttr($cols) - 1 ?> font-bold">
                 <div><?= $escaper->escapeHtml(__('Product Name')) ?></div>
@@ -30,12 +36,6 @@ $cols = $block->getData('is_context_shipment') ? 3 : 5;
                 <?php if (!$block->getData('is_context_shipment')): ?>
                     <div class="text-right"><?= $escaper->escapeHtml(__('Subtotal')) ?></div><?php endif; ?>
             </div>
-            <?php
-            $parentItem = $item->getParentItem();
-            if ($parentItem && $parentItem->getData('product_type') === Configurable::TYPE_CODE) {
-                continue;
-            }
-            ?>
             <div class="<?= ($parentItem) ?
                 'child-item ml-2 px-4 mb-2 border-l-4 border-container text-sm' :
                 'parent-item'
