@@ -39,7 +39,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         <div
             x-ref="scrollContainer"
             class="transition-preview__scroll"
-            x-a11y-trap="isActive"
+            x-a11y-trap.watch="isActive"
         >
             <div class="content-wrapper relative mx-auto">
                 <div class="transition-preview__content" x-ref="transitionContent">
