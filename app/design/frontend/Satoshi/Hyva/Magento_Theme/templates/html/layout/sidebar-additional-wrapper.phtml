@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+use Satoshi\Theme\Block\SidebarAdditional;
+
+/** @var SidebarAdditional $block */
+
+$hasRecentOrders = $block->hasRecentOrders() ?? false;
+$hasWishlistItems = $block->hasWishlistItems() ?? false;
+$hasCompareItems = $block->hasCompareItems() ?? false;
+
+?>
+
+<aside
+    x-data="{
+        hasRecentOrders: <?= json_encode($hasRecentOrders) ?>,
+        hasWishlistItems: <?= json_encode($hasWishlistItems) ?>,
+        hasCompareItems: <?= json_encode($hasCompareItems) ?>,
+        receiveSidebarAdditionalData(data) {
+            if (data['last-ordered-items']?.items) {
+                this.hasRecentOrders = data['last-ordered-items'].items.length > 0;
+            }
+            if (data.wishlist?.items) {
+                this.hasWishlistItems = data.wishlist.items.length > 0;
+            }
+            if (data['compare-products']?.count) {
+                this.hasCompareItems = data['compare-products'].count > 0;
+            }
+        }
+    }"
+    @private-content-loaded.window="receiveSidebarAdditionalData($event.detail.data)"
+    class="sidebar sidebar-additional"
+    :class="{ 'sidebar-additional-hidden': !hasRecentOrders && !hasWishlistItems && !hasCompareItems }"
+    x-show="hasRecentOrders || hasWishlistItems || hasCompareItems"
+    <?php if (!$hasRecentOrders && !$hasWishlistItems && !$hasCompareItems): ?>
+        style="display: none"
+    <?php endif; ?>
+>
+    <?= $block->getChildHtml() ?>
+</aside>
