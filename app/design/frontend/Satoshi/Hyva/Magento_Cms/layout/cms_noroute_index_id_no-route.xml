@@ -9,6 +9,7 @@
         <move element="page.main.title" destination="page_404"/>
         <move element="cms_noroute" destination="page_404"/>
         <move element="cms_page" destination="page_404"/>
-        <referenceBlock name="cms_page_container" remove="true" />
+        <referenceBlock name="cms_page_container" remove="true"/>
+        <referenceBlock name="div.sidebar.additional" remove="true"/>
     </body>
 </page>
