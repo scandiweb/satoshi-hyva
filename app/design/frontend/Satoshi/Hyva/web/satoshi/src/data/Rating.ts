@@ -1,4 +1,4 @@
-import { Magics } from "alpinejs";
+import {Magics} from "alpinejs";
 
 export type RatingType = {
   reviewsSection: HTMLElement | null;
@@ -13,8 +13,6 @@ export const Rating = () =>
 
     init() {
       this.reviewsSection =
-        document.getElementById("customer-review-list") ||
-        document.getElementById("customer-reviews") ||
         document.getElementById("review-form");
     },
 
@@ -32,13 +30,14 @@ export const Rating = () =>
 
           scrollTimeout = setTimeout(() => {
             if (this.reviewsSection) {
-              this.reviewsSection.focus();
+              const firstInputElement = this.reviewsSection?.querySelector("input");
+              firstInputElement?.focus();
             }
           }, 50);
         },
-        { once: true },
+        {once: true},
       );
 
-      this.reviewsSection.scrollIntoView({ behavior: "smooth" });
+      this.reviewsSection.scrollIntoView({behavior: "smooth"});
     },
   };

@@ -123,7 +123,10 @@ mutation createProductReviewMutation(
                                             </h2>
                                             <div
                                                 class="flex grow-0"
-                                                x-data="{ clickedRatingId: 0 }"
+                                                x-data="{
+                                                    clickedRatingId: 0,
+                                                    focusedId: 0
+                                                }"
                                             >
                                                 <?php $options = $rating->getOptions(); ?>
                                                 <?php $iterator = 1;
@@ -138,10 +141,19 @@ mutation createProductReviewMutation(
                                                             id="<?= $escaper->escapeHtmlAttr($rating->getRatingCode() . '_' . $option->getValue()) ?>_label"
                                                         >
                                                                 <span
-                                                                    :class="<?= (int)$iterator ?> <= clickedRatingId ? 'text-primary-500' : 'text-secondary-400'">
+                                                                    class="[&_svg]:stroke-primary-600"
+                                                                    :class="{
+                                                                        '[&_svg]:stroke-1': <?= (int)$iterator ?> === focusedId,
+                                                                        '[&_svg]:stroke-0': <?= (int)$iterator ?> !== focusedId,
+                                                                        'text-primary-500': <?= (int)$iterator ?> <= clickedRatingId,
+                                                                        'text-secondary-400': <?= (int)$iterator ?> > clickedRatingId
+                                                                    }"
+                                                                >
                                                                     <?= $hyvaicons->renderHtml('star', 'text-xl') ?>
                                                                 </span>
                                                             <input
+                                                                x-on:focus="focusedId = <?= (int)$iterator ?> || 0"
+                                                                x-on:blur="focusedId = 0"
                                                                 class="absolute opacity-0 bottom-0 left-0 cursor-pointer"
                                                                 type="radio"
                                                                 <?php if ($iterator === 1): ?>required<?php endif; ?>
