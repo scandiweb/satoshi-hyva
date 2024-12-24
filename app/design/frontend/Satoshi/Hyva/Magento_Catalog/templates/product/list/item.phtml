@@ -24,7 +24,7 @@ $productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
 /** @var Magento\Catalog\Model\Product $product */
 $product = $block->getData('product');
 $imageUrl = $this->helper(Image::class)->init($product, 'product_page_image_medium')
-                 ->getUrl();
+    ->getUrl();
 $placeholderImageUrl = $this->helper(Image::class)->getDefaultPlaceholderUrl('image');
 $breadcrumbs = $block->getData('breadcrumbs') ?? [];
 
@@ -62,7 +62,7 @@ if ($product) {
 >
     <a
         <?php if ($product): ?>
-          x-element-transition-trigger:product.preview.animate="
+            x-element-transition-trigger:product.preview.animate="
             {
                 <?php if ($product->getImage()): ?>
                     'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
@@ -76,16 +76,14 @@ if ($product) {
                 <?php endif; ?>
             }
         "
-        href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
+            href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
         <?php else: ?>
-          :href="`/${product.url_rewrites?.[0].url}`"
-          x-element-transition-trigger:product<?= !$isSearch ? '.preview' : '' ?>.animate="
-            {
-              'productImg': product.image?.url,
-              'title': product.name,
-              'mediaCount': product.media_gallery?.length || 3
-            }
-          "
+            :href="`/${product.url_rewrites?.[0].url}`"
+            x-element-transition-trigger:product<?= !$isSearch ? '.preview' : '' ?>.animate="{
+                'productImg': product.image?.url,
+                'title': product.name,
+                'mediaCount': product.media_gallery?.length || 3
+            }"
         <?php endif ?>
         class="card-hover group relative flex h-full min-w-0 rounded-md"
     >
@@ -132,6 +130,7 @@ if ($product) {
                             class="<?= $isContain ? 'object-contain rounded-md' : 'object-cover h-full w-full' ?> max-h-full object-center mix-blend-darken"
                             width=""
                             height=""
+                            alt=""
                         />
                     </div>
                 <?php endif ?>
@@ -168,12 +167,13 @@ if ($product) {
                             @submit.prevent="addToCart($event)"
                             <?php if ($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>
                         >
-                            <?= /** @noEscape */ $block->getBlockHtml('formkey') ?>
+                            <?= /** @noEscape */
+                            $block->getBlockHtml('formkey') ?>
                             <input type="hidden" name="product" value="<?= (int)$product->getId() ?>"/>
                             <?php foreach ($productOptionsViewmodel->getOptionsData($product) as $optionItem): ?>
                                 <input type="hidden"
-                                    name="<?= $escaper->escapeHtml($optionItem['name']) ?>"
-                                    value="<?= $escaper->escapeHtml($optionItem['value']) ?>">
+                                       name="<?= $escaper->escapeHtml($optionItem['name']) ?>"
+                                       value="<?= $escaper->escapeHtml($optionItem['value']) ?>">
                             <?php endforeach; ?>
 
                             <button
@@ -199,9 +199,9 @@ if ($product) {
                             <?php if (!in_array($product->getTypeId(), ['simple', 'virtual'])): ?>
                                 <!-- Quick buy popup -->
                                 <?= $popup->setData([
-                                        'id' => 'quick-buy-' . $product->getId(),
-                                        'isFocused' => true,
-                                    ])
+                                    'id' => 'quick-buy-' . $product->getId(),
+                                    'isFocused' => true,
+                                ])
                                     ->setChildHtml($block->getProductDetailsHtml($product))
                                     ->render() ?>
                             <?php endif; ?>
@@ -209,21 +209,24 @@ if ($product) {
                     <?php endif ?>
                 </div>
 
-                <div class="z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
+                <div
+                    class="z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
                     <?php if ($isSearch) : ?>
                         <template
                             x-if="product.price_range.minimum_price.final_price.value < product.price_range.minimum_price.regular_price.value">
                             <div>
                                 <span class="sr-only"><?= __('Sale Price') ?></span>
                                 <span class="text-primary-500"
-                                    x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                                      x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
                                 <s x-text="hyva.formatPrice(product.price_range.minimum_price.regular_price.value)"></s>
                             </div>
                         </template>
-                        <template x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value != product.price_range.maximum_price.value">
+                        <template
+                            x-if="product.price_range.minimum_price.final_price.value === product.price_range.minimum_price.regular_price.value && product.price_range.minimum_price.value != product.price_range.maximum_price.value">
                             <div>
                                 <span><?= __('As low as') ?></span>
-                                <span class="text-primary-500" x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                                <span class="text-primary-500"
+                                      x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
                             </div>
                         </template>
                         <template
@@ -231,11 +234,12 @@ if ($product) {
                             <div>
                                 <span class="sr-only"><?= __('Regular Price') ?></span>
                                 <span class="text-primary-500"
-                                    x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
+                                      x-text="hyva.formatPrice(product.price_range.minimum_price.final_price.value)"></span>
                             </div>
-                            </template>
+                        </template>
                     <?php else: ?>
-                        <?= /* @noEscape */ $productListItemViewModel->getProductPriceHtml($product) ?>
+                        <?= /* @noEscape */
+                        $productListItemViewModel->getProductPriceHtml($product) ?>
                     <?php endif; ?>
                 </div>
             </div>
