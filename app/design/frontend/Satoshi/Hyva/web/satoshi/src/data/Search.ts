@@ -37,7 +37,7 @@ export const Search = () =>
     productsSearchLimit: 4,
 
     getIsSearchActive() {
-      return !!this.searchTerm && !this.isNoResults;
+      return !!this.searchTerm.length;
     },
 
     init() {
