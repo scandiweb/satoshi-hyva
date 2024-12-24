@@ -1,9 +1,5 @@
 import type { Magics } from "alpinejs";
-import {
-  freezeScroll,
-  makeElementScrollable,
-  unfreezeScroll,
-} from "../utils/scroll2";
+import { freezeScroll, makeElementScrollable, unfreezeScroll, } from "../utils/scroll2";
 import { isMobile } from "../utils/device";
 import { ESC_KEY } from "../utils/keyboard-keys";
 
@@ -26,7 +22,7 @@ const easeInOutQuad = (x: number): number => {
   return x;
 };
 
-const OFFSET_TOP = 400;
+const OFFSET_TOP = window.innerHeight > 1080 ? 400 : 200;
 let prevIsMobile = isMobile();
 
 export const TransitionPreview = () =>
@@ -70,6 +66,14 @@ export const TransitionPreview = () =>
         } else {
           this.lastSeenWithoutPreview = 0;
           this.hidePreview();
+        }
+      });
+
+      // Remove preview flag when page reloads
+      window.addEventListener("beforeunload", function () {
+        const { isPreview } = window.history.state || {};
+        if (isPreview) {
+          history.replaceState({ isPreview: false }, "", window.location.href);
         }
       });
 

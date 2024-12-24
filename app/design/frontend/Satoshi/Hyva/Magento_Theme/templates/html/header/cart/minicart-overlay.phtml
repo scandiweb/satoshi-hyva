@@ -46,17 +46,17 @@ $title = $block->getData('title');
             </h1>
             <template x-if="!isCartEmpty">
                 <div
-                    class="delay-800 mr-1 flex justify-center align-middle transition-all duration-300"
+                    class="delay-800 mr-1 flex justify-center align-middle transition-all duration-300 <?= $isCartPage ? 'hidden' : '' ?>"
                     :class="{'opacity-0': isCartEmpty}"
                 >
                     <a
                         href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart')) ?>"
                         x-element-transition-trigger
-                        class="link link--ghost <?= $isCartPage ? 'hidden' : '' ?>"
+                        class="link link--ghost"
                     >
                         <?= __('View cart') ?>
                         <span
-                            x-text="`(${cartItems.length})`"
+                            x-text="`(${cartItems.reduce((total, item) => total + item.qty, 0)})`"
                             class="mr-1"
                         ></span>
                     </a>
