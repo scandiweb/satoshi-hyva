@@ -64,7 +64,7 @@ if (! $customer->customerLoggedIn()) {
                                             </span>
                                             <a
                                                 x-element-transition-trigger
-                                                class="checkbox__label ml-0 hover:underline"
+                                                class="checkbox__label ml-0 hover:underline truncate"
                                                 :href="product.url"
                                                 :aria-describedby="!product.is_saleable || checkboxId + product.product_sku"
                                                 x-text="product.name"
