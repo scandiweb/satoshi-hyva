@@ -145,7 +145,7 @@ if (!$menuItems) {
                         href="<?= $menuItem['url'] ?>"
                         role="link"
                         x-element-transition-trigger:category="{
-                            'title': '<?= $menuItem['name'] ?>',
+                            'title': `<?= $menuItem['name'] ?>`,
                             'url': '<?= $menuItem['url'] ?>',
                             'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
                             'img': '<?= $menuItem['image'] ?>',
