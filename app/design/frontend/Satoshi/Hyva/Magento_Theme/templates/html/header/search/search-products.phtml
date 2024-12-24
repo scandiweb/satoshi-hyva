@@ -20,7 +20,7 @@ use Satoshi\Theme\Block\Template;
             <h2 class="text-lg"><?= __('Products') ?></h2>
         </div>
         <div class="flex min-h-11 flex-col gap-2 md:min-h-0">
-            <p x-show="!products.length">
+            <p x-show="!products.length && searchTerm.length >=3">
                 <b class="font-semibold text-secondary-700"><?= __('Oops!') ?></b>
                 <?= __('We could not find any products matching your search.') ?>
             </p>
