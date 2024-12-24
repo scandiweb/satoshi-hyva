@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="columns" htmlClass="grid-columns content-wrapper mx-auto">
+            <referenceContainer name="div.sidebar.additional" remove="true"/>
+            <block class="Satoshi\Theme\Block\SidebarAdditional" name="sidebar.additional.wrapper"
+                   template="Magento_Theme::html/layout/sidebar-additional-wrapper.phtml" after="main"/>
+        </referenceContainer>
+        <move element="sidebar.additional" destination="sidebar.additional.wrapper"/>
+    </body>
+</page>
