@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\Customer;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\Sales\Block\Reorder\Sidebar;
-use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Escaper $escaper */
 /** @var Sidebar $block */
@@ -30,7 +30,7 @@ if (! $customer->customerLoggedIn()) {
     :aria-hidden="!itemCount"
     id="recent-orders-sidebar"
 >
-    <div class="bg-bg-400 rounded-md mt-5">
+    <div class="bg-bg-400 rounded-md">
         <h2 class="text-text-500 text-lg font-bold p-4" id="block-reorder-heading">
             <?= $escaper->escapeHtml(__('Recently Ordered')) ?>
         </h2>
