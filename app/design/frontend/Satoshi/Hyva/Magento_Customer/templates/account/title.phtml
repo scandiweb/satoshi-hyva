@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Theme\Block\Html\Title;
+
+/** @var Escaper $escaper */
+/** @var Title $block */
+
+?>
+
+<?php if (trim((string)$block->getPageHeading())): ?>
+    <div class="content-wrapper mx-auto max-md:hidden my-8">
+        <h1 class="heading text-xxl text-text-500" <?= $block->getAddBaseAttribute() ?>>
+            <?= $escaper->escapeHtml($block->getPageHeading()) ?>
+        </h1>
+        <?= $block->getChildHtml() ?>
+    </div>
+<?php endif; ?>
