@@ -1,7 +1,7 @@
 <div
-    class="transition max-h-0 overflow-hidden"
+    x-show="suggestions.length"
     :class="{
-        'max-h-[300px]': suggestions.length
+        'opacity-0': isLoading,
     }"
 >
     <div class="relative flex grow flex-col gap-4 p-3 pb-2 md:p-5">
