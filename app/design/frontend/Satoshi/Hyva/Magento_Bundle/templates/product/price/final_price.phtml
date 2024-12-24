@@ -1,6 +1,7 @@
 <?php
 $idSuffix = $block->getIdSuffix() ? $block->getIdSuffix() : '';
 /** @var \Magento\Bundle\Pricing\Render\FinalPriceBox $block */
+/** @var \Magento\Framework\Escaper $escaper */
 
 /** @var \Magento\Bundle\Pricing\Price\FinalPrice $finalPriceModel */
 $finalPriceModel = $block->getPrice();
@@ -34,7 +35,7 @@ $renderMinimalRegularPrice = $block->renderAmount($minimalRegularPrice, $regular
     </p>
 <?php else : ?>
     <?php if ($block->showRangePrice()) : ?>
-        <p class="price-from">
+        <p class="price-from [.sticky-actions_&_.price-label]:hidden">
             <?= /* @noEscape */ $block->renderAmount($minimalPrice, [
                 'display_label'     => __('From'),
                 'price_id'          => $block->getPriceId('from-'),
@@ -48,7 +49,8 @@ $renderMinimalRegularPrice = $block->renderAmount($minimalRegularPrice, $regular
                 </span>
             <?php endif ?>
         </p>
-        <p class="price-to">
+        <span class="hidden [.sticky-actions_&]:inline"><?= $escaper->escapeHtml('-') ?></span>
+        <p class="price-to [.sticky-actions_&_.price-label]:hidden">
             <?= /* @noEscape */ $block->renderAmount($maximalPrice, [
                 'display_label'     => __('To'),
                 'price_id'          => $block->getPriceId('to-'),

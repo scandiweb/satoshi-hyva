@@ -126,7 +126,7 @@ $priceHtml = '';
 if (!empty($block->getChildHtml("product.info.price"))) {
     $priceHtml = <<<HTML
         <div
-            class="ml-3 flex flex-grow gap-3"
+            class="shrink-0 ml-3 flex flex-grow gap-3"
             x-show="!isVariantInCart"
             x-transition
         >
@@ -137,12 +137,12 @@ if (!empty($block->getChildHtml("product.info.price"))) {
 $stickyActions = <<<HTML
     <template x-if="\$store.main.isMobile && \$store.popup.currentPopup === 'product_bottom_actions'">
         <div class="contents">
-            <div class="h-9 [.page-product-bundle_&]:h-11"></div>
+            <div class="h-9"></div>
             <template x-portal="document.getElementById('popup-fixed-content-portal')">
                 <div
                     id="ProductBottomActionsPopup"
                     x-show="\$store.popup.currentPopup == 'product_bottom_actions'"
-                    class="sticky-actions flex w-full items-center justify-end gap-3 bg-bg-500"
+                    class="sticky-actions flex w-full items-center gap-3 bg-bg-500 overflow-x-scroll overscroll-x-contain"
                 >
                     {$priceHtml}
                     <div

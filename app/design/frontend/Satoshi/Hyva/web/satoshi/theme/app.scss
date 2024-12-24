@@ -178,7 +178,7 @@ h3 {
   @apply flex flex-col gap-1 md:gap-2;
 
   .sticky-actions & {
-    @apply text-[14px];
+    @apply flex-row;
   }
 }
 
