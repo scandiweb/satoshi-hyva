@@ -60,6 +60,7 @@ $isPopup = $block->getData('is_popup') ?? false;
             :value="item.id"
             name="super_attribute[<?= (int)$attributeId ?>]"
             class="-z-10 absolute opacity-0"
+            tabindex="-1"
             type="radio"
             :required="getAllowedAttributeOptions(<?= (int)$attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
             :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
