@@ -96,7 +96,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 <a
                     href="<?= $escaper->escapeUrl($block->getUrl('wishlist')) ?>"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Go to Wish List page')); ?>"
-                    class="button button--outline-primary bg-bg-400"
+                    class="button button--outline-primary bg-bg-400 max-md:w-full"
                     x-element-transition-trigger
                 >
                     <?= $escaper->escapeHtml(__('Go to wish list')); ?>
