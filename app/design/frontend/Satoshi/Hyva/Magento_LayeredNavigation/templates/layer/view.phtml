@@ -33,36 +33,16 @@ if ($sorter) {
 }
 
 ?>
-<!-- Show / Hide filters button -->
-<div class="absolute right-0 top-[-68px] ml-8 md:pl-2 max-md:hidden">
-    <button
-        type="button"
-        class="button button--filled-primary w-[275px] min-w-[275px]"
-        @click="$store.productList.toggleFiltersSidebar()"
-    >
-        <span
-            x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
-        >
-            <?= __('Hide filter') ?>
-        </span>
-        <span class="button__icon ml-3 text-xl">
-            <?= $hyvaicons->renderHtml('filter'); ?>
-        </span>
-    </button>
-</div>
 
 <!-- Desktop filters -->
 <div
-    class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:sticky md:top-[--scroll-top] md:block"
+    class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:block"
     :class="{
         'max-w-[275px]': $store.productList.isFiltersSidebarExpanded,
         'max-w-0': !$store.productList.isFiltersSidebarExpanded
     }"
-    x-sticky-scroll="{
-        top: 90,
-        bottom: 24,
-    }"
 >
+
     <div
         id="filters-sidebar"
         class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"

@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<div class="main-sidebar">
+    <!-- Show / Hide filters button -->
+    <div class="absolute right-0 top-[-68px] ml-8 md:pl-2 max-md:hidden">
+        <button
+            type="button"
+            class="button button--filled-primary w-[275px] min-w-[275px]"
+            @click="$store.productList.toggleFiltersSidebar()"
+        >
+            <span
+                x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
+            >
+                <?= __('Hide filter') ?>
+            </span>
+            <span class="button__icon ml-3 text-xl">
+                <?= $hyvaicons->renderHtml('filter'); ?>
+            </span>
+        </button>
+    </div>
+
+    <div
+        class="md:sticky md:top-[--scroll-top]"
+        x-sticky-scroll="{
+            top: 90,
+            bottom: 24,
+        }"
+    >
+        <?= $block->getChildHtml() ?>
+    </div>
+</div>
