@@ -10,7 +10,13 @@
         <move element="preview.content" destination="product-grid-container"/>
         <move element="main" destination="columns" before="-" />
         <move element="page.main.title" destination="category.banner" />
-        <referenceContainer name="columns" htmlClass="grid-columns-plp"/>
+
+        <referenceContainer name="columns" htmlClass="grid-columns-plp">
+            <referenceContainer name="div.sidebar.main" remove="true"/>
+            <block class="Magento\Framework\View\Element\Template" name="sidebar.main.wrapper"
+                   template="Magento_Theme::html/layout/sidebar-main-wrapper.phtml" after="main"/>
+        </referenceContainer>
+        <move element="sidebar.main" destination="sidebar.main.wrapper"/>
         <move element="div.sidebar.additional" destination="sidebar.main" after="-"/>
 
         <referenceBlock name="category.description" remove="true" />
