@@ -1,5 +1,8 @@
 import { MainStoreType } from "../store/Main";
-import {replaceMainContentWithTransition, navigateWithTransition} from "../plugins/Transition";
+import {
+  replaceMainContentWithTransition,
+  navigateWithTransition,
+} from "../plugins/Transition";
 
 type RegisterProps = {
   telephoneErrorMessage: string;
@@ -27,7 +30,7 @@ export type AuthenticationType = {
   hasAvailableRegions(): boolean;
   isLoading: boolean;
   logout(postData: { action: string }): void;
-  logoutSuccess(): void;
+  logoutSuccess(url: string): void;
 } & MainStoreType;
 
 export const Authentication = () => {
@@ -174,7 +177,10 @@ export const Authentication = () => {
           return result;
         })
         .then(async (response) => {
-          await replaceMainContentWithTransition(response.url, await response.text());
+          await replaceMainContentWithTransition(
+            response.url,
+            await response.text()
+          );
         })
         .catch((error) => {
           console.error("Error while logging out:", error);
@@ -183,12 +189,36 @@ export const Authentication = () => {
           this.isLoading = false;
         });
     },
-    logoutSuccess(url: string) {
-      setTimeout(function () {
-        if (window.location.pathname.includes('logoutSuccess')) {
-          navigateWithTransition(url);
-        }
+
+    /**
+     * Redirect after a success logout
+     *
+     * @param url
+     */
+    logoutSuccess(url) {
+      const timeout = setTimeout(function () {
+        navigateWithTransition(url);
       }, 5000);
-    }
+
+      // Clear timeout if user navigated to other pages
+      window.addEventListener(
+        "pushstate",
+        async () => {
+          clearTimeout(timeout);
+        },
+        {
+          once: true,
+        }
+      );
+      window.addEventListener(
+        "popstate",
+        async () => {
+          clearTimeout(timeout);
+        },
+        {
+          once: true,
+        }
+      );
+    },
   };
 };
