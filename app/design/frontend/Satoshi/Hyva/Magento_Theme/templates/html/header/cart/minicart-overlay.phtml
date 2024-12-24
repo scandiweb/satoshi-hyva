@@ -56,7 +56,7 @@ $title = $block->getData('title');
                     >
                         <?= __('View cart') ?>
                         <span
-                            x-text="`(${cartItems.length})`"
+                            x-text="`(${cartItems.reduce((total, item) => total + item.qty, 0)})`"
                             class="mr-1"
                         ></span>
                     </a>
