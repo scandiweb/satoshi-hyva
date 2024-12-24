@@ -2,12 +2,12 @@
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Data\Helper\PostHelper;
 use Magento\Framework\Escaper;
 use Magento\Sales\Block\Order\Recent;
 use Magento\Sales\Helper\Reorder;
 use Magento\Sales\Model\Order;
-use Hyva\Theme\ViewModel\SvgIcons;
 
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundThis
 // phpcs:disable Magento2.Templates.ThisInTemplate.FoundHelper
@@ -133,7 +133,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                             <?php // The condition will always return 'true' in Magento Open Source ?>
                             <?php if ($order->getStatus() !== 'received'): ?>
                                 <a
-                                    class="text-transparent w-5 h-5"
+                                    class="text-primary-500 w-5 h-5"
                                     title="<?= $escaper->escapeHtmlAttr(__('View Order')) ?>"
                                     href="<?= $escaper->escapeUrl($block->getViewUrl($order)) ?>"
                                     x-element-transition-trigger
