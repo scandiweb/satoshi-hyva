@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+<div>
+    <div class="min-h-9"></div>
+
+    <template x-portal="document.getElementById('popup-fixed-content-portal')">
+        <div class="overflow-x-scroll overscroll-x-contain px-3"
+             x-show="$store.main.isMobile && $store.popup.currentPopup === 'bottom-filters'">
+            <div class="flex items-center gap-3">
+                <button
+                    type="button"
+                    class="button button--filled-primary button--size-sm shrink-0 w-full"
+                    @click="showFilters"
+                >
+                    <?= $escaper->escapeHtml(__('Shop by')) ?>
+                    <span class="ml-3 text-lg">
+                        <?= $hyvaicons->renderHtml('filter'); ?>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </template>
+</div>

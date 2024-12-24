@@ -1,0 +1,76 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Catalog\Block\Navigation;
+use Magento\Framework\Escaper;
+
+/** @var Navigation $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+$categories = $block->getData('categories');
+?>
+<template x-if="$store.main.isMobile">
+    <div>
+        <!-- Heading -->
+        <div class="sticky start-0 top-0 z-10 flex flex-col gap-3 bg-bg-500 px-3 md:pt-2">
+            <div class="relative mb-2 flex min-h-7 items-center overflow-hidden">
+                <h2 class="text-md text-text-500 transition-transform duration-300 motion-reduce:transition-none translate-x-0">
+                    <?= $escaper->escapeHtml(__('Category')) ?>
+                </h2>
+                <button
+                    type="button"
+                    class="button button--outline-secondary icon-button icon-button--size-xs absolute right-0 top-0"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Close')) ?>}"
+                    @click="hideFilters"
+                >
+                    <?= $hyvaicons->renderHtml('close'); ?>
+                </button>
+            </div>
+            <hr class="divider -mx-5">
+        </div>
+
+        <article
+            class="relative px-3 "
+            aria-label="<?= $escaper->escapeHtmlAttr(__('Category')) ?>"
+        >
+            <!-- Items -->
+            <nav
+                class="flex flex-col gap-3 py-3"
+                aria-label="<<?= $escaper->escapeHtmlAttr(__('Category')) ?>"
+            >
+                <!-- Categories -->
+                <?php foreach ($categories as $category): ?>
+                    <?php if ($category->getIsActive()): ?>
+                        <a
+                            href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>"
+                            x-element-transition-trigger
+                            class="flex min-h-10 items-center justify-between py-1"
+                            <?php if ($block->isCategoryActive($category)): ?>
+                                aria-current="page"
+                            <?php endif; ?>
+                            <?php if ((int)$category->getProductCount() === 1): ?>
+                                aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, 1 available product', $category->getName())) ?>"
+                            <?php else: ?>
+                                aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, %2 available products', $category->getName(), $category->getProductCount())) ?>"
+                            <?php endif; ?>
+                        >
+                            <span class="grow text-left">
+                                <?= $escaper->escapeHtml($category->getName()) ?>
+                            </span>
+                            <span>
+                                (<?= $escaper->escapeHtml($category->getProductCount()) ?>)
+                            </span>
+                        </a>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </nav>
+        </article>
+    </div>
+</template>
