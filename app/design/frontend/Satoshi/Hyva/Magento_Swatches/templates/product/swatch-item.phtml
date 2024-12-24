@@ -31,7 +31,8 @@ $isPopup = $block->getData('is_popup') ?? false;
         @click="optionIsActive(<?= (int)$attributeId ?>, item.id) && changeOption(<?= (int)$attributeId ?>, item.id)"
         class="button button--size-sm select-none transition-all ease-in-out relative bg-bg-500"
         :class="{
-            'button--outline-primary border-2 button--disabled !opacity-100': selectedValues[<?= (int)$attributeId ?>] === item.id || !optionIsActive(<?= (int)$attributeId ?>, item.id),
+            'button--outline-primary button--disabled': !optionIsActive(<?= (int)$attributeId ?>, item.id),
+            'button--outline-primary border-2': selectedValues[<?= (int)$attributeId ?>] === item.id,
             'button--outline-secondary': selectedValues[<?= (int)$attributeId ?>] !== item.id,
         }"
         role="radio"
@@ -59,6 +60,7 @@ $isPopup = $block->getData('is_popup') ?? false;
             :value="item.id"
             name="super_attribute[<?= (int)$attributeId ?>]"
             class="-z-10 absolute opacity-0"
+            tabindex="-1"
             type="radio"
             :required="getAllowedAttributeOptions(<?= (int)$attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
             :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"

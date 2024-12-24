@@ -128,7 +128,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
            x-element-transition-trigger
            class="heading pointer-events-auto rounded-sm px-3 py-2 text-xl text-primary-500 transition-all"
            :class="{'md:drop-shadow-xl': $store.main.isHeaderShadowVisible}"
-           tabindex="3"
+           :tabindex="$store.resizable.isVisible('search-desktop') ? -1 : 3"
            x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
            aria-label="<?= __('Go to Home page') ?>"
         >
