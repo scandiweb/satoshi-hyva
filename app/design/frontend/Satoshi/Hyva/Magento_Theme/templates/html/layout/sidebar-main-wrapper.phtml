@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+?>
+
+<div class="main-sidebar">
+    <div
+        class="md:sticky md:top-[--scroll-top]"
+        x-sticky-scroll="{
+            top: 90,
+            bottom: 24,
+        }"
+    >
+        <?= $block->getChildHtml() ?>
+    </div>
+</div>
