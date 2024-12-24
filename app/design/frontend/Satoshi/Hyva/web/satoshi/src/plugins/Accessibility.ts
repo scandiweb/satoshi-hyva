@@ -27,7 +27,7 @@ const RESIZABLE_ANIMATION_DURATION = 300;
 export default function (Alpine: AlpineType) {
   Alpine.directive(
     "a11y-trap",
-    (el, { expression }, { evaluateLater, effect, cleanup }) => {
+    (el, { expression, modifiers }, { evaluateLater, effect, cleanup }) => {
       const getIsTrapped = evaluateLater(expression);
       const onKeyDown = async (e: KeyboardEvent) => {
         const focusEls = Array.from(el.querySelectorAll(SELECTOR_LIST)).filter(
@@ -101,14 +101,16 @@ export default function (Alpine: AlpineType) {
 
           setTimeout(trapFocus, RESIZABLE_ANIMATION_DURATION);
 
-          // Observe and run when focusable elements are rendered. i.e: waiting for preview to request & render.
-          const observer = new MutationObserver(() => {
-            if (el.querySelectorAll(SELECTOR_LIST).length) {
-              setTimeout(trapFocus, RESIZABLE_ANIMATION_DURATION);
-              observer.disconnect();
-            }
-          });
-          observer.observe(el, { subtree: true, childList: true });
+          if (modifiers.includes('watch')) {
+            // Observe and run when focusable elements are rendered. i.e: waiting for preview to request & render.
+            const observer = new MutationObserver(() => {
+              if (el.querySelectorAll(SELECTOR_LIST).length) {
+                setTimeout(trapFocus, RESIZABLE_ANIMATION_DURATION);
+                observer.disconnect();
+              }
+            });
+            observer.observe(el, { subtree: true, childList: true });
+          }
         });
       });
 
