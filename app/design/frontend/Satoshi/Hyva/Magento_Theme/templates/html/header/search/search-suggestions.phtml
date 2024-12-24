@@ -1,27 +1,31 @@
 <div
-    x-show="suggestions.length"
-    class="relative flex grow flex-col gap-4 p-3 pb-2 transition-opacity duration-300 md:p-5 max-md:mt-[50px]"
-    :class="{ 'opacity-0': isLoading }"
+    class="transition max-h-0 overflow-hidden"
+    :class="{
+        'max-h-[300px]': suggestions.length
+    }"
 >
-    <div class="pb-2">
-        <h2 class="text-lg"><?= __('Suggestions') ?></h2>
-    </div>
-    <div class="flex min-h-11 flex-col gap-2 md:min-h-[48px]">
-        <div class="-mx-5 flex gap-3 overflow-x-auto px-5 py-1 md:max-w-[--search-width] max-md:pb-3">
-            <template x-for="suggestion in suggestions">
-                <a
-                    :href="'/catalogsearch/result/?q=' + suggestion.search"
-                    class="button button--outline-secondary"
-                    x-element-transition-trigger
-                    x-text="suggestion.search"
-                ></a>
-            </template>
+    <div class="relative flex grow flex-col gap-4 p-3 pb-2 md:p-5">
+        <div class="pb-2">
+            <h2 class="text-lg"><?= __('Suggestions') ?></h2>
+        </div>
+        <div class="flex min-h-11 flex-col gap-2 md:min-h-[48px]">
+            <div class="-mx-5 flex gap-3 overflow-x-auto px-5 py-1 md:max-w-[--search-width] max-md:pb-3">
+                <template x-for="suggestion in suggestions">
+                    <a
+                        :href="'/catalogsearch/result/?q=' + suggestion.search"
+                        class="button button--outline-secondary"
+                        x-element-transition-trigger
+                        x-text="suggestion.search"
+                    ></a>
+                </template>
+            </div>
         </div>
     </div>
-</div>
 
-<hr
-    x-show="suggestions.length"
-    class="divider -mx-3 transition-opacity duration-300"
-    :class="{ 'opacity-0': isLoading }"
->
+    <hr
+        x-show="suggestions.length"
+        class="divider -mx-3"
+        :class="{ 'opacity-0': isLoading }"
+        x-transition
+    >
+</div>

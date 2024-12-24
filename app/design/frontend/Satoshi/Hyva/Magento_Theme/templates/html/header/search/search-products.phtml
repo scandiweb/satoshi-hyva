@@ -10,47 +10,52 @@ use Satoshi\Theme\Block\Template;
 ?>
 
 <div
-    class="relative flex grow flex-col gap-4 p-3 pb-2 transition-opacity duration-300 md:p-5"
-    :class="{ 'opacity-0': isLoading }"
+    class="transition overflow-hidden"
+    :class="{
+        'opacity-0': isLoading,
+        'max-h-0': !products.length,
+    }"
 >
-    <div class="pb-2">
-        <h2 class="text-lg"><?= __('Products') ?></h2>
-    </div>
-    <div class="flex min-h-11 flex-col gap-2 md:min-h-0">
-        <p x-show="!products.length && searchTerm.length >= 3">
-            <b class="font-semibold text-secondary-700"><?= __('Oops!') ?></b>
-            <?= __('We could not find any products matching your search.') ?>
-        </p>
-        <p x-show="searchTerm.length < 3">
-            <?= __('Minimum Search query length is 3') ?>
-        </p>
-        <div
-            x-show="products.length && searchTerm.length >= 3"
-            class="grid grid-cols-2 gap-5 content-start md:grid-cols-3 lg:grid-cols-4"
-            x-transition.opacity
-            x-transition.duration.700ms
-        >
-            <template
-                x-for="product in products"
-                :key="product.id"
-            >
-                <?= $template->setData(['is_search_card' => true, 'is_alpine_template' => true])->render('Magento_Catalog::product/list/item.phtml') ?>
-            </template>
+    <div class="flex grow flex-col gap-4 p-3 pb-2 md:p-5">
+        <div class="pb-2">
+            <h2 class="text-lg"><?= __('Products') ?></h2>
         </div>
-        <div
-            x-show="products.length && searchTerm.length >= 3"
-            class="min-h-24 md:hidden"
-        ></div>
+        <div class="flex min-h-11 flex-col gap-2 md:min-h-0">
+            <p x-show="!products.length">
+                <b class="font-semibold text-secondary-700"><?= __('Oops!') ?></b>
+                <?= __('We could not find any products matching your search.') ?>
+            </p>
+            <p x-show="searchTerm.length < 3">
+                <?= __('Minimum Search query length is 3') ?>
+            </p>
+            <div
+                x-show="products.length"
+                class="grid grid-cols-2 gap-5 content-start md:grid-cols-3 lg:grid-cols-4"
+                x-transition.opacity
+                x-transition.duration.700ms
+            >
+                <template
+                    x-for="product in products"
+                    :key="product.id"
+                >
+                    <?= $template->setData(['is_search_card' => true, 'is_alpine_template' => true])->render('Magento_Catalog::product/list/item.phtml') ?>
+                </template>
+            </div>
+            <div
+                x-show="products.length"
+                class="min-h-24 md:hidden"
+            ></div>
+        </div>
     </div>
     <template
         x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('search-actions')"
     >
         <div
-            x-show="$store.main.isMobile ? $store.popup.currentPopup === 'menu' && getIsSearchActive() && products.length && searchTerm.length >= 3 : getIsSearchActive() && products.length && searchTerm.length >= 3"
-            class="relative bg-bg-500 px-4 pb-2 transition-opacity duration-300 md:p-0 md:pt-1 md:mx-5 md:mb-5"
+            x-show="$store.main.isMobile ? $store.popup.currentPopup === 'menu' && getIsSearchActive() && products.length : getIsSearchActive() && products.length"
+            class="relative bg-bg-500 px-4 pb-2 transition-opacity md:p-0 md:pt-1 md:mx-5 md:mb-5"
             :class="{ 'opacity-0': isLoading }"
         >
-            <div class="absolute -top-10 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>
+            <div class="absolute -top-10 -mx-5 end-0 start-0 h-10 bg-gradient-to-t from-bg-500 to-transparent"></div>
             <a
                 class="button button--filled-primary w-full"
                 :href="getSearchUrl('/catalogsearch/result')"

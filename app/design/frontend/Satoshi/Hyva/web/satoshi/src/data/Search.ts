@@ -83,7 +83,7 @@ export const Search = () =>
             categories: { items: categories = [] } = {},
           } = data;
 
-          this.products = items;
+          this.products = this.searchTerm.length >= 3 ? items : [];
           this.suggestions = suggestions;
           this.categories = categories;
           this.isNoResults =
