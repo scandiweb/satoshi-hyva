@@ -29,14 +29,9 @@
         <move element="columns" destination="preview.content" before="-"/>
         <!-- END: Wrap content within preview-content comment -->
 
-        <referenceContainer name="columns" htmlClass="grid-columns">
-            <referenceContainer name="div.sidebar.main" remove="true"/>
-            <block class="Magento\Framework\View\Element\Template" name="sidebar.main.wrapper"
-                   template="Magento_Theme::html/layout/sidebar-main-wrapper.phtml" after="main"/>
-        </referenceContainer>
-        <move element="sidebar.main" destination="sidebar.main.wrapper"/>
-
+        <referenceContainer name="columns" htmlClass="grid-columns"/>
         <referenceContainer name="main" htmlClass="h-full row-span-2 col-span-3 only:col-span-full flex-grow"/>
+        <referenceContainer name="div.sidebar.main" htmlClass="main-sidebar"/>
 
         <referenceContainer name="header.container" htmlClass="page-header contents"/>
         <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-bg-500">

@@ -33,23 +33,6 @@ if ($sorter) {
 }
 
 ?>
-<!-- Show / Hide filters button -->
-<div class="absolute right-0 top-[-68px] ml-8 md:pl-2 max-md:hidden">
-    <button
-        type="button"
-        class="button button--filled-primary w-[275px] min-w-[275px]"
-        @click="$store.productList.toggleFiltersSidebar()"
-    >
-        <span
-            x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
-        >
-            <?= __('Hide filter') ?>
-        </span>
-        <span class="button__icon ml-3 text-xl">
-            <?= $hyvaicons->renderHtml('filter'); ?>
-        </span>
-    </button>
-</div>
 
 <!-- Desktop filters -->
 <div
