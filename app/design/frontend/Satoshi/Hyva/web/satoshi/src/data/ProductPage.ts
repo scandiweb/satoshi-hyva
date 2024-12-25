@@ -1,7 +1,6 @@
 import { withXAttributes } from "alpinejs";
 import { POPUP_OVERLAY_CLICK_EVENT } from "../store/Popup";
 import { CartItem } from "../store/Cart";
-import { replaceContent } from "../plugins/Transition.ts";
 
 export type ProductPageType = {
   [key: string | symbol]: any;
@@ -42,7 +41,6 @@ export type ProductPageType = {
   increaseQty(): void;
   setQuantity(quantity: number): void;
   addToCart(event: Event): void;
-  displayErrorMessage(content: string): boolean;
   listenAddedToCart(formData: FormData): void;
   showProductActions(): void;
   hideProductActions(): void;
@@ -165,10 +163,10 @@ export const ProductPage = () =>
     },
 
     setProductPageProps({
-      productId,
-      isScrollingToTop = false,
-      groupedIds = [],
-    }) {
+                          productId,
+                          isScrollingToTop = false,
+                          groupedIds = [],
+                        }) {
       this.productId = productId;
       this.productActionsPopup += `-${productId}`;
       this.isScrollingToTop = !!isScrollingToTop;
@@ -339,10 +337,14 @@ export const ProductPage = () =>
           return result.text();
         })
         .then((content) => {
-          if (!this.displayErrorMessage(content)) {
-            window.hyva.replaceDomElement("#cart-button", content);
-            this.hideProductActions();
-          }
+          window.hyva.replaceDomElement("#cart-button", content);
+          Alpine.nextTick(() => {
+            if (Alpine.store('cart').productCartErrorMessage.length) {
+              Alpine.store('popup').__updatePopupHeight(this.productActionsPopup)
+            } else {
+              this.hideProductActions();
+            }
+          })
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => {
@@ -351,27 +353,6 @@ export const ProductPage = () =>
           ).addingItemIds.filter((itemId) => itemId !== this.productId);
           this.isLoadingCart = false;
         });
-    },
-
-    displayErrorMessage(content) {
-      const isMobile = Alpine.store('main').isMobile;
-      const breakpoint = isMobile ? 'mobile' : 'desktop';
-      const wrapper = document.querySelector(`#${breakpoint}-cart-error-${this.productId}`) as HTMLElement;
-
-      if (content.includes('-cart-error -->') && wrapper) {
-        // error exist.
-        replaceContent(
-          content,
-          `${breakpoint}-cart-error`,
-          wrapper
-        );
-        Alpine.store('popup').__updatePopupHeight(this.productActionsPopup)
-        return true;
-      } else if (wrapper) {
-        // remove error message.
-        wrapper.innerHTML = `<!-- ${breakpoint}-cart-error --><!-- end-${breakpoint}-cart-error -->`
-      }
-      return false;
     },
 
     listenAddedToCart(formData) {
@@ -449,11 +430,18 @@ export const ProductPage = () =>
       if (typeof this.scrollToPreviewTop !== "undefined") {
         this.scrollToPreviewTop()
       } else {
-        window.scrollTo({top: 0, behavior: "smooth"});
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
 
     changeOption(attributeId: number, value: string) {
+
+      // reset error message
+      if (Alpine.store('cart').productCartErrorMessage.length) {
+        Alpine.store('cart').setProductCartErrorMessage('')
+        Alpine.store('popup').__updatePopupHeight(this.productActionsPopup)
+      }
+
       if (value === "") {
         this.selectedValues = this.removeAttrFromSelection(
           this.selectedValues,
@@ -763,7 +751,7 @@ export const ProductPage = () =>
     findProductIdsForPartialSelection(optionSelection) {
       const candidateProducts = Object.values(optionSelection).reduce(
         (candidates: any, optionId) => {
-          const newCandidates = this.getProductIdsForOption({id: optionId});
+          const newCandidates = this.getProductIdsForOption({ id: optionId });
           return candidates === null
             ? newCandidates
             : candidates.filter((productId: string) =>

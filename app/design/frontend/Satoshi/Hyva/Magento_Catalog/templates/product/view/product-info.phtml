@@ -111,10 +111,10 @@ $cartErrMsg = $escaper->escapeHtml($block->getCartErrorMessage());
                 <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
             <?php endif; ?>
         </div>
-        <div class="mt-2 -mb-2 text-error" id="desktop-cart-error-<?= $productId ?>">
-            <!-- desktop-cart-error -->
-            <?= $cartErrMsg; ?>
-            <!-- end-desktop-cart-error -->
+        <div
+            class="mt-2 -mb-2 text-error max-md:hidden"
+            x-text="$store.cart.productCartErrorMessage"
+        >
         </div>
     </div>
 </div>
@@ -177,10 +177,10 @@ $productActions = <<<HTML
         <div class="contents">
             <div class="max-md:mx-2">
                 {$options}
-                <div class="min-h-3 mt-2 text-error" id="mobile-cart-error-{$productId}">
-                    <!-- mobile-cart-error -->
-                        {$cartErrMsg}
-                    <!-- end-mobile-cart-error -->
+                <div
+                    class="min-h-3 mt-2 text-error md:hidden"
+                    x-text="\$store.cart.productCartErrorMessage"
+                >
                 </div>
             </div>
 
