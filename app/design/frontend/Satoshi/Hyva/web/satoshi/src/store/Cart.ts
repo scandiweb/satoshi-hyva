@@ -56,8 +56,10 @@ export type CartStoreType = {
   removingItemId: string | null;
   abortController: AbortController | null;
   errorMessage: string;
+  productCartErrorMessage: string;
   setCartTotals(cartTotals: CartTotals): void;
   setErrorMessage(message: string): void;
+  setProductCartErrorMessage(message: string): void;
   updateCartTotals(cartTotals: CartTotals): void;
   setCartItems(cartItems: CartItem[]): void;
   addCartItems(cartItems: CartItem[]): void;
@@ -85,6 +87,7 @@ export const CartStore = <CartStoreType>{
   removingItemId: null,
   abortController: null,
   errorMessage: '',
+  productCartErrorMessage: '',
 
   setCartTotals(cartTotals: CartTotals) {
     this.cartTotals = cartTotals;
@@ -98,6 +101,10 @@ export const CartStore = <CartStoreType>{
 
   setErrorMessage(message) {
     this.errorMessage = message;
+  },
+
+  setProductCartErrorMessage(message) {
+    this.productCartErrorMessage = message;
   },
 
   setCartItems(cartItems: CartItem[]) {

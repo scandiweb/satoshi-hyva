@@ -139,11 +139,11 @@ class Add extends SourceAdd
             }
         } catch (\Magento\Framework\Exception\LocalizedException $e) {
             if ($this->_checkoutSession->getUseNotice(true)) {
-                $this->_checkoutSession->setCartErrorMessage($this->_objectManager->get(Escaper::class)->escapeHtml($e->getMessage()));
+                $this->_checkoutSession->setProductCartErrorMessage($this->_objectManager->get(Escaper::class)->escapeHtml($e->getMessage()));
             } else {
                 $messages = array_unique(explode("\n", $e->getMessage()));
                 foreach ($messages as $message) {
-                    $this->_checkoutSession->setCartErrorMessage($this->_objectManager->get(Escaper::class)->escapeHtml($message));
+                    $this->_checkoutSession->setProductCartErrorMessage($this->_objectManager->get(Escaper::class)->escapeHtml($message));
                 }
             }
 
@@ -152,11 +152,11 @@ class Add extends SourceAdd
                 $url = $this->_redirect->getRedirectUrl($this->getCartUrl());
             }
 
-            return $this->goBack($url);
+            return $this->goToCart();
         } catch (\Exception $e) {
-            $this->_checkoutSession->setCartErrorMessage(__('We can\'t add this item to your shopping cart right now.'));
+            $this->_checkoutSession->setProductCartErrorMessage(__('We can\'t add this item to your shopping cart right now.'));
             $this->_objectManager->get(\Psr\Log\LoggerInterface::class)->critical($e);
-            return $this->goBack();
+            return $this->goToCart();
         }
 
         return $this->getResponse();

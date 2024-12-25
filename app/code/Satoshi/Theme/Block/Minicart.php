@@ -45,4 +45,16 @@ class Minicart extends Template
         $this->checkoutSession->unsMiniCartErrorMessage();
         return $message;
     }
+
+    /**
+     * Product addtocart flash message.
+     *
+     * @return string
+     */
+    public function getProductCartErrorMessage()
+    {
+        $message = $this->checkoutSession->getProductCartErrorMessage();
+        $this->checkoutSession->unsProductCartErrorMessage();
+        return $message;
+    }
 }
