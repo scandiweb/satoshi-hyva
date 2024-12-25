@@ -137,12 +137,8 @@ mutation createProductReviewMutation(
                                                             for="<?= $escaper->escapeHtmlAttr($rating->getRatingCode() . '_' . $option->getValue()) ?>"
                                                             id="<?= $escaper->escapeHtmlAttr($rating->getRatingCode() . '_' . $option->getValue()) ?>_label"
                                                         >
-                                                                <span
-                                                                    :class="<?= (int)$iterator ?> <= clickedRatingId ? 'text-primary-500' : 'text-secondary-400'">
-                                                                    <?= $hyvaicons->renderHtml('star', 'text-xl') ?>
-                                                                </span>
                                                             <input
-                                                                class="absolute opacity-0 bottom-0 left-0 cursor-pointer"
+                                                                class="peer absolute opacity-0 bottom-0 left-0 cursor-pointer"
                                                                 type="radio"
                                                                 <?php if ($iterator === 1): ?>required<?php endif; ?>
                                                                 name="ratings[<?= $escaper->escapeHtmlAttr($rating->getId()) ?>]"
@@ -154,6 +150,12 @@ mutation createProductReviewMutation(
                                                                     aria-label="<?= $escaper->escapeHtmlAttr(__('%1 stars', $iterator)) ?>"
                                                                 <?php endif; ?>
                                                             />
+                                                            <span
+                                                                class="peer-focus:[&>svg]:focus-ring"
+                                                                :class="<?= (int)$iterator ?> <= clickedRatingId ? 'text-primary-500' : 'text-secondary-400'"
+                                                            >
+                                                                <?= $hyvaicons->renderHtml('star', 'text-xl') ?>
+                                                            </span>
                                                         </label>
                                                     </div>
                                                     <?php $iterator++; ?>
