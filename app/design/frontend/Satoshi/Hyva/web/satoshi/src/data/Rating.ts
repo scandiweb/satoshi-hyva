@@ -1,4 +1,5 @@
 import { Magics } from "alpinejs";
+import { SELECTOR_LIST } from "../plugins/Accessibility.ts";
 
 export type RatingType = {
   reviewsSection: HTMLElement | null;
@@ -13,9 +14,7 @@ export const Rating = () =>
 
     init() {
       this.reviewsSection =
-        document.getElementById("customer-review-list") ||
-        document.getElementById("customer-reviews") ||
-        document.getElementById("review-form");
+        document.getElementById("review_form");
     },
 
     scrollToRatings() {
@@ -32,9 +31,12 @@ export const Rating = () =>
 
           scrollTimeout = setTimeout(() => {
             if (this.reviewsSection) {
-              this.reviewsSection.focus();
+              const firstFocusableEl = this.reviewsSection.querySelector(SELECTOR_LIST) as HTMLInputElement;
+              if (firstFocusableEl) {
+                firstFocusableEl.focus();
+              }
             }
-          }, 50);
+          }, 200);
         },
         { once: true },
       );
