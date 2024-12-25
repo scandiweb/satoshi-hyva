@@ -2,8 +2,8 @@
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;
 use Magento\Framework\Escaper;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
 use Magento\Review\Block\Product\View as ProductReview;
 use Magento\Theme\Block\Html\Pager;
 
@@ -36,46 +36,44 @@ $productName = $block->getProduct()->getName();
 ?>
 <?php if (count($items)): ?>
     <div
-            class="mx-auto px-5 md:p-0 content-wrapper"
-            id="customer-review-list"
-            aria-label="<?= $escaper->escapeHtmlAttr(__('Customer Reviews')) ?>"
-            tabindex="-1"
-            role="group"
+        class="mx-auto px-5 content-wrapper"
+        id="customer-review-list"
+        aria-label="<?= $escaper->escapeHtmlAttr(__('Customer Reviews')) ?>"
+        tabindex="-1"
+        role="group"
     >
         <div class="flex mb-6 md:flex-row">
             <?php if (!$block->getHideTitle()): ?>
-            <<?= /* @noEscape */
-            $headingTag ?>
-            <?= $escaper->escapeHtml(__('Customer Reviews')) ?>
-        </<?= /* @noEscape */
-        $headingTag ?>>
-        <?php endif ?>
-    </div>
-    <div class="w-full">
-        <?php foreach ($items as $review): ?>
-            <div itemscope itemprop="review" itemtype="http://schema.org/Review"
-                 class="border-b pb-4 my-4 border-container last:border-0 last:mb-0 mb-5 p-5 rounded-xl bg-bg-400">
-                <?php if (count($review->getRatingVotes())): ?>
-                    <div>
-                        <?php foreach ($review->getRatingVotes() as $vote): ?>
-                            <?php
-                            $rating = $vote->getPercent();
-                            $ratingSteps = 5;
-                            $starsFilled = is_numeric($rating) ? floor($rating / 100 * $ratingSteps) : 0;
-                            $starsEmpty = floor($ratingSteps - $starsFilled);
-                            ?>
-                            <div class="mb-1 md:text-lg">
-                                <span><?= $escaper->escapeHtml(__('Review by')) ?></span>
-                                <strong itemprop="author" itemscope itemtype="https://schema.org/Person">
-                                    <span itemprop="name"><?= $escaper->escapeHtml($review->getNickname()) ?></span>
-                                </strong>
-                            </div>
-                            <div class="mb-3">
-                                <span><?= $escaper->escapeHtml(__('Created at')) ?></span>
-                                <time
+                <h2 class="text-lg font-bold">
+                    <?= $escaper->escapeHtml(__('Customer Reviews')) ?>
+                </h2>
+            <?php endif ?>
+        </div>
+        <div class="w-full">
+            <?php foreach ($items as $review): ?>
+                <div itemscope itemprop="review" itemtype="http://schema.org/Review"
+                     class="border-b pb-4 my-4 border-container last:border-0 last:mb-0 mb-5 p-5 rounded-xl bg-bg-400">
+                    <?php if (count($review->getRatingVotes())): ?>
+                        <div>
+                            <?php foreach ($review->getRatingVotes() as $vote): ?>
+                                <?php
+                                $rating = $vote->getPercent();
+                                $ratingSteps = 5;
+                                $starsFilled = is_numeric($rating) ? floor($rating / 100 * $ratingSteps) : 0;
+                                $starsEmpty = floor($ratingSteps - $starsFilled);
+                                ?>
+                                <div class="mb-1 md:text-lg">
+                                    <span><?= $escaper->escapeHtml(__('Review by')) ?></span>
+                                    <strong itemprop="author" itemscope itemtype="https://schema.org/Person">
+                                        <span itemprop="name"><?= $escaper->escapeHtml($review->getNickname()) ?></span>
+                                    </strong>
+                                </div>
+                                <div class="mb-3">
+                                    <span><?= $escaper->escapeHtml(__('Created at')) ?></span>
+                                    <time
                                         itemprop="datePublished"
                                         datetime="<?= $escaper->escapeHtmlAttr($block->formatDate($review->getCreatedAt(), $format)); ?>"
-                                >
+                                    >
                                 <span class="sr-only">
                                     <?= $escaper->escapeHtml(
                                         $block->formatDate(
@@ -84,56 +82,56 @@ $productName = $block->getProduct()->getName();
                                         )
                                     ) ?>
                                 </span>
-                                    <span aria-hidden="true">
+                                        <span aria-hidden="true">
                                     <?= $escaper->escapeHtml(
                                         $block->formatDate($review->getCreatedAt(), $format)
                                     ) ?>
                                 </span>
-                                </time>
-                            </div>
-                            <div class="flex items-center mb-3" itemprop="reviewRating" itemscope
-                                 itemtype="http://schema.org/Rating">
+                                    </time>
+                                </div>
+                                <div class="flex items-center mb-3" itemprop="reviewRating" itemscope
+                                     itemtype="http://schema.org/Rating">
                                 <span class="hidden" itemprop="ratingValue"><?= /** @noEscape */
                                     $starsFilled; ?></span>
-                                <div class="flex gap-4">
-                                    <div class="flex gap-4 items-center">
-                                        <div class="flex">
-                                            <?php $i = 0; ?>
-                                            <?php while ($i < $starsFilled): ?>
-                                                <?= $hyvaicons->renderHtml('star', 'text-xl text-primary-500') ?>
-                                                <?php $i++; ?>
-                                            <?php endwhile; ?>
-                                            <?php $i = 0; ?>
-                                            <?php while ($i < $starsEmpty): ?>
-                                                <?= $hyvaicons->renderHtml('star', 'text-xl text-secondary-400') ?>
-                                                <?php $i++; ?>
-                                            <?php endwhile; ?>
-                                        </div>
-                                        <div>
-                                            <p class="text-primary-600"><?= $starsFilled ?>.0</p>
+                                    <div class="flex gap-4">
+                                        <div class="flex gap-4 items-center">
+                                            <div class="flex">
+                                                <?php $i = 0; ?>
+                                                <?php while ($i < $starsFilled): ?>
+                                                    <?= $hyvaicons->renderHtml('star', 'text-xl text-primary-500') ?>
+                                                    <?php $i++; ?>
+                                                <?php endwhile; ?>
+                                                <?php $i = 0; ?>
+                                                <?php while ($i < $starsEmpty): ?>
+                                                    <?= $hyvaicons->renderHtml('star', 'text-xl text-secondary-400') ?>
+                                                    <?php $i++; ?>
+                                                <?php endwhile; ?>
+                                            </div>
+                                            <div>
+                                                <p class="text-primary-600"><?= $starsFilled ?>.0</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-                <div>
-                    <div class="font-bold md:text-lg mb-3" itemprop="name">
-                        <?= $escaper->escapeHtml($review->getTitle()) ?>
-                    </div>
-                    <div class="mt-2" itemprop="description">
-                        <?= /* @noEscape */
-                        nl2br($escaper->escapeHtml($review->getDetail())) ?>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                    <div>
+                        <div class="font-bold md:text-lg mb-3" itemprop="name">
+                            <?= $escaper->escapeHtml($review->getTitle()) ?>
+                        </div>
+                        <div class="mt-2" itemprop="description">
+                            <?= /* @noEscape */
+                            nl2br($escaper->escapeHtml($review->getDetail())) ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-    <?php if ($toolbar): ?>
-        <div class="toolbar review-toolbar mt-4">
-            <?= $toolbar->toHtml() ?>
+            <?php endforeach; ?>
         </div>
-    <?php endif; ?>
+        <?php if ($toolbar): ?>
+            <div class="toolbar review-toolbar mt-4">
+                <?= $toolbar->toHtml() ?>
+            </div>
+        <?php endif; ?>
     </div>
 <?php endif; ?>

@@ -55,7 +55,7 @@ mutation createProductReviewMutation(
 ';
 
 ?>
-<div class="mx-auto content-wrapper md:p-0 mb-8">
+<div class="mx-auto content-wrapper mb-8">
     <div class="flex flex-col items-center py-7 md:py-8 px-5 md:px-12 rounded-xl bg-secondary-500">
         <div class="mb-4 text-2xl text-text-500">
             <?= $escaper->escapeHtml(__('Write Your Own Review')) ?>
@@ -113,13 +113,13 @@ mutation createProductReviewMutation(
                                                 class="table-cell pr-6 align-middle text-left"
                                                 id="<?= $escaper->escapeHtml($rating->getRatingCode()) ?>_rating_label"
                                             >
-                                                    <span>
-                                                        <?php if ($block->getRatings()->getSize() <= 1): ?>
-                                                            <?= $escaper->escapeHtml(__('Your Rating')) ?>:
-                                                        <?php else: ?>
-                                                            <?= $escaper->escapeHtml($rating->getRatingCode()) ?>
-                                                        <?php endif ?>
-                                                    </span>
+                                                <span>
+                                                    <?php if ($block->getRatings()->getSize() <= 1): ?>
+                                                        <?= $escaper->escapeHtml(__('Your Rating')) ?>:
+                                                    <?php else: ?>
+                                                        <?= $escaper->escapeHtml($rating->getRatingCode()) ?>
+                                                    <?php endif ?>
+                                                </span>
                                             </h2>
                                             <div
                                                 class="flex grow-0"
@@ -237,7 +237,6 @@ mutation createProductReviewMutation(
         <?php else: ?>
             <div
                 id="review-form"
-                tabindex="-1"
                 class="text-center"
             >
                 <?= $escaper->escapeHtml(
