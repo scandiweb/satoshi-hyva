@@ -15,6 +15,13 @@ $mixBackground = true;
 ?>
 
 <template x-fallback-template-type="product">
+    <!--Breadcrumbs fallback-->
+    <div class="md:[&:not(.transition-preview_&)]:mt-[89px]"></div>
+
+    <div class="max-md:hidden [.transition-preview_&]:hidden">
+        <?= $block->getChildHtml('product.breadcrumbs.placeholder') ?>
+    </div>
+
     <div
         class="md:content-wrapper relative z-30 mx-auto flex w-full flex-col justify-center gap-4 md:grid md:grid-cols-[1fr_250px] md:items-start md:gap-8 lg:grid-cols-[1fr_330px] xl:grid-cols-[1fr_400px] xl:gap-16"
         x-data="{

@@ -80,7 +80,7 @@ if ($product) {
         <?php else: ?>
             :href="`/${product.url_rewrites?.[0].url}`"
             x-element-transition-trigger:product<?= !$isSearch ? '.preview' : '' ?>.animate="{
-                'productImg': product.image?.url,
+                'productImg': product.media_gallery?.[0]?.url || '<?= $escaper->escapeUrl($placeholderImageUrl) ?>',
                 'title': product.name,
                 'mediaCount': product.media_gallery?.length || 3
             }"
