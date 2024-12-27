@@ -190,7 +190,11 @@ export default function (Alpine: AlpineType) {
       if (
         !e.target ||
         !(e.target instanceof HTMLElement) ||
-        e.target.role !== "radio"
+        (
+          e.target.tagName === "INPUT"
+            ? e.target.parentElement?.role !== "radio"
+            : e.target.role !== "radio"
+        )
       ) {
         throw "x-a11y-radio can only be used on elements of 'radio' role";
       }

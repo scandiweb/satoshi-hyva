@@ -62,7 +62,6 @@ $isPopup = $block->getData('is_popup') ?? false;
             class="-z-10 absolute opacity-0"
             tabindex="-1"
             type="radio"
-            role="radio"
             :required="getAllowedAttributeOptions(<?= (int)$attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
             :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
             aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
