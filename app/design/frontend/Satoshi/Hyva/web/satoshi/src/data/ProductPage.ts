@@ -428,7 +428,7 @@ export const ProductPage = () =>
 
     scrollToTop() {
       if (typeof this.scrollToPreviewTop !== "undefined") {
-        this.scrollToPreviewTop()
+        this.scrollToPreviewTop("instant");
       } else {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }

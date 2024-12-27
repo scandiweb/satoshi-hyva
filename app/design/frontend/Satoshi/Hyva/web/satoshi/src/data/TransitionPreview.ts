@@ -11,7 +11,7 @@ export type TransitionPreviewType = {
   lastSeenWithoutPreview: number;
   _scrollContainerRef: HTMLElement | null;
   init(): void;
-  scrollToPreviewTop(): void;
+  scrollToPreviewTop(behavior?: ScrollBehavior): void;
   scrollToTop(): void;
   hidePreview(): void;
   showPreview(): void;
@@ -96,10 +96,10 @@ export const TransitionPreview = () =>
       });
     },
 
-    scrollToPreviewTop() {
+    scrollToPreviewTop(behavior) {
       this._scrollContainerRef?.scrollTo({
         top: this.maxScroll,
-        behavior: "smooth",
+        behavior: behavior || "smooth",
       });
     },
 
