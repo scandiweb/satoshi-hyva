@@ -200,7 +200,6 @@ export const Gallery = (
         const newImages = images.filter(
           (img) => !this.images.find((image) => image.img === img.img)
         );
-        console.trace("new images", newImages);
 
         if (newImages.length) {
           this.images = [...newImages, ...this.initialImages];
