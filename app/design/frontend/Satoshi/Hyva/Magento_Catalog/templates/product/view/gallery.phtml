@@ -23,20 +23,10 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
 /** @var HeroiconsSolid $heroiconsSolid */
 $heroiconsSolid = $viewModels->require(HeroiconsSolid::class);
 
-$images = $block->getGalleryImages()->getItems();
-$mainImage = current(array_filter($images, [$block, 'isMainImage']));
-
-if (!empty($images) && empty($mainImage)) {
-    $mainImage = reset($images);
-}
-
-/** @var Image $helper */
-$helper = $block->getData('imageHelper');
-$mainImageUrl = $mainImage ? $mainImage->getData('medium_image_url') : $helper->getDefaultPlaceholderUrl('image');
-
 $isContain = false;
 $mixBackground = true;
 $productName = $block->getProduct()->getName();
+$images = $block->getGalleryImages()->getItems();
 ?>
 
 <div
@@ -44,106 +34,68 @@ $productName = $block->getProduct()->getName();
     x-data="{ fadingIn: false }"
     x-init="$nextTick(() => { fadingIn = true })"
 >
-    <!-- Appended variant images  -->
-    <template x-for="(image, index) in appendedImages" :key="index">
-        <div
-            class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl"
-            x-data="{ fadeInAppend: false }"
-            x-init="$nextTick(() => { fadeInAppend = true })"
-            x-show="fadeInAppend"
-            x-transition
-        >
-            <div class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
-                <img
-                    :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
-                    :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
-                    class="object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
-                    :src="image.img"
-                    alt=""/>
+    <!-- Images  -->
+    <template x-for="(image, index) in images" :key="index">
+        <div class="contents">
+            <template x-if="index === 0">
+                <div
+                    class="relative flex aspect-product flex-shrink-0 items-center justify-center overflow-hidden bg-[--fade-in-bg] md:rounded-2xl max-md:hidden">
+                    <div
+                        x-data="
+                            TransitionImage({
+                                src: image.img,
+                                imageId: `main-image-${image.position}`
+                            })
+                        "
+                        x-show="!!src"
+                        class="<?= $isContain ? 'p-[4%]' : 'size-full' ?> hide-unless-transition absolute inset-0 z-10 flex items-center justify-center bg-[--fade-in-bg] transition-opacity delay-1000 duration-300"
+                        :class="{ 'opacity-0': isImgLoaded }"
+                    >
+                        <img
+                            height="100%"
+                            width="100%"
+                            class="object-center <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?> <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
+                            :src="src"
+                            :alt="image.caption"
+                            alt=""
+                            src=""
+                        >
+                    </div>
 
-                <!-- Play button -->
-                <button
-                    x-show="image.type === 'video'"
-                    type="button"
-                    class="group absolute inset-0 grid place-items-center"
-                    aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                    @click="activateVideo(image.position)"
-                    @keydown.enter="activateVideo(image.position)"
-                    x-cloak
-                >
-                    <?= $heroiconsSolid->playHtml(
-                        'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
-                        44,
-                        44,
-                        ['aria-hidden' => 'true']
-                    ); ?>
-                </button>
-
-                <!-- Youtube container -->
-                <div class="absolute inset-0 hidden size-full bg-bg-400"
-                    :class="{ 'hidden': activeVideoType !== 'youtube' }"
-                    x-transition.opacity.duration.500ms
-                    x-show="image.type === 'video' && activeVideoType === 'youtube'"
-                >
-                    <div :id="`youtube-player-${image.position}`" class="size-full"></div>
+                    <div
+                        class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
+                        <img
+                            class="object-center no-fade <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
+                            :src="image.img"
+                            :alt="image.caption"
+                            :id="`main-image-${image.position}`"
+                            src=""
+                            alt=""
+                        >
+                    </div>
                 </div>
-
-                <!-- Video container -->
-                <div class="absolute inset-0 hidden size-full bg-bg-400"
-                    :class="{ 'hidden': activeVideoType !== 'vimeo' }"
-                    x-transition.opacity.duration.500ms
-                    x-show="image.type === 'video' && activeVideoType === 'vimeo'"
+            </template>
+            <template x-if="index !== 0">
+                <div
+                    class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl"
                 >
-                    <div :id="`vimeo-player-${image.position}`" class="size-full"></div>
-                </div>
-            </div>
-        </div>
-    </template>
+                    <div
+                        class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
+                        <img
+                            :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
+                            :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
+                            class="object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
+                            :src="image.img"
+                            alt=""/>
 
-    <!-- Main image with anti-blinking -->
-    <div
-        class="relative flex aspect-product flex-shrink-0 items-center justify-center overflow-hidden bg-[--fade-in-bg] md:rounded-2xl max-md:hidden"
-        :class="{
-            'max-md:hidden': !mobileFeaturedImage,
-        }"
-    >
-        <div
-            x-data="
-                TransitionImage({
-                    src: '<?= $mainImageUrl ?>',
-                    imageId: '<?= $mainImage ? 'main-image-' . $mainImage->getData('position') : 'main-image' ?>'
-                })
-            "
-            x-show="!!src"
-            class="<?= $isContain ? 'p-[4%]' : 'size-full' ?> hide-unless-transition absolute inset-0 z-10 flex items-center justify-center bg-[--fade-in-bg] transition-opacity delay-1000 duration-300"
-            :class="{ 'opacity-0': isImgLoaded }"
-        >
-            <img
-                height="100%"
-                width="100%"
-                class="object-center <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?> <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
-                :src="src"
-                alt="<?= $mainImage ? $escaper->escapeHtmlAttr($mainImage->getData('label')) : '' ?>"
-            >
-        </div>
-
-        <div class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
-            <img
-                class="object-center no-fade <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
-                src="<?= $mainImageUrl ?>"
-                alt="<?= $mainImage ? $escaper->escapeHtmlAttr($mainImage->getData('label')) : '' ?>"
-                id="<?= $mainImage ? 'main-image-' . $mainImage->getData('position') : 'main-image' ?>"
-            >
-            <?php if($mainImage && $mainImage->getData('media_type') && str_contains($mainImage->getData('media_type'), 'video')): ?>
-                <template x-if="!$store.main.isMobile">
-                    <div class="contents">
                         <!-- Play button -->
                         <button
+                            x-show="image.type === 'video'"
                             type="button"
                             class="group absolute inset-0 grid place-items-center"
                             aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                            @click="activateVideo(<?= $mainImage->getData('position') ?>)"
-                            @keydown.enter="activateVideo(<?= $mainImage->getData('position') ?>)"
+                            @click="activateVideo(image.position)"
+                            @keydown.enter="activateVideo(image.position)"
                             x-cloak
                         >
                             <?= $heroiconsSolid->playHtml(
@@ -156,85 +108,41 @@ $productName = $block->getProduct()->getName();
 
                         <!-- Youtube container -->
                         <div class="absolute inset-0 hidden size-full bg-bg-400"
-                            :class="{ 'hidden': activeVideoType !== 'youtube' }"
-                            x-transition.opacity.duration.500ms
-                            x-show="activeVideoType === 'youtube'"
+                             :class="{ 'hidden': activeVideoType !== 'youtube' }"
+                             x-transition.opacity.duration.500ms
+                             x-show="image.type === 'video' && activeVideoType === 'youtube'"
                         >
-                            <div id="youtube-player-<?= $mainImage->getData('position') ?>" class="size-full"></div>
+                            <div :id="`youtube-player-${image.position}`" class="size-full"></div>
                         </div>
 
                         <!-- Video container -->
                         <div class="absolute inset-0 hidden size-full bg-bg-400"
-                            :class="{ 'hidden': activeVideoType !== 'vimeo' }"
-                            x-transition.opacity.duration.500ms
-                            x-show="activeVideoType === 'vimeo'"
+                             :class="{ 'hidden': activeVideoType !== 'vimeo' }"
+                             x-transition.opacity.duration.500ms
+                             x-show="image.type === 'video' && activeVideoType === 'vimeo'"
                         >
-                            <div id="vimeo-player-<?= $mainImage->getData('position') ?>" class="size-full"></div>
+                            <div :id="`vimeo-player-${image.position}`" class="size-full"></div>
                         </div>
                     </div>
-                </template>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Other images  -->
-    <template x-for="(image, index) in images.filter(img => img.img !== '<?= $mainImageUrl ?>')" :key="index">
-        <div
-            class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl"
-            x-show="fadingIn"
-            x-transition
-        >
-            <div class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
-                <img
-                    :alt="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
-                    :title="image.caption || '<?= $escaper->escapeJs($productName) ?>'"
-                    class="object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
-                    :src="image.img"
-                    alt=""/>
-
-                <!-- Play button -->
-                <button
-                    x-show="image.type === 'video'"
-                    type="button"
-                    class="group absolute inset-0 grid place-items-center"
-                    aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                    @click="activateVideo(image.position)"
-                    @keydown.enter="activateVideo(image.position)"
-                    x-cloak
-                >
-                    <?= $heroiconsSolid->playHtml(
-                        'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
-                        44,
-                        44,
-                        ['aria-hidden' => 'true']
-                    ); ?>
-                </button>
-
-                <!-- Youtube container -->
-                <div class="absolute inset-0 hidden size-full bg-bg-400"
-                    :class="{ 'hidden': activeVideoType !== 'youtube' }"
-                    x-transition.opacity.duration.500ms
-                    x-show="image.type === 'video' && activeVideoType === 'youtube'"
-                >
-                    <div :id="`youtube-player-${image.position}`" class="size-full"></div>
                 </div>
-
-                <!-- Video container -->
-                <div class="absolute inset-0 hidden size-full bg-bg-400"
-                    :class="{ 'hidden': activeVideoType !== 'vimeo' }"
-                    x-transition.opacity.duration.500ms
-                    x-show="image.type === 'video' && activeVideoType === 'vimeo'"
-                >
-                    <div :id="`vimeo-player-${image.position}`" class="size-full"></div>
-                </div>
-            </div>
+            </template>
         </div>
     </template>
 
-    <?php if (count($images) > 2): // To eliminate images shifting when javascript loads ?>
-        <div x-show="!fadingIn"></div>
-        <div x-show="!fadingIn"></div>
-    <?php elseif (count($images) > 1): ?>
-        <div x-show="!fadingIn"></div>
-    <?php endif; ?>
+    <!-- Placeholder for on-reload -->
+    <?php foreach ($images as $image): ?>
+        <div
+            class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl"
+            :class="'hidden'"
+        >
+            <div class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">
+                <img
+                    alt="<?= $escaper->escapeHtmlAttr($image['label'] || $productName) ?>"
+                    title="<?= $escaper->escapeHtmlAttr($image['label'] || $productName) ?>"
+                    class="object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?> <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?>"
+                    src="<?= $escaper->escapeUrl($image['medium_image_url']) ?>"
+                />
+            </div>
+        </div>
+    <?php endforeach; ?>
 </div>
