@@ -839,11 +839,18 @@ export const ProductPage = () =>
         images &&
         window.dispatchEvent(
           new CustomEvent("update-gallery", {
-            detail: this.sortImagesByPosition(images),
+            detail: {
+              images: this.sortImagesByPosition(images),
+              productId: this.productId
+            },
           }),
         );
       } else {
-        window.dispatchEvent(new Event("reset-gallery"));
+        window.dispatchEvent(new CustomEvent("reset-gallery", {
+          detail: {
+            productId: this.productId
+          }
+        }));
       }
     },
     sortImagesByPosition(images) {
