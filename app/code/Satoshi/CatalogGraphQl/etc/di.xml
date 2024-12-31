@@ -5,4 +5,8 @@
         for="Magento\CatalogGraphQl\Model\Resolver\Products\Query\Search"
         type="Satoshi\CatalogGraphQl\Model\Resolver\Products\Query\Search"
     />
+    <preference
+        for="Magento\CatalogGraphQl\Model\Resolver\Product\MediaGallery\Url"
+        type="Satoshi\CatalogGraphQl\Model\Resolver\Product\MediaGallery\Url"
+    />
 </config>
