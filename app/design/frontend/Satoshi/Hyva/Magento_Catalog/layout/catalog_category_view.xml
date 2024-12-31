@@ -11,13 +11,6 @@
         <move element="main" destination="columns" before="-" />
         <move element="page.main.title" destination="category.banner" />
 
-        <referenceContainer name="main">
-            <block class="Magento\Catalog\Block\Product\ProductList\Toolbar" name="product_list_toolbar"
-                   template="Magento_Catalog::product/list/toolbar.phtml">
-                <block class="Magento\Theme\Block\Html\Pager" name="product_list_toolbar_pager"/>
-            </block>
-        </referenceContainer>
-
         <referenceContainer name="columns" htmlClass="grid-columns-plp">
             <referenceContainer name="div.sidebar.main" remove="true"/>
             <block class="Magento\Framework\View\Element\Template" name="sidebar.main.wrapper"

@@ -47,6 +47,9 @@ if (!$count) {
         }"
         :inert="!$store.productList.isFiltersSidebarExpanded"
     >
+        <template x-if="$store.main.isMobile && !document.getElementById('selected-filters-mobile')">
+            <div id="selected-filters-mobile"></div>
+        </template>
         <template
             x-portal="document.getElementById($store.main.isMobile ? 'selected-filters-mobile' : 'filters-sidebar')">
             <div
