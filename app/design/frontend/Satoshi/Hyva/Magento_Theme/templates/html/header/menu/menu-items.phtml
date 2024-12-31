@@ -71,7 +71,7 @@ if (!$menuItems) {
                     'menu__back-button--visible max-md:animate-slideIconIn motion-reduce:translate-x-0': history.length !== 1,
                     'max-md:animate-slideIconOut motion-reduce:-translate-x-full': history.length == 1
                 }"
-                :tab-index="history.length === 1 ? -1 : 0"
+                :tabindex="history.length === 1 ? -1 : 0"
                 :aria-hidden="history.length === 1"
             >
                 <?= $hyvaicons->renderHtml('chevron-left'); ?>
