@@ -45,11 +45,16 @@ export const Gallery = (
     vimeoPlayer: null,
     eventListeners: {
       ["@update-gallery.window"](event: CustomEvent) {
-        this.receiveImages(event.detail);
+        const { productId, images } = event.detail || {};
+        if (productId === this.productId) {
+          this.receiveImages(images);
+        }
       },
-      ["@reset-gallery.window"]() {
-        // @ts-ignore
-        this.images = this.initialImages;
+      ["@reset-gallery.window"](event: CustomEvent) {
+        const { productId } = event.detail || {};
+        if (productId === this.productId) {
+          this.images = this.initialImages;
+        }
       },
     },
 
@@ -198,7 +203,7 @@ export const Gallery = (
     receiveImages(images: ImageData[]) {
       if (this.appendOnReceiveImages) {
         const newImages = images.filter(
-          (img) => !this.images.find((image) => image.img === img.img)
+          (img) => !this.initialImages.find((image) => image.img === img.img)
         );
 
         if (newImages.length) {
