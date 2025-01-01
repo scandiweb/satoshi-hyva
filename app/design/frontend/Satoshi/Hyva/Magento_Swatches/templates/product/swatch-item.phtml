@@ -28,7 +28,7 @@ $isPopup = $block->getData('is_popup') ?? false;
 <template x-if="optionIsEnabled(<?= (int)$attributeId ?>, item.id)">
     <label
         :for="`attribute-option-<?= (int)$productId ?>-${item.id}-<?= $isPopup ? 'mobile' : 'desktop' ?>`"
-        @click.prevent.stop="optionIsActive(<?= (int)$attributeId ?>, item.id) ? changeOption(<?= (int)$attributeId ?>, item.id) : null;"
+        @click.stop="optionIsActive(<?= (int)$attributeId ?>, item.id) && changeOption(<?= (int)$attributeId ?>, item.id)"
         class="button button--size-sm select-none transition-all ease-in-out relative bg-bg-500"
         :class="{
             'button--outline-primary button--disabled': !optionIsActive(<?= (int)$attributeId ?>, item.id),
