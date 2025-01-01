@@ -110,9 +110,8 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
 <?php endif; ?>
 
 <div>
-    <a
-        href="<?= $escaper->escapeUrl($block->getBackUrl()) ?>"
-        class="inline-block w-full md:w-auto text-center bg-primary-500 py-2.5 px-5 secondary rounded-lg text-white"
+    <a class="inline-block w-full md:w-auto text-center bg-primary-500 py-2.5 px-5 secondary rounded-lg text-white"
+       href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
         x-element-transition-trigger
     >
         <span><?= $escaper->escapeHtml(__('Go back')) ?></span>
