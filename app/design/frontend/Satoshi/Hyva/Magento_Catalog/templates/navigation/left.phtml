@@ -30,129 +30,159 @@ if (!$count) {
 }
 ?>
 
-<!-- Desktop filters -->
-<div
-    class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:block"
-    :class="{
+<div class="main-sidebar">
+    <!-- Show / Hide filters button -->
+    <div class="absolute right-0 top-[-68px] ml-8 md:pl-2 max-md:hidden">
+        <button
+            type="button"
+            class="button button--filled-primary w-[275px] min-w-[275px]"
+            @click="$store.productList.toggleFiltersSidebar()"
+        >
+            <span
+                x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
+            >
+                <?= __('Hide filter') ?>
+            </span>
+            <span class="button__icon ml-3 text-xl">
+                <?= $hyvaicons->renderHtml('filter'); ?>
+            </span>
+        </button>
+    </div>
+
+    <div
+        class="md:sticky md:top-[--scroll-top]"
+        x-sticky-scroll="{
+            top: 90,
+            bottom: 24,
+        }"
+    >
+        <!-- Desktop filters -->
+        <div
+            class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:block"
+            :class="{
         'max-w-[275px]': $store.productList.isFiltersSidebarExpanded,
         'max-w-0': !$store.productList.isFiltersSidebarExpanded
     }"
->
-    <div
-        id="filters-sidebar"
-        class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"
-        :class="{
+        >
+            <div
+                id="filters-sidebar"
+                class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"
+                :class="{
             'translate-x-full': !$store.productList.isFiltersSidebarExpanded,
             'translate-x-0': $store.productList.isFiltersSidebarExpanded
         }"
-        :inert="!$store.productList.isFiltersSidebarExpanded"
-    >
-        <template
-            x-portal="document.getElementById($store.main.isMobile ? 'selected-filters-mobile' : 'filters-sidebar')">
-            <div
-                role="region"
-                aria-label="<?= $escaper->escapeHtmlAttr(__('Shop by')) ?>"
-                x-data="Filters('', {})"
+                :inert="!$store.productList.isFiltersSidebarExpanded"
             >
-                <!-- Mobile categories -->
-                <div class="contents md:hidden">
-                    <div class="flex gap-3 overflow-x-scroll pb-4 pt-2">
-                        <div class="contents">
-                            <button
-                                type="button"
-                                class="button button--outline-secondary button--size-sm shrink-0 max-md:h-[44px] max-md:text-base"
-                                @click="showFilters(false, 'Category')"
-                            >
-                                <?= $escaper->escapeHtml(__('Category')) ?>
-                            </button>
-                        </div>
-                    </div>
-                    <div x-intersect:full="isTopFilterVisible = true" x-intersect:leave="isTopFilterVisible = false"
-                         x-morph-ignore></div>
-                </div>
-
-                <!-- Desktop categories -->
-                <template x-if="!$store.main.isMobile">
-                    <!-- Desktop Sort -->
-                    <fieldset
-                        class="flex-1 max-md:hidden"
-                        x-data="Accordion(true, 300)"
+                <template
+                    x-portal="document.getElementById($store.main.isMobile ? 'selected-filters-mobile' : 'filters-sidebar')">
+                    <div
+                        role="region"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Shop by')) ?>"
+                        x-data="Filters('', {})"
                     >
-                        <div
-                            class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2"
-                            x-ref="AccordionButton">
-                            <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__('Category')) ?></h2>
-                            <button
-                                class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
-                                type="button" aria-label="<?= $escaper->escapeHtmlAttr(__('Category')) ?>">
+                        <!-- Mobile categories -->
+                        <div class="contents md:hidden">
+                            <div class="flex gap-3 overflow-x-scroll pb-4 pt-2">
+                                <div class="contents">
+                                    <button
+                                        type="button"
+                                        class="button button--outline-secondary button--size-sm shrink-0 max-md:h-[44px] max-md:text-base"
+                                        @click="showFilters(false, 'Category')"
+                                    >
+                                        <?= $escaper->escapeHtml(__('Category')) ?>
+                                    </button>
+                                </div>
+                            </div>
+                            <div x-intersect:full="isTopFilterVisible = true"
+                                 x-intersect:leave="isTopFilterVisible = false"
+                                 x-morph-ignore></div>
+                        </div>
+
+                        <!-- Desktop categories -->
+                        <template x-if="!$store.main.isMobile">
+                            <!-- Desktop Sort -->
+                            <fieldset
+                                class="flex-1 max-md:hidden"
+                                x-data="Accordion(true, 300)"
+                            >
+                                <div
+                                    class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2"
+                                    x-ref="AccordionButton">
+                                    <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__('Category')) ?></h2>
+                                    <button
+                                        class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
+                                        type="button" aria-label="<?= $escaper->escapeHtmlAttr(__('Category')) ?>">
                                     <span x-ref="AccordionIcon">
                                         <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
                                     </span>
-                            </button>
-                        </div>
-                        <div
-                            class="overflow-hidden md:px-2"
-                            x-ref="AccordionPanel"
-                            :class="{
+                                    </button>
+                                </div>
+                                <div
+                                    class="overflow-hidden md:px-2"
+                                    x-ref="AccordionPanel"
+                                    :class="{
                                     'transition-none': $store.main.isReducedMotion,
                                     'transition': $store.main.isReducedMotion
                                 }"
-                        >
-                            <div class="md:pb-3 md:pt-2" :inert="!isExpanded">
-                                <div class="flex flex-col gap-4 py-3">
-                                    <div role="radiogroup"
-                                         aria-label="<?= $escaper->escapeHtmlAttr(__('Category')) ?>">
-                                        <?php foreach ($categories as $category): ?>
-                                            <a
-                                                href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>"
-                                                x-element-transition-trigger
-                                                class="relative w-full flex justify-between items-center py-1.5 hover:text-primary-500"
-                                                <?php if ($block->isCategoryActive($category)): ?>
-                                                    aria-current="page"
-                                                <?php endif; ?>
-                                                <?php if ((int)$category->getProductCount() === 1): ?>
-                                                    aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, 1 available product', $category->getName())) ?>"
-                                                <?php else: ?>
-                                                    aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, %2 available products', $category->getName(), $category->getProductCount())) ?>"
-                                                <?php endif; ?>
-                                            >
-                                                <span><?= $escaper->escapeHtml($category->getName()) ?></span>
-                                                <span
-                                                    class="count text-primary">(<?= $escaper->escapeHtml($category->getProductCount()) ?>)</span>
-                                            </a>
-                                        <?php endforeach; ?>
+                                >
+                                    <div class="md:pb-3 md:pt-2" :inert="!isExpanded">
+                                        <div class="flex flex-col gap-4 py-3">
+                                            <div role="radiogroup"
+                                                 aria-label="<?= $escaper->escapeHtmlAttr(__('Category')) ?>">
+                                                <?php foreach ($categories as $category): ?>
+                                                    <a
+                                                        href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>"
+                                                        x-element-transition-trigger
+                                                        class="relative w-full flex justify-between items-center py-1.5 hover:text-primary-500"
+                                                        <?php if ($block->isCategoryActive($category)): ?>
+                                                            aria-current="page"
+                                                        <?php endif; ?>
+                                                        <?php if ((int)$category->getProductCount() === 1): ?>
+                                                            aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, 1 available product', $category->getName())) ?>"
+                                                        <?php else: ?>
+                                                            aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, %2 available products', $category->getName(), $category->getProductCount())) ?>"
+                                                        <?php endif; ?>
+                                                    >
+                                                        <span><?= $escaper->escapeHtml($category->getName()) ?></span>
+                                                        <span
+                                                            class="count text-primary">(<?= $escaper->escapeHtml($category->getProductCount()) ?>)</span>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </fieldset>
-                </template>
+                            </fieldset>
+                        </template>
 
-                <!-- Mobile filters popup -->
-                <?= $popup
-                    ->setData([
-                        'id' => 'filters',
-                        'isFocused' => true,
-                    ])
-                    ->setChildBlock(
-                        $this
-                            ->getLayout()
-                            ->createBlock(Navigation::class)
-                            ->setTemplate('Magento_Catalog::navigation/shopby-popup.phtml')
+                        <!-- Mobile filters popup -->
+                        <?= $popup
                             ->setData([
-                                'categories' => $categories
+                                'id' => 'filters',
+                                'isFocused' => true,
                             ])
-                    )
-                    ->render() ?>
+                            ->setChildBlock(
+                                $this
+                                    ->getLayout()
+                                    ->createBlock(Navigation::class)
+                                    ->setTemplate('Magento_Catalog::navigation/shopby-popup.phtml')
+                                    ->setData([
+                                        'categories' => $categories
+                                    ])
+                            )
+                            ->render() ?>
 
-                <!-- Mobile bottom popup filters -->
-                <?= $popup
-                    ->setData([
-                        'id' => 'bottom-filters',
-                    ])
-                    ->setChildTemplate('Magento_Catalog::navigation/bottom-shopby-popup.phtml')
-                    ->render() ?>
+                        <!-- Mobile bottom popup filters -->
+                        <?= $popup
+                            ->setData([
+                                'id' => 'bottom-filters',
+                            ])
+                            ->setChildTemplate('Magento_Catalog::navigation/bottom-shopby-popup.phtml')
+                            ->render() ?>
+                    </div>
+                </template>
             </div>
-        </template>
+        </div>
+
     </div>
 </div>
