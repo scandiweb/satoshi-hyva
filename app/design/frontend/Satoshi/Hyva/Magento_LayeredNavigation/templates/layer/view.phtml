@@ -38,129 +38,175 @@ if ($sorter) {
 
 ?>
 
-<!-- Desktop filters -->
-<div
-    class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:block"
-    :class="{
+<div class="main-sidebar">
+    <!-- Show / Hide filters button -->
+    <div class="absolute right-0 top-[-68px] ml-8 md:pl-2 max-md:hidden">
+        <button
+            type="button"
+            class="button button--filled-primary w-[275px] min-w-[275px]"
+            @click="$store.productList.toggleFiltersSidebar()"
+        >
+            <span
+                x-text="$store.productList.isFiltersSidebarExpanded ? '<?= __('Hide filter') ?>' : '<?= __('Show filter') ?>'"
+            >
+                <?= __('Hide filter') ?>
+            </span>
+            <span class="button__icon ml-3 text-xl">
+                <?= $hyvaicons->renderHtml('filter'); ?>
+            </span>
+        </button>
+    </div>
+
+    <div
+        class="md:sticky md:top-[--scroll-top]"
+        x-sticky-scroll="{
+            top: 90,
+            bottom: 24,
+        }"
+    >
+        <!-- Desktop filters -->
+        <div
+            class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:block"
+            :class="{
         'max-w-[275px]': $store.productList.isFiltersSidebarExpanded,
         'max-w-0': !$store.productList.isFiltersSidebarExpanded
     }"
->
+        >
 
-    <div
-        id="filters-sidebar"
-        class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"
-        :class="{
+            <div
+                id="filters-sidebar"
+                class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"
+                :class="{
             'translate-x-full': !$store.productList.isFiltersSidebarExpanded,
             'translate-x-0': $store.productList.isFiltersSidebarExpanded
         }"
-        :inert="!$store.productList.isFiltersSidebarExpanded"
-    >
-        <template x-portal="document.getElementById($store.main.isMobile ? 'selected-filters-mobile' : 'filters-sidebar')">
-            <div
-                x-data="Filters('<?= $escaper->escapeUrl($block->getClearUrl()) ?>', { key: '<?= $sorter->getCurrentOrder() ?>', dir: '<?= $sorter->getCurrentDirection() ?>' })"
-                role="region"
-                aria-label="<?= $escaper->escapeHtmlAttr(__('Product filters')) ?>"
+                :inert="!$store.productList.isFiltersSidebarExpanded"
             >
-                <?= $block->getChildBlock('state')->setData(['selected_sort' => $selectedSort])->toHtml() ?>
+                <template
+                    x-portal="document.getElementById($store.main.isMobile ? 'selected-filters-mobile' : 'filters-sidebar')">
+                    <div
+                        x-data="Filters('<?= $escaper->escapeUrl($block->getClearUrl()) ?>', { key: '<?= $sorter->getCurrentOrder() ?>', dir: '<?= $sorter->getCurrentDirection() ?>' })"
+                        role="region"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Product filters')) ?>"
+                    >
+                        <?= $block->getChildBlock('state')->setData(['selected_sort' => $selectedSort])->toHtml() ?>
 
-                <template x-if="!$store.main.isMobile">
-                    <div class="contents">
-                        <!-- Desktop Sort -->
-                        <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(true, 300)">
-                            <div class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2" x-ref="AccordionButton">
-                                <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__('Sort by')) ?></h2>
-                                <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
+                        <template x-if="!$store.main.isMobile">
+                            <div class="contents">
+                                <!-- Desktop Sort -->
+                                <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden"
+                                          x-data="Accordion(true, 300)">
+                                    <div
+                                        class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2"
+                                        x-ref="AccordionButton">
+                                        <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__('Sort by')) ?></h2>
+                                        <button
+                                            class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
+                                            type="button" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
                                     <span x-ref="AccordionIcon">
                                         <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
                                     </span>
-                                </button>
-                            </div>
-                            <div
-                                class="overflow-hidden md:px-2"
-                                x-ref="AccordionPanel"
-                                :class="{
-                                    'transition-none': $store.main.isReducedMotion,
-                                    'transition': $store.main.isReducedMotion
-                                }"
-                            >
-                                <div class="md:pb-3 md:pt-2" :inert="!isExpanded">
-                                    <div class="flex flex-col gap-4 py-3">
-                                        <div role="radiogroup" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
-                                            <?php foreach ($sortOptions as $sortOption): ?>
-                                                <div class="relative h-11 w-full">
-                                                    <label for="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>" class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
-                                                        <div class="flex items-center">
-                                                            <input
-                                                                type="radio"
-                                                                name="filter-item-sort_by"
-                                                                id="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>"
-                                                                class="radio__input"
-                                                                aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>"
-                                                                @change="selectSort('<?= $sortOption['value'] ?>', '<?= $sortOption['dir'] ?>')"
-                                                                :checked="selectedSort.key === '<?= $sortOption['value'] ?>' && selectedSort.dir === '<?= $sortOption['dir'] ?>'"
-                                                                <?php if($sorter->isOrderCurrent($sortOption['value']) && $sorter->getCurrentDirection() === $sortOption['dir']): ?>
-                                                                    checked="checked"
-                                                                <?php endif; ?>
-                                                            />
-                                                            <span class="radio__control mr-5" aria-hidden="true"></span>
-                                                            <span class="radio__label ml-0"><?= /* @noEscape */ $sortOption['name'] ?></span>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <!-- Desktop filters -->
-                        <?php foreach ($block->getFilters() as $filter): ?>
-                            <?php if ($filter->getItemsCount()): ?>
-                                <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(false, 300)">
-                                    <div class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2" x-ref="AccordionButton">
-                                        <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__($filter->getName())) ?></h2>
-                                        <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button" aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>">
-                                            <span x-ref="AccordionIcon">
-                                                <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
-                                            </span>
                                         </button>
                                     </div>
-
                                     <div
                                         class="overflow-hidden md:px-2"
                                         x-ref="AccordionPanel"
                                         :class="{
-                                            'transition-none': $store.main.isReducedMotion,
-                                            'transition': $store.main.isReducedMotion
-                                        }"
+                                    'transition-none': $store.main.isReducedMotion,
+                                    'transition': $store.main.isReducedMotion
+                                }"
                                     >
                                         <div class="md:pb-3 md:pt-2" :inert="!isExpanded">
                                             <div class="flex flex-col gap-4 py-3">
-                                                <?= /* @noEscape */ $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
+                                                <div role="radiogroup"
+                                                     aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
+                                                    <?php foreach ($sortOptions as $sortOption): ?>
+                                                        <div class="relative h-11 w-full">
+                                                            <label
+                                                                for="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>"
+                                                                class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
+                                                                <div class="flex items-center">
+                                                                    <input
+                                                                        type="radio"
+                                                                        name="filter-item-sort_by"
+                                                                        id="filter-item-<?= $sortOption['value'] ?>-<?= $sortOption['dir'] ?>"
+                                                                        class="radio__input"
+                                                                        aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>"
+                                                                        @change="selectSort('<?= $sortOption['value'] ?>', '<?= $sortOption['dir'] ?>')"
+                                                                        :checked="selectedSort.key === '<?= $sortOption['value'] ?>' && selectedSort.dir === '<?= $sortOption['dir'] ?>'"
+                                                                        <?php if ($sorter->isOrderCurrent($sortOption['value']) && $sorter->getCurrentDirection() === $sortOption['dir']): ?>
+                                                                            checked="checked"
+                                                                        <?php endif; ?>
+                                                                    />
+                                                                    <span class="radio__control mr-5"
+                                                                          aria-hidden="true"></span>
+                                                                    <span class="radio__label ml-0"><?= /* @noEscape */
+                                                                        $sortOption['name'] ?></span>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    <?php endforeach; ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </fieldset>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+
+                                <!-- Desktop filters -->
+                                <?php foreach ($block->getFilters() as $filter): ?>
+                                    <?php if ($filter->getItemsCount()): ?>
+                                        <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden"
+                                                  x-data="Accordion(false, 300)">
+                                            <div
+                                                class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2"
+                                                x-ref="AccordionButton">
+                                                <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__($filter->getName())) ?></h2>
+                                                <button
+                                                    class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable"
+                                                    type="button"
+                                                    aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>">
+                                            <span x-ref="AccordionIcon">
+                                                <?= $hyvaicons->renderHtml('chevron', '-rotate-90'); ?>
+                                            </span>
+                                                </button>
+                                            </div>
+
+                                            <div
+                                                class="overflow-hidden md:px-2"
+                                                x-ref="AccordionPanel"
+                                                :class="{
+                                            'transition-none': $store.main.isReducedMotion,
+                                            'transition': $store.main.isReducedMotion
+                                        }"
+                                            >
+                                                <div class="md:pb-3 md:pt-2" :inert="!isExpanded">
+                                                    <div class="flex flex-col gap-4 py-3">
+                                                        <?= /* @noEscape */
+                                                        $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        </template>
+
+                        <!-- Mobile filters popup -->
+                        <?= $popup->setData([
+                            'id' => 'filters',
+                            'isFocused' => true,
+                        ])->setChildTemplate('Magento_LayeredNavigation::layer/filters-popup.phtml', ['filters' => $block->getFilters(), 'renderer' => $block->getChildBlock('renderer'), 'sort_options' => $sortOptions, 'sorter' => $sorter])
+                            ->render() ?>
+
+                        <!-- Mobile bottom popup filters -->
+                        <?= $popup->setData(['id' => 'bottom-filters'])
+                            ->setChildTemplate('Magento_LayeredNavigation::layer/bottom-filters-popup.phtml', ['filters' => $block->getChildBlock('state')->getActiveFilters(), 'selected_sort' => $selectedSort])
+                            ->render() ?>
                     </div>
                 </template>
-
-                <!-- Mobile filters popup -->
-                <?= $popup->setData([
-                        'id' => 'filters',
-                        'isFocused' => true,
-                    ])->setChildTemplate('Magento_LayeredNavigation::layer/filters-popup.phtml', ['filters' => $block->getFilters(), 'renderer' => $block->getChildBlock('renderer'), 'sort_options' => $sortOptions, 'sorter' => $sorter])
-                    ->render() ?>
-
-                <!-- Mobile bottom popup filters -->
-                <?= $popup->setData(['id' => 'bottom-filters'])
-                    ->setChildTemplate('Magento_LayeredNavigation::layer/bottom-filters-popup.phtml', ['filters' => $block->getChildBlock('state')->getActiveFilters(), 'selected_sort' => $selectedSort])
-                    ->render() ?>
             </div>
-        </template>
+        </div>
     </div>
 </div>
 <?php // Needed to offset bottom filters at the bottom ?>
