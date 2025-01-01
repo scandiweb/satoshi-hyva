@@ -80,8 +80,7 @@
             </block>
         </referenceContainer>
 
-        <!-- TODO: Remove global alerts (uncomment this) -->
-        <!-- <referenceContainer name="page.messages" remove="true" /> -->
+        <referenceContainer name="page.messages" remove="true"/>
 
         <referenceContainer name="main.content" htmlClass="contents" htmlTag="div" />
 
