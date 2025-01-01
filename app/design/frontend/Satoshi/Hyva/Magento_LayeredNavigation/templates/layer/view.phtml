@@ -12,8 +12,12 @@ use Satoshi\Theme\Block\Popup;
 /** @var Navigation $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-
 /** @var SvgIcons $hyvaicons */
+
+if (!$block->canShowBlock()) {
+    return '';
+}
+
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $sorter = $block->getChildBlock('filter_sort') ?? [];
 
