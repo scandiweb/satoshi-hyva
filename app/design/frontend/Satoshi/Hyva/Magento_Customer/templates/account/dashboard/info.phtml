@@ -30,7 +30,7 @@ $errorMessage = $block->getErrorMessage();
     <?= $escaper->escapeHtml(__('Account Information')) ?>
 </h2>
 <div class="grid gap-5 lg:gap-8 grid-cols-1 lg:grid-cols-2">
-    <div class="bg-bg-400 p-7 rounded-xl flex flex-col md:flex-row gap-4 md:gap-5">
+    <div class="bg-bg-400 p-7 rounded-xl flex flex-col md:flex-row gap-4 md:gap-5 overflow-x-auto">
         <div class="self-start flex items-center align-center gap-4">
             <div class="p-4 text-primary-500 bg-bg-500 rounded-xl">
                 <?= $hyvaicons->renderHtml('user', 'w-6 h-6') ?>
@@ -63,13 +63,13 @@ $errorMessage = $block->getErrorMessage();
                     href="<?= $escaper->escapeUrl($block->getChangePasswordUrl()) ?>"
                     x-element-transition-trigger
                 >
-                    <?= $escaper->escapeHtml(__('Edit Password')) ?>
+                    <?= $escaper->escapeHtml(__('Change Password')) ?>
                 </a>
             </div>
         </div>
     </div>
     <?php if ($block->isNewsletterEnabled()): ?>
-        <div class="bg-bg-400 p-7 rounded-xl flex flex-col md:flex-row gap-4 md:gap-5">
+        <div class="bg-bg-400 p-7 rounded-xl flex flex-col md:flex-row gap-4 md:gap-5 overflow-x-auto">
             <div class="self-start flex items-center align-center gap-4">
                 <div class="p-4 text-primary-500 bg-bg-500 rounded-xl">
                     <?= $hyvaicons->renderHtml('envelope', 'w-6 h-6') ?>
