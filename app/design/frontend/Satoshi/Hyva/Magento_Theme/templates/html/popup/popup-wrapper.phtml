@@ -21,7 +21,7 @@
     "
     @click="$store.main.hideAllPopupsAndResizables()"
   ></div>
-  <div class="popup__main">
+  <div class="popup__main" :style="`opacity: ${$store.main.opacityOnZoom}`">
     <div
       class="popup__shadow"
       :class="
