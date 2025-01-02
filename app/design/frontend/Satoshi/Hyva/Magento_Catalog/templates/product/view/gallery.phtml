@@ -7,7 +7,6 @@ use Hyva\Theme\ViewModel\HeroiconsOutline;
 use Hyva\Theme\ViewModel\HeroiconsSolid;
 use Hyva\Theme\ViewModel\StoreConfig;
 use Magento\Catalog\Block\Product\View\Gallery;
-use Magento\Catalog\Helper\Image;
 use Magento\Framework\Escaper;
 
 /** @var Escaper $escaper */
@@ -27,6 +26,7 @@ $isContain = false;
 $mixBackground = true;
 $productName = $block->getProduct()->getName();
 $images = $block->getGalleryImages()->getItems();
+$isMobile = $block->getData('is_mobile') ?? false;
 ?>
 
 <div
@@ -49,7 +49,7 @@ $images = $block->getGalleryImages()->getItems();
                         "
                         x-show="!!src"
                         class="<?= $isContain ? 'p-[4%]' : 'size-full' ?> hide-unless-transition absolute inset-0 z-10 flex items-center justify-center bg-[--fade-in-bg] transition-opacity delay-1000 duration-300"
-                        :class="{ 'opacity-0': isImgLoaded }"
+                        :class="{ 'opacity-0 pointer-events-none': isImgLoaded }"
                     >
                         <img
                             height="100%"
@@ -72,6 +72,44 @@ $images = $block->getGalleryImages()->getItems();
                             src=""
                             alt=""
                         >
+
+                        <!-- Play button -->
+                        <button
+                            x-show="image.type === 'video'"
+                            type="button"
+                            class="group absolute inset-0 grid place-items-center"
+                            aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
+                            @click="activateVideo(image.position)"
+                            @keydown.enter="activateVideo(image.position)"
+                            x-cloak
+                        >
+                            <?= $heroiconsSolid->playHtml(
+                                'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
+                                44,
+                                44,
+                                ['aria-hidden' => 'true']
+                            ); ?>
+                        </button>
+
+                        <!-- Youtube container -->
+                        <div class="absolute inset-0 hidden size-full bg-bg-400"
+                             :class="{ 'hidden': activeVideoType !== 'youtube' }"
+                             x-transition.opacity.duration.500ms
+                             x-show="image.type === 'video' && activeVideoType === 'youtube'"
+                        >
+                            <div :id="`desktop-youtube-player-${image.position}`"
+                                 class="size-full"></div>
+                        </div>
+
+                        <!-- Video container -->
+                        <div class="absolute inset-0 hidden size-full bg-bg-400"
+                             :class="{ 'hidden': activeVideoType !== 'vimeo' }"
+                             x-transition.opacity.duration.500ms
+                             x-show="image.type === 'video' && activeVideoType === 'vimeo'"
+                        >
+                            <div :id="`desktop-vimeo-player-${image.position}`"
+                                 class="size-full"></div>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -112,7 +150,8 @@ $images = $block->getGalleryImages()->getItems();
                              x-transition.opacity.duration.500ms
                              x-show="image.type === 'video' && activeVideoType === 'youtube'"
                         >
-                            <div :id="`youtube-player-${image.position}`" class="size-full"></div>
+                            <div :id="`<?= $isMobile ? 'mobile' : 'desktop' ?>-youtube-player-${image.position}`"
+                                 class="size-full"></div>
                         </div>
 
                         <!-- Video container -->
@@ -121,7 +160,8 @@ $images = $block->getGalleryImages()->getItems();
                              x-transition.opacity.duration.500ms
                              x-show="image.type === 'video' && activeVideoType === 'vimeo'"
                         >
-                            <div :id="`vimeo-player-${image.position}`" class="size-full"></div>
+                            <div :id="`<?= $isMobile ? 'mobile' : 'desktop' ?>-vimeo-player-${image.position}`"
+                                 class="size-full"></div>
                         </div>
                     </div>
                 </div>

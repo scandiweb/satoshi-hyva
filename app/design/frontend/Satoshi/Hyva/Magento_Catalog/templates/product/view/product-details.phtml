@@ -127,7 +127,8 @@ if ($product) {
                              x-transition.opacity.duration.500ms
                              x-show="activeVideoType === 'youtube'"
                         >
-                            <div :id="`youtube-player-${images[0].position}`" class="size-full"></div>
+                            <div :id="`mobile-youtube-player-${images[0].position}`"
+                                 class="size-full"></div>
                         </div>
 
                         <!-- Video container -->
@@ -136,7 +137,8 @@ if ($product) {
                              x-transition.opacity.duration.500ms
                              x-show="activeVideoType === 'vimeo'"
                         >
-                            <div :id="`vimeo-player-${images[0].position}`" class="size-full"></div>
+                            <div :id="`mobile-vimeo-player-${images[0].position}`"
+                                 class="size-full"></div>
                         </div>
                     </div>
                 </template>
@@ -157,6 +159,6 @@ if ($product) {
 
     <!-- Mobile Gallery -->
     <div class="contents md:hidden">
-        <?= $block->getChildHtml('product.media') ?>
+        <?= $block->getChildBlock('product.media')->setIsMobile(true)->toHtml() ?>
     </div>
 </div>

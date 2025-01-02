@@ -73,9 +73,10 @@ export const Gallery = (
         this.initVimeoVideo(videoData, position);
       }
     },
+
     getVideoData(position: number) {
       const image = this.images.find(
-        (image) => Number(image.position) === position
+        (image) => Number(image.position) == position
       );
       const videoUrl = image ? image.videoUrl : false;
 
@@ -121,6 +122,8 @@ export const Gallery = (
     },
 
     initYoutubeAPI(videoData: VideoData, position: number) {
+      const isMobile = Alpine.store('main').isMobile;
+
       if (!window?.YT) {
         const loadYoutubeAPI = document.createElement("script");
         loadYoutubeAPI.src = "https://www.youtube.com/iframe_api";
@@ -142,7 +145,7 @@ export const Gallery = (
           Player: new (elementId: string, options: any) => any;
         };
         window[`youtubePlayer-${position}`] = new ytPlayer.Player(
-          `youtube-player-${position}`,
+          `${isMobile ? 'mobile' : 'desktop'}-youtube-player-${position}`,
           {
             host: host,
             videoId: videoData.id,
@@ -165,12 +168,13 @@ export const Gallery = (
     },
 
     initVimeoVideo(videoData: VideoData, position: number) {
+      const isMobile = Alpine.store('main').isMobile;
       let additionalParams = "&autoplay=1";
       let src = "";
 
       const timestamp = new Date().getTime();
       const vimeoContainer = document.getElementById(
-        `vimeo-player-${position}`
+        `${isMobile ? 'mobile' : 'desktop'}-vimeo-player-${position}`
       );
       const videoId = videoData.id;
 
