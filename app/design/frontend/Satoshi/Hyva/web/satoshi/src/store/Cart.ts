@@ -157,6 +157,15 @@ export const CartStore = <CartStoreType>{
         this.isLoading = false;
         this.removingItemId = null;
         this.cartItems = this.cartItems.filter((item) => item.qty);
+
+        // Open minicart if there is an error message
+        Alpine.nextTick(() => {
+          const isCartPageOpen = window.location.pathname.includes("/checkout/cart");
+
+          if (this.errorMessage && !isCartPageOpen) {
+            this.showCart();
+          }
+        });
       })
       .catch((error) => {
         if (error.name !== ABORT_ERROR_NAME) {
@@ -253,6 +262,14 @@ export const CartStore = <CartStoreType>{
   },
 
   showCart() {
+    const isCartAlreadyOpen = Alpine.store("main").isMobile
+      ? Alpine.store("popup").currentPopup === CART_POPUP_ID
+      : Alpine.store("resizable").isVisible(CART_RESIZABLE_ID);
+
+    if (isCartAlreadyOpen) {
+      return;
+    }
+
     if (Alpine.store("main").isMobile) {
       Alpine.store("popup").showPopup(CART_POPUP_ID, true);
     } else {
