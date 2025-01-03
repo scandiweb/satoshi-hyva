@@ -290,7 +290,7 @@ $newPasswordFailed = !empty($errorMessage['current_password']) || !empty($errorM
                 </span>
             </button>
             <a class="button button--ghost-primary"
-               href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+               :href="$store.main.getBackURL('<?= $escaper->escapeJs($block->getUrl('customer/account')) ?>')"
                x-element-transition-trigger
             >
                 <span><?= $escaper->escapeHtml(__('Go back')) ?></span>

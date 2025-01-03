@@ -34,6 +34,7 @@ export type MainStoreType = {
   setTransformValues(): void;
   isPopupFocused(): boolean;
   hideAllPopupsAndResizables(): void;
+  getBackURL(defaultURL?: string): string;
 } & Magics<{}>;
 
 export const Main = <MainStoreType>{
@@ -124,5 +125,18 @@ export const Main = <MainStoreType>{
   hideAllPopupsAndResizables() {
     Alpine.store("popup").onPopupOverlayClick();
     Alpine.store("resizable").hideAll();
+  },
+
+  getBackURL(defaultURL) {
+    if (window.history.state?.backURL) {
+      return window.history.state.backURL;
+    }
+
+    const previousURL = document.referrer;
+    if (previousURL && new URL(previousURL).origin === window.location.origin) {
+      return previousURL;
+    }
+
+    return defaultURL || '/';
   },
 };
