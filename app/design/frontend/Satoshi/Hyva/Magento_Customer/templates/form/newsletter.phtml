@@ -60,7 +60,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 '<?= $escaper->escapeHtml(__('Save')) ?>'"><?= $escaper->escapeHtml(__('Save')) ?></span>
             </button>
             <a class="button button--ghost-primary"
-               href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+               :href="$store.main.getBackURL('<?= $escaper->escapeJs($block->getUrl('customer/account')) ?>')"
                x-element-transition-trigger
             >
                 <?= $escaper->escapeHtml(__('Go back')) ?>

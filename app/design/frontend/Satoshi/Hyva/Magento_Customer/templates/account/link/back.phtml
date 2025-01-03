@@ -10,7 +10,7 @@ use Magento\Framework\Escaper;
 ?>
 <div class="mb-5">
     <a class="button button--filled-primary"
-       href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+       :href="$store.main.getBackURL('<?= $escaper->escapeJs($block->getUrl('customer/account')) ?>')"
        x-element-transition-trigger
     >
         <span>
