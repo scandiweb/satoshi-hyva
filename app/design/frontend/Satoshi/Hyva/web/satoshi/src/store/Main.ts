@@ -127,7 +127,7 @@ export const Main = <MainStoreType>{
     Alpine.store("resizable").hideAll();
   },
 
-  getBackURL(defaultURL) {
+  getBackURL(defaultURL = "/") {
     if (window.history.state?.backURL) {
       return window.history.state.backURL;
     }
@@ -137,6 +137,6 @@ export const Main = <MainStoreType>{
       return previousURL;
     }
 
-    return defaultURL || '/';
+    return defaultURL;
   },
 };
