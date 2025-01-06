@@ -111,25 +111,4 @@ class Wishlist extends SourceWishlist
     {
         return $this->configurationPool->getByProductType($item->getProduct()->getTypeId())->getOptions($item);
     }
-
-    /**
-     * Retrieve product image data
-     *
-     * @param Product $product
-     * @return array
-     */
-    protected function getImageData($product)
-    {
-        /** @var \Magento\Catalog\Helper\Image $helper */
-        $helper = $this->imageHelperFactory->create()
-            ->init($product, 'mini_cart_product_thumbnail');
-
-        return [
-            'template' => 'Magento_Catalog/product/image_with_borders',
-            'src' => $helper->getUrl(),
-            'width' => $helper->getWidth(),
-            'height' => $helper->getHeight(),
-            'alt' => $helper->getLabel(),
-        ];
-    }
 }
