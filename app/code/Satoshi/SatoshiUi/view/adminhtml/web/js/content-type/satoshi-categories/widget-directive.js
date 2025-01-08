@@ -69,7 +69,7 @@ define([
      */
 
     _proto.toDom = function toDom(data, config) {
-      if (Array.isArray(data.categories)) {
+      if (typeof data.categories === "object") {
         data.categories = JSON.stringify(data.categories);
       }
 
