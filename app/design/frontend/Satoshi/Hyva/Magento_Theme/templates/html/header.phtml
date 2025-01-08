@@ -21,6 +21,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 ?>
 
+<div
+    class="z-[37] bg-primary-800 py-3 text-sm font-semibold text-text-on-primary-bg text-center"
+    tabindex="-1"
+>
+    <?= __('This is a demo store made by <a href="https://scandiweb.com/" class="hover:underline">Scandiweb</a>') ?>
+</div>
+
 <div x-intersect:enter="$store.main.isHeaderShadowVisible = false"
      x-intersect:leave="$store.main.isHeaderShadowVisible = true"></div>
 
