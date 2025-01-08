@@ -36,7 +36,7 @@ if (!$menuItems) {
         'menu__level--current': history[history.length - 1] === '<?= $id ?>',
         'menu__level--visible': history.includes('<?= $id ?>'),
         'menu__level--same-depth': <?= $level ?> <= delayedLevel,
-        'hidden': !$store.resizable.isVisible('menu-desktop'),
+        'hidden': !$store.main.isMobile && !$store.resizable.isVisible('menu-desktop'),
     }"
     :inert="!history.includes('<?= $id ?>')"
     data-menu-level="<?= $id ?>"

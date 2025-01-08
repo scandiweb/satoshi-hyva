@@ -52,10 +52,15 @@ define([
 
       data.heading = attributes.heading;
       data.auto_resize_items = attributes.auto_resize_items;
+      data.display_as_buttons = attributes.display_as_buttons;
+      data.view_all_button = attributes.view_all_button;
+      data.hide_arrows = attributes.hide_arrows;
       data.categories =
         attributes.categories === ""
           ? ""
-          : JSON.parse(this.decodeWysiwygCharacters(attributes.categories || ""));
+          : JSON.parse(
+              this.decodeWysiwygCharacters(attributes.categories || "")
+            );
 
       return data;
     };
@@ -77,6 +82,9 @@ define([
         type: "Satoshi\\SatoshiUi\\Block\\Widget\\Categories",
         heading: data.heading,
         auto_resize_items: data.auto_resize_items,
+        display_as_buttons: data.display_as_buttons,
+        view_all_button: data.view_all_button,
+        hide_arrows: data.hide_arrows,
         categories: this.encodeWysiwygCharacters(data.categories || ""),
       };
 
