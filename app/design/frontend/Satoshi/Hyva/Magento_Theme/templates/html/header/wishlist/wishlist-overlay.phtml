@@ -18,16 +18,15 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 <div
   :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'wishlist' : !$store.resizable.isVisible('wishlist-desktop')"
-  x-data="
-    {
-      get wishlistItems() { return $store.wishlist.wishlistItems },
-      get isWishlistEmpty() { return !$store.wishlist.wishlistItems.length },
-      get isRemoveContent() { return !$store.wishlist.wishlistItems.length }
-    }
-  "
+  x-data="Wishlist"
+  @private-content-loaded.window="receiveWishlistData($event.detail.data)"
   class="contents"
 >
   <div
+      x-data="{
+          get isRemoveContent() { return !this.itemCount }
+        }
+      "
       class="flex flex-col gap-5 rounded-md p-5 md:w-[--wishlist-width] bg-bg-500 md:gap-0 md:px-0 md:py-0 max-md:py-0 [.popup\_\_main_&]:px-2"
   >
     <div
@@ -40,10 +39,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
         <?= $escaper->escapeHtml(__('Saved items')) ?>
       </h1>
-      <template x-if="!isWishlistEmpty">
+        <template x-if="itemCount">
         <div
           class="delay-800 mr-1 flex justify-center align-middle transition-all duration-300"
-          :class="{'opacity-0': isWishlistEmpty}"
+          :class="{'opacity-0': !itemCount}"
         >
           <a
             href="<?= $escaper->escapeUrl($block->getUrl('wishlist')) ?>"
@@ -64,8 +63,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
       class="max-h-0 pb-0 opacity-0"
       :class="
         {
-          'opacity-0 max-h-0 pb-0': !isWishlistEmpty,
-          'opacity-1 max-h-80 pb-4 md:px-6': isWishlistEmpty,
+          'opacity-0 max-h-0 pb-0': itemCount,
+          'opacity-1 max-h-80 pb-4 md:px-6': !itemCount,
           'hidden': !isRemoveContent
         }
       "
@@ -78,12 +77,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
       class="transition-opacity duration-300"
       :class="
         {
-          'opacity-0': isWishlistEmpty,
-          'opacity-1': !isWishlistEmpty,
+          'opacity-0': !itemCount,
+          'opacity-1': itemCount,
           'hidden': isRemoveContent
         }
       "
-      @transitionend="isRemoveContent = isWishlistEmpty"
+      @transitionend="isRemoveContent = !!itemCount"
     >
       <div class="contents">
         <?= $template->render('Magento_Theme::html/header/wishlist/wishlist-items.phtml') ?>

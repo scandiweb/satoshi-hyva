@@ -63,7 +63,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                         <template x-if="!product.product_has_required_options">
                                             <button
                                                 type="button"
-                                                @click.prevent='setActionBtnText(`add-to-cart-${product.product_id}`); addToCartFromWishlistSidebar(product.add_to_cart_params, product.product_sku)'
+                                                @click.prevent='setActionBtnText(`add-to-cart-${product.product_id}`); addWishlistItemToCart(product.add_to_cart_params, product.product_sku)'
                                                 class="button button--filled-primary"
                                                 :aria-label="hyva.str('<?= $escaper->escapeJs(__('Add to Cart %1'))  ?>', product.product_name)"
                                                 data-addto="cart"

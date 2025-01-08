@@ -1,8 +1,10 @@
 <?php
 
 use Satoshi\Theme\Block\Template;
+use Magento\Framework\Escaper;
 
 /** @var Template $block */
+/** @var Escaper $escaper */
 
 $mixBackground = true;
 ?>
@@ -63,7 +65,25 @@ $mixBackground = true;
               </template>
             </div>
             <div class="flex flex-wrap items-center justify-between">
-              <div x-html="item.product_price"></div>
+                <template x-if="!item.product_has_required_options">
+                    <button
+                        type="button"
+                        @click.prevent.stop='setActionBtnText(`add-to-cart-${item.product_id}`); addWishlistItemToCart(item.add_to_cart_params, item.product_sku)'
+                        class="button button--filled-primary"
+                        :aria-label="hyva.str('<?= $escaper->escapeJs(__('Add to Cart %1')) ?>', item.product_name)"
+                        data-addto="cart"
+                        :class="isLoading && 'button--disabled'"
+                        :disabled="isLoading"
+                    >
+                        <span x-text="isLoading && actionBtnText === `add-to-cart-${item.product_id}` ?
+                              '<?= $escaper->escapeHtml(__('Adding...')) ?>' :
+                              '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'">
+                              <?= $escaper->escapeHtml(__('Add to Cart')) ?>
+                        </span>
+                    </button>
+                </template>
+
+                <div x-html="item.product_price"></div>
             </div>
           </div>
         </a>

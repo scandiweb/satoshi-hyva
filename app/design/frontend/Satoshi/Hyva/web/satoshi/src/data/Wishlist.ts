@@ -19,7 +19,7 @@ export type WishlistType = {
 
   wishlistSidebarFetchHandler(body: string, postUrl: string): Promise<void>;
   receiveWishlistData(data: Record<string, any>): void;
-  addToCartFromWishlistSidebar(json: string, productSku: string): Promise<void>;
+  addWishlistItemToCart(json: string, productSku: string): Promise<void>;
   removeFromWishlistSidebar(json: string): void;
 } & Magics<{}>;
 
@@ -126,7 +126,7 @@ export const Wishlist = (
       }
     },
 
-    async addToCartFromWishlistSidebar(json, productSku) {
+    async addWishlistItemToCart(json, productSku) {
       const obj = JSON.parse(json);
       const postUrl = obj.action;
       const body = "form_key=" + window.hyva.getFormKey() + "&item=" + obj.data.item + "&qty=" + obj.data.qty + "&uenc=" + window.hyva.getUenc();
