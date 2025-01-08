@@ -39,7 +39,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
         <?= $escaper->escapeHtml(__('Saved items')) ?>
       </h1>
-        <template x-if="itemCount">
+      <template x-if="itemCount">
         <div
           class="delay-800 mr-1 flex justify-center align-middle transition-all duration-300"
           :class="{'opacity-0': !itemCount}"
