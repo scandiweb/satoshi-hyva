@@ -65,7 +65,7 @@ define([
      */
 
     _proto.toDom = function toDom(data, config) {
-      if (Array.isArray(data.collage_items)) {
+      if (typeof data.collage_items === "object") {
         data.collage_items = JSON.stringify(data.collage_items);
       }
 

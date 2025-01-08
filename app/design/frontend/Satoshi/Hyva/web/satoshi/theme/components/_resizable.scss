@@ -183,6 +183,10 @@
     &__bg {
       @apply absolute z-10 bg-bg-400;
 
+      .resizable--cart & {
+        @apply bg-bg-500;
+      }
+
       inset: calc(var(--bg-extension-unitless) * 1px);
       transform: scale(var(--bg-scale-x), var(--bg-scale-y));
     }

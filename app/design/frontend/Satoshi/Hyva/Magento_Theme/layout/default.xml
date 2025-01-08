@@ -35,6 +35,8 @@
 
         <referenceContainer name="header.container" htmlClass="page-header contents"/>
         <referenceContainer name="page.wrapper" htmlClass="flex min-h-screen max-w-screen flex-col bg-bg-500">
+            <block name="popup-wrapper" template="Magento_Theme::html/popup/popup-wrapper.phtml"/>
+
             <container name="main.wrapper" as="main.wrapper" htmlTag="div" htmlClass="main-wrapper">
                 <block class="Magento\Framework\View\Element\Template" name="main-content" template="Magento_Theme::html/layout/main-content.phtml" before="-" />
             </container>
@@ -78,8 +80,7 @@
             </block>
         </referenceContainer>
 
-        <!-- TODO: Remove global alerts (uncomment this) -->
-        <!-- <referenceContainer name="page.messages" remove="true" /> -->
+        <referenceContainer name="page.messages" remove="true"/>
 
         <referenceContainer name="main.content" htmlClass="contents" htmlTag="div" />
 
@@ -105,10 +106,5 @@
 
         <!-- Render footer inside main so it can be removed/added when navigating between pages -->
         <move element="footer-content" destination="main.content" after="-" />
-
-        <!-- Render popup wrapper -->
-        <referenceContainer name="before.body.end">
-            <block name="popup-wrapper" template="Magento_Theme::html/popup/popup-wrapper.phtml" />
-        </referenceContainer>
     </body>
 </page>

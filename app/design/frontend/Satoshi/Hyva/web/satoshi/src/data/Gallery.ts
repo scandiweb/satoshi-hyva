@@ -19,8 +19,6 @@ export type GalleryType = {
   activeVideoType: string | false;
   initialImages: ImageData[];
   images: ImageData[];
-  appendedImages: ImageData[] | [];
-  mobileFeaturedImage: ImageData | null;
   appendOnReceiveImages: boolean;
   loopVideo: boolean;
   vimeoPlayer: any;
@@ -36,24 +34,27 @@ export type GalleryType = {
 export const Gallery = (
   images: string,
   appendOnReceiveImages: boolean,
-  loopVideo: boolean,
+  loopVideo: boolean
 ) =>
   <GalleryType>{
     activeVideoType: false,
     initialImages: JSON.parse(images),
     images: JSON.parse(images),
-    appendedImages: [],
-    mobileFeaturedImage: null,
     appendOnReceiveImages,
     loopVideo,
     vimeoPlayer: null,
     eventListeners: {
       ["@update-gallery.window"](event: CustomEvent) {
-        this.receiveImages(event.detail);
+        const { productId, images } = event.detail || {};
+        if (productId === this.productId) {
+          this.receiveImages(images);
+        }
       },
-      ["@reset-gallery.window"]() {
-        // @ts-ignore
-        this.appendedImages = [];
+      ["@reset-gallery.window"](event: CustomEvent) {
+        const { productId } = event.detail || {};
+        if (productId === this.productId) {
+          this.images = this.initialImages;
+        }
       },
     },
 
@@ -72,9 +73,10 @@ export const Gallery = (
         this.initVimeoVideo(videoData, position);
       }
     },
+
     getVideoData(position: number) {
       const image = this.images.find(
-        (image) => Number(image.position) === position,
+        (image) => Number(image.position) == position
       );
       const videoUrl = image ? image.videoUrl : false;
 
@@ -105,7 +107,7 @@ export const Gallery = (
           [
             "https?:\\/\\/(?:www\\.|player\\.)?vimeo.com\\/(?:channels\\/(?:\\w+\\/)",
             "?|groups\\/([^\\/]*)\\/videos\\/|album\\/(\\d+)\\/video\\/|video\\/|)(\\d+)(?:$|\\/|\\?)",
-          ].join(""),
+          ].join("")
         );
         id = videoUrl.match(vimeoRegex)?.[3];
       }
@@ -120,6 +122,8 @@ export const Gallery = (
     },
 
     initYoutubeAPI(videoData: VideoData, position: number) {
+      const isMobile = Alpine.store('main').isMobile;
+
       if (!window?.YT) {
         const loadYoutubeAPI = document.createElement("script");
         loadYoutubeAPI.src = "https://www.youtube.com/iframe_api";
@@ -141,12 +145,12 @@ export const Gallery = (
           Player: new (elementId: string, options: any) => any;
         };
         window[`youtubePlayer-${position}`] = new ytPlayer.Player(
-          `youtube-player-${position}`,
+          `${isMobile ? 'mobile' : 'desktop'}-youtube-player-${position}`,
           {
             host: host,
             videoId: videoData.id,
             playerVars: params,
-          },
+          }
         );
       };
 
@@ -164,12 +168,13 @@ export const Gallery = (
     },
 
     initVimeoVideo(videoData: VideoData, position: number) {
+      const isMobile = Alpine.store('main').isMobile;
       let additionalParams = "&autoplay=1";
       let src = "";
 
       const timestamp = new Date().getTime();
       const vimeoContainer = document.getElementById(
-        `vimeo-player-${position}`,
+        `${isMobile ? 'mobile' : 'desktop'}-vimeo-player-${position}`
       );
       const videoId = videoData.id;
 
@@ -201,22 +206,15 @@ export const Gallery = (
 
     receiveImages(images: ImageData[]) {
       if (this.appendOnReceiveImages) {
-        const initialUrls = this.initialImages.map((image) => image.full);
         const newImages = images.filter(
-          (image) => !initialUrls.includes(image.full),
+          (img) => !this.initialImages.find((image) => image.img === img.img)
         );
 
-        if (!newImages.length) {
-          this.mobileFeaturedImage = null;
-          this.appendedImages = [];
-          return;
+        if (newImages.length) {
+          this.images = [...newImages, ...this.initialImages];
+        } else {
+          this.images = this.initialImages;
         }
-
-        // Exclude first image on mobile as it will be featured image
-        this.appendedImages = Alpine.store("main").isMobile
-          ? newImages.slice(1)
-          : newImages;
-        this.mobileFeaturedImage = newImages[0];
       } else {
         this.images = images;
       }

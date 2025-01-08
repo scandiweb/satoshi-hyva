@@ -49,7 +49,7 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
     <?= $id ? "id='$id'" : '' ?>
     style="--slide-gap: <?= $gap ?>px; <?= $convertedSlidesAmountInView ?>"
 >
-    <?php if (!$isHeaderDisabled): ?>
+    <?php if (!$isHeaderDisabled && ($title || !$isActionsDisabled)): ?>
         <div class="slider__header">
             <?php if ($title): ?>
                 <h1 class="slider__title"><?= $title ?></h1>

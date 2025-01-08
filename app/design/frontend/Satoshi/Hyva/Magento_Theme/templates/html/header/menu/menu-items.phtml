@@ -36,7 +36,7 @@ if (!$menuItems) {
         'menu__level--current': history[history.length - 1] === '<?= $id ?>',
         'menu__level--visible': history.includes('<?= $id ?>'),
         'menu__level--same-depth': <?= $level ?> <= delayedLevel,
-        'hidden': !$store.resizable.isVisible('menu-desktop'),
+        'hidden': !$store.main.isMobile && !$store.resizable.isVisible('menu-desktop'),
     }"
     :inert="!history.includes('<?= $id ?>')"
     data-menu-level="<?= $id ?>"
@@ -71,7 +71,7 @@ if (!$menuItems) {
                     'menu__back-button--visible max-md:animate-slideIconIn motion-reduce:translate-x-0': history.length !== 1,
                     'max-md:animate-slideIconOut motion-reduce:-translate-x-full': history.length == 1
                 }"
-                :tab-index="history.length === 1 ? -1 : 0"
+                :tabindex="history.length === 1 ? -1 : 0"
                 :aria-hidden="history.length === 1"
             >
                 <?= $hyvaicons->renderHtml('chevron-left'); ?>

@@ -70,14 +70,11 @@ if ($product) {
     >
         <!-- Mobile main image -->
         <div class="mb-4 md:hidden">
-            <div
-                class="relative z-[50] flex aspect-product min-h-0 justify-center bg-[--fade-in-bg]"
-                :class="{'hidden': mobileFeaturedImage}"
-            >
+            <div class="relative z-[50] flex aspect-product min-h-0 justify-center bg-[--fade-in-bg]">
                 <div
                     class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center bg-[--fade-in-bg] transition-opacity delay-1000 duration-300"
                     x-data="TransitionImage({
-                        src: '<?= $mainImageUrl ?>',
+                        src: images[0].img,
                         imageId: 'mobile-image'
                     })"
                     x-show="!!src"
@@ -88,6 +85,7 @@ if ($product) {
                         width="100%"
                         class="max-h-full w-auto object-center object-cover h-full mix-blend-darken"
                         :src="src"
+                        :alt="images[0].caption"
                         alt=""
                     >
                 </div>
@@ -97,74 +95,22 @@ if ($product) {
                         height="100%"
                         width="100%"
                         class="no-fade object-center w-auto object-cover h-full mix-blend-darken"
-                        alt="<?= $escaper->escapeHtmlAttr($mainImage ? $mainImage->getData('label') : $productName) ?>"
-                        src="<?= $mainImageUrl ?>"
+                        :src="images[0].img"
+                        :alt="images[0].caption"
+                        alt=""
                     >
                 </div>
                 <?= $template->setData(['product' => $product, 'class' => 'md:hidden bottom left'])->render('Magento_Catalog::product/list/discount-badge.phtml') ?>
 
-                <?php if($mainImage && $mainImage->getData('media_type') && str_contains($mainImage->getData('media_type'), 'video')): ?>
-                    <template x-if="$store.main.isMobile">
-                        <div class="contents">
-                            <!-- Play button -->
-                            <button
-                                type="button"
-                                class="group absolute inset-0 grid place-items-center"
-                                aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                                @click="activateVideo(<?= $mainImage->getData('position') ?>)"
-                                @keydown.enter="activateVideo(<?= $mainImage->getData('position') ?>)"
-                                x-cloak
-                            >
-                                <?= $heroiconsSolid->playHtml(
-                                    'stroke-white/75 fill-black/20 transition ease-in group-hover:scale-110 md:w-24 md:h-24',
-                                    44,
-                                    44,
-                                    ['aria-hidden' => 'true']
-                                ); ?>
-                            </button>
-
-                            <!-- Youtube container -->
-                            <div class="absolute inset-0 hidden size-full bg-white"
-                                :class="{ 'hidden': activeVideoType !== 'youtube' }"
-                                x-transition.opacity.duration.500ms
-                                x-show="activeVideoType === 'youtube'"
-                            >
-                                <div id="youtube-player-<?= $mainImage->getData('position') ?>" class="size-full"></div>
-                            </div>
-
-                            <!-- Video container -->
-                            <div class="absolute inset-0 hidden size-full bg-white"
-                                :class="{ 'hidden': activeVideoType !== 'vimeo' }"
-                                x-transition.opacity.duration.500ms
-                                x-show="activeVideoType === 'vimeo'"
-                            >
-                                <div id="vimeo-player-<?= $mainImage->getData('position') ?>" class="size-full"></div>
-                            </div>
-                        </div>
-                    </template>
-                <?php endif; ?>
-            </div>
-
-            <template x-if="mobileFeaturedImage">
-                <div class="animate-on-transition relative aspect-product min-h-0 flex bg-[--fade-in-bg]">
-                    <div class="relative w-full">
-                        <img
-                            :alt="mobileFeaturedImage.caption || '<?= $escaper->escapeJs($productName) ?>'"
-                            :title="mobileFeaturedImage.caption || '<?= $escaper->escapeJs($productName) ?>'"
-                            class="object-cover object-center size-full absolute inset-0 m-auto mix-blend-darken"
-                            :src="mobileFeaturedImage.img"
-                            alt=""
-                            loading="eager"
-                        />
-
+                <template x-if="$store.main.isMobile && images[0].type === 'video'">
+                    <div class="contents">
                         <!-- Play button -->
                         <button
-                            x-show="mobileFeaturedImage.type === 'video'"
                             type="button"
                             class="group absolute inset-0 grid place-items-center"
                             aria-label="<?= $escaper->escapeHtmlAttr(__('Play video')) ?>"
-                            @click="activateVideo(mobileFeaturedImage.position)"
-                            @keydown.enter="activateVideo(mobileFeaturedImage.position)"
+                            @click="activateVideo(images[0].position)"
+                            @keydown.enter="activateVideo(images[0].position)"
                             x-cloak
                         >
                             <?= $heroiconsSolid->playHtml(
@@ -176,31 +122,43 @@ if ($product) {
                         </button>
 
                         <!-- Youtube container -->
-                        <div class="absolute inset-0 hidden size-full bg-bg-400"
+                        <div class="absolute inset-0 hidden size-full bg-white"
                              :class="{ 'hidden': activeVideoType !== 'youtube' }"
                              x-transition.opacity.duration.500ms
-                             x-show="mobileFeaturedImage.type === 'video' && activeVideoType === 'youtube'"
+                             x-show="activeVideoType === 'youtube'"
                         >
-                            <div :id="`youtube-player-${mobileFeaturedImage.position}`" class="size-full"></div>
+                            <div :id="`mobile-youtube-player-${images[0].position}`"
+                                 class="size-full"></div>
                         </div>
 
                         <!-- Video container -->
-                        <div class="absolute inset-0 hidden size-full bg-bg-400"
+                        <div class="absolute inset-0 hidden size-full bg-white"
                              :class="{ 'hidden': activeVideoType !== 'vimeo' }"
                              x-transition.opacity.duration.500ms
-                             x-show="mobileFeaturedImage.type === 'video' && activeVideoType === 'vimeo'"
+                             x-show="activeVideoType === 'vimeo'"
                         >
-                            <div :id="`vimeo-player-${mobileFeaturedImage.position}`" class="size-full"></div>
+                            <div :id="`mobile-vimeo-player-${images[0].position}`"
+                                 class="size-full"></div>
                         </div>
                     </div>
+                </template>
+
+                <div class="flex items-center justify-center bg-[--fade-in-bg]" :class="'hidden'">
+                    <img
+                        height="100%"
+                        width="100%"
+                        class="no-fade object-center w-auto object-cover h-full mix-blend-darken"
+                        src="<?= $mainImageUrl ?>"
+                        alt="<?= $escaper->escapeHtmlAttr($mainImage ? $mainImage->getData('label') : $productName) ?>"
+                    >
                 </div>
-            </template>
+            </div>
         </div>
         <?= $block->getChildHtml('product.details.info') ?>
     </div>
 
     <!-- Mobile Gallery -->
     <div class="contents md:hidden">
-        <?= $block->getChildHtml('product.media') ?>
+        <?= $block->getChildBlock('product.media')->setIsMobile(true)->toHtml() ?>
     </div>
 </div>
