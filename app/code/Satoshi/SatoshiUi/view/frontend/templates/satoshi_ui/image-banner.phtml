@@ -50,9 +50,9 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
             <?= match($bannerHeight) {
                 'small' => 'pb-12 pt-20 md:py-[5vh] h-[40vh]',
                 'medium' => 'pb-12 pt-20 md:py-[10vh] h-[60vh]',
-                'large' => 'pb-12 pt-20 md:py-[20vh] h-[calc(100vh-34px)] md:h-[80vh]',
+                'large' => 'pb-12 pt-20 md:py-[20vh] h-[calc(100dvh-34px)] md:h-[80vh]',
                 default => ''
-            } ?>
+            } ?>100dvh
             <?= match($mobileAlignment) {
                 'top-left' => 'items-start justify-start',
                 'top-center' => 'items-start justify-center',
