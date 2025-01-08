@@ -45,12 +45,25 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
         </svg>
     <?php endif; ?>
     <div
-        class="
-            content-wrapper relative z-20 m-auto flex items-center
+        class="<?= $mobileAlignment ?>
+            content-wrapper relative z-20 m-auto flex
             <?= match($bannerHeight) {
-                'small' => 'py-[5vh] h-[40vh]',
-                'medium' => 'py-[10vh] h-[60vh]',
-                'large' => 'py-[20vh] h-[80vh]'
+                'small' => 'pb-12 pt-20 md:py-[5vh] h-[40vh]',
+                'medium' => 'pb-12 pt-20 md:py-[10vh] h-[60vh]',
+                'large' => 'pb-12 pt-20 md:py-[20vh] h-[calc(100vh-34px)] md:h-[80vh]',
+                default => ''
+            } ?>
+            <?= match($mobileAlignment) {
+                'top-left' => 'items-start justify-start',
+                'top-center' => 'items-start justify-center',
+                'top-right' => 'items-start justify-end',
+                'middle-left' => 'items-center justify-start',
+                'middle-center' => 'items-center justify-center',
+                'middle-right' => 'items-center justify-end',
+                'bottom-left' => 'items-end justify-start',
+                'bottom-center' => 'items-end justify-center',
+                'bottom-right' => 'items-end justify-end',
+                default => ''
             } ?>
             <?= match($desktopAlignment) {
                 'top-left' => 'md:items-start md:justify-start',
@@ -61,18 +74,21 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
                 'middle-right' => 'md:items-center md:justify-end',
                 'bottom-left' => 'md:items-end md:justify-start',
                 'bottom-center' => 'md:items-end md:justify-center',
-                'bottom-right' => 'md:items-end md:justify-end'
-            } ?>
-            <?= match($mobileAlignment) {
-                'left' => 'justify-start text-start',
-                'center' => 'justify-center text-center',
-                'right' => 'justify-end text-end'
+                'bottom-right' => 'md:items-end md:justify-end',
+                default => ''
             } ?>
         "
     >
         <div
             class="
-                flex max-w-[500px] flex-col justify-center gap-10 text-text-on-primary-bg
+                flex max-w-[335px] md:max-w-[500px] flex-col justify-center gap-7 md:gap-10 text-text-on-primary-bg
+                <?php if(str_contains($mobileAlignment, 'left')): ?>
+                    items-start text-start
+                <?php elseif(str_contains($mobileAlignment, 'right')): ?>
+                    items-end text-end
+                <?php else: ?>
+                    items-center text-center
+                <?php endif; ?>
                 <?php if(str_contains($desktopAlignment, 'left')): ?>
                     md:items-start md:text-start
                 <?php elseif(str_contains($desktopAlignment, 'right')): ?>
@@ -80,11 +96,6 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
                 <?php else: ?>
                     md:items-center md:text-center
                 <?php endif; ?>
-                <?= match($mobileAlignment) {
-                    'left' => 'items-start text-start',
-                    'center' => 'items-center text-center',
-                    'right' => 'items-end text-end'
-                } ?>
             "
         >
             <h2
