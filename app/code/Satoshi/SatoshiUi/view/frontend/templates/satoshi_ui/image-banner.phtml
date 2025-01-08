@@ -49,7 +49,7 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
             <?= match($bannerHeight) {
                 'small' => 'pb-12 pt-20 md:py-[5vh] h-[40vh]',
                 'medium' => 'pb-12 pt-20 md:py-[10vh] h-[60vh]',
-                'large' => 'pb-12 pt-20 md:py-[20vh] h-[calc(100dvh-34px)] md:h-[80vh]',
+                'large' => 'pb-12 pt-20 md:py-[20vh] h-[calc(100svh-34px)] md:h-[80vh]',
                 default => ''
             } ?>
             <?= match($mobileAlignment) {
