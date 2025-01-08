@@ -21,6 +21,7 @@ export type WishlistType = {
   receiveWishlistData(data: Record<string, any>): void;
   addWishlistItemToCart(json: string, productSku: string): Promise<void>;
   removeFromWishlistSidebar(json: string): void;
+  setWishlistItems(wishlistItems: Record<string, any>): void;
 } & Magics<{}>;
 
 export const Wishlist = (
@@ -122,7 +123,7 @@ export const Wishlist = (
         this.wishlistProducts = wishlistProducts;
         this.wishlistCountLabel = this.wishlistProducts?.counter;
         this.itemCount = this.wishlistProducts?.items.length;
-        this.wishlistItems = this.wishlistProducts?.items;
+        this.setWishlistItems(this.wishlistProducts?.items);
       }
     },
 
@@ -141,5 +142,9 @@ export const Wishlist = (
       const body = "form_key=" + window.hyva.getFormKey() + "&item=" + obj.data.item + "&uenc=" + window.hyva.getUenc();
 
       this.wishlistSidebarFetchHandler(body, postUrl);
+    },
+
+    setWishlistItems(wishlistItems) {
+      this.wishlistItems = wishlistItems;
     },
   };
