@@ -170,7 +170,7 @@
                             </option>
                             <option name="4" xsi:type="array">
                                 <item name="value" xsi:type="string">middle-center</item>
-                                <item name="label" xsi:type="string" translate="true">Middle</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Center</item>
                             </option>
                             <option name="5" xsi:type="array">
                                 <item name="value" xsi:type="string">middle-right</item>
@@ -181,8 +181,8 @@
                                 <item name="label" xsi:type="string" translate="true">Bottom Left</item>
                             </option>
                             <option name="7" xsi:type="array">
-                                <item name="value" xsi:type="string">bottom-middle</item>
-                                <item name="label" xsi:type="string" translate="true">Bottom Middle</item>
+                                <item name="value" xsi:type="string">bottom-center</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Center</item>
                             </option>
                             <option name="8" xsi:type="array">
                                 <item name="value" xsi:type="string">bottom-right</item>
@@ -195,26 +195,61 @@
         </field>
 
         <!-- Mobile content alignment -->
-        <field name="mobile_content_alignment" sortOrder="50" formElement="select" component="Magento_PageBuilder/js/form/element/visual-select">
+        <field name="mobile_content_alignment" sortOrder="50" formElement="select">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="default" xsi:type="string">center</item>
+                    <item name="default" xsi:type="string">middle-center</item>
                 </item>
             </argument>
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Mobile content alignment</label>
-                <elementTmpl>Magento_PageBuilder/form/element/visual-select</elementTmpl>
+                <label translate="true">Mobile content position</label>
             </settings>
             <formElements>
                 <select>
                     <settings>
-                        <options class="ContentAlignmentSource" />
+                        <options>
+                            <option name="0" xsi:type="array">
+                                <item name="value" xsi:type="string">top-left</item>
+                                <item name="label" xsi:type="string" translate="true">Top Left</item>
+                            </option>
+                            <option name="1" xsi:type="array">
+                                <item name="value" xsi:type="string">top-center</item>
+                                <item name="label" xsi:type="string" translate="true">Top Center</item>
+                            </option>
+                            <option name="2" xsi:type="array">
+                                <item name="value" xsi:type="string">top-right</item>
+                                <item name="label" xsi:type="string" translate="true">Top Right</item>
+                            </option>
+                            <option name="3" xsi:type="array">
+                                <item name="value" xsi:type="string">middle-left</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Left</item>
+                            </option>
+                            <option name="4" xsi:type="array">
+                                <item name="value" xsi:type="string">middle-center</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Center</item>
+                            </option>
+                            <option name="5" xsi:type="array">
+                                <item name="value" xsi:type="string">middle-right</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Right</item>
+                            </option>
+                            <option name="6" xsi:type="array">
+                                <item name="value" xsi:type="string">bottom-left</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Left</item>
+                            </option>
+                            <option name="7" xsi:type="array">
+                                <item name="value" xsi:type="string">bottom-center</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Center</item>
+                            </option>
+                            <option name="8" xsi:type="array">
+                                <item name="value" xsi:type="string">bottom-right</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Right</item>
+                            </option>
+                        </options>
                     </settings>
                 </select>
             </formElements>
         </field>
-
 
         <!-- Heading field -->
         <field name="heading" sortOrder="60" formElement="input">

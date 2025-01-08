@@ -71,10 +71,10 @@ define([
      */
 
     _proto.toDom = function toDom(data, config) {
-      if (Array.isArray(data.image)) {
+      if (typeof data.image === "object") {
         data.image = JSON.stringify(data.image);
       }
-      if (Array.isArray(data.products)) {
+      if (typeof data.products === "object") {
         data.products = JSON.stringify(data.products);
       }
 
