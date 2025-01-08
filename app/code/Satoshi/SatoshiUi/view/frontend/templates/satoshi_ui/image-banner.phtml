@@ -45,8 +45,7 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
         </svg>
     <?php endif; ?>
     <div
-        class="<?= $mobileAlignment ?>
-            content-wrapper relative z-20 m-auto flex
+        class="content-wrapper relative z-20 m-auto flex
             <?= match($bannerHeight) {
                 'small' => 'pb-12 pt-20 md:py-[5vh] h-[40vh]',
                 'medium' => 'pb-12 pt-20 md:py-[10vh] h-[60vh]',
