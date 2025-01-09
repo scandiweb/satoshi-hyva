@@ -134,6 +134,8 @@ class Categories extends Template implements BlockInterface
             'SATOSHI_CATEGORIES_WIDGET',
             $this->getData('categories'),
             $this->getData('auto_resize_items'),
+            $this->getData('display_as_buttons'),
+            $this->getData('view_all_button'),
             $this->getData('heading'),
         ];
     }
