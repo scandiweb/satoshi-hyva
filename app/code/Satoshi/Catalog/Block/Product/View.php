@@ -74,10 +74,10 @@ class View extends SourceView
      *
      * @return array|null
      */
-    public function getErrorMessage()
+    public function getVariantErrorMessage()
     {
-        $errorMessage = $this->_customerSession->getErrorMessage();
-        $this->_customerSession->unsErrorMessage();
+        $errorMessage = $this->_customerSession->getVariantErrorMessage();
+        $this->_customerSession->unsVariantErrorMessage();
         return $errorMessage;
     }
 }

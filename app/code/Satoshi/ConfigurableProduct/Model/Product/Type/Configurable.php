@@ -217,7 +217,7 @@ class Configurable extends SourceConfigurable
             }
         }
 
-        $this->getCustomerSession()->setErrorMessage($this->getSpecifyOptionMessage());
+        $this->getCustomerSession()->setVariantErrorMessage($this->getSpecifyOptionMessage());
         return $this->getSpecifyOptionMessage()->render();
     }
 }
