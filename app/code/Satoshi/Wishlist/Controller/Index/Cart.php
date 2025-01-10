@@ -125,10 +125,6 @@ class Cart extends SourceCart
     {
         /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        // Debug log
-        \Magento\Framework\App\ObjectManager::getInstance()
-            ->get(\Psr\Log\LoggerInterface::class)
-            ->debug('zzzzzzzzzzzz: ' . json_encode($resultRedirect));
         if (!$this->formKeyValidator->validate($this->getRequest())) {
             return $resultRedirect->setPath('*/*/');
         }
