@@ -14,7 +14,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 $isAlpineTemplate = $block->getData('isAlpineTemplate');
 $pageType = $this->getRequest()->getFullActionName();
-$mobilePageTypes = ['catalog_category_view', 'catalog_product_view', 'catalogsearch_result_index'];
+$mobilePageTypes = [
+    'catalog_category_view',
+    'catalog_product_view',
+    'catalogsearch_result_index',
+    'wishlist_index_configure',
+];
 $hideOnMobile = in_array($pageType, $mobilePageTypes, true);
 ?>
 
