@@ -76,7 +76,7 @@ if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPr
         <div class="flex items-end gap-2 md:text-lg">
             <!-- Final price -->
             <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer"
-                 class="[.popup\_\_main_&]:flex [.popup\_\_main_&]:gap-1.5">
+                 class="flex items-end gap-2">
                 <?php if ($product->canConfigure() && is_int($product->getPrice())): ?>
                     <span class="price-label block">
                         <?= $escaper->escapeHtml(__('From')) . ':' ?>
@@ -125,7 +125,7 @@ if ($msrpPrice = iterator_to_array($product->getPriceInfo()->getPrices())[MsrpPr
         <div class="flex items-end gap-2 md:text-lg">
             <!-- Final price -->
             <template x-if="activeProductsPriceData">
-                <div>
+                <div class="flex items-end gap-2 md:text-lg">
                     <?php if ($product->canConfigure() && is_int($product->getPrice())): ?>
                         <span class="block" :class="{ 'hidden' : !showRegularPriceLabel }">
                             <?= $escaper->escapeHtml(__('From')) ?>:
