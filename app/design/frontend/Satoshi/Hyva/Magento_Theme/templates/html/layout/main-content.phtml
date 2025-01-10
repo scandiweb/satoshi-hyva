@@ -8,8 +8,8 @@ use Magento\Framework\View\Element\Template;
 
 $page_type = $this->getRequest()->getFullActionName();
 $class = match($page_type) {
-  'catalog_product_view' => 'md:mt-[89px]',
-    'cms_index_index', 'checkout_cart_index', 'wishlist_index_configure' => '',
+    'catalog_product_view', 'wishlist_index_configure' => 'md:mt-[89px]',
+    'cms_index_index', 'checkout_cart_index' => '',
     default => 'mt-[72px] md:mt-[89px]',
 };
 
