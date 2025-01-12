@@ -6,6 +6,35 @@
                 <width>700</width>
                 <height>700</height>
             </image>
+
+            <image id="product_page_image_large" type="image">
+                <aspect_ratio>false</aspect_ratio>
+                <frame>false</frame>
+            </image>
+            <image id="product_page_image_medium" type="image">
+                <aspect_ratio>false</aspect_ratio>
+                <frame>false</frame>
+            </image>
+            <image id="product_page_image_small" type="thumbnail">
+                <aspect_ratio>false</aspect_ratio>
+                <frame>false</frame>
+            </image>
+            <image id="product_page_main_image" type="image">
+                <aspect_ratio>false</aspect_ratio>
+                <frame>false</frame>
+            </image>
+            <image id="product_page_main_image_default" type="image">
+                <aspect_ratio>false</aspect_ratio>
+                <frame>false</frame>
+            </image>
+            <image id="product_small_image" type="small_image">
+                <aspect_ratio>false</aspect_ratio>
+                <frame>false</frame>
+            </image>
+            <image id="product_thumbnail_image" type="thumbnail">
+                <aspect_ratio>false</aspect_ratio>
+                <frame>false</frame>
+            </image>
         </images>
     </media>
 </view>
