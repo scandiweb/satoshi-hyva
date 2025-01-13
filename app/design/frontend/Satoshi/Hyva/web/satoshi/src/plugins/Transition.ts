@@ -335,6 +335,11 @@ const replacePreviewContent = (rawContent: string) => {
 };
 
 const pushStateAndNotify = (...args: Parameters<History["pushState"]>) => {
+  args[0] = {
+    ...(args[0] || {}),
+    backURL: window.location.href,
+  };
+
   history.pushState(...args);
 
   const pushStateEvent = new CustomEvent("pushstate", {
