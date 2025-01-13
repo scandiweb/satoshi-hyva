@@ -35,7 +35,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     >
       <h1 class="flex items-center text-lg text-text-500 md:text-md">
         <span class="button__icon mr-4 text-[1.5rem] max-md:hidden">
-          <?= $hyvaicons->renderHtml('bookmark-empty', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
+          <?= $hyvaicons->renderHtml('bookmark-empty') ?>
         </span>
 
         <?= $escaper->escapeHtml(__('Saved items')) ?>

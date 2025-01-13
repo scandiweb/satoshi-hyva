@@ -28,7 +28,7 @@ $product = $item->getProduct();
     title="<?= $escaper->escapeHtmlAttr(__('Remove Item')) ?>"
     class="button button--outline-primary w-11 md:w-12 p-0"
 >
-    <?= $hyvaicons->renderHtml('remove', 'text-lg', attributes: ['title' => $escaper->escapeHtmlAttr(__('Remove Item'))]) ?>
+    <?= $hyvaicons->renderHtml('remove', 'text-lg') ?>
     <span class="sr-only">
         <?= $escaper->escapeHtml(__('Remove item %1', $product->getName())) ?>
     </span>

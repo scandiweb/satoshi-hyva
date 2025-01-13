@@ -82,7 +82,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                                     href="<?= $escaper->escapeUrl($block->getUrl('customer/address/edit', ['id' => $address->getId()])) ?>"
                                     x-element-transition-trigger
                                 >
-                                    <?= $hyvaicons->renderHtml('pencil', 'w-full h-full', attributes: ['title' => 'Edit']) ?>
+                                    <?= $hyvaicons->renderHtml('pencil', 'w-full h-full') ?>
                                 </a>
                                 <a
                                     class="text-primary-500 w-5 h-5"

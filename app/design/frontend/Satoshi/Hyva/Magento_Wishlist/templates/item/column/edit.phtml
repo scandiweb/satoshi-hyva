@@ -37,7 +37,7 @@ $editProductUrl = $configureUrl . (count($urlHash) > 1 ? '#' . $urlHash[1] : '')
         title="<?= $escaper->escapeHtmlAttr(__('Edit Item')) ?>"
         x-element-transition-trigger
     >
-        <?= $hyvaicons->renderHtml('pencil', 'text-lg', attributes: ['title' => $escaper->escapeHtmlAttr(__('Edit Item'))]) ?>
+        <?= $hyvaicons->renderHtml('pencil', 'text-lg') ?>
         <span class="sr-only">
             <?= $escaper->escapeHtml(__('Edit %1', $product->getName())) ?>
         </span>

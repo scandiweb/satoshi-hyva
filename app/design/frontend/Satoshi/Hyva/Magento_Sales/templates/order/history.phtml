@@ -124,7 +124,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                                 x-element-transition-trigger
                                 aria-label="<?= $escaper->escapeHtmlAttr(__('View order') . ' ' . ltrim($order->getRealOrderId(), '0')) ?>"
                             >
-                                <?= $hyvaicons->renderHtml('eye', 'w-full h-full', attributes: ['title' => 'View']) ?>
+                                <?= $hyvaicons->renderHtml('eye', 'w-full h-full') ?>
                             </a>
 
                             <?php if ($this->helper(Reorder::class)->canReorder($order->getEntityId())): ?>
@@ -152,7 +152,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                                         :disabled="isLoading"
                                         aria-label="<?= $escaper->escapeHtmlAttr(__('Reorder') . ' ' . ltrim($order->getRealOrderId(), '0')) ?>"
                                     >
-                                        <?= $hyvaicons->renderHtml('reload', 'w-full h-full', attributes: ['title' => 'Reorder']) ?>
+                                        <?= $hyvaicons->renderHtml('reload', 'w-full h-full') ?>
                                     </button>
                                 </form>
                             <?php else: ?>
@@ -161,7 +161,7 @@ if ($extraActionTitleBlocks = $block->getLayout()->getChildBlocks('order-list-ex
                                     disabled
                                     class="text-transparent w-5 h-5 opacity-50"
                                 >
-                                    <?= $hyvaicons->renderHtml('reload', 'w-full h-full', attributes: ['title' => '', 'aria-hidden' => 'true']) ?>
+                                    <?= $hyvaicons->renderHtml('reload', 'w-full h-full', attributes: ['aria-hidden' => 'true']) ?>
                                 </button>
                             <?php endif ?>
                             <?php foreach (array_keys($extraActions) as $alias): ?>

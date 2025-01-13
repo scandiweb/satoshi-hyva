@@ -35,7 +35,7 @@ $wishlistItemsCount = $wishlist->getWishlistItemsQty();
       <?php endif; ?>
       x-show="$store.wishlist.wishlistItems.length === 0"
     >
-      <?= $hyvaicons->renderHtml('bookmark-empty', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
+      <?= $hyvaicons->renderHtml('bookmark-empty') ?>
     </span>
     <span
       <?php if ($wishlistItemsCount !== 1) : ?>
@@ -43,7 +43,7 @@ $wishlistItemsCount = $wishlist->getWishlistItemsQty();
       <?php endif; ?>
       x-show="$store.wishlist.wishlistItems.length === 1"
     >
-      <?= $hyvaicons->renderHtml('bookmark', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
+      <?= $hyvaicons->renderHtml('bookmark') ?>
     </span>
     <span
       <?php if ($wishlistItemsCount < 2) : ?>
@@ -51,7 +51,7 @@ $wishlistItemsCount = $wishlist->getWishlistItemsQty();
       <?php endif; ?>
       x-show="$store.wishlist.wishlistItems.length > 1"
     >
-      <?= $hyvaicons->renderHtml('bookmarks', attributes: ['title' => $escaper->escapeHtml(__('Wishlist'))]) ?>
+      <?= $hyvaicons->renderHtml('bookmarks') ?>
     </span>
   </div>
   <div

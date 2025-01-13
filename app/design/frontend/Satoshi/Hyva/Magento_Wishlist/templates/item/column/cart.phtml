@@ -46,7 +46,7 @@ $allowedQty = $viewModel->setItem($item)->getMinMaxQty();
               '<?= $escaper->escapeHtml(__('Add to Cart')) ?>'">
               <?= $escaper->escapeHtml(__('Add to Cart')) ?>
           </span>
-            <?= $hyvaicons->renderHtml('cart-empty', 'text-xl', attributes: ['title' => $escaper->escapeHtmlAttr(__('Add %1 to Cart', $product->getName()))]) ?>
+            <?= $hyvaicons->renderHtml('cart-empty', 'text-xl') ?>
         </button>
     <?php else: ?>
         <?php if ($product->getIsSalable()): ?>
