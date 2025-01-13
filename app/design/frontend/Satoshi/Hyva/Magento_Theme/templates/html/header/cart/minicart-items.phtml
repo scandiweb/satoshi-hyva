@@ -22,7 +22,7 @@ $mixBackground = true;
     class="flex flex-col gap-5 <?= $isCartPage ? 'flex-1 md:pr-5' : 'md:overflow-auto md:max-h-[calc(100dvh-225px)] md:px-4' ?>"
 >
     <div
-        class="text-error"
+        class="text-error <?= $isCartPage ? 'max-md:-mt-4 max-md:-mb-2' : '-mt-4 -mb-2 md:mt-0 md:-mb-5' ?>"
         x-text="$store.cart.errorMessage"
         x-show="$store.cart.errorMessage.length"
         x-transition

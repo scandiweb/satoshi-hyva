@@ -69,7 +69,7 @@ if (count($categories)) {
                         $name
                     </a>
                 HTML;
-                return $acc . "<div class='slider__slide flex-auto'>$card</div>";
+                return $acc . "<div class='slider__slide flex-initial'>$card</div>";
             }
         }, '');
 
@@ -77,7 +77,7 @@ if (count($categories)) {
     if ($showViewAll && $displayAsButtons) {
         $text = $escaper->escapeHtml(__('View all'));
         $viewAll = <<<HTML
-            <div class='slider__slide flex-auto'>
+            <div class='slider__slide flex-initial'>
                 <button
                     @click="\$store.main.isMobile ? \$store.popup.showPopup('menu') : \$store.resizable.show('menu-desktop')"
                     type="button"
@@ -136,7 +136,7 @@ $template
         'title' => $escaper->escapeHtml($block->getData('heading')),
         'id' => 'collections-list-' . uniqid(),
         'is_full_page' => false,
-        'class' => 'slider--pagebuilder ' . $displayAsButtons ? 'slider--buttons' : '',
+        'class' => 'slider--pagebuilder ' . ($displayAsButtons ? 'slider--buttons' : ''),
         'is_actions_disabled' => $displayAsButtons
     ])
     ->render('Magento_Catalog::html/slider.phtml')
