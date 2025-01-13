@@ -15,7 +15,7 @@ $guarantees = $block->getData('guarantees');
 $guarantees = $decodeHelper->decodeJSONHTMLEntity($guarantees);
 ?>
 <?php if ($guarantees): ?>
-    <div class="relative flex gap-8 md:grid md:grid-cols-4 md:gap-14 max-md:overflow-x-auto ">
+    <div class="relative flex gap-8 md:grid md:grid-cols-4 md:gap-14 max-md:overflow-x-auto max-md:py-3">
         <?php foreach ($guarantees as $guarantee): ?>
             <div class="flex flex-shrink-0 flex-col items-center justify-start gap-7 max-md:w-[160px]">
                 <div class="w-fit rounded-xl border border-primary-50 p-3">
