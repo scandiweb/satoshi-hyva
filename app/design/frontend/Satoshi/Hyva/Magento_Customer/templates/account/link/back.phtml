@@ -1,10 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\BlockInterface;
+use Magento\Framework\Escaper;
+
+/** @var BlockInterface $block */
+/** @var Escaper $escaper */
 ?>
 <div class="mb-5">
     <a class="button button--filled-primary"
+       :href="$store.main.getBackURL('<?= $escaper->escapeJs($block->getUrl('customer/account')) ?>')"
        x-element-transition-trigger
-       href="<?= $block->escapeUrl($block->getBackUrl()) ?>">
+    >
         <span>
             <?= $block->escapeHtml(__('Go back')) ?>
         </span>
