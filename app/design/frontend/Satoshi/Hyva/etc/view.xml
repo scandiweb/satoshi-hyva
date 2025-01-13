@@ -6,6 +6,14 @@
                 <width>700</width>
                 <height>700</height>
             </image>
+            <image id="wishlist_thumbnail" type="small_image">
+                <width>700</width>
+                <height>700</height>
+            </image>
+            <image id="wishlist_sidebar_block" type="thumbnail">
+                <width>700</width>
+                <height>700</height>
+            </image>
 
             <image id="product_page_image_large" type="image">
                 <frame>false</frame>
