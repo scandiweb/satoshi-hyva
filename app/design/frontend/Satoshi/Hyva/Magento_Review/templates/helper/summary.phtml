@@ -82,13 +82,13 @@ $uniqueId = $productId . uniqid();
             <?php endif; ?>
             <?php $i = 0; ?>
             <?php while ($i < $starsEmpty): ?>
-                <?= $hyvaicons->renderHtml('star', 'text-secondary-400 text-xl') ?>
+                <?= $hyvaicons->renderHtml('star', 'text-secondary-700 text-xl') ?>
                 <?php $i++; ?>
             <?php endwhile; ?>
         <?php else: ?>
             <?php $i = 0; ?>
             <?php while ($i < $ratingSteps): ?>
-                <?= $hyvaicons->renderHtml('star', 'text-secondary-400 text-xl') ?>
+                <?= $hyvaicons->renderHtml('star', 'text-secondary-700 text-xl') ?>
                 <?php $i++; ?>
             <?php endwhile; ?>
         <?php endif; ?>
