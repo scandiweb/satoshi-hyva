@@ -33,16 +33,14 @@ $mixBackground = true;
         >
           <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg]">
             <template x-if="item.image.src">
-              <div class="h-full transition-transform md:group-hover:scale-105 bg-[--fade-in-bg]">
-                <img
-                  :src="item.image.src"
-                  class="aspect-product h-full w-full object-cover object-center <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
-                  loading="lazy"
-                  width=""
-                  height=""
-                  alt=""
-                >
-              </div>
+              <img
+                :src="item.image.src"
+                class="aspect-product h-full w-full object-cover object-center transition-transform md:group-hover:scale-105 <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
+                loading="lazy"
+                width=""
+                height=""
+                alt=""
+              >
             </template>
           </div>
           <div class="flex min-w-0 flex-col items-stretch justify-center gap-5 z-10">
