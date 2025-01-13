@@ -23,4 +23,8 @@
         for="Magento\Theme\Block\Html\Footer"
         type="Satoshi\Theme\Block\Html\Footer"
     />
+    <preference
+        for="Magento\Directory\Model\Currency"
+        type="Satoshi\Theme\Model\Currency"
+    />
 </config>
