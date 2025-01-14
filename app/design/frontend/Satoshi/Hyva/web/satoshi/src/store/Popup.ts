@@ -101,11 +101,11 @@ export const PopupStore = <PopupStoreType>{
   init() {
     Alpine.effect(() => {
       const currentPopupConfig = __popups.find(
-        (popup) => popup.id === this.__currentPopupRef,
+        (popup) => popup.id === this.__currentPopupRef
       );
 
       const nextPopupConfig = __popups.find(
-        (popup) => popup.id === this.__nextPopupRef,
+        (popup) => popup.id === this.__nextPopupRef
       );
 
       const isPopupContentHidden = this.__nextPopupRef !== null;
@@ -152,7 +152,7 @@ export const PopupStore = <PopupStoreType>{
             childList: true,
             subtree: true,
             attributeFilter: ["class", "style"],
-          },
+          }
         );
       } else {
         unfreezeScroll();
@@ -253,7 +253,7 @@ export const PopupStore = <PopupStoreType>{
 
     document.removeEventListener("keydown", this._onKeyDown);
 
-    this.originalFocusableEl?.focus({preventScroll: true});
+    this.originalFocusableEl?.focus({ preventScroll: true });
     this.originalFocusableEl = null;
 
     const popup = this.__currentPopupRef;
@@ -318,7 +318,7 @@ export const PopupStore = <PopupStoreType>{
         () => {
           resolve();
         },
-        { once: true },
+        { once: true }
       );
     });
   },
@@ -335,7 +335,7 @@ export const PopupStore = <PopupStoreType>{
 
     if (this.__currentPopupRef) {
       const currentPopupConfig = __popups.find(
-        (p) => p.id === this.__currentPopupRef,
+        (p) => p.id === this.__currentPopupRef
       );
 
       const nextPopupConfig = __popups.find((p) => p.id === popup);
@@ -391,7 +391,7 @@ export const PopupStore = <PopupStoreType>{
         {
           childList: true,
           subtree: true,
-        },
+        }
       );
     } else {
       unfreezeScroll();
@@ -416,7 +416,9 @@ export const PopupStore = <PopupStoreType>{
       // });
 
       Alpine.nextTick(() => {
-        this.__updatePopupHeight(popup);
+        setTimeout(() => {
+          this.__updatePopupHeight(popup);
+        }, 50);
 
         this.__nextPopupRef = null;
         this.__currentPopupRef = popup;
@@ -514,7 +516,7 @@ export const PopupStore = <PopupStoreType>{
     if (this.__attachedOverlayCallback) {
       document.removeEventListener(
         POPUP_OVERLAY_CLICK_EVENT,
-        this.__attachedOverlayCallback,
+        this.__attachedOverlayCallback
       );
       this.__attachedOverlayCallback = null;
     }
