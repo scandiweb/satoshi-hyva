@@ -13,6 +13,7 @@
         <!-- Attributes in body element which required to show correct color of logo text -->
         <attribute name="class" value="gradient" />
         <attribute name="class" value="bg-bg-500" />
+        <attribute name=":class" value="{'overflow-hidden': $store.resizable.isVisible('search-desktop')}"/>
         <attribute name="x-data" value="{}" />
         <attribute name="@private-content-loaded.window" value="$store.main.updatePrivateContent($event.detail.data)" />
 
