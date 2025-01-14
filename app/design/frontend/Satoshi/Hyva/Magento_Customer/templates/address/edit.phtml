@@ -28,7 +28,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
 ?>
 
 <section>
-    <h2 class="text-text-500 text-lg font-bold mb-5">
+    <h2 class="text-text-400 text-lg font-bold mb-5">
         <?= $escaper->escapeHtml(__('Customer Address')) ?>
     </h2>
     <form x-data="Object.assign(hyva.formValidation($root), AddressEdit(
@@ -53,7 +53,7 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
           @private-content-loaded.window="onPrivateContentLoaded($event.detail.data);"
     >
         <div class="bg-bg-400 p-5 rounded-xl mb-7 md:mb-8">
-            <h2 class="text-text-500 text-lg font-bold mb-5">
+            <h2 class="text-text-400 text-lg font-bold mb-5">
                 <?= $escaper->escapeHtml(__('Contact Information')) ?>
             </h2>
             <?= $block->getBlockHtml('formkey') ?>
@@ -77,12 +77,12 @@ $showOptionalRegions = $block->getConfig('general/region/display_all');
             </div>
         </div>
 
-        <h2 class="text-text-500 text-lg font-bold mb-5">
+        <h2 class="text-text-400 text-lg font-bold mb-5">
             <?= $escaper->escapeHtml(__('Customer Address')) ?>
         </h2>
 
         <div class="bg-bg-400 rounded-xl p-5 mb-5">
-            <h2 class="text-text-500 text-lg font-bold mb-5">
+            <h2 class="text-text-400 text-lg font-bold mb-5">
                 <?= $escaper->escapeHtml(__('Address')) ?>
             </h2>
             <div class="grid lg:grid-cols-2 gap-3">

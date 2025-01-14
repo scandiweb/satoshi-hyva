@@ -9,7 +9,7 @@ declare(strict_types=1);
     x-data="Authentication"
     x-init="logoutSuccess('<?= $escaper->escapeJs($escaper->escapeUrl($block->getUrl())) ?>')"
 >
-    <h1 class="heading text-2xl text-text-500"><?= __('You have signed out') ?></h1>
+    <h1 class="heading text-2xl text-text-400"><?= __('You have signed out') ?></h1>
     <p class="font-semibold">
         <?= $escaper->escapeHtml(__('You have signed out and will be redirected to our homepage in 5 seconds.')) ?>
     </p>

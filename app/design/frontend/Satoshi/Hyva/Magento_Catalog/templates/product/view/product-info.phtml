@@ -31,7 +31,7 @@ $productId = $product->getId();
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $cartErrMsg = $escaper->escapeHtml($block->getCartErrorMessage());
 ?>
-<h1 class="heading mb-1 ps-4 text-md leading-tight text-text-500 md:px-0 md:text-4xl max-md:pe-[--price-width]">
+<h1 class="heading mb-1 ps-4 text-md leading-tight text-text-400 md:px-0 md:text-4xl max-md:pe-[--price-width]">
     <?= $block->getChildBlock('product.title')->getPageHeading() ?>
 </h1>
 <div class="animate-on-transition px-4 leading-tight md:px-0 md:text-base mb-4 md:mb-7 max-md:pe-[--price-width]">

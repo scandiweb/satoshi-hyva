@@ -20,7 +20,7 @@ $selectedSort = $block->getData('selected_sort') ?? [];
 <div class="contents md:block md:px-2 md:pb-7 md:pt-2">
     <!-- Desktop header -->
     <div class="mb-5 hidden items-center justify-between md:flex">
-        <h2 class="text-text-500"><?= $escaper->escapeHtml(__('Selected filters')) ?></h2>
+        <h2 class="text-text-400"><?= $escaper->escapeHtml(__('Selected filters')) ?></h2>
 
         <?php if ($block->getLayer()->getState()->getFilters() || count($selectedSort)): ?>
             <a href="#" @click.prevent="clearAllFilters()" class="link link--primary">

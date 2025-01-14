@@ -13,7 +13,7 @@ $cssClass = $block->getCssClass() ?: 'content-wrapper mx-auto';
 
 <?php if (trim((string)$block->getPageHeading())): ?>
     <div class="<?= $cssClass ?>">
-        <h1 class="text-text-500 text-xxl mb-5" <?= $block->getAddBaseAttribute() ?>>
+        <h1 class="text-text-400 text-xxl mb-5" <?= $block->getAddBaseAttribute() ?>>
             <?= $escaper->escapeHtml($block->getPageHeading()) ?>
         </h1>
         <?= $block->getChildHtml() ?>

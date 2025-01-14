@@ -73,7 +73,7 @@ $mixBackground = true;
                         class="flex min-w-0 flex-col items-stretch justify-center gap-5 <?= $isCartPage ? 'md:gap-0' : '' ?> z-10"
                     >
                         <div class="w-full">
-                            <h2 class="text-md text-text-500">
+                            <h2 class="text-md text-text-400">
                                 <!-- Decode HTML entities in item.product_name to render special characters correctly -->
                                 <span
                                     x-text="(new DOMParser()).parseFromString(item.product_name, 'text/html').documentElement.textContent"></span>
