@@ -25,7 +25,7 @@ $linkHref = $linkHelper->getLinkHref($block, $link_url);
 $appearance = $block->getData('appearance');
 
 ?>
-<div class="flex flex-col items-center md:grid md:grid-cols-2 gap-7 md:gap-0">
+<div class="flex flex-col items-center md:grid md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-7 md:gap-0">
     <?php if ($block->getData('image')): ?>
         <div class="max-md:w-screen" style="position: relative; margin-top: 15px;">
             <div style="width: 0px; height: 0px; padding-bottom: 89%;"></div>
@@ -35,7 +35,7 @@ $appearance = $block->getData('appearance');
                     <div class="max-md:!hidden"
                          style="
                               width: 100%;
-                              height: 70%; /* Height of the ellipse */
+                              height: 60%; /* Height of the ellipse */
                               background: white;
                               border-radius: 50%; /* Circular shape stretched to ellipse */
                               overflow: hidden;
@@ -81,7 +81,7 @@ $appearance = $block->getData('appearance');
         </div>
     <?php endif; ?>
 
-    <div class="flex flex-col items-start gap-4 md:gap-7 md:py-12 md:pl-12 md:self-center w-full max-md:-order-1">
+    <div class="flex flex-col items-start gap-4 md:gap-7 md:py-12 md:pl-7 md:self-center w-full max-md:-order-1">
         <h2 class="heading text-xl text-text-500 md:text-4xl w-full"><?= $escaper->escapeHtml($block->getData('heading')) ?></h2>
         <div class="w-full">
             <?= /* @noEscape */
