@@ -91,7 +91,8 @@ $template
         'title' => $escaper->escapeHtml($block->getData('heading')),
         'id' => 'collection-' . $block->getData('category_id'),
         'is_full_page' => false,
-        'class' => 'slider--pagebuilder'
+        'class' => 'slider--pagebuilder',
+        'view_all_url' => $block->category->getUrl(),
     ])
     ->render('Magento_Catalog::html/slider.phtml')
 ?>
