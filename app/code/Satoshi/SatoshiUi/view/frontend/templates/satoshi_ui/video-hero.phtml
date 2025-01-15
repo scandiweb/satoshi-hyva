@@ -31,44 +31,106 @@ $overlayOpacity = $block->getData('overlay_opacity');
 $autoplay = $block->getData('autoplay') == 'true';
 $muted = $block->getData('muted') == 'true';
 $loop = $block->getData('loop') == 'true';
-?>
 
-<div class="relative h-[calc(640px/1.816)] md:h-[calc(768px/1.816)] lg:h-[calc(1024px/1.816)] xl:h-[calc(1280px/1.816)] 2xl:h-[calc(1536px/1.816)]">
+$bannerHeight = $block->getData('banner_height') ?? 'large';
+$desktopAlignment = $block->getData('desktop_content_position') ?? 'middle-right';
+$mobileAlignment = $block->getData('mobile_content_alignment') ?? 'bottom-center';
+
+?>
+<div class="relative overflow-hidden">
+    <div class="absolute left-0 top-0 z-10 h-full w-full bg-black" style="opacity: <?= $escaper->escapeHtmlAttr($overlayOpacity) ?>"></div>
+    <?php if(str_ends_with($videoUrl, '.mp4')): ?>
+        <video class="absolute left-0 top-0 z-0 h-full w-full object-cover object-center" muted autoplay loop playsinline>
+            <source src="<?= $escaper->escapeUrl($videoUrl) ?>" type="video/mp4">
+        </video>
+    <?php else: ?>
+        <iframe
+            src="<?= $escaper->escapeUrl($videoUrl) ?>"
+            autoplay="<?= $autoplay ? 'true' : 'false' ?>"
+            muted="<?= $muted ? 'true' : 'false' ?>"
+            loop="<?= $loop ? 'true' : 'false' ?>"
+            controls="false"
+            class="absolute left-0 top-0 z-0 h-full w-full object-cover object-center"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            title="<?= $escaper->escapeHtml($heading) ?>"
+        ></iframe>
+    <?php endif; ?>
     <div
-            class="absolute left-0 top-0 z-10 h-full w-full bg-black pointer-events-none"
-        style="opacity: <?= $escaper->escapeHtmlAttr($overlayOpacity) ?>"
-    ></div>
-    <div class="absolute top-0 z-20 flex h-full w-full items-center justify-center bg-gradient-to-b from-[#00000000] to-[#00000040] pointer-events-none">
-        <div class="w-full text-secondary-500 px-5">
-            <h1 class="mb-5 text-4xl font-semibold pointer-events-auto"><?= $escaper->escapeHtml($heading) ?></h1>
-            <p class="mb-8 pointer-events-auto"><?= $escaper->escapeHtml($description) ?></p>
+        class="content-wrapper relative z-20 m-auto flex
+            <?= match($bannerHeight) {
+                'small' => 'pb-12 pt-20 md:py-[5vh] h-[40vh]',
+                'medium' => 'pb-12 pt-20 md:py-[10vh] h-[60vh]',
+                'large' => 'pb-12 pt-20 md:py-[20vh] h-[calc(100svh-34px)] md:h-[80vh]',
+                default => ''
+            } ?>
+            <?= match($mobileAlignment) {
+                'top-left' => 'items-start justify-start',
+                'top-center' => 'items-start justify-center',
+                'top-right' => 'items-start justify-end',
+                'middle-left' => 'items-center justify-start',
+                'middle-center' => 'items-center justify-center',
+                'middle-right' => 'items-center justify-end',
+                'bottom-left' => 'items-end justify-start',
+                'bottom-center' => 'items-end justify-center',
+                'bottom-right' => 'items-end justify-end',
+                default => ''
+            } ?>
+            <?= match($desktopAlignment) {
+                'top-left' => 'md:items-start md:justify-start',
+                'top-center' => 'md:items-start md:justify-center',
+                'top-right' => 'md:items-start md:justify-end',
+                'middle-left' => 'md:items-center md:justify-start',
+                'middle-center' => 'md:items-center md:justify-center',
+                'middle-right' => 'md:items-center md:justify-end',
+                'bottom-left' => 'md:items-end md:justify-start',
+                'bottom-center' => 'md:items-end md:justify-center',
+                'bottom-right' => 'md:items-end md:justify-end',
+                default => ''
+            } ?>
+        "
+    >
+        <div
+            class="
+                flex max-w-[335px] md:max-w-[500px] flex-col justify-center gap-7 md:gap-10 text-text-on-primary-bg
+                <?php if(str_contains($mobileAlignment, 'left')): ?>
+                    items-start text-start
+                <?php elseif(str_contains($mobileAlignment, 'right')): ?>
+                    items-end text-end
+                <?php else: ?>
+                    items-center text-center
+                <?php endif; ?>
+                <?php if(str_contains($desktopAlignment, 'left')): ?>
+                    md:items-start md:text-start
+                <?php elseif(str_contains($desktopAlignment, 'right')): ?>
+                    md:items-end md:text-end
+                <?php else: ?>
+                    md:items-center md:text-center
+                <?php endif; ?>
+            "
+        >
+            <h2
+                class="heading text-4xl leading-tight md:text-6xl md:leading-tight"
+            >
+                <?= $escaper->escapeHtml($heading) ?>
+            </h2>
+            <?php if(!empty($description)): ?>
+                <p>
+                    <?= $escaper->escapeHtml($description) ?>
+                </p>
+            <?php endif; ?>
             <?php if(!empty($block->getData('button_label'))): ?>
                 <a
                     <?php if ($linkHref): ?>
                         href="<?= $escaper->escapeUrl($linkHref); ?>"
                         target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
                     <?php endif; ?>
+                    class="button button--filled-primary font-normal"
                     x-element-transition-trigger
-                    class="pointer-events-auto"
                 >
-                    <span class="underline">
-                        <?= $escaper->escapeHtml($block->getData('button_label')) ?>
-                    </span>
-                    <?= $hyvaicons->renderHtml('button-link', 'inline'); ?>
+                    <?= $escaper->escapeHtml($block->getData('button_label')) ?>
                 </a>
             <?php endif; ?>
         </div>
     </div>
-
-    <iframe
-        src="<?= $escaper->escapeUrl($videoUrl) ?>"
-        autoplay="<?= $autoplay ? 'true' : 'false' ?>"
-        muted="<?= $muted ? 'true' : 'false' ?>"
-        loop="<?= $loop ? 'true' : 'false' ?>"
-        controls="false"
-        class="w-full h-full object-cover"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-        title="<?= $escaper->escapeHtml($heading) ?>"
-    ></iframe>
 </div>
