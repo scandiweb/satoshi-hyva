@@ -1,6 +1,7 @@
 import type { Magics } from "alpinejs";
 import { navigateWithTransition } from "../plugins/Transition";
 import { searchQuery } from "../graphql/searchQuery";
+import { freezeScroll, makeElementScrollable, unfreezeScroll } from "../utils/scroll2";
 
 export type SearchType = {
   [key: string | symbol]: any;
@@ -13,6 +14,7 @@ export type SearchType = {
   categories: [];
   isNoResults: boolean;
   productsSearchLimit: number;
+  searchResultsElement: HTMLElement;
 
   init(): void;
   getIsSearchActive(): boolean;
@@ -21,6 +23,7 @@ export type SearchType = {
   search(): void;
   getSearchUrl(path: string): string;
   goToSearchPage(path: string): void;
+  setSearchResultsElement(element: HTMLElement): void;
 } & Magics<{}>;
 
 const initialSearch = new URLSearchParams(window.location.search).get("q");
@@ -37,7 +40,18 @@ export const Search = () =>
     productsSearchLimit: 4,
 
     getIsSearchActive() {
-      return !!this.searchTerm.length;
+      const isSearchActive = !!this.searchTerm.length;
+
+      if (isSearchActive) {
+        freezeScroll();
+        makeElementScrollable(this.searchResultsElement);
+      }
+
+      if (!isSearchActive || !this.$store.resizable.isVisible('search-desktop')) {
+        unfreezeScroll();
+      }
+
+      return isSearchActive;
     },
 
     init() {
@@ -109,5 +123,9 @@ export const Search = () =>
       return this.searchTermInput
         ? `${path}?q=${encodeURIComponent(this.searchTermInput.trim())}`
         : path;
+    },
+
+    setSearchResultsElement(element) {
+      this.searchResultsElement = element;
     },
   };
