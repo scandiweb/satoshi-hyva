@@ -98,7 +98,7 @@
         <field name="overlay_opacity" sortOrder="20" formElement="input">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="default" xsi:type="string">0</item>
+                    <item name="default" xsi:type="string">40</item>
                     <item name="validation" xsi:type="array">
                         <item name="required-entry" xsi:type="boolean">true</item>
                         <item name="validate-number" xsi:type="boolean">true</item>
