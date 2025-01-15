@@ -25,26 +25,76 @@ $linkHref = $linkHelper->getLinkHref($block, $link_url);
 $appearance = $block->getData('appearance');
 
 ?>
-<div class="flex flex-col items-center md:grid md:grid-cols-2 xl:gap-20 2xl:gap-28 max-md:gap-7">
+<div class="flex flex-col items-center md:grid md:grid-cols-2 gap-7 md:gap-0">
     <?php if ($block->getData('image')): ?>
-        <div class="relative overflow-hidden rounded-md w-full">
-            <img src="<?= $escaper->escapeUrl($block->getData('image')) ?>" alt="<?= $escaper->escapeHtmlAttr($block->getData('heading')) ?>" class="w-full">
+        <div class="max-md:w-screen" style="position: relative; margin-top: 15px;">
+            <div style="width: 0px; height: 0px; padding-bottom: 89%;"></div>
+            <div
+                style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; object-fit: cover; object-position: center center;">
+                <div class="md:flex md:items-center" style="width: 100%; height: 100%; opacity: 1; transition: opacity 100ms linear;">
+                    <div class="max-md:!hidden"
+                         style="
+                              width: 100%;
+                              height: 70%; /* Height of the ellipse */
+                              background: white;
+                              border-radius: 50%; /* Circular shape stretched to ellipse */
+                              overflow: hidden;
+                              transform: rotate(15deg); /* Rotate to achieve the tilt */
+                              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                              display: flex;
+                              justify-content: center;
+                              align-items: center;"
+                    >
+                        <video title="Woman walking under umbrella in red dress"
+                               class="md:rotate-[-15deg] md:scale-110"
+                               src="https://ui.scandiweb.com/assets/home/video-2.mp4" autoplay=""
+                               loop="" playsinline="" muted="" style="    opacity: 1;
+                                transition: opacity 300ms cubic-bezier(0.38, 0.005, 0.215, 1);
+                                position: absolute;
+                                left: 0px;
+                                top: 0px;
+                                width: 100%;
+                                height: 100%;
+                                z-index: 2;
+                                object-fit: cover;
+                                object-position: bottom;"></video>
+
+                    </div>
+                        <video title="Woman walking under umbrella in red dress"
+                               class="md:hidden"
+                               src="https://ui.scandiweb.com/assets/home/video-2.mp4" autoplay=""
+                               loop="" playsinline="" muted="" style="    opacity: 1;
+                                transition: opacity 300ms cubic-bezier(0.38, 0.005, 0.215, 1);
+                                position: absolute;
+                                left: 0px;
+                                top: 0px;
+                                width: 100%;
+                                height: 100%;
+                                z-index: 2;
+                                object-fit: cover;
+                                object-position: bottom;"></video>
+
+                </div>
+            </div>
+            <img class="md:hidden" alt="" src="<?= $escaper->escapeUrl($block->getData('image')) ?>"
+                 style="object-fit: cover; object-position: center center; position: absolute; left: 0px; top: -1px; width: calc(100% + 2px); height: calc(100% + 2px); z-index: 3; pointer-events: none;">
         </div>
     <?php endif; ?>
 
-    <div class="flex flex-col items-start gap-5 md:gap-7 md:py-12 md:pl-12 md:self-center w-full" style="<?= $appearance === 'text-first' ? 'order: -1' : '' ?>">
-        <h2 class="heading text-3xl text-text-500 md:text-4xl w-full"><?= $escaper->escapeHtml($block->getData('heading')) ?></h2>
+    <div class="flex flex-col items-start gap-4 md:gap-7 md:py-12 md:pl-12 md:self-center w-full max-md:-order-1">
+        <h2 class="heading text-xl text-text-500 md:text-4xl w-full"><?= $escaper->escapeHtml($block->getData('heading')) ?></h2>
         <div class="w-full">
-            <?= /* @noEscape */ str_replace('&quote;', '"', html_entity_decode($block->getData('content'))) ?>
+            <?= /* @noEscape */
+            str_replace('&quote;', '"', html_entity_decode($block->getData('content'))) ?>
         </div>
 
-        <div class="w-full">
+        <div class="w-full text-end">
             <a
                 <?php if ($linkHref): ?>
                     href="<?= $escaper->escapeUrl($linkHref); ?>"
                     target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
                 <?php endif; ?>
-                class="button button--filled-primary"
+                class="button button--ghost-primary h-auto text-[14px]"
                 x-element-transition-trigger
             >
                 <?= $escaper->escapeHtml($block->getData('button_label')) ?>
