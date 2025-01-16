@@ -133,6 +133,9 @@ define([
     }
 
     return {
+      banner_height: data.banner_height,
+      desktop_content_position: data.desktop_content_position,
+      mobile_content_alignment: data.mobile_content_alignment,
       heading: data.heading,
       description: data.description,
       button_label: data.button_label,
