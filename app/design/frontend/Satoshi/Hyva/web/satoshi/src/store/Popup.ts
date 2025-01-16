@@ -418,7 +418,7 @@ export const PopupStore = <PopupStoreType>{
       Alpine.nextTick(() => {
         setTimeout(() => {
           this.__updatePopupHeight(popup);
-        }, 50);
+        }, 100);
 
         this.__nextPopupRef = null;
         this.__currentPopupRef = popup;

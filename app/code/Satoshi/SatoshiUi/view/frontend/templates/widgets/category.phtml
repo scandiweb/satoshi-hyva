@@ -92,7 +92,7 @@ $template
         'id' => 'collection-' . $block->getData('category_id'),
         'is_full_page' => false,
         'class' => 'slider--pagebuilder',
-        'view_all_url' => $block->category->getUrl(),
+        'view_all_url' => $block->category?->getUrl(),
     ])
     ->render('Magento_Catalog::html/slider.phtml')
 ?>
