@@ -56,6 +56,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         x-transition
     >
         <input
+            @change="optionIsActive(<?= (int)$attributeId ?>, item.id) && changeOption(<?= (int)$attributeId ?>, item.id)"
             :id="`attribute-option-<?= (int)$productId ?>-${item.id}-<?= $isPopup ? 'mobile' : 'desktop' ?>`"
             :value="item.id"
             name="super_attribute[<?= (int)$attributeId ?>]"
@@ -65,11 +66,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
             aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
             form="<?= $escaper->escapeHtmlAttr($formId) ?>"
-            @change="optionIsActive(<?= (int)$attributeId ?>, item.id) && changeOption(<?= (int)$attributeId ?>, item.id)"
             role="radio"
             :tabindex="selectedValues[<?= (int)$attributeId ?>] ? (selectedValues[<?= (int)$attributeId ?>] === item.id ? '0' : '-1') : (index === 0) - 1"
-            x-a11y-radio
             :disabled="!optionIsActive(<?= (int)$attributeId ?>, item.id)"
+            x-a11y-radio
         >
         <template x-if="isTextSwatch(<?= (int)$attributeId ?>, item.id)">
             <span class="line-clamp-2 text-wrap text-sm md:text-md"
