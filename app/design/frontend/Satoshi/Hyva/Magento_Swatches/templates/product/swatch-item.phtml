@@ -6,6 +6,7 @@ use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 use Magento\Swatches\ViewModel\Product\Renderer\Configurable as ConfigurableViewModel;
+use Satoshi\Theme\ViewModel\SvgIcons;
 
 /** @var Template $block */
 /** @var Escaper $escaper */
@@ -23,6 +24,10 @@ if (!$productId || !$attributeId) {
 }
 
 $isPopup = $block->getData('is_popup') ?? false;
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
 ?>
 
 <template x-if="optionIsEnabled(<?= (int)$attributeId ?>, item.id)">
@@ -31,7 +36,7 @@ $isPopup = $block->getData('is_popup') ?? false;
         class="button button--size-sm select-none transition-all ease-in-out relative bg-bg-500 has-[input:focus]:focus-ring"
         :class="{
             'button--outline-primary button--disabled': !optionIsActive(<?= (int)$attributeId ?>, item.id),
-            'button--outline-primary border-2': selectedValues[<?= (int)$attributeId ?>] === item.id,
+            'button--outline-primary border-2 bg-bg-700': selectedValues[<?= (int)$attributeId ?>] === item.id,
             'button--outline-secondary': selectedValues[<?= (int)$attributeId ?>] !== item.id,
         }"
         aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
@@ -54,7 +59,7 @@ $isPopup = $block->getData('is_popup') ?? false;
             :id="`attribute-option-<?= (int)$productId ?>-${item.id}-<?= $isPopup ? 'mobile' : 'desktop' ?>`"
             :value="item.id"
             name="super_attribute[<?= (int)$attributeId ?>]"
-            class="-z-10 absolute opacity-0"
+            class="-z-10 absolute opacity-0 [&:disabled]:cursor-not-allowed"
             type="radio"
             :required="getAllowedAttributeOptions(<?= (int)$attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
             :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
@@ -68,7 +73,26 @@ $isPopup = $block->getData('is_popup') ?? false;
         >
         <template x-if="isTextSwatch(<?= (int)$attributeId ?>, item.id)">
             <span class="line-clamp-2 text-wrap text-sm md:text-md"
+                  :class="{ 'line-through': !optionIsActive(<?= (int)$attributeId ?>, item.id) }"
                   x-html="getSwatchText(<?= (int)$attributeId ?>, item.id)"></span>
+        </template>
+        <template x-if="!isTextSwatch(<?= (int)$attributeId ?>, item.id)">
+            <div class="contents">
+                <div class="absolute inset-0 flex opacity-0 items-center justify-center transition-opacity" :class="{ '!opacity-100': !isTextSwatch(<?= (int)$attributeId ?>, item.id) && !optionIsActive(<?= (int)$attributeId ?>, item.id) }">
+                    <div class="relative w-full h-full">
+                        <div class="absolute top-1/2 left-1/2 w-3/4 h-0.5 bg-bg-400 transform -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-full"></div>
+                        <div class="absolute top-1/2 left-1/2 w-3/4 h-0.5 bg-bg-400 transform -translate-x-1/2 -translate-y-1/2 -rotate-45 rounded-full"></div>
+                    </div>
+                </div>
+                <span
+                    class="absolute flex size-full items-center justify-center text-lg text-primary-500 opacity-0"
+                    :class="{
+                        '!opacity-100': selectedValues[<?= (int)$attributeId ?>] === item.id,
+                    }"
+                >
+                    <?= $hyvaicons->renderHtml('checkmark', 'stroke-bg-400 stroke-1 drop-shadow-lg') ?>
+                </span>
+            </div>
         </template>
     </label>
 </template>
