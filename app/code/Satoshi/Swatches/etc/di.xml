@@ -4,4 +4,7 @@
     <preference for="Magento\Swatches\Block\Product\Renderer\Configurable"
                 type="Satoshi\Swatches\Block\Product\Renderer\Configurable"
     />
+    <preference for="Magento\Swatches\Block\Product\Renderer\Listing\Configurable"
+                type="Satoshi\Swatches\Block\Product\Renderer\Listing\Configurable"
+    />
 </config>
