@@ -24,7 +24,6 @@ $link_url = $decodeHelper->decodeJSONHTMLEntity($block->getData('button_link'));
 $linkHref = $linkHelper->getLinkHref($block, $link_url);
 
 $videoUrl = $block->getData('video_source');
-$imageUrl = $block->getData('image');
 $heading = $block->getData('heading');
 $description = $block->getData('description');
 $overlayOpacity = $block->getData('overlay_opacity');
@@ -32,15 +31,15 @@ $autoplay = $block->getData('autoplay') == 'true';
 $muted = $block->getData('muted') == 'true';
 $loop = $block->getData('loop') == 'true';
 
-$bannerHeight = $block->getData('banner_height') ?? 'large';
-$desktopAlignment = $block->getData('desktop_content_position') ?? 'middle-right';
-$mobileAlignment = $block->getData('mobile_content_alignment') ?? 'bottom-center';
+$bannerHeight = $block->getData('banner_height');
+$desktopAlignment = $block->getData('desktop_content_position');
+$mobileAlignment = $block->getData('mobile_content_alignment');
 
 ?>
 <div class="relative overflow-hidden">
     <div class="absolute left-0 top-0 z-10 h-full w-full bg-black" style="opacity: <?= $escaper->escapeHtmlAttr($overlayOpacity) ?>"></div>
     <?php if(str_ends_with($videoUrl, '.mp4')): ?>
-        <video class="absolute left-0 top-0 z-0 h-full w-full object-cover object-center" muted autoplay loop playsinline>
+        <video class="absolute left-0 top-0 z-0 h-full w-full object-cover object-center" <?= $muted ? 'muted' : '' ?> <?= $autoplay ? 'autoplay' : 'false' ?> <?= $loop ? 'loop' : '' ?> playsinline>
             <source src="<?= $escaper->escapeUrl($videoUrl) ?>" type="video/mp4">
         </video>
     <?php else: ?>

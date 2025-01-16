@@ -49,6 +49,15 @@
                     </element>
 
                     <!-- Map form elements here -->
+                    <element name="banner_height">
+                        <attribute name="banner_height" source="data-banner-height" />
+                    </element>
+                    <element name="desktop_content_position">
+                        <attribute name="desktop_content_position" source="data-desktop-position" />
+                    </element>
+                    <element name="mobile_content_alignment">
+                        <attribute name="mobile_content_alignment" source="data-mobile-alignment" />
+                    </element>
                     <element name="heading">
                         <html name="heading" converter="Magento_PageBuilder/js/converter/html/decode"/>
                     </element>
@@ -76,7 +85,7 @@
                     </element>
 
                     <element name="overlay_opacity">
-                        <html name="overlay_opacity" converter="Magento_PageBuilder/js/converter/html/decode"/>
+                        <style name="overlay_opacity" source="opacity" converter="Satoshi_SatoshiUi/js/converter/style/percentage"/>
                     </element>
 
                     <element name="video">
