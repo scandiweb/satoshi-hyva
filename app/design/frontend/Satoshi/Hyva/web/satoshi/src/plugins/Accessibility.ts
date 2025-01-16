@@ -195,11 +195,6 @@ export default function (Alpine: AlpineType) {
         throw "x-a11y-radio can only be used on elements of 'radio' role";
       }
 
-      if (e.key === " ") {
-        e.preventDefault();
-        return;
-      }
-
       const isNext = e.key === "ArrowDown" || e.key === "ArrowRight";
       const isPrev = e.key === "ArrowUp" || e.key === "ArrowLeft";
 
