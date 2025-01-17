@@ -8,14 +8,10 @@ use Hyva\Theme\ViewModel\SwatchRenderer;
 use Magento\Checkout\Helper\Cart;
 use Magento\Framework\Escaper;
 use Magento\Swatches\Block\Product\Renderer\Listing\Configurable;
-use Magento\Swatches\ViewModel\Product\Renderer\Configurable as ConfigurableViewModel;
 
 /** @var Configurable $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-
-/** @var ConfigurableViewModel $configurableViewModel */
-$configurableViewModel = $viewModels->require(ConfigurableViewModel::class);
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
@@ -306,6 +302,7 @@ $isProductInCart = in_array($productType, ['simple', 'virtual']) && $this->helpe
                     </div>
                 </div>
             </template>
+            <?= /* @noEscape */ $block->getBlockHtml('product.swatch.tooltip') ?>
         </div>
     </template>
 <?php endif; ?>

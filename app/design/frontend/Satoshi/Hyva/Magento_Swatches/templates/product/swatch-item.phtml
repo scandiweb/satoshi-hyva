@@ -44,7 +44,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         :style="getSwatchBackgroundStyle(<?= (int)$attributeId ?>, item.id)"
         <?php if ($configurableViewModel->getShowSwatchTooltip()): ?>
             @mouseenter.self="activeTooltipItem = {
-                attribute: '<?= (int)$attributeId ?>',
+                attribute: <?= (int)$attributeId ?>,
                 item: item.id,
                 index
             }; tooltipPositionElement = $event.target;"

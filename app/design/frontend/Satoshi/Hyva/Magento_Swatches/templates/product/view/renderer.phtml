@@ -11,14 +11,10 @@ use Hyva\Theme\ViewModel\SvgIcons;
 use Hyva\Theme\ViewModel\SwatchRenderer;
 use Magento\Framework\Escaper;
 use Magento\Swatches\Block\Product\Renderer\Configurable;
-use Magento\Swatches\ViewModel\Product\Renderer\Configurable as ConfigurableViewModel;
 
 /** @var Configurable $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-
-/** @var ConfigurableViewModel $configurableViewModel */
-$configurableViewModel = $viewModels->require(ConfigurableViewModel::class);
 
 /** @var SwatchRenderer $swatchRendererViewModel */
 $swatchRendererViewModel = $viewModels->require(SwatchRenderer::class);
@@ -34,8 +30,6 @@ $attributes = $block->decorateArray($block->getAllowAttributes());
 $layout = $block->getLayout();
 $swatchItemBlock = $layout->getBlock('product.swatch.item');
 $swatchItemBlock->setData('product_id', $productId);
-
-$tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
 
 $isPopup = $block->getData('is_popup');
 ?>
@@ -135,5 +129,6 @@ $isPopup = $block->getData('is_popup');
                 </div>
             <?php endforeach; ?>
         </div>
+        <?= /* @noEscape */ $block->getBlockHtml('product.swatch.tooltip') ?>
     </div>
 <?php endif; ?>

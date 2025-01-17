@@ -25,6 +25,8 @@ export type ProductPageType = {
   optionConfig: OptionConfig | undefined;
   allowedAttributeOptions: Array<AllowedAttributeOption[]>;
   isGroupValid: boolean;
+  activeTooltipItem: boolean | TooltipItemType;
+  tooltipPositionElement: boolean | HTMLElement;
 
   readonly isProductBeingRemoved: boolean;
   readonly isProductBeingAdded: boolean;
@@ -90,6 +92,10 @@ export type ProductPageType = {
   findSimpleIndex(): void;
   calculateSimpleIndexForPartialSelection(selectedValues: string[]): string;
   sortImagesByPosition(images: Record<string, any>[]): Record<string, any>[];
+  isTooltipVisible(): boolean;
+  isFirstItemCol(): boolean;
+  getTooltipPosition(): string;
+  getTooltipLabel(): string;
 };
 
 type OptionConfig = {
@@ -110,15 +116,23 @@ type OptionConfig = {
   sky: any;
   defaultValues?: any;
 };
+
 type AttributeOption = {
   type: string;
   value: string;
   label: string;
 };
+
 type AllowedAttributeOption = {
   id: string;
   label: string;
   products: string[];
+};
+
+type TooltipItemType = {
+  attribute: number;
+  item: string;
+  index: number;
 };
 
 const POPUP_BOTTOM_ACTIONS = "product_bottom_actions";
@@ -141,6 +155,8 @@ export const ProductPage = () =>
     optionConfig: undefined,
     allowedAttributeOptions: [],
     isGroupValid: true,
+    activeTooltipItem: false,
+    tooltipPositionElement: false,
 
     get isProductBeingRemoved() {
       return Alpine.store("cart").removingItemId === this.cartItemKey;
@@ -861,5 +877,33 @@ export const ProductPage = () =>
             ? 1
             : -1;
       });
+    },
+
+    isTooltipVisible() {
+      if (!this.activeTooltipItem) {
+        return false;
+      }
+
+      const {attribute, item} = this.activeTooltipItem as TooltipItemType;
+      return Boolean(this.getSwatchConfig(attribute, item));
+    },
+
+    isFirstItemCol() {
+      return (this.activeTooltipItem as TooltipItemType).index === 0;
+    },
+
+    getTooltipPosition() {
+      if (!this.tooltipPositionElement) {
+        return '';
+      }
+
+      const {offsetTop, offsetLeft} = this.tooltipPositionElement as HTMLElement;
+
+      return `top: ${offsetTop}px; left: ${offsetLeft}px;`;
+    },
+
+    getTooltipLabel() {
+      const {attribute, item} = this.activeTooltipItem as TooltipItemType;
+      return (this.getSwatchConfig(attribute, item) as AttributeOption).label;
     },
   };

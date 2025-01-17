@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Magento\Swatches\ViewModel\Product\Renderer\Configurable as ConfigurableViewModel;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ConfigurableViewModel $configurableViewModel */
+$configurableViewModel = $viewModels->require(ConfigurableViewModel::class);
+?>
+<?php if ($configurableViewModel->getShowSwatchTooltip()): ?>
+    <template x-if="isTooltipVisible()">
+        <div
+            class="absolute pointer-events-none select-none"
+            :style="getTooltipPosition()"
+        >
+            <div class="shadow-lg">
+                <div
+                    class="absolute top-0 left-0 z-10 min-w-20 p-2 -mt-2 text-sm leading-tight text-black
+                        transform -translate-x-1/2 -translate-y-full bg-white rounded-lg shadow-lg text-center"
+                    :class="{
+                        '-translate-x-3': isFirstItemCol()
+                    }"
+                >
+                    <span
+                        class="mx-2 text-lg font-semibold whitespace-nowrap subtitle"
+                        x-html="getTooltipLabel()"
+                    ></span>
+                </div>
+                <svg
+                    class="absolute z-10 w-8 h-8 text-white transform -translate-x-1/5
+                        -translate-y-3 fill-current stroke-current"
+                    width="12"
+                    height="12"
+                >
+                    <rect x="12" y="-12" width="6" height="6" transform="rotate(45)" class="shadow-xl" />
+                </svg>
+            </div>
+        </div>
+    </template>
+<?php endif; ?>
