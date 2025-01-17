@@ -242,6 +242,7 @@ export const PopupStore = <PopupStoreType>{
       unfreezeScroll();
 
       this.currentPopup = null;
+      this._isPopupVisible = false;
       this.__popupHistory = [];
     }
   },
