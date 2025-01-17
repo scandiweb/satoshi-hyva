@@ -182,7 +182,6 @@ export const ProductPage = () =>
         });
 
         Object.entries(this.firstAvailableOptions).forEach(([attributeId, optionId]) => {
-          console.log('attributeId', attributeId, 'optionId', optionId);
           const labelElement = document.querySelector(`label[for="attribute-option-${this.productId}-${optionId}-desktop"]`) as HTMLElement;
 
           if (labelElement && !labelElement.classList.contains('button--disabled')) {
