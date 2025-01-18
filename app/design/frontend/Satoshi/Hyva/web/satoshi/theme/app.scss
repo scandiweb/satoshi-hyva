@@ -143,8 +143,12 @@ h3 {
   @apply max-md:pb-10;
 }
 
-.zoomed-img {
-  @apply absolute left-0 top-0 z-10 m-0 block h-full w-full max-w-full cursor-zoom-out rounded-2xl bg-no-repeat;
+.zoomed-img-container {
+  @apply absolute left-0 top-0 z-10 m-0 block h-full w-full max-w-full cursor-zoom-out rounded-2xl bg-[--fade-in-bg];
+
+  .zoomed-img {
+    @apply bg-no-repeat h-full mix-blend-darken;
+  }
 }
 
 .grid-columns {
