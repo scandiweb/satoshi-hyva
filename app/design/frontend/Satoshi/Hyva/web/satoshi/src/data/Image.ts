@@ -55,21 +55,25 @@ export const ImageZoom = () =>
       // Create overlay
       const overlayImage = document.createElement("img");
       overlayImage.setAttribute("src", img.src);
+      const overlayContainer = document.createElement("div");
+      overlayContainer.setAttribute("class", "zoomed-img-container");
+
       const overlay = document.createElement("div");
       overlay.setAttribute("class", "zoomed-img");
       overlay.setAttribute("aria-hidden", "true");
       overlay.style.backgroundImage = `url('${img.src}')`;
+      overlayContainer.appendChild(overlay);
 
       overlayImage.onload = () => {
-        img.parentElement!.insertBefore(overlay, img);
+        img.parentElement!.insertBefore(overlayContainer, img);
       };
 
       overlay.onclick = (event) => {
         event.stopPropagation();
-        overlay.remove();
+        overlayContainer.remove();
       };
       overlay.onmousemove = (event) => this.moveWithHover(img, event, overlay);
-      overlay.onmouseleave = () => overlay.remove();
+      overlayContainer.onmouseleave = () => overlayContainer.remove();
 
       this.moveWithHover(img, e, overlay);
     },
