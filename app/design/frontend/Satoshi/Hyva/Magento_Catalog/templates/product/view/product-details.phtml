@@ -70,7 +70,19 @@ if ($product) {
     >
         <!-- Mobile main image -->
         <div class="mb-4 md:hidden">
-            <div class="relative z-[50] flex aspect-product min-h-0 justify-center bg-[--fade-in-bg]">
+            <div
+                class="relative z-[50] flex aspect-product min-h-0 justify-center bg-[--fade-in-bg]"
+                x-data="ImageZoom"
+                @touchstart="images[0].type === 'image' && onTouchStart"
+                @touchmove="images[0].type === 'image' && onTouchMove"
+                @touchend="images[0].type === 'image' && onTouchEnd"
+                @wheel="images[0].type === 'image' && onWheel"
+                :style="`transform: translate(${translate.x}px, ${translate.y}px) scale(${scale})`"
+                :class="{
+                    'transition-all duration-300': reset,
+                    'z-50': scale > 1
+                }"
+            >
                 <div
                     class="hide-unless-transition absolute inset-0 z-10 flex items-center justify-center bg-[--fade-in-bg] transition-opacity delay-1000 duration-300"
                     x-data="TransitionImage({
