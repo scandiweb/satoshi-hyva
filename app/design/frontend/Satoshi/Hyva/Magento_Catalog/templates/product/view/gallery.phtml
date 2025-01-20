@@ -39,7 +39,13 @@ $isMobile = $block->getData('is_mobile') ?? false;
         <div class="contents">
             <template x-if="index === 0">
                 <div
-                    class="relative flex aspect-product flex-shrink-0 items-center justify-center overflow-hidden bg-[--fade-in-bg] md:rounded-2xl max-md:hidden">
+                    class="relative flex aspect-product flex-shrink-0 items-center justify-center overflow-hidden bg-[--fade-in-bg] md:rounded-2xl max-md:hidden"
+                    :class="{
+                        'cursor-zoom-in': image.type === 'image'
+                    }"
+                    x-data="ImageZoom"
+                    @click.stop="image.type === 'image' && zoomImage"
+                >
                     <div
                         x-data="
                             TransitionImage({
@@ -54,7 +60,7 @@ $isMobile = $block->getData('is_mobile') ?? false;
                         <img
                             height="100%"
                             width="100%"
-                            class="object-center <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?> <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
+                            class="transition-image object-center <?= $isContain ? 'object-contain rounded-2xl max-h-full w-auto' : 'object-cover size-full' ?> <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
                             :src="src"
                             :alt="image.caption"
                             alt=""
@@ -116,6 +122,18 @@ $isMobile = $block->getData('is_mobile') ?? false;
             <template x-if="index !== 0">
                 <div
                     class="animate-on-transition relative aspect-product flex-shrink-0 overflow-hidden border-black md:rounded-2xl"
+                    x-data="ImageZoom"
+                    @click.stop="image.type === 'image' && zoomImage"
+                    @touchstart="image.type === 'image' && onTouchStart"
+                    @touchmove="image.type === 'image' && onTouchMove"
+                    @touchend="image.type === 'image' && onTouchEnd"
+                    @wheel="image.type === 'image' && onWheel"
+                    :style="`transform: translate(${translate.x}px, ${translate.y}px) scale(${scale})`"
+                    :class="{
+                        'transition-all duration-300': reset,
+                        'z-50': scale > 1,
+                        'cursor-zoom-in': image.type === 'image'
+                    }"
                 >
                     <div
                         class="flex items-center justify-center size-full bg-[--fade-in-bg] <?= $isContain ? 'p-[4%]' : '' ?>">

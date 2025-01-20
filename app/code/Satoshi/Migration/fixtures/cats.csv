@@ -1,0 +1,214 @@
+"frontend_label","frontend_input","is_required","option","default","attribute_code","is_global","default_value_text","default_value_yesno","default_value_date","default_value_textarea","is_unique","is_searchable","is_visible_in_advanced_search","is_comparable","is_filterable","is_filterable_in_search","position","is_used_for_promo_rules","is_html_allowed_on_front","is_visible_on_front","used_in_product_listing","used_for_sort_by","attribute_set"
+"Size","select",0,"28/30
+28/32
+29/30
+30/30
+XS
+S
+M
+L
+XL
+180x40
+ONESIZE
+180x35
+40
+41
+42
+43
+44
+28
+29
+30
+3XL
+29/32
+30/32
+31/32
+32/32
+40/42
+43/45
+XXL
+40/41
+42/43
+44/45
+39
+30/34
+32
+34
+36
+46
+48
+50
+52
+D38
+D40
+130x170
+50x50
+9x9
+200x200 50x60
+240x220 50x60
+60x90
+S/M
+L/XL
+45x150
+140x240
+38x38
+40x60
+120x60
+40x40
+50x150
+50x90
+150x200 50x60
+150x220 50x60
+50x60
+60x70
+180x250
+90x200
+180x200
+140x200
+D100
+D130
+98/104 (2-4Y)
+110/116 (4-6Y)
+122/128 (6-8Y)
+70x130
+100x150
+90x130
+80x80
+90x90
+95x116
+60x120
+15x20
+37x37
+50x70
+110x125 35x55
+140x320
+30x40
+D190
+35x48
+45x45
+200x300
+140x250
+150x300
+250x300
+120x250
+140x130
+160x160
+56x23
+60x130
+70x140
+30x50
+D70
+46x60","","size",1,"",0,"","",0,0,0,"",1,0,"",1,1,0,1,0,"Demo"
+"Color","select",0,"Black
+Beige
+Dark blue
+Light grey
+Dark beige
+Dark khaki green
+Cream
+Light beige
+Brown
+Forest green
+Bright blue
+Navy blue
+Khaki green
+Dark grey
+White
+Dark green
+Burgundy
+Dark yellow
+Blue
+Light blue
+Turquoise
+Light grey marl
+Dark brown
+Sage green
+Light greige
+Grey marl
+Grey
+Natural white
+Bright green
+Dark beige marl
+Dusty green
+Dark blue marl
+Burgundy marl
+Green
+Pistachio green
+Light pink
+Purple
+Dark turquoise
+Dark red
+Greige
+Light denim blue
+Dark navy blue
+Beige marl
+Red
+Light green
+Dark steel blue
+Orange
+Denim blue
+Dark denim blue
+Dark denim grey
+Denim black
+Graphite grey
+Denim grey
+Pale denim blue
+Grey denim
+Vintage grey
+Bright purple
+Teal
+Neon pink
+Light brown
+Anthracite grey
+Dark grey marl
+Plum
+Lime green
+Dark orange
+Old rose
+Silver-coloured
+Yellow
+Denim purple
+Mustard yellow
+Camel
+Blue marl
+Dark teal
+Pink
+Dark green marl
+Pigeon blue
+Lilac
+Mint green
+Light purple
+Ochre
+Khaki green marl
+Steel grey
+Light blue-grey
+Dark greige
+Petrol
+Steel blue
+Light sage green
+Mole
+Light khaki green
+Light turquoise
+Midnight blue
+Powder pink
+Cognac brown
+Dark mole
+Dark mustard yellow
+Bright red
+Coral
+Saffron yellow
+Dusky pink
+Light mauve
+Heather
+Dark petrol
+Light mole
+Light yellow
+Light powder pink
+Light mustard yellow
+Natural white marl
+Greige marl
+Sky blue
+Petrol blue
+Yellow-beige
+Mocha beige
+Powder beige","","color",1,"",0,"","",0,0,0,"",1,0,"",1,1,0,1,0,"Demo"

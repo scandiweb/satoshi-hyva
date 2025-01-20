@@ -67,24 +67,6 @@
                         <item name="label" xsi:type="string">default</item>
                         <item name="css_class" xsi:type="string">fit</item>
                     </item>
-                    <item name="style" xsi:type="array">
-                        <item name="call" xsi:type="string">default</item>
-                        <item name="code" xsi:type="string">style</item>
-                        <item name="label" xsi:type="string">default</item>
-                        <item name="css_class" xsi:type="string">style</item>
-                    </item>
-                    <item name="sleeve_length" xsi:type="array">
-                        <item name="call" xsi:type="string">default</item>
-                        <item name="code" xsi:type="string">sleeve_length</item>
-                        <item name="label" xsi:type="string">default</item>
-                        <item name="css_class" xsi:type="string">sleeve_length</item>
-                    </item>
-                    <item name="collar" xsi:type="array">
-                        <item name="call" xsi:type="string">default</item>
-                        <item name="code" xsi:type="string">collar</item>
-                        <item name="label" xsi:type="string">default</item>
-                        <item name="css_class" xsi:type="string">collar</item>
-                    </item>
                 </argument>
             </arguments>
 

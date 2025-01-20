@@ -10,11 +10,13 @@ use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Helper\Image;
 use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
 use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Popup;
 use Satoshi\Theme\Block\Template;
 
 /** @var Template $template */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
+/** @var Popup $popup */
 
 /** @var ProductPage $productViewModel */
 $productViewModel = $viewModels->require(ProductPage::class);
@@ -156,9 +158,8 @@ if ($product) {
                         <?= $product?->getSku() ?>
                     </p>
 
-                    <!-- TODO: INTERNAL-397: Rework quick buy -->
                     <!-- Quick buy, for simple, virtual, configurable.. TODO: Make it for other types too -->
-                    <?php if (false && $product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
+                    <?php if ($product && $product->isSaleable() && in_array($product->getTypeId(), ['simple', 'virtual', 'configurable'])): ?>
                         <form
                             method="post"
                             action="<?= $escaper->escapeUrl($productViewModel->getAddToCartUrl($product, ['useUencPlaceholder' => true])) ?>"

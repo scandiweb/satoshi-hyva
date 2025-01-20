@@ -26,6 +26,7 @@ export type MainStoreType = {
   totalCartQty: number;
   isMobile: boolean;
   isReducedMotion: boolean;
+  opacityOnZoom: number;
   isUserLoggedIn: boolean;
 
   onResize(): void;
@@ -45,6 +46,7 @@ export const Main = <MainStoreType>{
   isMobile: isMobile(),
   isReducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)")
     .matches,
+  opacityOnZoom: 1,
   isUserLoggedIn: false,
 
   init() {

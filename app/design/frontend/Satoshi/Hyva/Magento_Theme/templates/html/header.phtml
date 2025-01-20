@@ -23,9 +23,8 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
 <div
     class="z-[37] bg-primary-800 py-3 text-sm font-semibold text-text-on-primary-bg text-center"
-    tabindex="-1"
 >
-    <?= __('This is a demo store made by <a href="https://scandiweb.com/" class="hover:underline">Scandiweb</a>') ?>
+    <?= __('This is a demo store made by <a href="https://scandiweb.com/" tabindex="1" class="hover:underline">Scandiweb</a>') ?>
 </div>
 
 <div x-intersect:enter="$store.main.isHeaderShadowVisible = false"
@@ -44,6 +43,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             })
         "
         class="header sticky left-0 right-0 top-0 z-[36] flex flex-col justify-items-stretch p-3 md:pointer-events-none"
+        :style="`opacity: ${$store.main.opacityOnZoom}`"
 >
     <div id="header-shadow"
          class="pointer-events-none absolute -top-1 left-0 right-0 -z-10 h-[calc(100%+20px)] -translate-y-full bg-gradient-to-b from-shadow to-transparent transition-all duration-300 ease-linear will-change-transform md:hidden"
@@ -129,7 +129,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     <div id="end-of-header"></div>
 </header>
 
-<div class="pointer-events-none sticky top-[88px] z-30 h-[1px] max-md:hidden">
+<div class="pointer-events-none sticky top-[88px] z-30 h-[1px] max-md:hidden"
+     :style="`opacity: ${$store.main.opacityOnZoom}`"
+>
     <div class="absolute inset-x-0 -top-[72px] col-start-3 flex min-h-[56px] items-center justify-center text-primary-500">
         <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
            x-element-transition-trigger
