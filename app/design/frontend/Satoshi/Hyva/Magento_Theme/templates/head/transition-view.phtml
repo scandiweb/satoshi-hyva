@@ -1,0 +1,81 @@
+<script
+    blocking="render"
+    async
+>
+    /**
+     * Scroll Restoration support for IOS
+     */
+    window.addEventListener('beforeunload', (event) => {
+        sessionStorage.setItem('scrollPosition', `${window.scrollY}`);
+    });
+
+    let persisted;
+    window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+            persisted = true;
+            const scrollPosition = sessionStorage.getItem('scrollPosition');
+            if (scrollPosition && parseInt(scrollPosition) > 0) {
+                window.scrollTo(0, parseInt(scrollPosition));
+            }
+        }
+    });
+
+    /**
+     * Seemless animation while navigation and before page renders.
+     */
+    window.addEventListener('pagereveal', (event) => {
+        const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!persisted && event.viewTransition && !isReducedMotion) {
+            const elementRect = sessionStorage.getItem('elementRect');
+            const elementHtml = sessionStorage.getItem('elementHtml');
+            const destKey = sessionStorage.getItem('destKey');
+            const isMobile = window.matchMedia('(max-width: 767px)').matches;
+            if (!elementRect || !elementHtml || !destKey) {
+                if (isMobile) {
+                    // Scale out animation.
+                    document.body.classList.add('transition-view');
+                }
+                return;
+            }
+
+            // Product card animation on mobile.
+            if (isMobile) {
+                // Freeze scroll
+                document.body.style.overflow = 'hidden';
+                const wrapper = document.createElement('div');
+                wrapper.style =
+                    'position: absolute; inset: 0; background: var(--color-background-500); z-index: 30; transition: opacity .3s; pointer-events: none;';
+                const rect = JSON.parse(elementRect);
+                const child = document.createElement('div');
+                child.innerHTML = elementHtml;
+                child.style = `position: absolute; top: ${rect.top}px; left: ${rect.left}px; width: ${rect.width}px; height: ${rect.height}px; transition: transform .3s; transform-origin: top left`;
+                wrapper.appendChild(child);
+                document.body.appendChild(wrapper);
+                const interval = setInterval(() => {
+                    const destEl =
+                        document.querySelector(`[x-element-transition-dest="${isMobile ? 'mobile' : 'desktop'}-${destKey}"]`) ||
+                        document.querySelector(`[x-element-transition-dest="${destKey}"]`);
+                    if (!destEl) {
+                        return;
+                    }
+                    // animate into new position
+                    const { top: tt, left: tl, width: tw, height: th } = destEl.getBoundingClientRect();
+                    child.style.transform = `translate3d(${tl - rect.left}px, ${
+                        tt - rect.top
+                    }px, 0) scale(${tw / rect.width}, ${th / rect.height})`;
+                    child.ontransitionend = () => {
+                        wrapper.style.opacity = 0;
+                    };
+                    clearInterval(interval);
+                }, 100);
+            }
+        }
+        // Clean up
+        sessionStorage.removeItem('elementRect');
+        sessionStorage.removeItem('elementHtml');
+        sessionStorage.removeItem('destKey');
+        // Unfreeze scroll
+        document.body.style.overflow = '';
+        document.body.classList.remove('transition-view');
+    });
+</script>

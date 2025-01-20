@@ -1,0 +1,32 @@
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(*),
+::view-transition-new(*),
+::view-transition,
+::view-transition-group(*) {
+  animation-name: none;
+}
+:active-view-transition-type(*) {
+  * {
+    animation-name: none;
+  }
+}
+@keyframes scaleOut {
+  0% {
+    transform: scale(1.037);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.transition-view .main-wrapper {
+  transition: none;
+  transform: scale(1.037);
+  transform-origin: top;
+  animation-name: scaleOut;
+  animation-duration: 0.5s;
+  animation-timing-function: ease;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}

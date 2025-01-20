@@ -10,6 +10,7 @@
                template="Magento_Theme::head/theme-config.phtml"/>
         <block name="satoshi-head-styles" template="Magento_Theme::head/head-styles.phtml" />
         <block name="satoshi-head" template="Magento_Theme::head/inject-variables.phtml" />
+        <block name="satoshi-transition-view" template="Magento_Theme::head/transition-view.phtml"/>
     </referenceContainer>
     <body>
         <!-- Attributes in body element which required to show correct color of logo text -->
