@@ -11,4 +11,5 @@ use Satoshi\Theme\Block\ThemeConfig;
 
 <script>
     window.navigationType = '<?= $escaper->escapeHtmlAttr($block->getThemeConfig('navigation_type')); ?>';
+    window.isContain = '<?= $escaper->escapeHtmlAttr($block->getThemeConfig('is_contain')); ?>';
 </script>

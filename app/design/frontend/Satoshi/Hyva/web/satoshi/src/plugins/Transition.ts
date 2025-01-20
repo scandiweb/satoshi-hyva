@@ -494,6 +494,39 @@ export const navigateWithTransition = (
   }
 };
 
+const prefetchedLinks = new Set();
+
+export const prefetchLink = (link: string) => {
+  const prefetchLink = document.createElement("link");
+  prefetchLink.rel = "prefetch";
+  prefetchLink.href = link;
+  prefetchLink.as = "document";
+  document.head.appendChild(prefetchLink);
+  prefetchedLinks.add(link);
+};
+const prefetchObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const element = entry.target as any;
+      const href = element.getAttribute("href");
+      if (!href) return;
+      let timeoutId = element.timeoutId;
+      if (entry.isIntersecting && !timeoutId) {
+        element.timeoutId = setTimeout(() => {
+          if (prefetchedLinks.has(href)) return;
+          prefetchLink(href);
+          prefetchObserver.unobserve(element);
+        }, 200);
+      } else if (!entry.isIntersecting && timeoutId) {
+        clearTimeout(timeoutId);
+        element.timeoutId = null;
+      }
+    });
+  },
+  {threshold: 0.1},
+);
+
 function TransitionPlugin(Alpine: AlpineType) {
   Alpine.store("transition", TransitionStore);
 
@@ -508,65 +541,146 @@ function TransitionPlugin(Alpine: AlpineType) {
       const areaId = transitionAreaEl
         ? transitionAreaEl.getAttribute("x-element-transition-area")
         : null;
+      const link = el.getAttribute("href");
+      const isTargetBlank = el.getAttribute("target") === "_blank";
+      const isMobile = Alpine.store("main").isMobile;
+
+      if (!link || isExternalURL(link) || isTargetBlank) {
+        return;
+      }
+
+      const onHover = () => {
+        if (prefetchedLinks.has(link)) return;
+        prefetchLink(link);
+      };
 
       const onClick = (e: MouseEvent) => {
-        const link = el.getAttribute("href");
-        const isTargetBlank = el.getAttribute("target") === "_blank";
-
-        if (!link || isExternalURL(link) || isTargetBlank) {
-          return;
+        if (window.navigationType === "MPA") {
+          // Animate area position card if exists
+          const areaElement = document.querySelector(
+            `[x-element-transition-area="${areaId}"]`,
+          );
+          if (!areaElement || !isMobile) {
+            return;
+          }
+          const srcElement = areaElement.querySelector(
+            "[x-element-transition-src]",
+          );
+          const key = srcElement?.getAttribute("x-element-transition-src");
+          if (srcElement) {
+            sessionStorage.setItem(
+              "elementRect",
+              JSON.stringify(srcElement.getBoundingClientRect()),
+            );
+            sessionStorage.setItem(
+              "elementHtml",
+              srcElement.innerHTML.replace('loading="lazy"', 'loading="eager"'),
+            );
+            sessionStorage.setItem("destKey", key || "");
+          }
+        } else {
+          e.preventDefault();
+          e.stopPropagation();
+          navigateWithTransition(link || "", {
+            preview: modifiers.includes("preview"),
+            animate: modifiers.includes("animate"),
+            type: value,
+            data: expression ? evaluate(expression) : undefined,
+            areaId: areaId || undefined,
+            target: e.target as HTMLElement,
+          });
         }
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        navigateWithTransition(link || "", {
-          preview: modifiers.includes("preview"),
-          animate: modifiers.includes("animate"),
-          type: value,
-          data: expression ? evaluate(expression) : undefined,
-          areaId: areaId || undefined,
-          target: e.target as HTMLElement,
-        });
       };
 
       el.addEventListener("click", onClick);
+      if (window.navigationType === "MPA") {
+        if (isMobile) {
+          prefetchObserver.observe(el);
+        } else {
+          el.addEventListener("mouseover", onHover);
+        }
+      }
 
       cleanup(() => {
         el.removeEventListener("click", onClick);
+        if (window.navigationType === "MPA") {
+          if (isMobile) {
+            prefetchObserver.unobserve(el);
+          } else {
+            el.removeEventListener("mouseover", onHover);
+          }
+        }
       });
     },
   );
 
-  let lastPopStateUrl = window.location.href;
+  if (window.navigationType === "MPA") {
+    window.addEventListener("pageshow", (event) => {
+      if (event.persisted) {
+        prefetchedLinks.forEach((link: any) => prefetchLink(link));
+      }
+    });
+  } else {
+    let lastPopStateUrl = window.location.href;
 
-  window.addEventListener("popstate", async (event) => {
-    Alpine.store("transition").isAnimating = false;
-    Alpine.store("transition").isPreviewAnimating = false;
+    window.addEventListener("popstate", async (event) => {
+      Alpine.store("transition").isAnimating = false;
+      Alpine.store("transition").isPreviewAnimating = false;
 
-    history.scrollRestoration = "manual";
+      history.scrollRestoration = "manual";
 
-    if (window.location.href === lastMainContentUpdateUrl) {
-      // skip unnecessary fetch
-      return;
-    }
+      if (window.location.href === lastMainContentUpdateUrl) {
+        // skip unnecessary fetch
+        return;
+      }
 
-    const currentPopStateUrl = window.location.href;
-    lastPopStateUrl = window.location.href;
+      const currentPopStateUrl = window.location.href;
+      lastPopStateUrl = window.location.href;
 
-    Alpine.store("popup").hideAllPopups();
-    Alpine.store("resizable").hideAll();
+      Alpine.store("popup").hideAllPopups();
+      Alpine.store("resizable").hideAll();
 
-    nProgress.start();
+      nProgress.start();
 
-    const { pathname, search } = new URL(window.location.href);
-    const cachedHtml = cachedResponses[pathname + search];
+      const {pathname, search} = new URL(window.location.href);
+      const cachedHtml = cachedResponses[pathname + search];
 
-    if (cachedHtml) {
+      if (cachedHtml) {
+        if (event.state?.isPreview) {
+          replacePreviewContent(cachedHtml);
+        } else {
+          replaceMainContent(cachedHtml);
+
+          if (event.state?.scrollPosition) {
+            window.scrollTo({
+              top: event.state.scrollPosition,
+              behavior: "instant",
+            });
+          }
+        }
+
+        nProgress.done();
+        return;
+      }
+
+      if (lastPopStateUrl !== currentPopStateUrl) {
+        // if there was another popstate, exit early
+        return;
+      }
+
+      const html = await fetchAndCachePage(
+        window.location.pathname + window.location.search,
+      );
+
+      if (lastPopStateUrl !== currentPopStateUrl) {
+        // if there was another popstate, exit early
+        return;
+      }
+
       if (event.state?.isPreview) {
-        replacePreviewContent(cachedHtml);
+        replacePreviewContent(html);
       } else {
-        replaceMainContent(cachedHtml);
+        replaceMainContent(html);
 
         if (event.state?.scrollPosition) {
           window.scrollTo({
@@ -577,38 +691,8 @@ function TransitionPlugin(Alpine: AlpineType) {
       }
 
       nProgress.done();
-      return;
-    }
-
-    if (lastPopStateUrl !== currentPopStateUrl) {
-      // if there was another popstate, exit early
-      return;
-    }
-
-    const html = await fetchAndCachePage(
-      window.location.pathname + window.location.search,
-    );
-
-    if (lastPopStateUrl !== currentPopStateUrl) {
-      // if there was another popstate, exit early
-      return;
-    }
-
-    if (event.state?.isPreview) {
-      replacePreviewContent(html);
-    } else {
-      replaceMainContent(html);
-
-      if (event.state?.scrollPosition) {
-        window.scrollTo({
-          top: event.state.scrollPosition,
-          behavior: "instant",
-        });
-      }
-    }
-
-    nProgress.done();
-  });
+    });
+  }
 }
 
 export default TransitionPlugin;
