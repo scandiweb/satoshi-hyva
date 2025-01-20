@@ -1,0 +1,67 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Satoshi\Theme\ViewModel\SvgIcons;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Wishlist $wishlistViewModel */
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var CurrentProduct $currentProduct */
+$currentProduct = $viewModels->require(CurrentProduct::class);
+
+/** @var Product $product */
+$product = $currentProduct->get();
+$productId = $product->getId();
+
+if (!$product->getId() || !$wishlistViewModel->isEnabled()) {
+    return;
+}
+
+/**
+ * When visiting wishlist/index/configure, the current class is Magento\Wishlist\Block\Item\Configure
+ * In that case we take the form parameters from the existing wishlist item
+ */
+$updateParams = $block->getUpdateParams() ?: null;
+
+$isPopup = $block->getData('is_popup') ?: false;
+$isSmall = $block->getData('is_small') ?: false;
+?>
+
+<button
+    @click.prevent.stop="toggleWishlist($el)"
+    title="<?= $escaper->escapeHtmlAttr(__('Add to Wish List')) ?>"
+    aria-label="<?= $escaper->escapeHtmlAttr(__('Add to Wish List')) ?>"
+    data-addto="wishlist"
+    form="product_addtocart_form_<?= $productId ?>_<?= $isPopup ? 'mobile' : 'desktop' ?>"
+    type="button"
+    class="button button--outline-secondary p-0 aspect-square text-xl <?= $isSmall ? 'button--size-sm' : '' ?>"
+    :class="{
+        'border-primary-500 text-primary-600': isVariantInWishlist,
+        'button--disabled': isLoadingWishlist
+    }"
+    :disabled="isLoadingWishlist"
+>
+    <span x-show="!isVariantInWishlist">
+        <?= $hyvaicons->renderHtml('wishlist-add') ?>
+    </span>
+    <span
+        style="display: none"
+        x-show="isVariantInWishlist"
+    >
+        <?= $hyvaicons->renderHtml('wishlist-minus') ?>
+    </span>
+</button>

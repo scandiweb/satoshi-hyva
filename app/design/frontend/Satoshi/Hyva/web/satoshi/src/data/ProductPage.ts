@@ -1,12 +1,15 @@
 import { withXAttributes } from "alpinejs";
 import { POPUP_OVERLAY_CLICK_EVENT } from "../store/Popup";
 import { CartItem } from "../store/Cart";
+import { WishlistItem } from "../store/Wishlist.ts";
 
 export type ProductPageType = {
   [key: string | symbol]: any;
 
   isVariantInCart: boolean;
+  isVariantInWishlist: boolean;
   isLoadingCart: boolean;
+  isLoadingWishlist: boolean;
   variantQty: number;
   selectedValues: string[];
   selectedDownloadableLinks: string[];
@@ -36,11 +39,15 @@ export type ProductPageType = {
   }): void;
   _updateSelectedVariantCartState(): void;
   checkIsItemInCart(item: CartItem): boolean;
+  checkIsItemInWishlist(Item: WishlistItem): Boolean;
   toggleStickyProductActions(show: boolean): void;
   decreaseQty(): void;
   increaseQty(): void;
   setQuantity(quantity: number): void;
   addToCart(event: Event): void;
+  toggleWishlist(el: HTMLButtonElement): void;
+  addToWishlist(el: HTMLButtonElement): void;
+  removeFromWishlist(el: HTMLButtonElement): void;
   listenAddedToCart(formData: FormData): void;
   showProductActions(): void;
   hideProductActions(): void;
@@ -126,7 +133,9 @@ const POPUP_BOTTOM_ACTIONS = "product_bottom_actions";
 export const ProductPage = () =>
   <ProductPageType>{
     isVariantInCart: false,
+    isVariantInWishlist: false,
     isLoadingCart: false,
+    isLoadingWishlist: false,
     variantQty: 1,
     selectedValues: [],
     selectedDownloadableLinks: [],
@@ -185,6 +194,13 @@ export const ProductPage = () =>
       this.isVariantInCart = !!cartItem;
       this.variantQty = cartItem?.qty || 1;
       this.cartItemKey = cartItem?.item_id;
+
+
+      // Check is variant in wishlist.
+      const wishlistItem = Alpine.store("wishlist").wishlistItems.find(
+        this.checkIsItemInWishlist.bind(this),
+      );
+      this.isVariantInWishlist = !!wishlistItem;
     },
 
     checkIsItemInCart(item: CartItem) {
@@ -252,6 +268,23 @@ export const ProductPage = () =>
       );
     },
 
+    checkIsItemInWishlist(item: WishlistItem) {
+      // Match product id
+      if (item.product_id != this.productId) {
+        return false;
+      }
+
+      // TODO: Test other product types.
+      const isEqualOptions = Object.keys(this.selectedValues).length === item.options.length &&
+        item.options.every((option) => this.selectedValues[option.option_id!] === option.option_value);
+
+      if (!isEqualOptions) {
+        return false;
+      }
+
+      return true;
+    },
+
     toggleStickyProductActions(show: boolean) {
       if (
         this.$store.popup.currentPopup &&
@@ -301,7 +334,7 @@ export const ProductPage = () =>
       });
 
       if (!this.isGroupValid) {
-        const selector = Alpine.store('main').isMobile ? `#product_addtocart_form_${this.productId}_mobile` : `#product_addtocart_form_${this.productId}_desktop`;
+        const selector = Alpine.store("main").isMobile ? `#product_addtocart_form_${this.productId}_mobile` : `#product_addtocart_form_${this.productId}_desktop`;
         // this triggers an immediate display of the form errors
         // @ts-ignore
         document.querySelector(selector)!.reportValidity();
@@ -320,7 +353,7 @@ export const ProductPage = () =>
 
       const formEl = event.target as HTMLFormElement;
       const formData = new FormData(formEl);
-      formData.set('form_key', window.hyva.getFormKey())
+      formData.set("form_key", window.hyva.getFormKey());
 
       if (!Alpine.store("cart").addingItemIds.includes(this.productId)) {
         Alpine.store("cart").addingItemIds.push(this.productId);
@@ -339,12 +372,12 @@ export const ProductPage = () =>
         .then((content) => {
           window.hyva.replaceDomElement("#cart-button", content);
           Alpine.nextTick(() => {
-            if (Alpine.store('cart').productCartErrorMessage.length) {
-              Alpine.store('popup').__updatePopupHeight(this.productActionsPopup)
+            if (Alpine.store("cart").productCartErrorMessage.length) {
+              Alpine.store("popup").__updatePopupHeight(this.productActionsPopup);
             } else {
               this.hideProductActions();
             }
-          })
+          });
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => {
@@ -398,6 +431,82 @@ export const ProductPage = () =>
       );
     },
 
+    toggleWishlist(el: HTMLButtonElement) {
+      if (this.isLoadingWishlist) return;
+
+      this.isVariantInWishlist ? this.removeFromWishlist(el) : this.addToWishlist(el);
+    },
+
+    addToWishlist(el) {
+      this.isLoadingWishlist = true;
+      const formId = el.getAttribute("form");
+      const postParams: Record<string, number | string> = {
+        product: this.productId,
+        uenc: window.hyva.getUenc(),
+        form_key: window.hyva.getFormKey(),
+        qty: this.variantQty,
+      };
+
+      let postData = Object.keys(postParams).map(key => `${key}=${postParams[key]}`).join("&");
+
+      // take the all the input fields that configure this product
+      // includes custom, configurable, grouped and bundled options
+      Array.from(document.querySelectorAll(
+        `#${formId} [name^=options], #${formId} [name^=super_attribute], #${formId} [name^=bundle_option], #${formId} [name^=super_group], #${formId} [name^=links]`),
+      ).map((input: any) => {
+        if (input.type === "select-multiple") {
+          Array.from(input.selectedOptions).forEach((option: any) => {
+            postData += `&${input.name}=${option.value}`;
+          });
+        } else {
+          // skip "checkable inputs" that are not checked
+          if (!(["radio", "checkbox", "select"].includes(input.type) && !input.checked)) {
+            postData += `&${input.name}=${input.value}`;
+          }
+        }
+      });
+
+      this.isVariantInWishlist = true;
+      fetch(BASE_URL + "wishlist/index/add/", {
+        headers: {
+          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+        body: postData,
+        method: "POST",
+        mode: "cors",
+        credentials: "include",
+      }).then(() => {
+        window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+      }).catch(() => {
+        this.isVariantInWishlist = false;
+      }).finally(() => {
+        this.isLoadingWishlist = false;
+      });
+    },
+
+    removeFromWishlist(_) {
+      const wishlistItem = Alpine.store("wishlist").wishlistItems.find(this.checkIsItemInWishlist.bind(this));
+      if (!wishlistItem) return;
+
+      this.isVariantInWishlist = false;
+      this.isLoadingWishlist = true;
+      fetch(BASE_URL + "wishlist/index/remove/", {
+        headers: {
+          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        },
+        body: `item=${wishlistItem.item_id}&form_key=${window.hyva.getFormKey()}&uenc=${window.hyva.getUenc()}`,
+        method: "POST",
+        mode: "cors",
+        credentials: "include",
+      }).then(() => {
+        window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+      }).catch(() => {
+        this.isVariantInWishlist = true;
+      }).finally(() => {
+        this.isLoadingWishlist = false;
+      });
+    },
+
     showProductActions() {
       this.$store.popup.showPopup(this.productActionsPopup, true);
     },
@@ -428,7 +537,7 @@ export const ProductPage = () =>
 
     scrollToTop() {
       if (typeof this.scrollToPreviewTop !== "undefined") {
-        this.scrollToPreviewTop()
+        this.scrollToPreviewTop();
       } else {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
@@ -437,9 +546,9 @@ export const ProductPage = () =>
     changeOption(attributeId: number, value: string) {
 
       // reset error message
-      if (Alpine.store('cart').productCartErrorMessage.length) {
-        Alpine.store('cart').setProductCartErrorMessage('')
-        Alpine.store('popup').__updatePopupHeight(this.productActionsPopup)
+      if (Alpine.store("cart").productCartErrorMessage.length) {
+        Alpine.store("cart").setProductCartErrorMessage("");
+        Alpine.store("popup").__updatePopupHeight(this.productActionsPopup);
       }
 
       if (value === "") {
@@ -841,15 +950,15 @@ export const ProductPage = () =>
           new CustomEvent("update-gallery", {
             detail: {
               images: this.sortImagesByPosition(images),
-              productId: this.productId
+              productId: this.productId,
             },
           }),
         );
       } else {
         window.dispatchEvent(new CustomEvent("reset-gallery", {
           detail: {
-            productId: this.productId
-          }
+            productId: this.productId,
+          },
         }));
       }
     },
