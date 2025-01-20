@@ -6,8 +6,8 @@
 >
     <!-- Injecting global variables through scripts -->
     <referenceContainer name="head.additional">
-        <block class="Satoshi\Theme\Block\GlobalSettings" name="satoshi-global-settings"
-               template="Magento_Theme::head/global-settings.phtml"/>
+        <block class="Satoshi\Theme\Block\ThemeConfig" name="satoshi-config"
+               template="Magento_Theme::head/theme-config.phtml"/>
         <block name="satoshi-head-styles" template="Magento_Theme::head/head-styles.phtml" />
         <block name="satoshi-head" template="Magento_Theme::head/inject-variables.phtml" />
     </referenceContainer>
