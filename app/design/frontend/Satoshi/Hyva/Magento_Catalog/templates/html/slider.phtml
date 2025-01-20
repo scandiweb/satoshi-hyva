@@ -33,6 +33,7 @@ $isAutoPlay = (bool)$block->getData('is_auto_play');
 $autoplaySpeed = (int)$block->getData('autoplay_speed') ?? 0;
 
 $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray), fn ($carry, $key) => $carry . " --slide-count-$key: {$slidesAmountInViewArray[$key]};", '');
+$viewAllUrl = $block->getData('view_all_url') ?? '';
 ?>
 
 <div
@@ -54,7 +55,7 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
             <?php if ($title): ?>
                 <h1 class="slider__title"><?= $title ?></h1>
             <?php endif; ?>
-            <div class="slider__actions">
+            <div class="slider__actions max-md:[.slider--pagebuilder_&]:hidden">
                 <div x-show="!isPrevBtnDisabled || !isNextBtnDisabled"
                      class="whitespace-nowrap"
                      x-transition
@@ -70,6 +71,15 @@ $convertedSlidesAmountInView = array_reduce(array_keys($slidesAmountInViewArray)
                     <?php endif; ?>
                 </div>
             </div>
+            <a href="<?= $escaper->escapeUrl($viewAllUrl) ?>" class="hidden max-md:[.slider--pagebuilder_&]:block button button--ghost-primary px-0 h-auto text-[14px]" x-element-transition-trigger>
+                View all
+                <span class="button__icon ml-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24" role="img">
+                        <path d="M8.00382 1.33794C7.12828 1.33467 6.26079 1.50516 5.45161 1.83955C4.64243 2.17393 3.90765 2.66555 3.28982 3.28594C0.691154 5.88527 0.691154 10.1146 3.28982 12.7139C4.54649 13.9706 6.22049 14.6626 8.00382 14.6626C9.78715 14.6626 11.4618 13.9706 12.7178 12.7139C15.3165 10.1153 15.3165 5.88594 12.7178 3.28594C12.1 2.66558 11.3652 2.17398 10.556 1.8396C9.74683 1.50522 8.87936 1.3347 8.00382 1.33794ZM11.7752 11.7706C10.7705 12.7753 9.43049 13.3286 8.00382 13.3286C6.57715 13.3286 5.23715 12.7753 4.23249 11.7706C2.15382 9.69127 2.15382 6.30794 4.23249 4.2286C5.23715 3.22394 6.57649 2.67127 8.00382 2.67127C9.43115 2.67127 10.7705 3.22394 11.7752 4.2286C13.8538 6.30794 13.8538 9.69127 11.7752 11.7706Z" fill="currentColor"></path>
+                        <path d="M7.64462 7.41667L5.50195 9.55933L6.44462 10.502L8.58729 8.35933L10.004 9.77533V6H6.22862L7.64462 7.41667Z" fill="currentColor"></path>
+                    </svg>
+                </span>
+            </a>
         </div>
     <?php endif; ?>
 

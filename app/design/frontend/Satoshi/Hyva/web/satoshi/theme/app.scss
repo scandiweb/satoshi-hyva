@@ -143,6 +143,14 @@ h3 {
   @apply max-md:pb-10;
 }
 
+.zoomed-img-container {
+  @apply absolute left-0 top-0 z-10 m-0 block h-full w-full max-w-full cursor-zoom-out rounded-2xl bg-[--fade-in-bg];
+
+  .zoomed-img {
+    @apply bg-no-repeat h-full mix-blend-darken;
+  }
+}
+
 .grid-columns {
   @apply h-full flex flex-col md:grid grid-rows-[auto_minmax(0,1fr)] gap-x-8 gap-y-5;
   grid-template-columns: 275px repeat(2, minmax(0, 1fr)) 275px;

@@ -78,8 +78,143 @@
             <label/>
         </settings>
 
+        <!-- Banner height -->
+        <field name="banner_height" sortOrder="10" formElement="select" component="Magento_PageBuilder/js/form/element/visual-select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="string">large</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Banner height</label>
+                <elementTmpl>Magento_PageBuilder/form/element/visual-select</elementTmpl>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="BlockHeightSource" />
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
+        <!-- Content position -->
+        <field name="desktop_content_position" sortOrder="20" formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="string">middle-right</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Desktop content position</label>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options>
+                            <option name="0" xsi:type="array">
+                                <item name="value" xsi:type="string">top-left</item>
+                                <item name="label" xsi:type="string" translate="true">Top Left</item>
+                            </option>
+                            <option name="1" xsi:type="array">
+                                <item name="value" xsi:type="string">top-center</item>
+                                <item name="label" xsi:type="string" translate="true">Top Center</item>
+                            </option>
+                            <option name="2" xsi:type="array">
+                                <item name="value" xsi:type="string">top-right</item>
+                                <item name="label" xsi:type="string" translate="true">Top Right</item>
+                            </option>
+                            <option name="3" xsi:type="array">
+                                <item name="value" xsi:type="string">middle-left</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Left</item>
+                            </option>
+                            <option name="4" xsi:type="array">
+                                <item name="value" xsi:type="string">middle-center</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Center</item>
+                            </option>
+                            <option name="5" xsi:type="array">
+                                <item name="value" xsi:type="string">middle-right</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Right</item>
+                            </option>
+                            <option name="6" xsi:type="array">
+                                <item name="value" xsi:type="string">bottom-left</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Left</item>
+                            </option>
+                            <option name="7" xsi:type="array">
+                                <item name="value" xsi:type="string">bottom-center</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Center</item>
+                            </option>
+                            <option name="8" xsi:type="array">
+                                <item name="value" xsi:type="string">bottom-right</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Right</item>
+                            </option>
+                        </options>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
+        <!-- Mobile content alignment -->
+        <field name="mobile_content_alignment" sortOrder="30" formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="default" xsi:type="string">middle-center</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Mobile content position</label>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options>
+                            <option name="0" xsi:type="array">
+                                <item name="value" xsi:type="string">top-left</item>
+                                <item name="label" xsi:type="string" translate="true">Top Left</item>
+                            </option>
+                            <option name="1" xsi:type="array">
+                                <item name="value" xsi:type="string">top-center</item>
+                                <item name="label" xsi:type="string" translate="true">Top Center</item>
+                            </option>
+                            <option name="2" xsi:type="array">
+                                <item name="value" xsi:type="string">top-right</item>
+                                <item name="label" xsi:type="string" translate="true">Top Right</item>
+                            </option>
+                            <option name="3" xsi:type="array">
+                                <item name="value" xsi:type="string">middle-left</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Left</item>
+                            </option>
+                            <option name="4" xsi:type="array">
+                                <item name="value" xsi:type="string">middle-center</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Center</item>
+                            </option>
+                            <option name="5" xsi:type="array">
+                                <item name="value" xsi:type="string">middle-right</item>
+                                <item name="label" xsi:type="string" translate="true">Middle Right</item>
+                            </option>
+                            <option name="6" xsi:type="array">
+                                <item name="value" xsi:type="string">bottom-left</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Left</item>
+                            </option>
+                            <option name="7" xsi:type="array">
+                                <item name="value" xsi:type="string">bottom-center</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Center</item>
+                            </option>
+                            <option name="8" xsi:type="array">
+                                <item name="value" xsi:type="string">bottom-right</item>
+                                <item name="label" xsi:type="string" translate="true">Bottom Right</item>
+                            </option>
+                        </options>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
         <!-- Heading field -->
-        <field name="heading" sortOrder="10" formElement="input">
+        <field name="heading" sortOrder="40" formElement="input">
             <settings>
                 <label translate="true">Heading</label>
                 <dataType>text</dataType>
@@ -90,7 +225,7 @@
         </field>
 
         <!-- Description field -->
-        <field name="description" sortOrder="20" formElement="textarea">
+        <field name="description" sortOrder="50" formElement="textarea">
             <settings>
                 <label translate="true">Description</label>
                 <dataType>text</dataType>
@@ -101,7 +236,7 @@
         </field>
 
         <!-- Button, label and url field -->
-        <field name="button_label" sortOrder="30" formElement="input">
+        <field name="button_label" sortOrder="60" formElement="input">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="fit" xsi:type="boolean">false</item>
@@ -116,7 +251,7 @@
             </settings>
         </field>
 
-        <urlInput name="button_link" sortOrder="40" template="Magento_PageBuilder/form/element/url-input">
+        <urlInput name="button_link" sortOrder="70" template="Magento_PageBuilder/form/element/url-input">
             <settings>
                 <dataType>text</dataType>
                 <label translate="true">Button link</label>
@@ -134,7 +269,7 @@
         </urlInput>
 
         <!-- Overlay opacity -->
-        <field name="overlay_opacity" sortOrder="50" formElement="input">
+        <field name="overlay_opacity" sortOrder="80" formElement="input">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="default" xsi:type="string">0</item>
@@ -156,7 +291,7 @@
         </field>
 
         <!-- Video src -->
-        <field name="video_source" formElement="input" sortOrder="60">
+        <field name="video_source" formElement="input" sortOrder="90">
             <settings>
                 <validation>
                     <rule name="validate-video-source" xsi:type="boolean">true</rule>
@@ -172,7 +307,7 @@
         </field>
 
         <!-- Video autoplay -->
-        <field name="autoplay" sortOrder="70" formElement="checkbox">
+        <field name="autoplay" sortOrder="100" formElement="checkbox">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="default" xsi:type="string">false</item>
@@ -199,7 +334,7 @@
         </field>
 
         <!-- Video loop -->
-        <field name="loop" sortOrder="80" formElement="checkbox">
+        <field name="loop" sortOrder="110" formElement="checkbox">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="default" xsi:type="string">false</item>
@@ -224,7 +359,7 @@
         </field>
 
         <!-- Video mute -->
-        <field name="muted" sortOrder="90" formElement="checkbox">
+        <field name="muted" sortOrder="120" formElement="checkbox">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="default" xsi:type="string">false</item>

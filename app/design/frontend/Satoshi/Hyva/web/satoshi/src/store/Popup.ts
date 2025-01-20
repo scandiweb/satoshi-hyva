@@ -242,6 +242,7 @@ export const PopupStore = <PopupStoreType>{
       unfreezeScroll();
 
       this.currentPopup = null;
+      this._isPopupVisible = false;
       this.__popupHistory = [];
     }
   },
@@ -418,7 +419,7 @@ export const PopupStore = <PopupStoreType>{
       Alpine.nextTick(() => {
         setTimeout(() => {
           this.__updatePopupHeight(popup);
-        }, 50);
+        }, 100);
 
         this.__nextPopupRef = null;
         this.__currentPopupRef = popup;

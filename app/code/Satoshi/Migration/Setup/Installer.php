@@ -51,8 +51,8 @@ class Installer implements Setup\SampleData\InstallerInterface
      */
     public function install()
     {
-        $this->attributeSetup->install(['Satoshi_Migration::fixtures/attributes.csv']);
-        $this->categorySetup->install(['Satoshi_Migration::fixtures/categories.csv']);
+        $this->attributeSetup->install(['Satoshi_Migration::fixtures/cats.csv']);
+        // $this->categorySetup->install(['Satoshi_Migration::fixtures/categories.csv']);
         // $this->configurableProduct->install();
     }
 }

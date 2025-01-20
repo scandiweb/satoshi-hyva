@@ -10,6 +10,66 @@
         </referenceBlock>
 
         <referenceBlock name="product.info">
+            <arguments>
+                <!-- Use `default` as the value for `call` unless you want a specific method to be used. -->
+                <argument name="attributes" xsi:type="array">
+                    <item name="sku" xsi:type="array">
+                        <item name="call" xsi:type="string">getSku</item>
+                        <item name="code" xsi:type="string">sku</item>
+                        <item name="label" xsi:type="string">default</item>
+                        <item name="css_class" xsi:type="string">sku</item>
+                    </item>
+                    <item name="color" xsi:type="array">
+                        <item name="call" xsi:type="string">default</item>
+                        <item name="code" xsi:type="string">color</item>
+                        <item name="label" xsi:type="string">default</item>
+                        <item name="css_class" xsi:type="string">color</item>
+                    </item>
+                    <item name="size" xsi:type="array">
+                        <item name="call" xsi:type="string">default</item>
+                        <item name="code" xsi:type="string">size</item>
+                        <item name="label" xsi:type="string">default</item>
+                        <item name="css_class" xsi:type="string">size</item>
+                    </item>
+                    <item name="gender" xsi:type="array">
+                        <item name="call" xsi:type="string">default</item>
+                        <item name="code" xsi:type="string">gender</item>
+                        <item name="label" xsi:type="string">default</item>
+                        <item name="css_class" xsi:type="string">gender</item>
+                    </item>
+                    <item name="material" xsi:type="array">
+                        <item name="call" xsi:type="string">default</item>
+                        <item name="code" xsi:type="string">material</item>
+                        <item name="label" xsi:type="string">default</item>
+                        <item name="css_class" xsi:type="string">material</item>
+                    </item>
+                    <item name="style_general" xsi:type="array">
+                        <item name="call" xsi:type="string">default</item>
+                        <item name="code" xsi:type="string">style_general</item>
+                        <item name="label" xsi:type="string">default</item>
+                        <item name="css_class" xsi:type="string">style_general</item>
+                    </item>
+                    <item name="length" xsi:type="array">
+                        <item name="call" xsi:type="string">default</item>
+                        <item name="code" xsi:type="string">length</item>
+                        <item name="label" xsi:type="string">default</item>
+                        <item name="css_class" xsi:type="string">length</item>
+                    </item>
+                    <item name="waist_rise" xsi:type="array">
+                        <item name="call" xsi:type="string">default</item>
+                        <item name="code" xsi:type="string">waist_rise</item>
+                        <item name="label" xsi:type="string">default</item>
+                        <item name="css_class" xsi:type="string">waist_rise</item>
+                    </item>
+                    <item name="fit" xsi:type="array">
+                        <item name="call" xsi:type="string">default</item>
+                        <item name="code" xsi:type="string">fit</item>
+                        <item name="label" xsi:type="string">default</item>
+                        <item name="css_class" xsi:type="string">fit</item>
+                    </item>
+                </argument>
+            </arguments>
+
             <!-- Product actions -->
             <block class="Magento\Catalog\Block\Product\View" name="product.actions"
                    template="Magento_Catalog::product/view/product-actions.phtml"/>
