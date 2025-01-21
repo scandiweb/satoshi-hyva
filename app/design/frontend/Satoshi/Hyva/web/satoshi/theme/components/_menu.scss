@@ -84,7 +84,7 @@
   }
 
   &__heading {
-    @apply translate-x-[52px] text-lg text-text-500 transition-transform duration-300;
+    @apply truncate translate-x-[52px] text-lg text-text-500 transition-transform duration-300;
 
     @screen md {
       @apply flex-1 translate-x-0 text-md;
