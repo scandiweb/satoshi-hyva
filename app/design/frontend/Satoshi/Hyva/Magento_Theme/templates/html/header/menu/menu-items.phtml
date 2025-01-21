@@ -82,6 +82,7 @@ if (!$menuItems) {
                 style="--translate-width: 52px;"
                 :class="{
                     'menu__heading--root': '<?= $id ?>' === 'all',
+                    'max-md:w-[calc(100%-var(--translate-width))]': '<?= $id ?>' !== 'all',
                     'max-md:animate-slideTitleIn motion-reduce:translate-x-[--translate-width]': history.length !== 1,
                     'max-md:animate-slideTitleOut motion-reduce:translate-x-0': history.length == 1
                 }"
