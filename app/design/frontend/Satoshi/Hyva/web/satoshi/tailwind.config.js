@@ -33,6 +33,7 @@ module.exports = hyvaModules.mergeTailwindConfig({
         outline: "0 0 0 3px rgba(66, 153, 225, 0.6)",
         input: "0 0 0 1px var(--color-primary-500)",
         error: "0 0 0 1px rgb(229, 62, 62)",
+        fadeTop: "0px -10px 15px #00000010",
       },
       colors: {
         placeholder: "#718096",
