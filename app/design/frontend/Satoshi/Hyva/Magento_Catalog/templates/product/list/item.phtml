@@ -116,7 +116,7 @@ if ($product) {
 
                 <?php if ($product): ?>
                     <div
-                        class="bg-[--fade-in-bg] aspect-product size-full flex min-h-0 items-center justify-center transition-transform md:group-hover:scale-105 <?= $isContain ? 'p-[2%]' : '' ?>"
+                        class="bg-[--fade-in-bg] aspect-product size-full flex min-h-0 items-center justify-center transition-transform duration-300 md:group-hover:scale-105 <?= $isContain ? 'p-[2%]' : '' ?>"
                     >
                         <img
                             class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
@@ -125,7 +125,7 @@ if ($product) {
                     </div>
                 <?php else: ?>
                     <div
-                        class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform  md:group-hover:scale-105">
+                        class="flex aspect-product h-full w-full items-center justify-center <?= $isContain ? 'p-[4%]' : '' ?> bg-[--fade-in-bg] transition-transform duration-300 md:group-hover:scale-105">
                         <img
                             :src="product.media_gallery?.[0]?.url || '<?= $escaper->escapeUrl($placeholderImageUrl) ?>'"
                             :alt="product.image?.label"
