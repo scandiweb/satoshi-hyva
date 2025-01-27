@@ -22,7 +22,7 @@ const easeInOutQuad = (x: number): number => {
   return x;
 };
 
-const OFFSET_TOP = window.innerHeight > 1080 ? 400 : 200;
+const OFFSET_TOP = 200;
 let prevIsMobile = isMobile();
 
 export const TransitionPreview = () =>
