@@ -55,7 +55,7 @@ $mixBackground = true;
                         <template x-if="item.product_image.src">
                             <img
                                 :src="item.product_image.src"
-                                class="aspect-product h-full w-full object-cover object-center transition-transform md:group-hover:scale-105 <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
+                                class="aspect-product h-full w-full object-cover object-center transition-transform duration-300 md:group-hover:scale-105 <?= $mixBackground ? 'mix-blend-darken' : '' ?>"
                                 loading="lazy"
                                 width=""
                                 height=""
