@@ -12,19 +12,19 @@ use Satoshi\Theme\Block\Template;
 <div
     class="transition overflow-hidden"
     :class="{
-        'opacity-0': isLoading,
+        'opacity-0': isLoading && !getIsSearchActive(),
     }"
 >
     <div class="flex grow flex-col gap-4 p-3 pb-2 md:p-5">
         <div class="pb-2">
             <h2 class="text-lg"><?= __('Products') ?></h2>
         </div>
-        <div class="flex min-h-11 flex-col gap-2 md:min-h-0">
+        <div class="min-h-11 md:min-h-0">
             <p x-show="!products.length && searchTerm.length >=3">
                 <b class="font-semibold text-secondary-700"><?= __('Oops!') ?></b>
                 <?= __('We could not find any products matching your search.') ?>
             </p>
-            <p x-show="searchTerm.length < 3">
+            <p x-show="searchTerm.length < 3 && !isLoading">
                 <?= __('Minimum Search query length is 3') ?>
             </p>
             <div
