@@ -1,0 +1,277 @@
+sku,rating_code,rating_value,title,review,reviewer,email
+SFCC,Rating,4,"Great product","This product is very comfortable and durable. I use it daily and it holds up well.",John,john@example.com
+LFWC,Rating,5,"Excellent quality","I am very satisfied with this purchase. The quality is top-notch and it looks great.",Sarah,sarah@example.com
+RFRCJ,Rating,3,"Good but not perfect","It's a good product, but I expected a bit more in terms of design. Still, it's functional.",Mike,mike@example.com
+WPJ,Rating,4,"Very comfortable","This is one of the most comfortable items I've owned. Perfect for everyday use.",Emily,emily@example.com
+LFO,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Chris,chris@example.com
+CJ,Rating,4,"Great value","For the price, this is a fantastic product. It's durable and looks good too.",Laura,laura@example.com
+PO,Rating,3,"Decent product","It's a decent product, but there are some minor issues with the fit. Overall, it's okay.",David,david@example.com
+RFPH,Rating,5,"Amazing product","This product exceeded my expectations. It's very well-made and looks great.",Anna,anna@example.com
+LFS,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",James,james@example.com
+RFCJ,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Linda,linda@example.com
+BS,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Robert,robert@example.com
+RFOS,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Patricia,patricia@example.com
+LFCJ,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Michael,michael@example.com
+RFCS,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Barbara,barbara@example.com
+RH,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",William,william@example.com
+OFCH,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Elizabeth,elizabeth@example.com
+LFZS,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Richard,richard@example.com
+RFWJ,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Jennifer,jennifer@example.com
+RFWZC,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Charles,charles@example.com
+RFLPJ,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Maria,maria@example.com
+PS,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Joseph,joseph@example.com
+RFS,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Thomas,thomas@example.com
+CB,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Margaret,margaret@example.com
+SFJ,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Christopher,christopher@example.com
+RFPS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Lisa,lisa@example.com
+LPJ,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Daniel,daniel@example.com
+SFFCJ,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Matthew,matthew@example.com
+RFCC,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Anthony,anthony@example.com
+SFCPT,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Mark,mark@example.com
+LFH,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Donald,donald@example.com
+SFES,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Steven,steven@example.com
+LT,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Paul,paul@example.com
+KH,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Andrew,andrew@example.com
+RFPJ,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Joshua,joshua@example.com
+RFCCS,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Kevin,kevin@example.com
+RFES,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Brian,brian@example.com
+DS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",George,george@example.com
+RCH,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Edward,edward@example.com
+LFZH,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Ronald,ronald@example.com
+WC,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Timothy,timothy@example.com
+RFTT,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Jason,jason@example.com
+RFDS,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Jeffrey,jeffrey@example.com
+RFO,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Ryan,ryan@example.com
+SFSS,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Jacob,jacob@example.com
+SFPCS,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Gary,gary@example.com
+RFFS,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Nicholas,nicholas@example.com
+SFCS,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Eric,eric@example.com
+TO,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Jonathan,jonathan@example.com
+OFPRS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Stephen,stephen@example.com
+OFPS,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Larry,larry@example.com
+RFLO,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Justin,justin@example.com
+CRFS,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Scott,scott@example.com
+CTS,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Brandon,brandon@example.com
+MFGS,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Benjamin,benjamin@example.com
+RFLS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Samuel,samuel@example.com
+SRJ,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Frank,frank@example.com
+SJ,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Gregory,gregory@example.com
+LJ,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Raymond,raymond@example.com
+BLJ,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Alexander,alexander@example.com
+BJ,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Patrick,patrick@example.com
+TRJ,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Jack,jack@example.com
+FSJ,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Dennis,dennis@example.com
+LFCT,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Jerry,jerry@example.com
+STJ,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Tyler,tyler@example.com
+XSRJ,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Aaron,aaron@example.com
+RDJ,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Jose,jose@example.com
+5DSS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Adam,adam@example.com
+WSJ,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Henry,henry@example.com
+TIJ,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Nathan,nathan@example.com
+OPT,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Douglas,douglas@example.com
+SRT,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Zachary,zachary@example.com
+THJ,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Peter,peter@example.com
+WOT,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Kyle,kyle@example.com
+MLJ,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Walter,walter@example.com
+S3SJ,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Ethan,ethan@example.com
+DSH,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Jeremy,jeremy@example.com
+DSS,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Harold,harold@example.com
+DST,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Keith,keith@example.com
+DSJ,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Christian,christian@example.com
+DZSH,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Roger,roger@example.com
+LIG,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Noah,noah@example.com
+FSS,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Gerald,gerald@example.com
+DDRS,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Carl,carl@example.com
+LRPJ,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Terry,terry@example.com
+TP,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Sean,sean@example.com
+DCBS,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Austin,austin@example.com
+RG,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Arthur,arthur@example.com
+SS,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Lawrence,lawrence@example.com
+FRT,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Jesse,jesse@example.com
+RIPJ,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Dylan,dylan@example.com
+WRJ,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Bryan,bryan@example.com
+PFS,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Joe,joe@example.com
+LIJ,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Jordan,jordan@example.com
+DCT,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Billy,billy@example.com
+3DST,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Bruce,bruce@example.com
+HT,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Gabriel,gabriel@example.com
+WB,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Albert,albert@example.com
+WSB,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Logan,logan@example.com
+ST,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Juan,juan@example.com
+T,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Alan,alan@example.com
+CT,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Willie,willie@example.com
+L,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Elijah,elijah@example.com
+ISDS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Randy,randy@example.com
+CL,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Roy,roy@example.com
+ILT,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Vincent,vincent@example.com
+B,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Philip,philip@example.com
+F,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Bobby,bobby@example.com
+LFBJ,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Johnny,johnny@example.com
+WPG,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Russell,russell@example.com
+RFDJ,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Louis,louis@example.com
+RFW,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Wayne,wayne@example.com
+OFPJ,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Eugene,eugene@example.com
+BCJ,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Harry,harry@example.com
+PLG,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Howard,howard@example.com
+RFPDJ,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Leonard,leonard@example.com
+FWCC,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Clarence,clarence@example.com
+LBDJ,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Martin,martin@example.com
+OWC,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Stanley,stanley@example.com
+DWC,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Anthony,anthony@example.com
+QBJ,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",George,george@example.com
+RFRS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Curtis,curtis@example.com
+JTSF,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Christopher,christopher@example.com
+RFWPS,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Charles,charles@example.com
+SFFPJ,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Paul,paul@example.com
+LFWPJ,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Kenneth,kenneth@example.com
+2SFPT,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Steven,steven@example.com
+RFLPS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Joseph,joseph@example.com
+SFMWJ,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Thomas,thomas@example.com
+MWJ,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Daniel,daniel@example.com
+RFCPS,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Matthew,matthew@example.com
+OFJJ,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Mark,mark@example.com
+SFCJ,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Donald,donald@example.com
+RFTJ,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Anthony,anthony@example.com
+SFZPS,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Joshua,joshua@example.com
+CC,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Kevin,kevin@example.com
+VCJ,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Brian,brian@example.com
+RFRJ,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",George,george@example.com
+RFRZJ,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Edward,edward@example.com
+RFJ,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Ronald,ronald@example.com
+KJMF,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Timothy,timothy@example.com
+RFJJ,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Jason,jason@example.com
+SFPCT,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Jeffrey,jeffrey@example.com
+3RFRT,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Ryan,ryan@example.com
+1RFRT,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Jacob,jacob@example.com
+RFRT,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Gary,gary@example.com
+5SFT,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Nicholas,nicholas@example.com
+TLF,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Eric,eric@example.com
+3RFJT,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Jonathan,jonathan@example.com
+RFT,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Stephen,stephen@example.com
+3RFPS,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Larry,larry@example.com
+RFJT,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Justin,justin@example.com
+SFJT,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Scott,scott@example.com
+3SFVT,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Brandon,brandon@example.com
+SFVT,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Benjamin,benjamin@example.com
+SFRT,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Samuel,samuel@example.com
+RFPJT,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Frank,frank@example.com
+2LFT,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Gregory,gregory@example.com
+RFVT,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Raymond,raymond@example.com
+3SFT,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Alexander,alexander@example.com
+RFET,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Patrick,patrick@example.com
+RFH,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Jack,jack@example.com
+RFZH,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Dennis,dennis@example.com
+OFZH,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Jerry,jerry@example.com
+RFPPS,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Tyler,tyler@example.com
+LHC,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Aaron,aaron@example.com
+OFPH,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Jose,jose@example.com
+OFCS,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Adam,adam@example.com
+RFZS,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Henry,henry@example.com
+OFHS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Nathan,nathan@example.com
+OFFT,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Douglas,douglas@example.com
+2RFS,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Zachary,zachary@example.com
+SFS,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Peter,peter@example.com
+RFRCT,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Kyle,kyle@example.com
+SFNCJ,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Walter,walter@example.com
+SFT,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Ethan,ethan@example.com
+SFCTT,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Jeremy,jeremy@example.com
+RFTLT,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Harold,harold@example.com
+RFCT,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Keith,keith@example.com
+RFST,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Christian,christian@example.com
+RFBJ,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Roger,roger@example.com
+LFLJ,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Noah,noah@example.com
+RFCCJ,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Gerald,gerald@example.com
+SFST,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Carl,carl@example.com
+VSC,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Terry,terry@example.com
+PWB,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Sean,sean@example.com
+FCC,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Austin,austin@example.com
+BCC,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Arthur,arthur@example.com
+4GC,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Lawrence,lawrence@example.com
+MDDCS,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Jesse,jesse@example.com
+CSDDCS,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Dylan,dylan@example.com
+PBM,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Bryan,bryan@example.com
+MDG,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Joe,joe@example.com
+LPTR,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Jordan,jordan@example.com
+2SCC,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Billy,billy@example.com
+VCC,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Bruce,bruce@example.com
+CVSC,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Gabriel,gabriel@example.com
+JCC,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Albert,albert@example.com
+PCC,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Logan,logan@example.com
+2PCC,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Juan,juan@example.com
+FFCC,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Alan,alan@example.com
+ECC,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Willie,willie@example.com
+CVCC,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Elijah,elijah@example.com
+3CC,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Randy,randy@example.com
+RTC,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Roy,roy@example.com
+CCC,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Vincent,vincent@example.com
+CMSC,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Philip,philip@example.com
+PCCC,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Bobby,bobby@example.com
+CDDCS,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Johnny,johnny@example.com
+CSDCS,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Russell,russell@example.com
+CP,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Louis,louis@example.com
+LDDCS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Wayne,wayne@example.com
+MSDCS,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Eugene,eugene@example.com
+SDCS,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Harry,harry@example.com
+FB,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Howard,howard@example.com
+QB,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Leonard,leonard@example.com
+PCFS,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Clarence,clarence@example.com
+LDSDCS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Martin,martin@example.com
+PSDCS,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Stanley,stanley@example.com
+WLP,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Anthony,anthony@example.com
+FCS,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",George,george@example.com
+LSDCS,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Curtis,curtis@example.com
+VB,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Christopher,christopher@example.com
+DDCS,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Charles,charles@example.com
+LTR,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Paul,paul@example.com
+TCR,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",Kenneth,kenneth@example.com
+DG,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Steven,steven@example.com
+HBT,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Joseph,joseph@example.com
+PFB,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Thomas,thomas@example.com
+MCB,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Daniel,daniel@example.com
+3MCB,Rating,5,"Excellent","This product is excellent. I'm very happy with my purchase.",Matthew,matthew@example.com
+CBM,Rating,4,"Very nice","This is a very nice product. It's comfortable and looks good.",Mark,mark@example.com
+CFS,Rating,3,"Average","It's an average product. Nothing special, but it gets the job done.",Donald,donald@example.com
+AWM,Rating,5,"Great purchase","I'm very happy with this purchase. It's well-made and looks great.",Anthony,anthony@example.com
+CMCB,Rating,4,"Good quality","This is a good quality product. It's comfortable and looks nice.",Joshua,joshua@example.com
+2SMC,Rating,3,"Decent","It's a decent product. There are some minor issues, but overall it's okay.",Kevin,kevin@example.com
+CCMC,Rating,5,"Highly recommend","I would definitely recommend this to anyone. It's well-made and very stylish.",Brian,brian@example.com
+MCFS,Rating,4,"Very good","I'm very happy with this purchase. It's comfortable and looks good.",George,george@example.com
+JBB,Rating,3,"Okay","It's an okay product. Not the best, but not the worst either.",Edward,edward@example.com
+MCDCS,Rating,5,"Fantastic","This is a fantastic product. I use it every day and it's holding up very well.",Ronald,ronald@example.com
+CDCS,Rating,4,"Good product","This is a good product. It's comfortable and looks nice.",Timothy,timothy@example.com
+2MC,Rating,4,"Great fit and color!","This jacket is a great fit, the color is vibrant, and it works well for chilly mornings. Just wish it had more pockets.",Alex,
+2PM,Rating,5,"Love these pants!","Super comfortable, stylish, and great for outdoor activities. The material is lightweight but durable.",Maria,
+2CSN,Rating,3,"Good quality, but sizing off","The product is good quality, but the sizing runs a bit small. I had to exchange for a bigger size.",James,
+RLT,Rating,4,"Perfect for travel","I love how easy it is to pack this item for my trips. It’s lightweight, and the design is perfect for weekend getaways.",Olivia,
+SPM,Rating,5,"Best sports shoes ever!","These are by far the best sports shoes I’ve bought. They're super comfortable and offer great support during my runs.",Nina,
+CTR,Rating,2,"Not what I expected","The shirt material was rough, and it wasn’t as breathable as I thought. I won’t be wearing it much.",John,
+2LN,Rating,4,"Perfect fit for workouts","These leggings fit perfectly and are really comfortable for my gym sessions. They also don’t lose shape after multiple washes.",Ella,
+LCR,Rating,5,"Really good quality!","This item exceeded my expectations! The stitching and fabric are solid, and it holds up well during use.",Sarah,
+2MBC,Rating,3,"Comfortable but a bit bulky","While the backpack is comfortable to carry, it feels a bit bulky when packed. It could use a few more compartments for organization.",Tom,
+LWR,Rating,4,"Warm and cozy","I love how warm and soft this sweater is. It’s perfect for the winter months, but it does get a bit hot indoors.",Lucy,
+1WMCL,Rating,5,"Fantastic quality!","This piece is amazing! The material feels so premium, and it’s incredibly comfortable to wear.",David,
+2MLC,Rating,3,"Just okay","The design is nice, but the color faded quickly after a few washes. Not sure if I’d buy again.",Megan,
+2AMC,Rating,5,"Perfect for the office","This top is elegant yet comfortable enough to wear at work. The fabric feels great on the skin.",Robert,
+JB,Rating,4,"Great but could improve","The jacket is very stylish, but the sleeves could be a little longer. Otherwise, I’m happy with the purchase.",Sophie,
+LRC,Rating,4,"Nice and cozy","A really comfortable shirt for casual outings. The fit is good, but I’d love it more if it was a bit softer.",Jack,
+LP,Rating,5,"Just what I needed!","I’ve been looking for something like this for a while. It fits perfectly, and I love how it feels during my runs.",Hannah,
+MHT,Rating,5,"High-quality material","The material of this product is fantastic! It holds up well even with constant use. Highly recommend it.",Mark,
+CTBS,Rating,4,"Great for hiking","Used this during my last hike, and it performed really well. It’s lightweight but still provides good protection.",Rachel,
+TBM,Rating,3,"Not as comfortable as expected","The material is good, but the fit isn’t as comfortable as I thought. Might work better for different body types.",Chris,
+CTHT,Rating,4,"Nice and breathable","This shirt is perfect for summer runs. The material is breathable, though the fit is a bit snug around the chest.",Zoe,
+CTBT,Rating,5,"My new favorite shirt","This is my new favorite workout shirt. It’s breathable, lightweight, and doesn’t ride up during exercises.",Mason,
+WBT,Rating,5,"Incredible value!","The quality for the price is unbeatable. I bought several and they’ve lasted me through multiple washes.",Ella,
+2CTGT,Rating,4,"Perfect for everyday use","I use these for daily activities, and they hold up really well. They could use a few more color options, though.",Liam,
+WHT,Rating,3,"Not bad, but not great","The product is fine but not exceptional. I expected better quality for the price. It’s decent, though.",Charlotte,
+SDG,Rating,5,"Best purchase ever!","I love these shoes! They are super comfy and stylish, great for long walks or casual outings.",Theo,
+WLDG,Rating,4,"Nice design, good fit","The jacket has a great design, and the fit is perfect for colder weather. I wish it had a hood, though.",Grace,
+RTBM,Rating,3,"Good but could be better","The material feels good, but it doesn’t offer as much support as I expected. A bit disappointed with the overall performance.",Jake,
+SC,Rating,4,"Very versatile","These shoes are very versatile. They’re great for the gym and also for casual wear. A little stiff at first, but they break in nicely.",Lily,
+WSC,Rating,5,"Comfy and stylish","These sneakers are both comfy and stylish. I wear them everywhere, and they always feel great on my feet.",Ethan,
+2GT,Rating,4,"Great but needs more color options","These pants are comfortable and fit well, but I wish they came in more colors.",Clara,
+BT,Rating,5,"Fantastic jacket","I love this jacket! It’s super warm and perfect for the cold months. It also looks great with most of my outfits.",Sophia,
+2CGT,Rating,3,"Good but not perfect","The jacket is good, but it doesn’t keep me as warm as I had hoped. It’s more of a light jacket for fall weather.",Brian,
+TDG,Rating,4,"Great for the price","I was pleasantly surprised by this product. It’s not top-tier quality, but it’s really good for the price.",Amelia,
+FSC,Rating,5,"My go-to jacket","This jacket is perfect! It’s my go-to piece for layering, and I wear it almost every day. Definitely worth it.",Jake,
+WBM,Rating,4,"Great quality, but expensive","The quality is top-notch, but it’s a bit on the expensive side. Still, I’m happy with the purchase.",Sophie,
+CTGT,Rating,5,"Perfect for outdoor activities","I love this gear! It's perfect for my outdoor activities, from hiking to just casual walks around the park. Very comfortable!",Chris,
