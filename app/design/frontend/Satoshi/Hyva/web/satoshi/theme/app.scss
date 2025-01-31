@@ -161,7 +161,7 @@ h3 {
 }
 
 .grid-columns-plp {
-  @apply h-full flex flex-col md:flex-row gap-y-5;
+  @apply h-full flex flex-col-reverse md:flex-row gap-y-5;
 }
 
 .main-sidebar {
@@ -169,21 +169,11 @@ h3 {
 }
 
 .grid-columns-plp .main-sidebar {
-  @apply md:pl-8;
+  @apply md:pr-8;
 }
 
 .sidebar-additional {
   @apply transition-all md:max-w-[275px] md:whitespace-nowrap md:overflow-hidden;
-}
-
-.plp-grid-wrapper--full {
-  .main-sidebar {
-    @apply pl-0;
-  }
-
-  .sidebar-additional {
-    @apply max-w-0;
-  }
 }
 
 .price-box {

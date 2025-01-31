@@ -10,9 +10,6 @@ use Magento\Framework\View\Element\Template;
 <section
     id="ProductGridContainer"
     class="plp-grid-wrapper content-wrapper animate-on-transition mx-auto"
-    :class="{
-        'plp-grid-wrapper--full': !$store.productList.isFiltersSidebarExpanded
-    }"
     x-ref="ProductGridContainer"
     x-data="ProductList('')"
     key="ProductList-all"
