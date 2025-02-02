@@ -438,8 +438,11 @@ export const ProductPage = () =>
 
       // reset error message
       if (Alpine.store('cart').productCartErrorMessage.length) {
-        Alpine.store('cart').setProductCartErrorMessage('')
-        Alpine.store('popup').__updatePopupHeight(this.productActionsPopup)
+        Alpine.store('cart').setProductCartErrorMessage('');
+
+        Alpine.nextTick(() => {
+          Alpine.store('popup').__updatePopupHeight(this.productActionsPopup);
+        });
       }
 
       if (value === "") {

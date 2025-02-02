@@ -59,6 +59,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             @change="optionIsActive(<?= (int)$attributeId ?>, item.id) && changeOption(<?= (int)$attributeId ?>, item.id)"
             :id="`attribute-option-<?= (int)$productId ?>-${item.id}-<?= $isPopup ? 'mobile' : 'desktop' ?>`"
             :value="item.id"
+            :checked="selectedValues[<?= (int)$attributeId ?>] === item.id"
             name="super_attribute[<?= (int)$attributeId ?>]"
             class="-z-10 absolute opacity-0 [&:disabled]:cursor-not-allowed"
             type="radio"
