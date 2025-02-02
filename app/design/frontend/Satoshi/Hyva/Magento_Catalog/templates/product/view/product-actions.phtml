@@ -76,7 +76,13 @@ if (!$inStock) {
 }
 
 ?>
-<div class="relative md:rounded-b-md max-md:px-3 w-full">
+<div
+    class="
+        relative md:rounded-b-md max-md:px-3 w-full
+        <?= ($isPopup) ? 'pb-2 max-md:px-4' : '' ?>
+        <?= ($isPopup && $productType !== 'bundle') ? 'pt-4 shadow-fadeTop' : '' ?>
+    "
+>
     <?php if ($isPopup && $productType === 'bundle'): ?>
         <?= $block->getBlockHtml('bundle.summary') ?>
     <?php endif; ?>

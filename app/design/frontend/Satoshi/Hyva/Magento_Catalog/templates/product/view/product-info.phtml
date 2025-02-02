@@ -170,7 +170,7 @@ echo $popup
 <?php
 $popup_id = "product_actions-$productId";
 $options = $block->getChildBlock('product.info.form')->setData(['is_popup' => true])->toHtml();
-$minHeight = $product->getTypeId() === 'bundle' ? 'min-h-40' : 'min-h-16';
+$minHeight = $product->getTypeId() === 'bundle' ? 'min-h-40' : 'min-h-[68px]';
 
 $productActions = <<<HTML
     <template x-if="\$store.main.isMobile">
