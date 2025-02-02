@@ -21,11 +21,5 @@ $title = $block->getLayout()->getBlock('page.main.title')->getPageHeading();
     class="content-wrapper mx-auto flex flex-col items-start gap-3 py-5 pb-6 pt-3"
     aria-label="<?= __('Search details') ?>"
 >
-    <div class="flex w-full items-end justify-between">
-        <h2 class="text-lg"><?= $escaper->escapeHtml((string)$title) ?></h2>
-
-        <div
-            class="button button--filled-primary invisible ml-8 hidden w-[275px] min-w-[275px] md:inline-flex md:pl-2"
-        ></div>
-    </div>
+    <h2 class="text-lg"><?= $escaper->escapeHtml((string)$title) ?></h2>
 </article>
