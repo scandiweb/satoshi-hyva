@@ -21,58 +21,60 @@ $catalogOutputHelper = $this->helper(CatalogOutputHelper::class);
 
 /** @var Product $product */
 $product = $block->getProduct();
+$attributes = array_merge(
+    [['label' => 'SKU', 'value' => $product->getSku(), 'code' => 'sku']],
+    $block->getAdditionalData()
+);
 ?>
 
-
-<?php if ($attributes = $block->getAdditionalData()): ?>
-    <div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion(false, 300)">
-        <button
-            class="group flex items-center justify-between text-start gap-3"
-            x-ref="AccordionButton"
-            type="button"
-            :aria-expanded="isExpanded"
-            aria-controls="attributes_panel"
-            aria-labelledby="attributes_label"
-        >
-            <div class="text-base font-semibold leading-tight text-text-500">
-                <?= $block->getTitle() ? $escaper->escapeHtml($block->getTitle()) : '&nbsp;' ?>
-            </div>
-            <span x-ref="AccordionIcon"
-                  class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
-                <?= $hyvaicons->renderHtml('chevron', 'rotate-90', attributes: ['title' => '']); ?>
-            </span>
-        </button>
-        <div
-            x-ref="AccordionPanel"
-            :inert="!isExpanded"
-            role="region"
-            class="overflow-hidden"
-            id="attributes_panel"
-            aria-labelledby="attributes_label"
-            style="max-height: 0;"
-        >
-            <div class="mt-3 overflow-hidden">
-                <div class="table-wrapper max-w-prose overflow-x-auto" id="product-attributes">
-                    <table class="additional-attributes w-full">
-                        <?php foreach ($attributes as $attribute): ?>
-                            <tr class="border-b border-gray-300 last:border-b-0">
-                                <th
-                                    class="col label w-1/2 py-2 text-left text-gray-700 font-normal product-attribute-label"
-                                    scope="row"
-                                >
-                                    <?= $escaper->escapeHtml($attribute['label']) ?>
-                                </th>
-                                <td
-                                    class="col data w-1/2 py-2 pl-2 text-left text-gray-900 product-attribute-value"
-                                    data-th="<?= $escaper->escapeHtmlAttr($attribute['label']) ?>"
-                                >
-                                    <?= /* @noEscape */ $catalogOutputHelper->productAttribute($product, $attribute['value'], $attribute['code']) ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
-                </div>
+<div class="align-start animate-on-transition mb-8 flex flex-col px-4 md:p-0" x-data="Accordion(false, 300)">
+    <button
+        class="group flex items-center justify-between text-start gap-3"
+        x-ref="AccordionButton"
+        type="button"
+        :aria-expanded="isExpanded"
+        aria-controls="attributes_panel"
+        aria-labelledby="attributes_label"
+    >
+        <div class="text-base font-semibold leading-tight text-text-500">
+            <?= $block->getTitle() ? $escaper->escapeHtml($block->getTitle()) : '&nbsp;' ?>
+        </div>
+        <span x-ref="AccordionIcon"
+              class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable">
+            <?= $hyvaicons->renderHtml('chevron', 'rotate-90', attributes: ['title' => '']); ?>
+        </span>
+    </button>
+    <div
+        x-ref="AccordionPanel"
+        :inert="!isExpanded"
+        role="region"
+        class="overflow-hidden"
+        id="attributes_panel"
+        aria-labelledby="attributes_label"
+        style="max-height: 0;"
+    >
+        <div class="mt-3 overflow-hidden">
+            <div class="table-wrapper max-w-prose overflow-x-auto" id="product-attributes">
+                <table class="additional-attributes w-full">
+                    <?php foreach ($attributes as $attribute): ?>
+                        <tr class="border-b border-gray-300 last:border-b-0">
+                            <th
+                                class="col label w-1/2 py-2 text-left text-gray-700 font-normal product-attribute-label"
+                                scope="row"
+                            >
+                                <?= $escaper->escapeHtml($attribute['label']) ?>
+                            </th>
+                            <td
+                                class="col data w-1/2 py-2 pl-2 text-left text-gray-900 product-attribute-value"
+                                data-th="<?= $escaper->escapeHtmlAttr($attribute['label']) ?>"
+                            >
+                                <?= /* @noEscape */
+                                $catalogOutputHelper->productAttribute($product, $attribute['value'], $attribute['code']) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
             </div>
         </div>
     </div>
-<?php endif; ?>
+</div>
