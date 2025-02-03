@@ -27,7 +27,7 @@
   }
 
   &__title {
-    @apply text-lg font-bold;
+    @apply text-lg md:text-3xl font-bold;
   }
 
   &__actions {
