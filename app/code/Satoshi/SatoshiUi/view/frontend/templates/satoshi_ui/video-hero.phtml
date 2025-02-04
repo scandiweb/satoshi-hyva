@@ -31,6 +31,10 @@ $autoplay = $block->getData('autoplay') == 'true';
 $muted = $block->getData('muted') == 'true';
 $loop = $block->getData('loop') == 'true';
 
+$hasHeading = !empty($heading);
+$hasDescription = !empty($description);
+$hasButton = !empty($block->getData('button_label'));
+
 $bannerHeight = $block->getData('banner_height');
 $desktopAlignment = $block->getData('desktop_content_position');
 $mobileAlignment = $block->getData('mobile_content_alignment');
@@ -91,7 +95,7 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
     >
         <div
             class="
-                flex max-w-[335px] md:max-w-[500px] flex-col justify-center gap-7 md:gap-10 text-text-on-primary-bg
+                flex max-w-[335px] md:max-w-[510px] flex-col justify-center
                 <?php if(str_contains($mobileAlignment, 'left')): ?>
                     items-start text-start
                 <?php elseif(str_contains($mobileAlignment, 'right')): ?>
@@ -108,23 +112,27 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
                 <?php endif; ?>
             "
         >
-            <h2
-                class="heading text-4xl leading-tight md:text-6xl md:leading-tight"
-            >
-                <?= $escaper->escapeHtml($heading) ?>
-            </h2>
-            <?php if(!empty($description)): ?>
-                <p>
+            <?php if($hasHeading): ?>
+                <h2
+                    class="heading text-4xl leading-tight md:text-6xl md:leading-tight text-black"
+                >
+                    <?= $escaper->escapeHtml($heading) ?>
+                </h2>
+            <?php endif; ?>
+            <?php if($hasDescription): ?>
+                <p
+                    class="text-lg font-medium text-primary-600 <?= $hasHeading ? 'mt-5' : '' ?>"
+                >
                     <?= $escaper->escapeHtml($description) ?>
                 </p>
             <?php endif; ?>
-            <?php if(!empty($block->getData('button_label'))): ?>
+            <?php if($hasButton): ?>
                 <a
                     <?php if ($linkHref): ?>
                         href="<?= $escaper->escapeUrl($linkHref); ?>"
                         target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
                     <?php endif; ?>
-                    class="button button--filled-secondary font-normal"
+                    class="button button--filled-secondary <?= ($hasHeading || $hasDescription) ? 'mt-16' : '' ?>"
                     x-element-transition-trigger
                 >
                     <?= $escaper->escapeHtml($block->getData('button_label')) ?>
