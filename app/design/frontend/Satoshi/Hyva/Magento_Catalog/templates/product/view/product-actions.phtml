@@ -107,7 +107,9 @@ if (!$inStock) {
                     :disabled="(!isVariantInCart && variantQty === 1) || !<?= (int)$inStock ?>"
                     @click.prevent.stop="decreaseQty()"
                     x-show="isVariantInCart || variantQty > 1"
-                    x-cloak
+                    <?php if ($isProductInCart > 1): ?>
+                        style="display: none"
+                    <?php endif; ?>
                 >
                     <span class="sr-only">
                         <?= __('Decrease quantity for %1', $product->getName()) ?>
