@@ -41,7 +41,7 @@ $estimated_width = $text_length * 12;
         width="<?= $escaper->escapeHtmlAttr($logoWidth ?? 200) ?>"
         height="<?= $escaper->escapeHtmlAttr($logoHeight ?? 200) ?>"
         class="height-[56px] w-full transition-all max-md:hidden"
-        style="filter: url(#border); max-width: <?= $logoWidth > 500 ? 500 : $logoWidth ?>px"
+        style="max-width: <?= $logoWidth > 500 ? 500 : $logoWidth ?>px"
         x-data="{ initialHeight: $el.clientHeight || 56 }"
         :style="{
             'max-height': (initialHeight >= 56 && $store.main.isHeaderShadowVisible) ? '56px' : `${initialHeight}px`
