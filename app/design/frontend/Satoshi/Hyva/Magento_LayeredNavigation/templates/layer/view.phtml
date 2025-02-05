@@ -37,20 +37,11 @@ if ($sorter) {
 <!-- Desktop filters -->
 <div
     class="hidden w-[275px] max-w-[275px] overflow-hidden transition-all motion-reduce:transition-none md:block"
-    :class="{
-        'max-w-[275px]': $store.productList.isFiltersSidebarExpanded,
-        'max-w-0': !$store.productList.isFiltersSidebarExpanded
-    }"
 >
 
     <div
         id="filters-sidebar"
         class="w-[275px] min-w-[275px] translate-x-0 transition-transform motion-reduce:transition-none"
-        :class="{
-            'translate-x-full': !$store.productList.isFiltersSidebarExpanded,
-            'translate-x-0': $store.productList.isFiltersSidebarExpanded
-        }"
-        :inert="!$store.productList.isFiltersSidebarExpanded"
     >
         <template x-portal="document.getElementById($store.main.isMobile ? 'selected-filters-mobile' : 'filters-sidebar')">
             <div
