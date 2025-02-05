@@ -23,7 +23,7 @@
   }
 
   &__header {
-    @apply mx-auto mb-3 flex items-center justify-between text-text-500;
+    @apply mx-auto flex items-center justify-between text-text-500;
   }
 
   &__title {
@@ -35,7 +35,7 @@
   }
 
   &__slides {
-    @apply flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth py-5;
+    @apply flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth py-7;
 
     gap: var(--slide-gap);
   }

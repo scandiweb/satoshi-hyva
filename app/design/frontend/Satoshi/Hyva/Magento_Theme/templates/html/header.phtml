@@ -72,7 +72,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             ?>
         </div>
 
-        <div class="col-start-3 flex items-center justify-center md:hidden">
+        <div class="col-start-3 flex items-center justify-center md:hidden mix-blend-difference">
             <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
                x-element-transition-trigger
                class="rounded-sm px-3 py-2 text-xl font-semibold"
@@ -129,13 +129,14 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     <div id="end-of-header"></div>
 </header>
 
-<div class="pointer-events-none sticky top-[88px] z-30 h-[1px] max-md:hidden"
+<div class="pointer-events-none sticky top-[88px] z-30 h-[1px] max-md:hidden mix-blend-difference contrast-50"
      :style="`opacity: ${$store.main.opacityOnZoom}`"
 >
-    <div class="absolute inset-x-0 -top-[72px] col-start-3 flex min-h-[56px] items-center justify-center text-primary-500">
+    <div
+        class="absolute inset-x-0 -top-[72px] col-start-3 flex min-h-[56px] items-center justify-center text-white">
         <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>"
            x-element-transition-trigger
-           class="heading pointer-events-auto rounded-sm px-3 py-2 text-xl text-primary-500 transition-all"
+           class="heading pointer-events-auto rounded-sm px-3 py-2 text-xl"
            :class="{'md:drop-shadow-xl': $store.main.isHeaderShadowVisible}"
            :tabindex="$store.resizable.isVisible('search-desktop') ? -1 : 3"
            x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
