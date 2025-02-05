@@ -480,11 +480,6 @@ export const ProductPage = () =>
 
       // Update cart state
       this._updateSelectedVariantCartState();
-
-      // Scroll to top
-      if (this.isScrollingToTop) {
-        this.scrollToTop();
-      }
     },
 
     initAttributes(swatchConfig, optionConfig) {
