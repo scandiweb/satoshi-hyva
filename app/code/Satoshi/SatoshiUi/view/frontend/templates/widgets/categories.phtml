@@ -137,7 +137,7 @@ $template
         'id' => 'collections-list-' . uniqid(),
         'is_full_page' => false,
         'class' => 'slider--pagebuilder ' . ($displayAsButtons ? 'slider--buttons' : ''),
-        'is_actions_disabled' => $displayAsButtons
+        'is_actions_disabled' => false
     ])
     ->render('Magento_Catalog::html/slider.phtml')
 ?>
