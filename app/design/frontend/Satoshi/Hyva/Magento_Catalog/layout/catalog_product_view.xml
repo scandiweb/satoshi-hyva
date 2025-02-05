@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<page layout="1column" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="main" htmlClass="h-full row-span-2 col-span-full flex-grow"/>
@@ -14,11 +14,9 @@
                 <!-- Use `default` as the value for `call` unless you want a specific method to be used. -->
                 <argument name="attributes" xsi:type="array">
                     <item name="sku" xsi:type="array">
-                        <item name="call" xsi:type="string">getSku</item>
-                        <item name="code" xsi:type="string">sku</item>
-                        <item name="label" xsi:type="string">default</item>
-                        <item name="css_class" xsi:type="string">sku</item>
+                        <item name="code" xsi:type="boolean">false</item>
                     </item>
+
                     <item name="color" xsi:type="array">
                         <item name="call" xsi:type="string">default</item>
                         <item name="code" xsi:type="string">color</item>
