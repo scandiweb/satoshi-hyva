@@ -13,7 +13,6 @@ import StickyScroll from "./plugins/StickyScroll";
 
 import { PopupStore } from "./store/Popup";
 import { ResizableStore } from "./store/Resizable";
-import { ProductListStore } from "./store/ProductList";
 import { Main } from "./store/Main";
 import { CartStore } from "./store/Cart";
 import { WishlistStore } from "./store/Wishlist";
@@ -65,7 +64,6 @@ document.addEventListener("alpine:init", () => {
   Alpine.store("popup", PopupStore);
   Alpine.store("main", Main);
   Alpine.store("resizable", ResizableStore);
-  Alpine.store("productList", ProductListStore);
   Alpine.store("cart", CartStore);
   Alpine.store("wishlist", WishlistStore);
 
