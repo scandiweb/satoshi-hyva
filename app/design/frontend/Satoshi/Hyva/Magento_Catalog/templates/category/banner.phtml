@@ -48,30 +48,24 @@ $height = $block->getVar('category_page_category_image/height');
     />
   </div>
   <?php endif; ?>
-  <div class="flex w-full items-end justify-between">
-    <div class="flex flex-col gap-3">
-      <!-- Title -->
-      <h1 class="text-lg text-text-500">
-        <?= $escaper->escapeHtml((string)$title) ?>
-      </h1>
+  <div class="flex flex-col gap-3">
+    <!-- Title -->
+    <h1 class="text-lg text-text-500">
+      <?= $escaper->escapeHtml((string)$title) ?>
+    </h1>
 
-      <!-- Description -->
-      <?php if ($description = $category->getDescription()): ?>
-      <div class="rte">
-        <?= $descriptionHtml ?>
-      </div>
-      <?php endif; ?>
-
-      <?php if ($block->isContentMode() || $block->isMixedMode()) :?>
-      <!-- CMS Block -->
-      <div class="rte">
-        <?= $block->getCmsBlockHtml() ?>
-      </div>
-      <?php endif; ?>
+    <!-- Description -->
+    <?php if ($description = $category->getDescription()): ?>
+    <div class="rte">
+      <?= $descriptionHtml ?>
     </div>
+    <?php endif; ?>
 
-    <div
-      class="button button--filled-primary invisible ml-8 hidden w-[275px] min-w-[275px] md:inline-flex md:pl-2"
-    ></div>
+    <?php if ($block->isContentMode() || $block->isMixedMode()) :?>
+    <!-- CMS Block -->
+    <div class="rte">
+      <?= $block->getCmsBlockHtml() ?>
+    </div>
+    <?php endif; ?>
   </div>
 </article>
