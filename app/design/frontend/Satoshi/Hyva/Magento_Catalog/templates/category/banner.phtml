@@ -21,7 +21,7 @@ $category = $block->getCurrentCategory();
 $categoryOutput = $this->helper(Output::class);
 
 if ($description = $category->getDescription()) {
-  $descriptionHtml = $categoryOutput->categoryAttribute($category, $description, 'description');
+    $descriptionHtml = $categoryOutput->categoryAttribute($category, $description, 'description');
 }
 
 $image = $viewModels->require(Image::class);
@@ -30,48 +30,42 @@ $height = $block->getVar('category_page_category_image/height');
 ?>
 
 <article
-  aria-label="<?= __('Category details') ?>"
-  class="content-wrapper mx-auto flex flex-col items-start gap-3 py-5 pb-6 pt-3"
+    aria-label="<?= __('Category details') ?>"
+    class="content-wrapper mx-auto flex flex-col items-start gap-3 py-5 pb-6 pt-3"
 >
-  <?php if ($imgUrl = $image->getUrl($category)): ?>
-  <div class="disable-fade contents">
-    <img
-      src="<?= $escaper->escapeUrl($imgUrl) ?>"
-      alt="<?= $escaper->escapeHtmlAttr($category->getName()) ?>"
-      class="w-full h-[40vh] object-cover rounded-md mb-2"
-      <?php if ($width): ?>
-      width="<?= $escaper->escapeHtmlAttr($width) ?>"
-      <?php endif; ?>
-      <?php if ($height): ?>
-      height="<?= $escaper->escapeHtmlAttr($height) ?>"
-      <?php endif; ?>
-    />
-  </div>
-  <?php endif; ?>
-  <div class="flex w-full items-end justify-between">
+    <?php if ($imgUrl = $image->getUrl($category)): ?>
+        <div class="disable-fade contents">
+            <img
+                src="<?= $escaper->escapeUrl($imgUrl) ?>"
+                alt="<?= $escaper->escapeHtmlAttr($category->getName()) ?>"
+                class="w-full h-[40vh] object-cover rounded-md mb-2"
+                <?php if ($width): ?>
+                    width="<?= $escaper->escapeHtmlAttr($width) ?>"
+                <?php endif; ?>
+                <?php if ($height): ?>
+                    height="<?= $escaper->escapeHtmlAttr($height) ?>"
+                <?php endif; ?>
+            />
+        </div>
+    <?php endif; ?>
     <div class="flex flex-col gap-3">
-      <!-- Title -->
+        <!-- Title -->
         <h1 class="text-xl md:text-[32px] text-text-500">
-        <?= $escaper->escapeHtml((string)$title) ?>
-      </h1>
+            <?= $escaper->escapeHtml((string)$title) ?>
+        </h1>
 
-      <!-- Description -->
-      <?php if ($description = $category->getDescription()): ?>
-      <div class="rte">
-        <?= $descriptionHtml ?>
-      </div>
-      <?php endif; ?>
+        <!-- Description -->
+        <?php if ($description = $category->getDescription()): ?>
+            <div class="rte">
+                <?= $descriptionHtml ?>
+            </div>
+        <?php endif; ?>
 
-      <?php if ($block->isContentMode() || $block->isMixedMode()) :?>
-      <!-- CMS Block -->
-      <div class="rte">
-        <?= $block->getCmsBlockHtml() ?>
-      </div>
-      <?php endif; ?>
+        <?php if ($block->isContentMode() || $block->isMixedMode()) :?>
+            <!-- CMS Block -->
+            <div class="rte">
+                <?= $block->getCmsBlockHtml() ?>
+            </div>
+        <?php endif; ?>
     </div>
-
-    <div
-      class="button button--filled-primary invisible ml-8 hidden w-[275px] min-w-[275px] md:inline-flex md:pl-2"
-    ></div>
-  </div>
 </article>
