@@ -75,7 +75,7 @@ $cartErrMsg = $escaper->escapeHtml($block->getCartErrorMessage());
             <dl>
                 <?php foreach ($block->getAttributes() as $attributeConfig):
                     $attribute = $attributesViewModel->getAttributeFromLayoutConfig($attributeConfig); ?>
-                <?php if (($value = $attribute['value'] ?? null) && (($attribute['label'] ?? '') !== 'SKU')): ?>
+                    <?php if ($value = $attribute['value'] ?? null): ?>
                     <div class="flex border-t first:border-t-0 border-gray-300 py-2 last:border-b">
                         <dt class="w-1/2"><?= $escaper->escapeHtml($attribute['label']) ?></dt>
                         <dd class="w-1/2 ml-2"><?= $escaper->escapeHtml($value) ?></dd>
