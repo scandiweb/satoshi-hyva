@@ -37,7 +37,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </div>
 
         <div class="max-h-80 pb-4 md:px-6">
-            <div x-show="$store.main.isUserLoggedIn"
+            <div
+                class="flex flex-col gap-3"
+                x-show="$store.main.isUserLoggedIn"
                 <?php if ($block->customerLoggedIn()): ?>
                     style="display: none"
                 <?php endif; ?>
@@ -45,7 +47,9 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 <?= $block->getData('header.customer.logged.in.links') ?>
             </div>
 
-            <div x-show="!$store.main.isUserLoggedIn"
+            <div
+                class="flex flex-col gap-3"
+                x-show="!$store.main.isUserLoggedIn"
                 <?php if (!$block->customerLoggedIn()): ?>
                     style="display: none"
                 <?php endif; ?>
