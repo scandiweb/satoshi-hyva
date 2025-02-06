@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<button
+    class="contrast-border md:button--filled-secondary button ghost-primary icon-button icon-button--size-lg col-start-5"
+    x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
+    @click="!isAccountVisible ? $store.account.showAccount() : $store.account.hideAccount()"
+    type="button"
+    aria-label="<?= __('View account') ?>"
+    :class="{'hidden': !$store.main.isMobile && $store.resizable.isVisible('account-desktop')}"
+>
+    <div
+        class="contents"
+        x-show="!isAccountVisible"
+    >
+        <span>
+          <?= $hyvaicons->renderHtml('user') ?>
+        </span>
+    </div>
+
+    <div
+        class="contents"
+        x-show="isAccountVisible"
+        style="display: none;"
+    >
+        <?= $hyvaicons->renderHtml('close') ?>
+    </div>
+</button>

@@ -16,6 +16,7 @@ import { ResizableStore } from "./store/Resizable";
 import { Main } from "./store/Main";
 import { CartStore } from "./store/Cart";
 import { WishlistStore } from "./store/Wishlist";
+import { AccountStore } from "./store/Account";
 
 import { BeforeAfter } from "./data/BeforeAfter";
 import { TransitionPreview } from "./data/TransitionPreview";
@@ -66,6 +67,7 @@ document.addEventListener("alpine:init", () => {
   Alpine.store("resizable", ResizableStore);
   Alpine.store("cart", CartStore);
   Alpine.store("wishlist", WishlistStore);
+  Alpine.store("account", AccountStore);
 
   Alpine.data("TransitionPreview", TransitionPreview);
   Alpine.data("BeforeAfter", BeforeAfter);
