@@ -15,9 +15,14 @@ $path = $block->getPath();
 <?php if ($label && $path): ?>
     <a
         x-element-transition-trigger
-        class="block py-2 hover:bg-gray-100"
+        class="focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1"
         href="<?= $escaper->escapeUrl($block->getUrl($path)) ?>"
+        role="link"
     >
-        <?= $escaper->escapeHtml($label) ?>
+        <span
+            class="link max-w-full truncate border-transparent transition-colors md:group-hover:border-b-1 md:group-hover:border-current md:group-hover:text-primary-600"
+        >
+            <?= $escaper->escapeHtml($label) ?>
+        </span>
     </a>
 <?php endif; ?>
