@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Block\SortableItem;
+use Magento\Framework\Escaper;
+
+/** @var SortableItem $block */
+/** @var Escaper $escaper */
+
+$label = $block->getLabel();
+$path = $block->getPath();
+?>
+
+<?php if ($label && $path): ?>
+    <a
+        x-element-transition-trigger
+        class="block py-2 hover:bg-gray-100"
+        href="<?= $escaper->escapeUrl($block->getUrl($path)) ?>"
+    >
+        <?= $escaper->escapeHtml($label) ?>
+    </a>
+<?php endif; ?>
