@@ -114,25 +114,6 @@
           transition-delay: 100ms;
 
           /* has cart active */
-          transform: translateX(calc((var(--minicart-width) - var(--button-width) + var(--button-gap)) * -1)
-          );
-        }
-      }
-    }
-
-    //&--wishlist,
-    &--account {
-      &.resizable--visible {
-        @screen md {
-          transform: translateX(calc(var(--button-gap) * -1));
-        }
-      }
-
-      &:has(~ .resizable--cart.resizable--visible) {
-        @screen md {
-          transition-delay: 100ms;
-
-          /* has cart active */
           transform: translateX(calc((var(--minicart-width) - var(--button-width) + var(--button-gap)) * -1));
         }
       }
