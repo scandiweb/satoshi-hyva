@@ -104,6 +104,8 @@ if (!$menuItems) {
                     <button
                         <?php if ($index === 0): ?>
                             x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
+                        <?php elseif ($index === count($menuItems) - 1): ?>
+                            x-a11y-trap-target.end="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
                         <?php endif; ?>
                         class="menu__link group"
                         @click="setHistory([...'<?= $path ?>'.split(','), '<?= $menuItem['id'] ?>'])"
@@ -142,6 +144,8 @@ if (!$menuItems) {
                     <a
                         <?php if ($index === 0): ?>
                             x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
+                        <?php elseif ($index === count($menuItems) - 1): ?>
+                            x-a11y-trap-target.end="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
                         <?php endif; ?>
                         href="<?= $menuItem['url'] ?>"
                         role="link"
@@ -184,7 +188,6 @@ if (!$menuItems) {
                     x-element-transition-trigger
                     :class="$store.main.isMobile ? 'button button--filled-primary w-full': 'flex items-center'"
                     href="<?= $url ?>"
-                    x-a11y-trap-target.end="$store.popup.currentPopup === 'menu' && history.length !== 1 && history[history.length - 1] === '<?= $id ?>'"
                 >
                     <template x-if="$store.main.isMobile">
                         <span><?= __('View All') ?> <span class="lowercase"><?= $title ?></span></span>
