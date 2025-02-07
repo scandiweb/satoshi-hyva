@@ -49,14 +49,11 @@ export default function (Alpine: AlpineType) {
           const html = await fetchPage(nextUrl);
 
           appendPaginationContent(html);
+          window.hyva.replaceDomElement("#pager", html);
           cachePage(nextUrl, document.documentElement.outerHTML);
           history.replaceState({ page: nextPage }, "", nextUrl);
 
           currentPage = nextPage;
-
-          if (nextPage === lastPage) {
-            el.remove();
-          }
         }
 
         isPaginating = false;
