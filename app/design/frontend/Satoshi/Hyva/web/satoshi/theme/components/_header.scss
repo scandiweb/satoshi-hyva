@@ -5,7 +5,7 @@
 
   --account-width: 200px;
 
-  --search-width: 500px;
+  --search-width: 450px;
 
   @screen lg {
     --search-width: 700px;
@@ -82,23 +82,14 @@
       //  transition-delay: 100ms;
       //
       //  /* has wishlist active */
-      //  transform: translateX(
-      //    calc(
-      //      (var(--wishlist-width) - var(--button-width) + var(--button-gap) * 2) *
-      //        -1
-      //    )
-      //  );
+      //  transform: translateX(calc((var(--wishlist-width) - var(--button-width) + var(--button-gap) * 2) *-1));
       //}
 
       &:has(~ .resizable--account.resizable--visible) {
         transition-delay: 100ms;
 
         /* has account active */
-        transform: translateX(
-                        calc(
-                                (var(--account-width) - var(--button-width) + var(--button-gap) * 2) *
-                                -1
-                        )
+        transform: translateX(calc((var(--account-width) - var(--button-width) + var(--button-gap) * 2) * -1)
         );
       }
 
@@ -106,12 +97,7 @@
         transition-delay: 100ms;
 
         /* has cart active */
-        transform: translateX(
-          calc(
-            (var(--minicart-width) - var(--button-width) + var(--button-gap)) *
-              -1
-          )
-        );
+        transform: translateX(calc((var(--minicart-width) - var(--button-width) + var(--button-gap)) * -1));
       }
     }
 
@@ -119,11 +105,7 @@
     &--account {
       &.resizable--visible {
         @screen md {
-          transform: translateX(
-                          calc(
-                                  var(--button-gap) * -1
-                          )
-          );
+          transform: translateX(calc(var(--button-gap) * -1));
         }
       }
 
@@ -132,11 +114,7 @@
           transition-delay: 100ms;
 
           /* has cart active */
-          transform: translateX(
-                          calc(
-                                  (var(--minicart-width) - var(--button-width) + var(--button-gap)) *
-                                  -1
-                          )
+          transform: translateX(calc((var(--minicart-width) - var(--button-width) + var(--button-gap)) * -1)
           );
         }
       }
@@ -146,11 +124,7 @@
     &--account {
       &.resizable--visible {
         @screen md {
-          transform: translateX(
-                          calc(
-                                  var(--button-gap) * -1
-                          )
-          );
+          transform: translateX(calc(var(--button-gap) * -1));
         }
       }
 
@@ -159,12 +133,7 @@
           transition-delay: 100ms;
 
           /* has cart active */
-          transform: translateX(
-                          calc(
-                                  (var(--minicart-width) - var(--button-width) + var(--button-gap)) *
-                                  -1
-                          )
-          );
+          transform: translateX(calc((var(--minicart-width) - var(--button-width) + var(--button-gap)) * -1));
         }
       }
     }
