@@ -4,30 +4,41 @@ declare(strict_types=1);
 
 use Magento\Theme\Block\Html\Pager;
 use Magento\Framework\Escaper;
+use Hyva\Theme\Model\LocaleFormatter;
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var Escaper $escaper */
 /** @var Pager $block */
+/** @var LocaleFormatter $localeFormatter */
 /** @var ViewModelRegistry $viewModels */
 /** @var SvgIcons $hyvaicons */
 
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $lastPage = $block->getLastPageNum();
 $currentPage = $block->getCurrentPage();
+$lastItemNumber = $block->getLastNum();
+$totalItemsNumber = $block->getTotalNum();
+$isProductList = $block->getIsProductList();
 ?>
 
-<?php if ($lastPage > 1 && $currentPage < $lastPage): ?>
-    <div class="flex justify-center [&>*]:mt-5">
+<div id="pager" class="flex flex-col items-center">
+    <?php if ($lastPage > 1 && $currentPage < $lastPage): ?>
         <a
             href="#"
             x-pagination-trigger="{ 'lastPage': <?= $lastPage ?> }"
-            class="button button--ghost-primary"
+            class="button button--outline-primary mt-5"
         >
             <?= __('Load more') ?>
-            <span class="button__icon button__icon--right top-[1px] text-lg">
-                <?= $hyvaicons->renderHtml('chevron', 'rotate-90') ?>
-            </span>
         </a>
-    </div>
-<?php endif ?>
+    <?php endif ?>
+    <?php if ($lastPage > 1): ?>
+        <span class="font-medium leading-5 mt-4">
+            <span class="text-primary-600">
+                <?= $escaper->escapeHtml($localeFormatter->formatNumber($lastItemNumber)) ?>
+            </span>
+            <?= $escaper->escapeHtml('/ ' . $localeFormatter->formatNumber($totalItemsNumber)) ?>
+            <?= $escaper->escapeHtml(__($isProductList ? 'Products' : 'Items')) ?>
+        </span>
+    <?php endif ?>
+</div>
