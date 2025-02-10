@@ -3,9 +3,15 @@
 
   --wishlist-width: 400px;
 
-  --search-width: 500px;
+  --account-width: 200px;
+
+  --search-width: 450px;
 
   @screen lg {
+    --search-width: 700px;
+  }
+
+  @screen xl {
     --search-width: 800px;
   }
 }
@@ -76,51 +82,41 @@
       //  transition-delay: 100ms;
       //
       //  /* has wishlist active */
-      //  transform: translateX(
-      //    calc(
-      //      (var(--wishlist-width) - var(--button-width) + var(--button-gap) * 2) *
-      //        -1
-      //    )
-      //  );
+      //  transform: translateX(calc((var(--wishlist-width) - var(--button-width) + var(--button-gap) * 2) *-1));
       //}
 
-      &:has(+ .resizable--cart.resizable--visible) {
+      &:has(~ .resizable--account.resizable--visible) {
+        transition-delay: 100ms;
+
+        /* has account active */
+        transform: translateX(calc((var(--account-width) - var(--button-width) + var(--button-gap) * 2) * -1)
+        );
+      }
+
+      &:has(~ .resizable--cart.resizable--visible) {
         transition-delay: 100ms;
 
         /* has cart active */
-        transform: translateX(
-          calc(
-            (var(--minicart-width) - var(--button-width) + var(--button-gap)) *
-              -1
-          )
-        );
+        transform: translateX(calc((var(--minicart-width) - var(--button-width) + var(--button-gap)) * -1));
       }
     }
 
-    //&--wishlist {
-    //  &.resizable--visible {
-    //    @screen md {
-    //      transform: translateX(
-    //        calc(
-    //          var(--button-gap) * -1
-    //        )
-    //      );
-    //    }
-    //  }
-    //
-    //  &:has(~ .resizable--cart.resizable--visible) {
-    //    @screen md {
-    //      transition-delay: 100ms;
-    //
-    //      /* has cart active */
-    //      transform: translateX(
-    //        calc(
-    //          (var(--minicart-width) - var(--button-width) + var(--button-gap)) *
-    //            -1
-    //        )
-    //      );
-    //    }
-    //  }
-    //}
+    //&--wishlist,
+    &--account {
+      &.resizable--visible {
+        @screen md {
+          transform: translateX(calc(var(--button-gap) * -1));
+        }
+      }
+
+      &:has(~ .resizable--cart.resizable--visible) {
+        @screen md {
+          transition-delay: 100ms;
+
+          /* has cart active */
+          transform: translateX(calc((var(--minicart-width) - var(--button-width) + var(--button-gap)) * -1));
+        }
+      }
+    }
   }
 }

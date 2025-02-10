@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Block\SortableItem;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CustomerRegistration;
+use Magento\Framework\Escaper;
+
+/** @var SortableItem $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+/** @var CustomerRegistration $customerRegistration */
+
+$customerRegistration = $viewModels->require(CustomerRegistration::class);
+
+$label = $block->getLabel() ? $block->getLabel() : __('Create an Account');
+?>
+
+<?php if ($customerRegistration->isAllowed()): ?>
+    <a
+        x-element-transition-trigger
+        class="focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1"
+        href="<?= $escaper->escapeUrl($customerRegistration->getRegisterUrl()) ?>"
+        role="link"
+    >
+        <span
+            class="link max-w-full truncate border-transparent transition-colors md:group-hover:border-b-1 md:group-hover:border-current md:group-hover:text-primary-600"
+        >
+            <?= $escaper->escapeHtml($label) ?>
+        </span>
+    </a>
+<?php endif; ?>

@@ -33,13 +33,15 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 <header x-data="{
             isMenuVisible: false,
             isCartVisible: false,
-            isWishlistVisible: false
+            isWishlistVisible: false,
+            isAccountVisible: false,
         }"
         x-init="
             $watch('$store.popup.currentPopup', (value) => {
                 isMenuVisible = value === 'menu';
                 isCartVisible = value === 'cart';
                 isWishlistVisible = value === 'wishlist';
+                isAccountVisible = value === 'account';
             })
         "
         class="header sticky left-0 right-0 top-0 z-[36] flex flex-col justify-items-stretch p-3 md:pointer-events-none"
@@ -82,7 +84,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             </a>
         </div>
         <div class="contents md:flex md:flex-grow md:justify-end">
-            <div class="col-start-5 transition-all md:flex md:items-center z-10"
+            <div class="transition-all flex items-center z-10"
                  :class="{ 'md:drop-shadow-lg': $store.main.isHeaderShadowVisible }"
             >
                 <?=
@@ -110,6 +112,18 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 //     ])
                 //     ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-button.phtml')
                 //     ->render()
+                ?>
+                <?=
+                $resizable
+                    ->setData([
+                        'id' => 'account-desktop',
+                        'initialWidth' => 56,
+                        'initialHeight' => 56,
+                        'right' => true,
+                        'cssClass' => 'resizable--account md:pointer-events-auto',
+                    ])
+                    ->setChildTemplate('Magento_Theme::html/header/account/account-button.phtml')
+                    ->render()
                 ?>
                 <?=
                 $resizable
@@ -170,6 +184,27 @@ $popup
 //     ])
 //     ->setChildTemplate('Magento_Theme::html/header/wishlist/wishlist-overlay.phtml')
 //     ->toHtml()
+?>
+
+<?=
+$popup
+    ->setData([
+        'id' => 'account',
+        'isFocused' => true,
+        'isFullScreen' => true,
+        'desktopTarget' => 'account-desktop',
+    ])
+    ->setChildBlock(
+        $this
+            ->getLayout()
+            ->createBlock(\Magento\Customer\Block\Account\Customer::class)
+            ->setData([
+                'header.customer.logged.in.links' => $block->getChildHtml('header.customer.logged.in.links'),
+                'header.customer.logged.out.links' => $block->getChildHtml('header.customer.logged.out.links'),
+            ])
+            ->setTemplate('Magento_Theme::html/header/account/account-overlay.phtml')
+    )
+    ->toHtml()
 ?>
 
 <?=

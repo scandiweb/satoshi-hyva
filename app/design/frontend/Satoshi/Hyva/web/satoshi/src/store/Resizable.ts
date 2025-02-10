@@ -96,10 +96,6 @@ export const ResizableStore = <ResizableStoreType>{
       Object.keys(this._current).forEach((id) => {
         this.hide(id);
       });
-
-      await new Promise((resolve) => {
-        setTimeout(resolve, 300);
-      });
     }
 
     if (config) {

@@ -84,6 +84,9 @@
 
         <referenceContainer name="main.content" htmlClass="contents" htmlTag="div" />
 
+        <move element="header.customer.logged.in.links" destination="header-content" after="-"/>
+        <move element="header.customer.logged.out.links" destination="header-content" after="-"/>
+
         <move element="main.content" destination="main-content" />
         <move element="top.container" destination="main.content" before="-" />
 
