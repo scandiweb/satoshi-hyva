@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+
+$label = $block->getData('label') ?? __('My Wish List');
+$urlPath = $block->getData('path') ?? 'wishlist';
+?>
+
+<a
+    x-element-transition-trigger
+    class="focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1 relative"
+    href="<?= $escaper->escapeUrl($block->getUrl($urlPath)) ?>"
+    role="link"
+    x-data="{ itemCount: 0 }"
+    @private-content-loaded.window="itemCount = parseInt($event.detail.data.wishlist.counter)"
+>
+    <span
+        class="link max-w-full truncate border-transparent transition-colors md:group-hover:border-b-1 md:group-hover:border-current md:group-hover:text-primary-600"
+    >
+        <?= $escaper->escapeHtml($label) ?>
+        <template x-if="itemCount">
+            <span class="tabular-nums" x-text="`(${itemCount})`"></span>
+        </template>
+    </span>
+</a>

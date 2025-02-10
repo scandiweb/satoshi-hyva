@@ -104,6 +104,8 @@ if (!$menuItems) {
                     <button
                         <?php if ($index === 0): ?>
                             x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
+                        <?php elseif ($index === count($menuItems) - 1): ?>
+                            x-a11y-trap-target.end="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
                         <?php endif; ?>
                         class="menu__link group"
                         @click="setHistory([...'<?= $path ?>'.split(','), '<?= $menuItem['id'] ?>'])"
@@ -142,6 +144,8 @@ if (!$menuItems) {
                     <a
                         <?php if ($index === 0): ?>
                             x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
+                        <?php elseif ($index === count($menuItems) - 1): ?>
+                            x-a11y-trap-target.end="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
                         <?php endif; ?>
                         href="<?= $menuItem['url'] ?>"
                         role="link"
@@ -184,7 +188,6 @@ if (!$menuItems) {
                     x-element-transition-trigger
                     :class="$store.main.isMobile ? 'button button--filled-primary w-full': 'flex items-center'"
                     href="<?= $url ?>"
-                    x-a11y-trap-target.end="$store.popup.currentPopup === 'menu' && history.length !== 1 && history[history.length - 1] === '<?= $id ?>'"
                 >
                     <template x-if="$store.main.isMobile">
                         <span><?= __('View All') ?> <span class="lowercase"><?= $title ?></span></span>
@@ -200,25 +203,6 @@ if (!$menuItems) {
                         </span>
                     </template>
                 </a>
-            </div>
-        </template>
-    <?php endif; ?>
-
-    <?php if ($id === 'all'): ?>
-        <div class="md:mt-[88px]"></div>
-        <template x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('menu-desktop-fixed')">
-            <div
-                class="w-full bg-bg-500 px-4 pb-2 md:w-[--menu-width] md:rounded-md md:pb-4"
-                :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'menu' : !$store.resizable.isVisible('menu-desktop')"
-                x-show="!$store.main.isMobile || ($store.popup.currentPopup == 'menu' && history[history.length - 1] === '<?= $id ?>' && !getIsSearchActive())"
-            >
-                <a
-                    x-element-transition-trigger
-                    :href="$store.main.isUserLoggedIn ? '/customer/account/index' : '/customer/account/login'"
-                    class="button button--filled-primary w-full"
-                    x-text="$store.main.isUserLoggedIn ? '<?= __('My account') ?>' : '<?= __('Login / Signup') ?>'"
-                    x-a11y-trap-target.end="$store.popup.currentPopup === 'menu' && history.length === 1"
-                ></a>
             </div>
         </template>
     <?php endif; ?>

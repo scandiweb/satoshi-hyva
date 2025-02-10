@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SvgIcons;
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\Template;
+use Magento\Customer\Block\Account\Customer;
+
+/** @var ViewModelRegistry $viewModels */
+/** @var Customer $block */
+/** @var Template $template */
+/** @var Escaper $escaper */
+
+/** @var SvgIcons $hyvaicons */
+$hyvaicons = $viewModels->require(SvgIcons::class);
+?>
+
+<div
+    :inert="$store.main.isMobile ? $store.popup.currentPopup !== 'account' : !$store.resizable.isVisible('account-desktop')"
+    class="contents"
+>
+    <div
+        class="flex flex-col gap-5 rounded-md p-5 md:w-[--account-width] bg-bg-500 md:gap-0 md:px-0 md:py-0 max-md:py-0 [.popup\_\_main_&]:px-2"
+    >
+        <div
+            class="flex items-center justify-between bg-bg-500 md:h-[--initial-height] md:min-h-14 md:rounded-md max-md:pb-4 md:px-6 sticky top-0 z-20"
+        >
+            <h1 class="flex items-center text-lg text-text-500 md:text-md">
+                <span class="button__icon mr-4 text-[1.5rem] max-md:hidden">
+                    <?= $hyvaicons->renderHtml('user') ?>
+                </span>
+
+                <?= $escaper->escapeHtml(__('Account')) ?>
+            </h1>
+        </div>
+
+        <div class="max-h-80 pb-4 md:pt-2 md:px-6">
+            <template x-if="$store.main.isUserLoggedIn">
+                <div class="flex flex-col gap-3">
+                    <?= $block->getData('header.customer.logged.in.links') ?>
+                </div>
+            </template>
+
+            <template x-if="!$store.main.isUserLoggedIn">
+                <div class="flex flex-col gap-3">
+                    <?= $block->getData('header.customer.logged.out.links') ?>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>

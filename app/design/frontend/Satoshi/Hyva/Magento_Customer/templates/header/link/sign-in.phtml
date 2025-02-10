@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+use Hyva\Theme\Block\SortableItem;
+use Magento\Framework\Escaper;
+use Magento\Customer\Model\Account\Redirect;
+
+/** @var SortableItem $block */
+/** @var Escaper $escaper */
+
+$label = $block->getLabel() ? $block->getLabel() : __('Sign In');
+?>
+
+<a
+    x-element-transition-trigger
+    class="focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1"
+    onclick="hyva.setCookie && hyva.setCookie(
+        '<?= $escaper->escapeJs(Redirect::LOGIN_REDIRECT_URL) ?>',
+        window.location.href,
+        1
+        )"
+    href="<?= $escaper->escapeUrl($block->getUrl('customer/account/index')) ?>"
+    role="link"
+>
+    <span
+        class="link max-w-full truncate border-transparent transition-colors md:group-hover:border-b-1 md:group-hover:border-current md:group-hover:text-primary-600"
+    >
+        <?= $escaper->escapeHtml($label) ?>
+    </span>
+</a>
