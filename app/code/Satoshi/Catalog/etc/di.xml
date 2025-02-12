@@ -5,4 +5,12 @@
         for="Magento\Catalog\Block\Product\ProductList\Toolbar"
         type="Satoshi\Catalog\Block\Product\ProductList\Toolbar"
     />
+    <preference
+        for="Magento\Catalog\Model\Layer\Filter\Item\DataBuilder"
+        type="Satoshi\Catalog\Model\Layer\Filter\Item\DataBuilder"
+    />
+    <preference
+        for="Magento\Catalog\Model\Layer\Filter\Item"
+        type="Satoshi\Catalog\Model\Layer\Filter\Item"
+    />
 </config>
