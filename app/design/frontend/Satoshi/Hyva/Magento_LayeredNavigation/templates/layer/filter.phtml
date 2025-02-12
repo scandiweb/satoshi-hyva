@@ -37,7 +37,14 @@ $catalogHelper = $this->helper(Data::class);
                                 aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, %2 available products', strip_tags((string)$filterItem->getLabel()), $filterItem->getCount())) ?>"
                             <?php endif; ?>
                         />
-                        <span class="radio__control mr-5" aria-hidden="true"></span>
+                        <?php if ($filterItem->getName() === 'Color' && $filterItem->getSwatchValue()): ?>
+                            <span
+                                class="w-6 h-6 mr-5 p-1 rounded border border-gray-300"
+                                style="background-color: <?= $escaper->escapeHtml($filterItem->getSwatchValue()) ?>;"
+                            ></span>
+                        <?php else: ?>
+                            <span class="radio__control mr-5" aria-hidden="true"></span>
+                        <?php endif; ?>
                     <?php endif; ?>
                     <span class="radio__label ml-0"><?= /* @noEscape */ $filterItem->getLabel() ?></span>
                 </div>
