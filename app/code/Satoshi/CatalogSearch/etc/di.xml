@@ -9,4 +9,8 @@
         for="Magento\CatalogSearch\Block\Advanced\Form"
         type="Satoshi\CatalogSearch\Block\Advanced\Form"
     />
+    <preference
+        for="Magento\CatalogSearch\Model\Layer\Filter\Attribute"
+        type="Satoshi\CatalogSearch\Model\Layer\Filter\Attribute"
+    />
 </config>
