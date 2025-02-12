@@ -27,6 +27,11 @@ class DataBuilder extends BaseDataBuilder
         ];
     }
 
+    /**
+     * Get Items Data
+     *
+     * @return array
+     */
     public function build()
     {
         $result = $this->_itemsData;
