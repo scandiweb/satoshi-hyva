@@ -7,13 +7,11 @@ use Hyva\Theme\ViewModel\SvgIcons;
 use Magento\Framework\Escaper;
 use Magento\LayeredNavigation\Block\Navigation;
 use Satoshi\Theme\Block\Popup;
-use Satoshi\Theme\Block\Template;
 
 /** @var Popup $popup */
 /** @var Navigation $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-/** @var Template $template */
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
@@ -125,17 +123,6 @@ if ($sorter) {
                                             'transition': $store.main.isReducedMotion
                                         }"
                                     >
-                                        <?php if ($escaper->escapeHtml($filter->getName()) === 'Price'): ?>
-                                            <?=
-                                            $template
-                                                ->setData([
-                                                    'min_price_range' => $escaper->escapeHtml($filter->getMinRange()),
-                                                    'max_price_range' => $escaper->escapeHtml($filter->getMaxRange()),
-                                                ])
-                                                ->render('Magento_LayeredNavigation::html/filter-price-range-slider.phtml')
-                                            ?>
-                                        <?php endif; ?>
-
                                         <div class="md:pb-3 md:pt-2" :inert="!isExpanded">
                                             <div class="flex flex-col gap-4 py-3">
                                                 <?= /* @noEscape */ $block->getChildBlock('renderer')->setFilterTitle($filter->getName())->render($filter); ?>
