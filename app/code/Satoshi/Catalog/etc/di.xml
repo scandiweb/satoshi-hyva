@@ -5,4 +5,8 @@
         for="Magento\Catalog\Block\Product\ProductList\Toolbar"
         type="Satoshi\Catalog\Block\Product\ProductList\Toolbar"
     />
+    <preference
+        for="Magento\Catalog\Block\Product\AbstractProduct"
+        type="Satoshi\Catalog\Block\Product\AbstractProduct"
+    />
 </config>

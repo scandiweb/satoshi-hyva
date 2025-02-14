@@ -20,6 +20,8 @@ $configurableViewModel = $viewModels->require(ConfigurableViewModel::class);
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 
+$isReadonly = $block->getIsReadonly();
+
 $product = $block->getProduct();
 $productId = $product->getId();
 
@@ -54,258 +56,300 @@ $maxSalesQtyLength = ($maxSalesQty ? strlen((string)$maxSalesQty) : 4) + (/* add
 // Add to cart things
 $productType = $product->getTypeId();
 $isProductInCart = in_array($productType, ['simple', 'virtual']) && $this->helper(Cart::class)->getQuote()->hasProductId($product->getId());
-
-
 ?>
-<?php if ($product->isSaleable() && count($attributes)): ?>
-    <template x-if="$store.main.isMobile">
-        <div class="contents"
-             x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)">
-            <!-- Options -->
-            <div
-                class="max-md:mx-2"
-            >
-                <div class="flex flex-col gap-5">
-                    <?php foreach ($attributes as $attribute): ?>
-                        <?php $index++ ?>
-                        <?php $attributeId = $attribute->getAttributeId(); ?>
-                        <?php $productAttribute = $attribute->getProductAttribute(); ?>
 
-                        <?php if (!$productAttribute->getUsedInProductListing() && false) {
-                            continue;
-                        } ?>
+<?php if ($isReadonly): ?>
+    <?php if (count($attributes)): ?>
+        <div
+            class="flex flex-col gap-3 mt-4 max-md:hidden"
+            x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)"
+        >
+            <?php $index = 0; ?>
+            <?php foreach ($attributes as $i => $attribute): ?>
+                <?php $index++ ?>
+                <?php $attributeId = $attribute->getAttributeId(); ?>
+                <?php $productAttribute = $attribute->getProductAttribute(); ?>
 
-                        <div
-                            role="radiogroup"
-                            aria-required="true"
-                            aria-label="<?= $escaper->escapeHtmlAttr(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>"
-                            class="flex h-full w-full flex-col items-center justify-between gap-3 <?= $escaper->escapeHtmlAttr($productAttribute->getAttributeCode()) ?>"
+                <?php if (!$productAttribute->getUsedInProductListing()) {
+                    continue;
+                } ?>
+
+                <?php if ($swatchRendererViewModel->isSwatchAttribute($productAttribute)): ?>
+                    <article class="flex h-fit w-full flex-wrap gap-3 min-h-5 <?= $escaper->escapeHtmlAttr($productAttribute->getAttributeCode()) ?>">
+                        <template
+                            x-for="(item, index) in getTruncatedAttributeOptions(<?= (int)$attributeId ?>)"
+                            :key="item.id"
                         >
-                            <?php if ($swatchRendererViewModel->isSwatchAttribute($productAttribute)): ?>
-                                <div class="relative flex h-full w-full flex-row items-center justify-between">
-                                    <span class="font-semibold text-text-500"
-                                          id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>">
-                                    <?= $escaper->escapeHtml(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>
-                                    </span>
+                            <?= /* @noEscape */
+                            $swatchItemBlock
+                                ->setData('attribute_id', $attributeId)
+                                ->setData('is_readonly', $isReadonly)
+                                ->toHtml() ?>
+                        </template>
 
-                                    <?php if ($index === 1): ?>
-                                        <button
-                                            type="button"
-                                            class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
-                                            aria-label="<?= __('Close') ?>"
-                                            @click.prevent="hideProductActions()"
-                                        >
-                                            <?= $hyvaicons->renderHtml('close') ?>
-                                        </button>
-                                    <?php endif; ?>
-                                </div>
+                        <template x-if="getMoreAttributeOptionsText(<?= (int)$attributeId ?>)">
+                            <span
+                                class="font-medium leading-5"
+                                x-text="getMoreAttributeOptionsText(<?= (int)$attributeId ?>)"
+                            ></span>
+                        </template>
+                    </article>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+<?php else: ?>
+    <?php if ($product->isSaleable() && count($attributes)): ?>
+        <template x-if="$store.main.isMobile">
+            <div class="contents"
+                 x-init="initAttributes(<?= $escaper->escapeHtmlAttr($block->getJsonSwatchConfig()) ?>, <?= $escaper->escapeHtmlAttr($block->getJsonConfig()) ?>)">
+                <!-- Options -->
+                <div
+                    class="max-md:mx-2"
+                >
+                    <div class="flex flex-col gap-5">
+                        <?php foreach ($attributes as $attribute): ?>
+                            <?php $index++ ?>
+                            <?php $attributeId = $attribute->getAttributeId(); ?>
+                            <?php $productAttribute = $attribute->getProductAttribute(); ?>
 
-                                <article class="flex h-fit w-full flex-wrap gap-3">
-                                    <template
-                                        x-for="(item, index) in optionConfig.attributes[<?= (int)$attributeId ?>].options"
-                                        :key="item.id"
-                                    >
-                                        <?= /* @noEscape */
-                                        $swatchItemBlock
-                                            ->setData('attribute_id', $attributeId)
-                                            ->setData('form_id', 'quick_buy_form_' . $product->getId())
-                                            ->toHtml() ?>
-                                    </template>
-                                </article>
-                            <?php else: ?>
-                                <div class="relative flex h-full w-full flex-row items-center justify-between">
-                                    <label for="attribute_<?= $attribute->getAttributeId() ?>"
-                                           class="font-semibold text-text-500">
-                                        <?= $escaper->escapeHtml(__('Select your %1', strtolower($attribute->getProductAttribute()->getStoreLabel()))) ?>
-                                    </label>
+                            <?php if (!$productAttribute->getUsedInProductListing() && false) {
+                                continue;
+                            } ?>
 
-                                    <?php if ($index === 1): ?>
-                                        <button
-                                            type="button"
-                                            class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
-                                            aria-label="<?= __('Close') ?>"
-                                            @click.prevent="hideProductActions()"
-                                        >
-                                            <?= $hyvaicons->renderHtml('close') ?>
-                                        </button>
-                                    <?php endif; ?>
-                                </div>
-                                <article class="flex h-fit w-full flex-wrap gap-3">
-                                    <label
-                                        for="attribute_<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>"
-                                        class="sr-only">
-                                        <?= $escaper->escapeHtml(__('Choose an Option...')) ?>
-                                    </label>
-                                    <select
-                                        name="super_attribute[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>]"
-                                        id="attribute_<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>"
-                                        class="w-full h-9 px-5 input__field"
-                                        x-on:change="changeOption(<?= (int)$attribute->getAttributeId() ?>, event.target.value)"
-                                        form="quick_buy_form_<?= $product->getId() ?>"
-                                        required
-                                    >
-                                        <option value="">
-                                            <?= $escaper->escapeHtml(__('Choose an Option...')) ?>
-                                        </option>
+                            <div
+                                role="radiogroup"
+                                aria-required="true"
+                                aria-label="<?= $escaper->escapeHtmlAttr(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>"
+                                class="flex h-full w-full flex-col items-center justify-between gap-3 <?= $escaper->escapeHtmlAttr($productAttribute->getAttributeCode()) ?>"
+                            >
+                                <?php if ($swatchRendererViewModel->isSwatchAttribute($productAttribute)): ?>
+                                    <div class="relative flex h-full w-full flex-row items-center justify-between">
+                                        <span class="font-semibold text-text-500"
+                                              id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>">
+                                        <?= $escaper->escapeHtml(__('Select your %1', strtolower($productAttribute->getStoreLabel()))) ?>
+                                        </span>
+
+                                        <?php if ($index === 1): ?>
+                                            <button
+                                                type="button"
+                                                class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+                                                aria-label="<?= __('Close') ?>"
+                                                @click.prevent="hideProductActions()"
+                                            >
+                                                <?= $hyvaicons->renderHtml('close') ?>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <article class="flex h-fit w-full flex-wrap gap-3">
                                         <template
-                                            x-for="(item, index) in allowedAttributeOptions[<?= (int)$attribute->getAttributeId() ?>]"
+                                            x-for="(item, index) in optionConfig.attributes[<?= (int)$attributeId ?>].options"
                                             :key="item.id"
                                         >
-                                            <option
-                                                :value="item.id"
-                                                x-html="item.label"
-                                                :selected="selectedValues[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>] === item.id">
-                                            </option>
+                                            <?= /* @noEscape */
+                                            $swatchItemBlock
+                                                ->setData('attribute_id', $attributeId)
+                                                ->setData('form_id', 'quick_buy_form_' . $product->getId())
+                                                ->setData('is_readonly', $isReadonly)
+                                                ->toHtml() ?>
                                         </template>
-                                    </select>
-                                </article>
-                            <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <div class="min-h-20 md:hidden"></div>
-            <template x-portal="document.getElementById('popup-fixed-content-portal')">
-                <div x-show="$store.popup.currentPopup === productActionsPopup">
-                    <div class="bg-bg-500 relative z-10 md:rounded-b-md max-md:px-3 w-full">
-                        <div class="flex flex-grow justify-stretch gap-3 bg-bg-500 relative">
-                            <!-- Quantity Control -->
-                            <button
-                                type="button"
-                                class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-md md:icon-button--size-lg"
-                                :class="
-                                        {
-                                            'button--disabled': (!isVariantInCart && variantQty === 1)
-                                        }
-                                    "
-                                :aria-label="variantQty > 1 ? '<?= __('Decrease quantity') ?>' : '<?= __('Remove from cart') ?>'"
-                                :disabled="!isVariantInCart && variantQty === 1"
-                                @click.prevent.stop="decreaseQty()"
-                            >
-                                    <span class="sr-only">
-                                        <?= __('Decrease quantity for %1', $product->getName()) ?>
-                                    </span>
-                                <span
-                                    x-show="variantQty < 2"
-                                    x-cloak <?php // Replace this with auto display none if variant qty > 1 ?>
-                                    >
-                                        <?= $hyvaicons->renderHtml('remove'); ?>
-                                    </span>
-                                <span
-                                    x-show="variantQty > 1"
-                                    x-cloak <?php // Replace this with auto display none if variant qty < 2 ?>
-                                        >
-                                        <?= $hyvaicons->renderHtml('minus'); ?>
-                                    </span>
-                            </button>
-
-                            <label for="quantity" class="sr-only tracking-widest">
-                                <?= __('Quantity') ?>
-                            </label>
-                            <input
-                                <?php if ($stockItemViewModel->isQtyDecimal($product)): ?>
-                                    type="text"
-                                    pattern="[0-9]+(\.[0-9]{1,<?= /** @noEscape */
-                                    $maxSalesQtyLength ?>})?"
-                                    inputmode="decimal"
+                                    </article>
                                 <?php else: ?>
-                                    type="number"
-                                    pattern="[0-9]{0,<?= /** @noEscape */
-                                    $maxSalesQtyLength ?>}"
-                                    inputmode="numeric"
-                                    <?php if ($minSalesQty): ?>min="<?= /** @noEscape */
-                                    $minSalesQty ?>"<?php endif; ?>
-                                    <?php if ($maxSalesQty): ?>max="<?= /** @noEscape */
-                                    $maxSalesQty ?>"<?php endif; ?>
-                                    <?php if ($step): ?>step="<?= /** @noEscape */
-                                    $step ?>"<?php endif; ?>
+                                    <div class="relative flex h-full w-full flex-row items-center justify-between">
+                                        <label for="attribute_<?= $attribute->getAttributeId() ?>"
+                                               class="font-semibold text-text-500">
+                                            <?= $escaper->escapeHtml(__('Select your %1', strtolower($attribute->getProductAttribute()->getStoreLabel()))) ?>
+                                        </label>
+
+                                        <?php if ($index === 1): ?>
+                                            <button
+                                                type="button"
+                                                class="button button--outline-secondary icon-button icon-button--size-xs md:hidden"
+                                                aria-label="<?= __('Close') ?>"
+                                                @click.prevent="hideProductActions()"
+                                            >
+                                                <?= $hyvaicons->renderHtml('close') ?>
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
+                                    <article class="flex h-fit w-full flex-wrap gap-3">
+                                        <label
+                                            for="attribute_<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>"
+                                            class="sr-only">
+                                            <?= $escaper->escapeHtml(__('Choose an Option...')) ?>
+                                        </label>
+                                        <select
+                                            name="super_attribute[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>]"
+                                            id="attribute_<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>"
+                                            class="w-full h-9 px-5 input__field"
+                                            x-on:change="changeOption(<?= (int)$attribute->getAttributeId() ?>, event.target.value)"
+                                            form="quick_buy_form_<?= $product->getId() ?>"
+                                            required
+                                        >
+                                            <option value="">
+                                                <?= $escaper->escapeHtml(__('Choose an Option...')) ?>
+                                            </option>
+                                            <template
+                                                x-for="(item, index) in allowedAttributeOptions[<?= (int)$attribute->getAttributeId() ?>]"
+                                                :key="item.id"
+                                            >
+                                                <option
+                                                    :value="item.id"
+                                                    x-html="item.label"
+                                                    :selected="selectedValues[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>] === item.id">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </article>
                                 <?php endif; ?>
-                                name="qty"
-                                :value="variantQty || 1"
-                                class="animate-on-transition input__field flex-shrink-0 basis-14 text-center md:h-auto bg-transparent"
-                                min="1"
-                                @change.lazy="setQuantity($event.target.value)"
-                                aria-label="<?= __('Quantity') ?>"
-                                id="quantity"
-                                form="quick_buy_form_<?= $product->getId() ?>"
-                            >
-
-                            <button
-                                type="button"
-                                class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-md md:icon-button--size-lg"
-                                aria-label="<?= __('Increase quantity') ?>"
-                                @click.prevent.stop="increaseQty()"
-                                :class="
-                                            {
-                                            'button--disabled': !<?= $product->isSaleable() ?>
-                                            }
-                                        "
-                                :disabled="!<?= $product->isSaleable() ?>"
-                            >
-                                        <span class="sr-only">
-                                            <?= __('Increase quantity') ?>
-                                        </span>
-                                <?= $hyvaicons->renderHtml('plus'); ?>
-                            </button>
-
-                            <!-- Product actions buttons -->
-                            <!-- Add to cart button -->
-                            <button
-                                <?php if ($isProductInCart): ?>
-                                    style="display: none"
-                                <?php endif; ?>
-                                x-show="!isVariantInCart"
-                                class="animate-on-transition button button--filled-primary flex-grow"
-                                :class="
-                                        {
-                                            'md:hidden': isVariantInCart,
-                                            'max-md:hidden': isVariantInCart,
-                                            'button--disabled': isProductBeingAdded || isProductBeingRemoved
-                                        }
-                                    "
-                                type="submit"
-                                form="quick_buy_form_<?= $product->getId() ?>"
-                                title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
-                                data-addto="cart"
-                                :disabled="isProductBeingAdded || isProductBeingRemoved"
-                            >
-                                    <span
-                                        class="flex"
-                                        x-show="!isProductBeingAdded && !isProductBeingRemoved"
-                                    >
-                                        <?= __('Add to cart') ?>
-                                        <span class="button__icon button__icon--right">
-                                            <?= $hyvaicons->renderHtml('shopping-bag'); ?>
-                                        </span>
-                                    </span>
-
-                                <span style="display: none" x-show="isProductBeingRemoved">
-                                        <?= __('Removing from cart...') ?>
-                                    </span>
-
-                                <span style="display: none" x-show="isProductBeingAdded">
-                                        <?= __('Adding...') ?>
-                                    </span>
-                            </button>
-
-                            <button
-                                <?php if (!$isProductInCart): ?>
-                                    style="display: none"
-                                <?php endif; ?>
-                                x-show="isVariantInCart"
-                                class="animate-on-transition button button--disabled button--outline-secondary flex-grow"
-                                @click.prevent="$store.cart.showCart()"
-                                type="button"
-                            >
-                                    <span>
-                                        <?= __('Already in cart') ?>
-                                    </span>
-                            </button>
-                        </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
-            </template>
-        </div>
-    </template>
+
+                <div class="min-h-20 md:hidden"></div>
+                <template x-portal="document.getElementById('popup-fixed-content-portal')">
+                    <div x-show="$store.popup.currentPopup === productActionsPopup">
+                        <div class="bg-bg-500 relative z-10 md:rounded-b-md max-md:px-3 w-full">
+                            <div class="flex flex-grow justify-stretch gap-3 bg-bg-500 relative">
+                                <!-- Quantity Control -->
+                                <button
+                                    type="button"
+                                    class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-md md:icon-button--size-lg"
+                                    :class="
+                                            {
+                                                'button--disabled': (!isVariantInCart && variantQty === 1)
+                                            }
+                                        "
+                                    :aria-label="variantQty > 1 ? '<?= __('Decrease quantity') ?>' : '<?= __('Remove from cart') ?>'"
+                                    :disabled="!isVariantInCart && variantQty === 1"
+                                    @click.prevent.stop="decreaseQty()"
+                                >
+                                        <span class="sr-only">
+                                            <?= __('Decrease quantity for %1', $product->getName()) ?>
+                                        </span>
+                                    <span
+                                        x-show="variantQty < 2"
+                                        x-cloak <?php // Replace this with auto display none if variant qty > 1 ?>
+                                        >
+                                            <?= $hyvaicons->renderHtml('remove'); ?>
+                                        </span>
+                                    <span
+                                        x-show="variantQty > 1"
+                                        x-cloak <?php // Replace this with auto display none if variant qty < 2 ?>
+                                            >
+                                            <?= $hyvaicons->renderHtml('minus'); ?>
+                                        </span>
+                                </button>
+
+                                <label for="quantity" class="sr-only tracking-widest">
+                                    <?= __('Quantity') ?>
+                                </label>
+                                <input
+                                    <?php if ($stockItemViewModel->isQtyDecimal($product)): ?>
+                                        type="text"
+                                        pattern="[0-9]+(\.[0-9]{1,<?= /** @noEscape */
+                                        $maxSalesQtyLength ?>})?"
+                                        inputmode="decimal"
+                                    <?php else: ?>
+                                        type="number"
+                                        pattern="[0-9]{0,<?= /** @noEscape */
+                                        $maxSalesQtyLength ?>}"
+                                        inputmode="numeric"
+                                        <?php if ($minSalesQty): ?>min="<?= /** @noEscape */
+                                        $minSalesQty ?>"<?php endif; ?>
+                                        <?php if ($maxSalesQty): ?>max="<?= /** @noEscape */
+                                        $maxSalesQty ?>"<?php endif; ?>
+                                        <?php if ($step): ?>step="<?= /** @noEscape */
+                                        $step ?>"<?php endif; ?>
+                                    <?php endif; ?>
+                                    name="qty"
+                                    :value="variantQty || 1"
+                                    class="animate-on-transition input__field flex-shrink-0 basis-14 text-center md:h-auto bg-transparent"
+                                    min="1"
+                                    @change.lazy="setQuantity($event.target.value)"
+                                    aria-label="<?= __('Quantity') ?>"
+                                    id="quantity"
+                                    form="quick_buy_form_<?= $product->getId() ?>"
+                                >
+
+                                <button
+                                    type="button"
+                                    class="animate-on-transition button button--outline-secondary icon-button select-none icon-button--size-md md:icon-button--size-lg"
+                                    aria-label="<?= __('Increase quantity') ?>"
+                                    @click.prevent.stop="increaseQty()"
+                                    :class="
+                                                {
+                                                'button--disabled': !<?= $product->isSaleable() ?>
+                                                }
+                                            "
+                                    :disabled="!<?= $product->isSaleable() ?>"
+                                >
+                                            <span class="sr-only">
+                                                <?= __('Increase quantity') ?>
+                                            </span>
+                                    <?= $hyvaicons->renderHtml('plus'); ?>
+                                </button>
+
+                                <!-- Product actions buttons -->
+                                <!-- Add to cart button -->
+                                <button
+                                    <?php if ($isProductInCart): ?>
+                                        style="display: none"
+                                    <?php endif; ?>
+                                    x-show="!isVariantInCart"
+                                    class="animate-on-transition button button--filled-primary flex-grow"
+                                    :class="
+                                            {
+                                                'md:hidden': isVariantInCart,
+                                                'max-md:hidden': isVariantInCart,
+                                                'button--disabled': isProductBeingAdded || isProductBeingRemoved
+                                            }
+                                        "
+                                    type="submit"
+                                    form="quick_buy_form_<?= $product->getId() ?>"
+                                    title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
+                                    data-addto="cart"
+                                    :disabled="isProductBeingAdded || isProductBeingRemoved"
+                                >
+                                        <span
+                                            class="flex"
+                                            x-show="!isProductBeingAdded && !isProductBeingRemoved"
+                                        >
+                                            <?= __('Add to cart') ?>
+                                            <span class="button__icon button__icon--right">
+                                                <?= $hyvaicons->renderHtml('shopping-bag'); ?>
+                                            </span>
+                                        </span>
+
+                                    <span style="display: none" x-show="isProductBeingRemoved">
+                                            <?= __('Removing from cart...') ?>
+                                        </span>
+
+                                    <span style="display: none" x-show="isProductBeingAdded">
+                                            <?= __('Adding...') ?>
+                                        </span>
+                                </button>
+
+                                <button
+                                    <?php if (!$isProductInCart): ?>
+                                        style="display: none"
+                                    <?php endif; ?>
+                                    x-show="isVariantInCart"
+                                    class="animate-on-transition button button--disabled button--outline-secondary flex-grow"
+                                    @click.prevent="$store.cart.showCart()"
+                                    type="button"
+                                >
+                                        <span>
+                                            <?= __('Already in cart') ?>
+                                        </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+    <?php endif; ?>
 <?php endif; ?>
