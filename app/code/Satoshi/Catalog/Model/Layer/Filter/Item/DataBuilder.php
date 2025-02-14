@@ -26,16 +26,4 @@ class DataBuilder extends BaseDataBuilder
             'swatch_value' => $swatchValue,
         ];
     }
-
-    /**
-     * Get Items Data
-     *
-     * @return array
-     */
-    public function build()
-    {
-        $result = $this->_itemsData;
-        $this->_itemsData = [];
-        return $result;
-    }
 }
