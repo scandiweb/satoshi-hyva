@@ -1,100 +1,114 @@
 import type { Magics } from "alpinejs";
-import { FILTER_PRICE, FILTER_PRICE_MIN, FILTER_PRICE_MAX } from "./Filters";
+import { FILTER_PRICE, FILTER_PRICE_PARAM_NAME } from "./Filters";
 
 export type RangeSliderType = {
-  [key: string | symbol]: any;
-
-  isLeftThumbActive: boolean;
   isRightThumbActive: boolean;
-  isResetting: boolean;
-  min: number;
-  max: number;
-  minValue: number;
-  maxValue: number;
+  isLeftThumbActive: boolean;
+  minRange: number;
+  maxRange: number;
+  currentMinValue: number;
+  currentMaxValue: number;
+  rangeMinSpace: number;
+  sliderRect: DOMRect | null;
+  priceFilterTimeout: ReturnType<typeof setTimeout> | null;
 
-  onMinValueInput(): void;
-  onMaxValueInput(): void;
-  onValueChange(): void;
-  onTrackClick(event: MouseEvent): void;
-  resetValues(): void;
+  init(): void;
+  updateThumbPositions(): void;
+  applyPriceFilter(): void;
+  onThumbDrag(side: 'left' | 'right'): void;
+  setActiveRangeValuesFromURL(): void;
 } & Magics<{}>;
 
 export const ANIMATION_DURATION = 300;
+export const RANGE_MIN_SPACE = 5;
+export const RANGE_SLIDER_CONTAINER_CLASS = "range-slider-container";
 
 export const RangeSlider = (
-  min: number | unknown,
-  max: number | unknown,
-  minValue: number | unknown,
-  maxValue: number | unknown,
+  minRange: number | unknown,
+  maxRange: number | unknown
 ) =>
   <RangeSliderType>{
-    isLeftThumbActive: false,
     isRightThumbActive: false,
-    isResetting: false,
-    min: Number(min),
-    max: Number(max),
-    minValue: Number(minValue),
-    maxValue: Number(maxValue),
+    isLeftThumbActive: false,
+    minRange: Number(minRange) || 0,
+    maxRange: Number(maxRange),
+    currentMinValue: Number(minRange) || 0,
+    currentMaxValue: Number(maxRange),
+    sliderRect: null,
+    rangeMinSpace: RANGE_MIN_SPACE,
+    priceFilterTimeout: null,
 
-    onMinValueInput() {
-      this.isLeftThumbActive = true;
-      this.minValue = Math.min(this.minValue, this.maxValue - 1);
+    init() {
+      this.sliderRect = (document.querySelector(`.${RANGE_SLIDER_CONTAINER_CLASS}`) as Element).getBoundingClientRect();
+      this.setActiveRangeValuesFromURL();
     },
 
-    onMaxValueInput() {
-      this.isRightThumbActive = true;
-      this.maxValue = Math.max(this.maxValue, this.minValue + 1);
-    },
+    updateThumbPositions() {
+      this.currentMinValue = Math.min(this.currentMinValue, this.currentMaxValue - this.rangeMinSpace);
+      this.currentMaxValue = Math.max(this.currentMaxValue, this.currentMinValue + this.rangeMinSpace);
 
-    onValueChange() {
-      this.isLeftThumbActive = false;
-      this.isRightThumbActive = false;
-      this.updateFilters();
-    },
-
-    onTrackClick(event: MouseEvent) {
-      const trackPosition = (event.target as Element).getBoundingClientRect();
-      const clickPosition = event.pageX - trackPosition.left;
-      const midpoint = this.minValue + (this.maxValue - this.minValue) / 2;
-      const pxByUnit =
-        (trackPosition.right - trackPosition.left) / (this.max - this.min);
-      const clickedValue = Math.round(clickPosition / pxByUnit);
-
-      this.isResetting = true;
-
-      if (clickedValue > midpoint) {
-        this.maxValue = clickedValue;
-      } else {
-        this.minValue = clickedValue;
+      // Debounce ApplyFilter to prevent it from being called too frequently
+      if (this.priceFilterTimeout) {
+        clearTimeout(this.priceFilterTimeout);
       }
 
-      setTimeout(() => {
-        this.isResetting = false;
-        this.onValueChange();
+      this.priceFilterTimeout = setTimeout(() => {
+        this.applyPriceFilter();
       }, ANIMATION_DURATION);
     },
 
-    resetValues() {
-      if (
-        !this.$event.detail.name ||
-        this.$event.detail.name === FILTER_PRICE ||
-        this.$event.detail.name === FILTER_PRICE_MIN
-      ) {
-        this.isResetting = true;
-        this.minValue = this.min;
-      }
+    applyPriceFilter() {
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set(FILTER_PRICE_PARAM_NAME, `${this.currentMinValue}-${this.currentMaxValue}`);
+      const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
 
-      if (
-        !this.$event.detail.name ||
-        this.$event.detail.name === FILTER_PRICE ||
-        this.$event.detail.name === FILTER_PRICE_MAX
-      ) {
-        this.isResetting = true;
-        this.maxValue = this.max;
-      }
+      // @ts-ignore
+      this.selectFilter(FILTER_PRICE, newUrl);
+    },
 
-      setTimeout(() => {
-        this.isResetting = false;
-      }, ANIMATION_DURATION);
+    onThumbDrag(side: 'left' | 'right') {
+      const isLeft = side === 'left';
+      const isRight = side === 'right';
+
+      const onMouseMove = (evt: MouseEvent | TouchEvent) => {
+        if (!this.sliderRect) return;
+
+        let x = evt instanceof TouchEvent ? evt.touches[0].clientX : evt.clientX; // Handle both mouse and touch
+        const pos = (x - this.sliderRect.left) / this.sliderRect.width;
+        const newValue = Math.round(pos * (this.maxRange - this.minRange) + this.minRange);
+
+        if (isLeft) {
+          this.isLeftThumbActive = true;
+          this.currentMinValue = Math.min(Math.max(newValue, this.minRange), this.currentMaxValue - this.rangeMinSpace);
+        } else if (isRight) {
+          this.isRightThumbActive = true;
+          this.currentMaxValue = Math.max(Math.min(newValue, this.maxRange), this.currentMinValue + this.rangeMinSpace);
+        }
+
+        this.updateThumbPositions();
+      };
+
+      const onMouseUp = () => {
+        if (isLeft) {
+          this.isLeftThumbActive = false;
+        } else if (isRight) {
+          this.isRightThumbActive = false;
+        }
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    },
+
+    setActiveRangeValuesFromURL() {
+      const urlPriceRange = new URLSearchParams(window.location.search).get(FILTER_PRICE_PARAM_NAME);
+      if (urlPriceRange) {
+        const [urlMin, urlMax] = urlPriceRange.split("-").map(Number);
+
+        if (!isNaN(urlMin)) this.currentMinValue = urlMin;
+        if (!isNaN(urlMax)) this.currentMaxValue = urlMax;
+      }
     },
   };
