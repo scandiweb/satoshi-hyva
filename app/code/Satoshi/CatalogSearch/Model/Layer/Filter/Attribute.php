@@ -8,12 +8,10 @@ use Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\CatalogSearch\Model\Layer\Filter\Attribute as BaseAttribute;
 use Magento\Swatches\Helper\Data as SwatchHelper;
-use Satoshi\Catalog\Model\Layer\Filter\AbstractFilterTrait;
+use Satoshi\Catalog\Model\Layer\Filter\Item;
 
 class Attribute extends BaseAttribute
 {
-    use AbstractFilterTrait;
-
     /**
      * @var \Magento\Framework\Filter\StripTags
      */
@@ -153,5 +151,49 @@ class Attribute extends BaseAttribute
         return isset($optionsFacetedData[$value]['count'])
             ? (int)$optionsFacetedData[$value]['count']
             : 0;
+    }
+
+
+    // Methods below are overridden from AbstractFilter class
+
+    /**
+     * Initialize filter items
+     *
+     * @return  $this
+     * @throws LocalizedException
+     */
+    protected function _initItems()
+    {
+        $data = $this->_getItemsData();
+        $items = [];
+        foreach ($data as $itemData) {
+            $items[] = $this->_createItem(
+                $itemData['label'],
+                $itemData['value'],
+                $itemData['count'],
+                $itemData['swatch_value'] ?? null
+            );
+        }
+        $this->_items = $items;
+        return $this;
+    }
+
+    /**
+     * Create filter item object
+     *
+     * @param string $label
+     * @param mixed $value
+     * @param int $count
+     * @param string|null $swatchValue
+     * @return  Item
+     */
+    protected function _createItem($label, $value, $count = 0, $swatchValue = null)
+    {
+        return $this->_filterItemFactory->create()
+            ->setFilter($this)
+            ->setLabel($label)
+            ->setValue($value)
+            ->setSwatchValue($swatchValue)
+            ->setCount($count);
     }
 }
