@@ -33,7 +33,14 @@ $catalogHelper = $this->helper(Data::class);
 
 <div aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>" role="radiogroup">
     <?php foreach ($filterItems as $filterItem): ?>
-        <div class="relative h-11 w-full">
+        <div class="relative h-11 w-full"
+             x-init="()=>{
+             <?php if ($escaper->escapeJs($filter->getName()) === 'Price'): ?>
+                console.log('getMinRange', '<?= $escaper->escapeJs($filter->getMinRange()) ?>');
+                console.log('getMaxRange', '<?= $escaper->escapeJs($filter->getMaxRange()) ?>');
+             <?php endif; ?>
+             }"
+        >
             <label for="filter-item-<?= $filterItem->getName() ?>-<?= $filterItem->getValueString() ?>" class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
                 <div class="flex items-center">
                     <?php if ($filterItem->getCount() > 0): ?>
