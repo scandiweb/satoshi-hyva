@@ -9,7 +9,6 @@ export type RangeSliderType = {
   currentMinValue: number;
   currentMaxValue: number;
   rangeMinSpace: number;
-  sliderRect: DOMRect | null;
   priceFilterTimeout: ReturnType<typeof setTimeout> | null;
 
   init(): void;
@@ -19,7 +18,7 @@ export type RangeSliderType = {
   setActiveRangeValuesFromURL(): void;
 } & Magics<{}>;
 
-export const ANIMATION_DURATION = 300;
+export const ANIMATION_DURATION = 350;
 export const RANGE_MIN_SPACE = 5;
 export const RANGE_SLIDER_CONTAINER_CLASS = "range-slider-container";
 
@@ -34,18 +33,25 @@ export const RangeSlider = (
     maxRange: Number(maxRange),
     currentMinValue: Number(minRange) || 0,
     currentMaxValue: Number(maxRange),
-    sliderRect: null,
     rangeMinSpace: RANGE_MIN_SPACE,
     priceFilterTimeout: null,
 
     init() {
-      this.sliderRect = (document.querySelector(`.${RANGE_SLIDER_CONTAINER_CLASS}`) as Element).getBoundingClientRect();
       this.setActiveRangeValuesFromURL();
     },
 
     updateThumbPositions() {
-      this.currentMinValue = Math.min(this.currentMinValue, this.currentMaxValue - this.rangeMinSpace);
-      this.currentMaxValue = Math.max(this.currentMaxValue, this.currentMinValue + this.rangeMinSpace);
+      if (this.currentMinValue < this.minRange) {
+        this.currentMinValue = this.minRange;
+      } else if (this.currentMinValue > this.currentMaxValue - this.rangeMinSpace) {
+        this.currentMinValue = this.currentMaxValue - this.rangeMinSpace;
+      }
+
+      if (this.currentMaxValue > this.maxRange) {
+        this.currentMaxValue = this.maxRange;
+      } else if (this.currentMaxValue < this.currentMinValue + this.rangeMinSpace) {
+        this.currentMaxValue = this.currentMinValue + this.rangeMinSpace;
+      }
 
       // Debounce ApplyFilter to prevent it from being called too frequently
       if (this.priceFilterTimeout) {
@@ -70,11 +76,13 @@ export const RangeSlider = (
       const isLeft = side === 'left';
       const isRight = side === 'right';
 
-      const onMouseMove = (evt: MouseEvent | TouchEvent) => {
-        if (!this.sliderRect) return;
+      const onMouseOrTouchMove = (evt: MouseEvent | TouchEvent) => {
+        const sliderRect = (document.querySelector(`.${RANGE_SLIDER_CONTAINER_CLASS}`) as Element).getBoundingClientRect();
+
+        if (!sliderRect) return;
 
         let x = evt instanceof TouchEvent ? evt.touches[0].clientX : evt.clientX; // Handle both mouse and touch
-        const pos = (x - this.sliderRect.left) / this.sliderRect.width;
+        const pos = (x - sliderRect.left) / sliderRect.width;
         const newValue = Math.round(pos * (this.maxRange - this.minRange) + this.minRange);
 
         if (isLeft) {
@@ -88,18 +96,22 @@ export const RangeSlider = (
         this.updateThumbPositions();
       };
 
-      const onMouseUp = () => {
+      const onMouseOrTouchUp = () => {
         if (isLeft) {
           this.isLeftThumbActive = false;
         } else if (isRight) {
           this.isRightThumbActive = false;
         }
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener('mousemove', onMouseOrTouchMove);
+        document.removeEventListener('mouseup', onMouseOrTouchUp);
+        document.removeEventListener('touchmove', onMouseOrTouchMove);
+        document.removeEventListener('touchend', onMouseOrTouchUp);
       };
 
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+      document.addEventListener('mousemove', onMouseOrTouchMove);
+      document.addEventListener('mouseup', onMouseOrTouchUp);
+      document.addEventListener('touchmove', onMouseOrTouchMove);
+      document.addEventListener('touchend', onMouseOrTouchUp);
     },
 
     setActiveRangeValuesFromURL() {

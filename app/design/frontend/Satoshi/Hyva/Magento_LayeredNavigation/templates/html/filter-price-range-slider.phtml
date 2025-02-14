@@ -15,7 +15,7 @@ $maxPriceRange = (int)$block->getData('max_price_range') ?? '';
 ?>
 
 <div x-data="RangeSlider(<?= $minPriceRange ?>, <?= $maxPriceRange ?>)">
-    <div class="grid grid-cols-2 gap-3 mb-4">
+    <div class="grid grid-cols-2 gap-3 mb-5">
         <label for="filter-current-min-price" class="range-slider-input">
             <div class="range-slider-input-label">
                 <p><?= __('Min') ?></p>
@@ -29,7 +29,7 @@ $maxPriceRange = (int)$block->getData('max_price_range') ?? '';
                 :max="currentMaxValue"
                 :value="currentMinValue"
                 x-model="currentMinValue"
-                @input.debounce.300ms="updateThumbPositions"
+                @input.blur="updateThumbPositions"
                 aria-label="<?= __('Min') ?>"
             />
         </label>
@@ -47,7 +47,7 @@ $maxPriceRange = (int)$block->getData('max_price_range') ?? '';
                 :max="maxRange"
                 :value="currentMaxValue"
                 x-model="currentMaxValue"
-                @input.debounce.300ms="updateThumbPositions"
+                @input.blur="updateThumbPositions"
                 aria-label="<?= __('Max') ?>"
             />
         </label>
@@ -56,11 +56,11 @@ $maxPriceRange = (int)$block->getData('max_price_range') ?? '';
     <div class="range-slider-container relative h-8">
         <div tabindex="-1" class="relative inline-block h-full w-full touch-none select-none py-4 outline-0">
             <label for="filter-max-price-range" class="sr-only tracking-widest">From</label>
-            <input type="range" step="1" :min="minRange" :max="currentMaxValue" class="range-slider-hidden-input hidden"
+            <input type="range" step="1" :min="minRange" :max="currentMaxValue" class="range-slider-hidden-input"
                    :value="currentMinValue" aria-label="<?= __('From') ?>" id="filter-max-price-range" tabindex="-1"/>
 
             <label for="filter-min-price-range" class="sr-only tracking-widest">To</label>
-            <input type="range" step="1" :min="currentMinValue" :max="maxRange" class="range-slider-hidden-input hidden"
+            <input type="range" step="1" :min="currentMinValue" :max="maxRange" class="range-slider-hidden-input"
                    :value="currentMaxValue" aria-label="<?= __('To') ?>" id="filter-min-price-range" tabindex="-1"/>
 
             <div class="range-slider-track">
@@ -87,10 +87,10 @@ $maxPriceRange = (int)$block->getData('max_price_range') ?? '';
             :aria-valuetext="currentMinValue + ''"
             @mousedown="onThumbDrag('left')"
             @touchstart="onThumbDrag('left')"
-            @keydown.left="currentMinValue > minRange && currentMinValue--"
-            @keydown.right="currentMinValue < currentMaxValue - rangeMinSpace && currentMinValue++"
-            @keydown.down.prevent="currentMinValue = minRange"
-            @keydown.up.prevent="currentMinValue = currentMaxValue - rangeMinSpace"
+            @keydown.left="currentMinValue > minRange && (currentMinValue--, updateThumbPositions())"
+            @keydown.right="currentMinValue < currentMaxValue - rangeMinSpace && (currentMinValue++, updateThumbPositions())"
+            @keydown.down.prevent="currentMinValue = minRange; updateThumbPositions()"
+            @keydown.up.prevent="currentMinValue = currentMaxValue - rangeMinSpace; updateThumbPositions()"
         ></div>
 
         <!-- Right Thumb -->
@@ -109,10 +109,10 @@ $maxPriceRange = (int)$block->getData('max_price_range') ?? '';
             :aria-valuetext="currentMaxValue + ''"
             @mousedown="onThumbDrag('right')"
             @touchstart="onThumbDrag('right')"
-            @keydown.left="currentMaxValue > currentMinValue + rangeMinSpace && currentMaxValue--"
-            @keydown.right="currentMaxValue < maxRange && currentMaxValue++"
-            @keydown.down.prevent="currentMaxValue = currentMinValue + rangeMinSpace"
-            @keydown.up.prevent="currentMaxValue = maxRange"
+            @keydown.left="currentMaxValue > currentMinValue + rangeMinSpace && (currentMaxValue--, updateThumbPositions())"
+            @keydown.right="currentMaxValue < maxRange && (currentMaxValue++, updateThumbPositions())"
+            @keydown.down.prevent="currentMaxValue = currentMinValue + rangeMinSpace; updateThumbPositions()"
+            @keydown.up.prevent="currentMaxValue = maxRange; updateThumbPositions()"
         ></div>
     </div>
 </div>

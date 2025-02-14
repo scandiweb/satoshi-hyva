@@ -3,7 +3,7 @@
     @apply relative isolate flex w-full;
 
     &-label {
-      @apply absolute left-0 top-0 z-10 flex h-full w-16 items-center justify-start pl-5 text-md;
+      @apply absolute left-0 top-0 z-10 flex h-full w-16 items-center justify-start pl-5 text-md text-text-500;
     }
 
     &-field {
@@ -16,7 +16,7 @@
   }
 
   &-hidden-input {
-    @apply pointer-events-none absolute z-20 h-2 w-full cursor-pointer appearance-none bg-transparent opacity-0;
+    @apply pointer-events-none absolute z-20 h-2 w-full cursor-pointer appearance-none bg-transparent opacity-0 hidden;
 
     /* Slider thumb styles */
     @apply /* Chrome */
