@@ -9,7 +9,9 @@ use Magento\CatalogSearch\Model\Layer\Filter\Attribute as BaseAttribute;
 use Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Filter\StripTags;
 use Magento\Swatches\Helper\Data as SwatchHelper;
+use Satoshi\Catalog\Model\Layer\Filter\Item;
 
 /**
  * Layer attribute filter
@@ -17,16 +19,21 @@ use Magento\Swatches\Helper\Data as SwatchHelper;
 class Attribute extends BaseAttribute
 {
     /**
-     * @var \Magento\Framework\Filter\StripTags
+     * @var StripTags
      */
-    private $tagFilter;
+    private StripTags $tagFilter;
+
+    /**
+     * @var SwatchHelper
+     */
+    private SwatchHelper $swatchHelper;
 
     /**
      * @param ItemFactory $filterItemFactory
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Catalog\Model\Layer $layer
      * @param \Satoshi\Catalog\Model\Layer\Filter\Item\DataBuilder $itemDataBuilder
-     * @param \Magento\Framework\Filter\StripTags $tagFilter
+     * @param StripTags $tagFilter
      * @param SwatchHelper $swatchHelper
      * @param array $data
      */
@@ -35,7 +42,7 @@ class Attribute extends BaseAttribute
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Catalog\Model\Layer $layer,
         \Magento\Catalog\Model\Layer\Filter\Item\DataBuilder $itemDataBuilder,
-        \Magento\Framework\Filter\StripTags $tagFilter,
+        StripTags $tagFilter,
         SwatchHelper $swatchHelper,
         array $data = []
     ) {
@@ -112,6 +119,18 @@ class Attribute extends BaseAttribute
     }
 
     /**
+     * Get Hashcode of Visual swatch by option id
+     *
+     * @param int $optionId
+     * @return string|null
+     */
+    public function getAttributeSwatchHashcode($optionId): ?string
+    {
+        $hashcodeData = $this->swatchHelper->getSwatchesByOptionsId([$optionId]);
+        return isset($hashcodeData[$optionId]) ? $hashcodeData[$optionId]['value'] : null;
+    }
+
+    /**
      * Get data array for building attribute filter items
      *
      * @return array
@@ -161,10 +180,16 @@ class Attribute extends BaseAttribute
             return;
         }
 
+        $swatchValue = null;
+        if ($this->getAttributeModel()->getAttributeCode() === 'color') {
+            $swatchValue = $this->getAttributeSwatchHashcode($value);
+        }
+
         $this->itemDataBuilder->addItemData(
             $this->tagFilter->filter($option['label']),
             $value,
-            $count
+            $count,
+            $swatchValue
         );
     }
 
@@ -194,5 +219,47 @@ class Attribute extends BaseAttribute
         return isset($optionsFacetedData[$value]['count'])
             ? (int)$optionsFacetedData[$value]['count']
             : 0;
+    }
+
+    // Methods below are overridden from AbstractFilter class
+    /**
+     * Initialize filter items
+     *
+     * @return  $this
+     * @throws LocalizedException
+     */
+    protected function _initItems()
+    {
+        $data = $this->_getItemsData();
+        $items = [];
+        foreach ($data as $itemData) {
+            $items[] = $this->_createItem(
+                $itemData['label'],
+                $itemData['value'],
+                $itemData['count'],
+                $itemData['swatch_value'] ?? null
+            );
+        }
+        $this->_items = $items;
+        return $this;
+    }
+
+    /**
+     * Create filter item object
+     *
+     * @param string $label
+     * @param mixed $value
+     * @param int $count
+     * @param string|null $swatchValue
+     * @return  Item
+     */
+    protected function _createItem($label, $value, $count = 0, $swatchValue = null)
+    {
+        return $this->_filterItemFactory->create()
+            ->setFilter($this)
+            ->setLabel($label)
+            ->setValue($value)
+            ->setSwatchValue($swatchValue)
+            ->setCount($count);
     }
 }
