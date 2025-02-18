@@ -13,8 +13,9 @@ export type FiltersType = {
   selectSort(sortKey: string, sortDir: string): void;
   applySort(): void;
   removeSort(): void;
-  selectFilter(filterName: string, filterUrl: string): void;
-  applyFilters(filterName: string): void;
+  selectFilter(filterName: string, filterValue: string, filterUrl: string, isRadioType: boolean): void;
+  applyFilters(filterName: string, filterValue?: string, isRadioType?: boolean): void;
+  isFilterSelected(filterName: string, filterValue?: string): boolean;
   showFilters(isTopLevel?: boolean, currentName?: string): void;
   hideFilters(): void;
   onResetButtonClick(): void;
@@ -121,7 +122,7 @@ export const Filters = (
           [FILTER_SORT_KEY]: this.selectedSort.key,
           [FILTER_SORT_DIR]: this.selectedSort.dir,
         });
-        navigateWithTransition(newUrl);
+        navigateWithTransition(decodeURIComponent(newUrl));
       }
     },
 
@@ -132,18 +133,18 @@ export const Filters = (
         FILTER_SORT_KEY,
         FILTER_SORT_DIR,
       ]);
-      navigateWithTransition(newUrl);
+      navigateWithTransition(decodeURIComponent(newUrl));
     },
 
-    selectFilter(filterName, filterUrl) {
-      this.selectedFilters[filterName] = filterUrl;
+    selectFilter(filterName, filterValue, filterUrl, isRadioType = false) {
+      this.selectedFilters[filterName + filterValue] = filterUrl;
 
       if (!Alpine.store("main").isMobile) {
-        this.applyFilters(filterName);
+        this.applyFilters(filterName, filterValue, isRadioType);
       }
     },
 
-    applyFilters(filterName) {
+    applyFilters(filterName, filterValue, isRadioType) {
       const url = window.location.href;
 
       this.hideFilters();
@@ -152,13 +153,55 @@ export const Filters = (
           [FILTER_SORT_KEY]: this.selectedSort.key,
           [FILTER_SORT_DIR]: this.selectedSort.dir,
         });
-        return navigateWithTransition(newUrl);
+        return navigateWithTransition(decodeURIComponent(newUrl));
       }
 
-      const filterUrl = this.selectedFilters[filterName];
-      if (filterUrl) {
-        navigateWithTransition(filterUrl);
+      if (isRadioType) {
+        const filterUrl = this.selectedFilters[filterName + filterValue];
+        if (filterUrl) {
+          navigateWithTransition(decodeURIComponent(filterUrl));
+        }
+        return;
       }
+
+      if (filterValue && this.isFilterSelected(filterName, filterValue)) {
+        const parsedUrl = new URL(url);
+        const queryParams = parsedUrl.searchParams;
+        const selectedValues = queryParams.get(filterName);
+
+        if (selectedValues) {
+          const selectedValuesArray = selectedValues.split(',').filter(value => value !== filterValue);
+          if (selectedValuesArray.length > 0) {
+            queryParams.set(filterName, selectedValuesArray.join(','));
+          } else {
+            queryParams.delete(filterName);
+          }
+        }
+
+        const newUrl = parsedUrl.toString();
+        return navigateWithTransition(decodeURIComponent(newUrl));
+      }
+
+      const filterUrl = this.selectedFilters[filterName + filterValue];
+      if (filterUrl) {
+        navigateWithTransition(decodeURIComponent(filterUrl));
+      }
+    },
+
+    isFilterSelected(filterName, filterValue) {
+      if (filterValue) {
+        const url = window.location.href;
+        const parsedUrl = new URL(url);
+        const queryParams = parsedUrl.searchParams;
+
+        const selectedValues = queryParams.get(filterName);
+        if (selectedValues) {
+          const selectedValuesArray = selectedValues.split(',');
+          return selectedValuesArray.includes(filterValue);
+        }
+      }
+
+      return false;
     },
 
     showFilters(isTopLevel = true, currentName = "") {

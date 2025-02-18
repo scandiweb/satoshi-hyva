@@ -17,7 +17,7 @@ class DataBuilder extends BaseDataBuilder
      * @param string|null $swatchValue
      * @return void
      */
-    public function addItemData($label, $value, $count, string $swatchValue = null): void
+    public function addItemData($label, $value, $count, $swatchValue = null): void
     {
         $this->_itemsData[] = [
             'label' => $label,

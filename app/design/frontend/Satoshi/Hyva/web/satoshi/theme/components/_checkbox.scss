@@ -21,13 +21,19 @@
       }
     }
 
-    &:checked ~ .checkbox__label {
-      @apply font-semibold text-primary-500;
+    &:checked ~ {
+      .checkbox__label {
+        @apply font-semibold text-primary-500;
+      }
+
+      .checkbox__swatch {
+        @apply border-primary-500;
+      }
     }
   }
 
   &__control {
-    @apply inline-flex h-6 w-6 cursor-pointer items-center justify-center rounded-xs border border-solid border-text-400 text-md text-bg-500 transition-colors duration-200;
+    @apply inline-flex h-6 w-6 mr-5 cursor-pointer items-center justify-center rounded-xs border border-solid border-text-400 text-md text-bg-500 transition-colors duration-200;
 
     svg {
       @apply scale-50 stroke-current stroke-2 opacity-0 transition-transform duration-200;
@@ -42,10 +48,18 @@
   }
 
   &__label {
-    @apply ml-3 cursor-pointer;
+    @apply cursor-pointer transition-colors duration-200;
 
     .checkbox:hover & {
       @apply md:text-primary-500;
+    }
+  }
+
+  &__swatch {
+    @apply w-6 h-6 mr-5 p-1 rounded border border-gray-300 transition-colors duration-200;
+
+    .checkbox:hover & {
+      @apply md:border-primary-500;
     }
   }
 }
