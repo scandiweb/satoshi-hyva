@@ -14,15 +14,17 @@ class DataBuilder extends BaseDataBuilder
      * @param string $label
      * @param string $value
      * @param int $count
+     * @param string|null $paramKey
      * @param string|null $swatchValue
      * @return void
      */
-    public function addItemData($label, $value, $count, $swatchValue = null): void
+    public function addItemData($label, $value, $count, $paramKey = null, $swatchValue = null): void
     {
         $this->_itemsData[] = [
             'label' => $label,
             'value' => $value,
             'count' => $count,
+            'param_key' => $paramKey,
             'swatch_value' => $swatchValue,
         ];
     }
