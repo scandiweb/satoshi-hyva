@@ -14,12 +14,13 @@ export type FiltersType = {
   applySort(): void;
   removeSort(): void;
   selectFilter(filterName: string, filterValue: string, filterUrl: string, isRadioType: boolean): void;
-  applyFilters(filterName: string, filterValue?: string, isRadioType?: boolean): void;
-  isFilterSelected(filterName: string, filterValue?: string): boolean;
+  applyFilters(filterName: string, filterValue: string, isRadioType: boolean): void;
   showFilters(isTopLevel?: boolean, currentName?: string): void;
   hideFilters(): void;
   onResetButtonClick(): void;
   clearAllFilters(): void;
+  isFilterSelected(filterKey: string): boolean;
+  loadSelectedFilters(): void;
 } & ProductListType;
 
 const POPUP_FILTERS = "filters";
@@ -75,6 +76,8 @@ export const Filters = (
     isTopFilterVisible: null,
 
     init() {
+      this.loadSelectedFilters();
+
       // Change popup height on content change
       this.$watch("currentName", (value, oldValue) => {
         if (value != oldValue) {
@@ -122,7 +125,7 @@ export const Filters = (
           [FILTER_SORT_KEY]: this.selectedSort.key,
           [FILTER_SORT_DIR]: this.selectedSort.dir,
         });
-        navigateWithTransition(decodeURIComponent(newUrl));
+        navigateWithTransition(newUrl);
       }
     },
 
@@ -133,7 +136,7 @@ export const Filters = (
         FILTER_SORT_KEY,
         FILTER_SORT_DIR,
       ]);
-      navigateWithTransition(decodeURIComponent(newUrl));
+      navigateWithTransition(newUrl);
     },
 
     selectFilter(filterName, filterValue, filterUrl, isRadioType = false) {
@@ -144,7 +147,7 @@ export const Filters = (
       }
     },
 
-    applyFilters(filterName, filterValue, isRadioType) {
+    applyFilters(filterName, filterValue = '', isRadioType = false) {
       const url = window.location.href;
 
       this.hideFilters();
@@ -153,18 +156,16 @@ export const Filters = (
           [FILTER_SORT_KEY]: this.selectedSort.key,
           [FILTER_SORT_DIR]: this.selectedSort.dir,
         });
-        return navigateWithTransition(decodeURIComponent(newUrl));
+        return navigateWithTransition(newUrl);
       }
 
       if (isRadioType) {
         const filterUrl = this.selectedFilters[filterName + filterValue];
-        if (filterUrl) {
-          navigateWithTransition(decodeURIComponent(filterUrl));
-        }
+        if (filterUrl) navigateWithTransition(filterUrl);
         return;
       }
 
-      if (filterValue && this.isFilterSelected(filterName, filterValue)) {
+      if (filterValue && this.isFilterSelected(filterName + filterValue)) {
         const parsedUrl = new URL(url);
         const queryParams = parsedUrl.searchParams;
         const selectedValues = queryParams.get(filterName);
@@ -184,24 +185,8 @@ export const Filters = (
 
       const filterUrl = this.selectedFilters[filterName + filterValue];
       if (filterUrl) {
-        navigateWithTransition(decodeURIComponent(filterUrl));
+        navigateWithTransition(filterUrl);
       }
-    },
-
-    isFilterSelected(filterName, filterValue) {
-      if (filterValue) {
-        const url = window.location.href;
-        const parsedUrl = new URL(url);
-        const queryParams = parsedUrl.searchParams;
-
-        const selectedValues = queryParams.get(filterName);
-        if (selectedValues) {
-          const selectedValuesArray = selectedValues.split(',');
-          return selectedValuesArray.includes(filterValue);
-        }
-      }
-
-      return false;
     },
 
     showFilters(isTopLevel = true, currentName = "") {
@@ -228,5 +213,23 @@ export const Filters = (
       ]);
 
       navigateWithTransition(url);
+    },
+
+    isFilterSelected(filterKey) {
+      return this.selectedFilters.hasOwnProperty(filterKey);
+    },
+
+    loadSelectedFilters() {
+      const url = window.location.href;
+      const parsedUrl = new URL(url);
+      const searchParams = parsedUrl.searchParams;
+
+      searchParams.forEach((value, key) => {
+        const filterValues = value.split(',');
+
+        filterValues.forEach(filterValue => {
+          this.selectedFilters[`${key}${filterValue}`] = url;
+        });
+      });
     },
   };

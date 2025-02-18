@@ -39,13 +39,14 @@ class Attribute extends BaseAttribute
      */
     public function __construct(
         \Magento\Catalog\Model\Layer\Filter\ItemFactory $filterItemFactory,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Catalog\Model\Layer $layer,
+        \Magento\Store\Model\StoreManagerInterface      $storeManager,
+        \Magento\Catalog\Model\Layer                    $layer,
         \Magento\Catalog\Model\Layer\Filter\Item\DataBuilder $itemDataBuilder,
-        StripTags $tagFilter,
-        SwatchHelper $swatchHelper,
-        array $data = []
-    ) {
+        StripTags                                       $tagFilter,
+        SwatchHelper                                    $swatchHelper,
+        array                                           $data = []
+    )
+    {
         $this->tagFilter = $tagFilter;
         $this->swatchHelper = $swatchHelper;
 
@@ -62,7 +63,7 @@ class Attribute extends BaseAttribute
     /**
      * Apply attribute option filter to product collection
      *
-     * @param  RequestInterface  $request
+     * @param RequestInterface $request
      *
      * @return $this
      * @throws LocalizedException
@@ -175,6 +176,7 @@ class Attribute extends BaseAttribute
      * @param boolean $isAttributeFilterable
      * @param array $optionsFacetedData
      * @return void
+     * @throws LocalizedException
      */
     private function buildOptionData($option, $isAttributeFilterable, $optionsFacetedData)
     {
@@ -187,8 +189,9 @@ class Attribute extends BaseAttribute
             return;
         }
 
+        $paramKey = $this->getAttributeModel()->getAttributeCode();
         $swatchValue = null;
-        if ($this->getAttributeModel()->getAttributeCode() === 'color') {
+        if ($paramKey === 'color') {
             $swatchValue = $this->getAttributeSwatchHashcode($value);
         }
 
@@ -196,7 +199,8 @@ class Attribute extends BaseAttribute
             $this->tagFilter->filter($option['label']),
             $value,
             $count,
-            $swatchValue
+            $paramKey,
+            $swatchValue,
         );
     }
 
@@ -229,6 +233,7 @@ class Attribute extends BaseAttribute
     }
 
     // Methods below are overridden from AbstractFilter class
+
     /**
      * Initialize filter items
      *
@@ -244,7 +249,8 @@ class Attribute extends BaseAttribute
                 $itemData['label'],
                 $itemData['value'],
                 $itemData['count'],
-                $itemData['swatch_value'] ?? null
+                $itemData['param_key'],
+                $itemData['swatch_value'] ?? null,
             );
         }
         $this->_items = $items;
@@ -257,17 +263,26 @@ class Attribute extends BaseAttribute
      * @param string $label
      * @param mixed $value
      * @param int $count
+     * @param string|null $paramKey
      * @param string|null $swatchValue
      * @param mixed|null $singleValue
      * @return  Item
      */
-    protected function _createItem($label, $value, $count = 0, $swatchValue = null, $singleValue = null)
+    protected function _createItem(
+        $label,
+        $value,
+        $count = 0,
+        $paramKey = null,
+        $swatchValue = null,
+        $singleValue = null,
+    )
     {
         return $this->_filterItemFactory->create()
             ->setFilter($this)
             ->setLabel($label)
             ->setValue($value)
             ->setCount($count)
+            ->setParamKey($paramKey)
             ->setSwatchValue($swatchValue)
             ->setSingleValue($singleValue ?? $value);
     }
