@@ -87,16 +87,23 @@ class Attribute extends BaseAttribute
             }, $attributeValues)
         );
 
-        $labels = [];
-        foreach ((array)$attributeValue as $value) {
+        $filters = [];
+        foreach ($attributeValues as $value) {
             $label = $this->getOptionText($value);
-            $labels[] = is_array($label) ? $label : [$label];
+            if (is_array($label)) {
+                $label = implode(' ', $label);
+            }
+
+            $filters[] = [
+                'label' => $label,
+                'value' => $value
+            ];
         }
 
-        foreach (array_unique(array_merge([], ...$labels)) as $label) {
+        foreach ($filters as $filter) {
             $this->getLayer()
                 ->getState()
-                ->addFilter($this->_createItem($label, $attributeValue));
+                ->addFilter($this->_createItem($filter['label'], $attributeValue, singleValue: $filter['value']));
         }
 
         return $this;
@@ -251,15 +258,17 @@ class Attribute extends BaseAttribute
      * @param mixed $value
      * @param int $count
      * @param string|null $swatchValue
+     * @param mixed|null $singleValue
      * @return  Item
      */
-    protected function _createItem($label, $value, $count = 0, $swatchValue = null)
+    protected function _createItem($label, $value, $count = 0, $swatchValue = null, $singleValue = null)
     {
         return $this->_filterItemFactory->create()
             ->setFilter($this)
             ->setLabel($label)
             ->setValue($value)
+            ->setCount($count)
             ->setSwatchValue($swatchValue)
-            ->setCount($count);
+            ->setSingleValue($singleValue ?? $value);
     }
 }
