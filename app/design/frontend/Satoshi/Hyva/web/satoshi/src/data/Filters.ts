@@ -92,6 +92,7 @@ export const Filters = (
     setupPopupWatcher() {
       // Change popup height on content change
       this.$watch("currentName", (value, oldValue) => {
+        // Reset the updated filter URL when closing the current filter, specifically on mobile devices
         this.appliedFilterUrl = window.location.href;
         if (value != oldValue) {
           this.$nextTick(() => {
