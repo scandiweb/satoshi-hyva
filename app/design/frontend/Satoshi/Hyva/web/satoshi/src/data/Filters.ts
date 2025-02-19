@@ -35,9 +35,7 @@ const POPUP_BOTTOM_FILTERS = "bottom-filters";
 export const FILTER_SORT_KEY = "product_list_order";
 export const FILTER_SORT_DIR = "product_list_dir";
 export const FILTER_PRICE = "Price";
-export const FILTER_PRICE_PARAM_NAME = "filter.v.price";
-export const FILTER_PRICE_MIN = "filter.v.price.gte";
-export const FILTER_PRICE_MAX = "filter.v.price.lte";
+export const FILTER_PRICE_PARAM_NAME = "price";
 
 export const modifyUrlParams = (
   url: string,
