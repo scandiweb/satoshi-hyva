@@ -11,17 +11,21 @@
       @apply focus-ring;
     }
 
-    &:checked + .checkbox__control {
-      @apply border-primary-500 bg-primary-500;
+    &:checked + {
+      .radio__control,
+      .checkbox__control {
+        @apply border-primary-500 bg-primary-500;
 
-      svg {
-        @apply scale-100 transform opacity-100;
+        svg {
+          @apply scale-100 transform opacity-100;
 
-        stroke-dashoffset: 0;
+          stroke-dashoffset: 0;
+        }
       }
     }
 
     &:checked ~ {
+      .radio__label,
       .checkbox__label {
         @apply font-semibold text-primary-500;
       }

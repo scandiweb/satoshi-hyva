@@ -20,7 +20,8 @@ $catalogHelper = $this->helper(Data::class);
 $isRadioType = $filter->getName() === 'Price';
 ?>
 
-<div aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>" role="group">
+<div aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>"
+     role="<?= $isRadioType ? 'group' : 'radiogroup' ?>">
     <?php foreach ($filterItems as $filterItem): ?>
         <div class="relative h-11 w-full">
             <label for="filter-item-<?= $filterItem->getName() ?>-<?= $filterItem->getValueString() ?>"
@@ -32,8 +33,18 @@ $isRadioType = $filter->getName() === 'Price';
                             name="filter-item-<?= $filter->getName() ?>"
                             id="filter-item-<?= $filterItem->getName() ?>-<?= $filterItem->getValueString() ?>"
                             class="<?= $isRadioType ? 'radio__input' : 'checkbox__input' ?>"
-                            @change="selectFilter('<?= $escaper->escapeJs($filterItem->getParamKey()) ?>', '<?= $escaper->escapeJs($filterItem->getValueString()) ?>','<?= $escaper->escapeUrl($filterItem->getUrl()) ?>', <?= $isRadioType ?>)"
-                            :checked="isFilterSelected('<?= $escaper->escapeJs($filterItem->getParamKey() . $filterItem->getValueString()) ?>')"
+                            @change="selectFilter(
+                                '<?= $escaper->escapeJs($filterItem->getParamKey()) ?>',
+                                '<?= !$isRadioType ? $escaper->escapeJs($filterItem->getValueString()) : '' ?>',
+                                '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>',
+                                <?= $isRadioType ? 'true' : 'false' ?>,
+                                $event.target.checked
+                            )"
+                            <?php if ($isRadioType): ?>
+                                :checked="selectedFilters['<?= $escaper->escapeJs($filterItem->getParamKey()) ?>'] === '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>'"
+                            <?php else: ?>
+                                :checked="isFilterSelected('<?= $escaper->escapeJs($filterItem->getParamKey() . $filterItem->getValueString()) ?>')"
+                            <?php endif; ?>
                             <?php if ((int) $filterItem->getCount() === 1): ?>
                                 aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, 1 available product', strip_tags((string)$filterItem->getLabel()))) ?>"
                             <?php else: ?>
