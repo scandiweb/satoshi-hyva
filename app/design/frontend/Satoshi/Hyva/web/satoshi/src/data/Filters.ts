@@ -7,20 +7,26 @@ export type FiltersType = {
   selectedSort: Record<string, string>;
   isTopLevel: boolean;
   currentName: string;
+  currentFilterName: string;
+  currentFilterValue: string;
+  appliedFilterUrl: string;
   isTopFilterVisible: null | boolean;
 
   init(): void;
+  setupPopupWatcher(): void;
   selectSort(sortKey: string, sortDir: string): void;
   applySort(): void;
   removeSort(): void;
-  selectFilter(filterName: string, filterValue: string, filterUrl: string, isRadioType: boolean): void;
-  applyFilters(filterName: string, filterValue: string, isRadioType: boolean): void;
+  selectFilter(filterName: string, filterValue: string, filterUrl: string, isRadioType?: boolean, isInputChecked?: boolean): void;
+  applyFilters(filterName: string, filterValue: string, isRadioType?: boolean): void;
   showFilters(isTopLevel?: boolean, currentName?: string): void;
   hideFilters(): void;
   onResetButtonClick(): void;
   clearAllFilters(): void;
   isFilterSelected(filterKey: string): boolean;
   loadSelectedFilters(): void;
+  updateFilterUrl(filterName: string, filterValue: string, filterUrl: string): string;
+  updateMobileFilterUrl(filterName: string, filterValue: string): string;
 } & ProductListType;
 
 const POPUP_FILTERS = "filters";
@@ -73,13 +79,20 @@ export const Filters = (
     selectedSort: initialSort,
     isTopLevel: false,
     currentName: "",
+    currentFilterName: "",
+    appliedFilterUrl: "",
+    currentFilterValue: "",
     isTopFilterVisible: null,
 
     init() {
       this.loadSelectedFilters();
+      this.setupPopupWatcher();
+    },
 
+    setupPopupWatcher() {
       // Change popup height on content change
       this.$watch("currentName", (value, oldValue) => {
+        this.appliedFilterUrl = window.location.href;
         if (value != oldValue) {
           this.$nextTick(() => {
             // setTimeout fixes content height calculations in some cases
@@ -106,10 +119,7 @@ export const Filters = (
     },
 
     selectSort(sortKey, sortDir) {
-      this.selectedSort = {
-        key: sortKey,
-        dir: sortDir,
-      };
+      this.selectedSort = {key: sortKey, dir: sortDir};
 
       if (!Alpine.store("main").isMobile) {
         this.applySort();
@@ -139,12 +149,25 @@ export const Filters = (
       navigateWithTransition(newUrl);
     },
 
-    selectFilter(filterName, filterValue, filterUrl, isRadioType = false) {
+    selectFilter(filterName, filterValue, filterUrl, isRadioType = false, isInputChecked = false) {
       this.selectedFilters[filterName + filterValue] = filterUrl;
 
-      if (!Alpine.store("main").isMobile) {
-        this.applyFilters(filterName, filterValue, isRadioType);
+      if (!isInputChecked && !isRadioType) {
+        this.appliedFilterUrl = this.updateFilterUrl(filterName, filterValue, filterUrl);
       }
+
+      if (Alpine.store("main").isMobile) {
+        this.currentFilterName = filterName;
+        this.currentFilterValue = filterValue;
+        if (isRadioType) {
+          this.appliedFilterUrl = filterUrl;
+        } else if (isInputChecked) {
+          this.appliedFilterUrl = filterName ? this.updateMobileFilterUrl(filterName, filterValue) : filterUrl;
+        }
+        return;
+      }
+
+      this.applyFilters(filterName, filterValue, isRadioType);
     },
 
     applyFilters(filterName, filterValue = '', isRadioType = false) {
@@ -159,28 +182,14 @@ export const Filters = (
         return navigateWithTransition(newUrl);
       }
 
+      if (this.appliedFilterUrl && (Alpine.store("main").isMobile || !this.isFilterSelected(filterName + filterValue))) {
+        return navigateWithTransition(this.appliedFilterUrl);
+      }
+
       if (isRadioType) {
         const filterUrl = this.selectedFilters[filterName + filterValue];
         if (filterUrl) navigateWithTransition(filterUrl);
         return;
-      }
-
-      if (filterValue && this.isFilterSelected(filterName + filterValue)) {
-        const parsedUrl = new URL(url);
-        const queryParams = parsedUrl.searchParams;
-        const selectedValues = queryParams.get(filterName);
-
-        if (selectedValues) {
-          const selectedValuesArray = selectedValues.split(',').filter(value => value !== filterValue);
-          if (selectedValuesArray.length > 0) {
-            queryParams.set(filterName, selectedValuesArray.join(','));
-          } else {
-            queryParams.delete(filterName);
-          }
-        }
-
-        const newUrl = parsedUrl.toString();
-        return navigateWithTransition(decodeURIComponent(newUrl));
       }
 
       const filterUrl = this.selectedFilters[filterName + filterValue];
@@ -221,6 +230,7 @@ export const Filters = (
 
     loadSelectedFilters() {
       const url = window.location.href;
+      this.appliedFilterUrl = url;
       const parsedUrl = new URL(url);
       const searchParams = parsedUrl.searchParams;
 
@@ -231,5 +241,43 @@ export const Filters = (
           this.selectedFilters[`${key}${filterValue}`] = url;
         });
       });
+    },
+
+    updateFilterUrl(filterName: string, filterValue: string, filterUrl: string) {
+      const parsedUrl = new URL(filterUrl);
+      const queryParams = parsedUrl.searchParams;
+      const selectedValues = queryParams.get(filterName);
+
+      if (selectedValues) {
+        const selectedValuesArray = selectedValues.split(',').filter(value => value !== filterValue);
+        if (selectedValuesArray.length > 0) {
+          queryParams.set(filterName, selectedValuesArray.join(','));
+        } else {
+          queryParams.delete(filterName);
+        }
+      }
+
+      return decodeURIComponent(parsedUrl.toString());
+    },
+
+    // This method was created since on mobile we may apply multiple filters at once
+    updateMobileFilterUrl(filterName: string, filterValue: string) {
+      const parsedUrl = new URL(this.appliedFilterUrl || window.location.href);
+      const queryParams = parsedUrl.searchParams;
+      const selectedValues = queryParams.get(filterName);
+
+      // If the filter already exists in the URL, we update it by adding the filterValue
+      if (selectedValues) {
+        const selectedValuesArray = selectedValues.split(',');
+        if (!selectedValuesArray.includes(filterValue)) {
+          selectedValuesArray.push(filterValue);
+          queryParams.set(filterName, selectedValuesArray.join(','));
+        }
+      } else {
+        // If the filter doesn't exist, create a new filter with the filterValue
+        queryParams.append(filterName, filterValue);
+      }
+
+      return decodeURIComponent(parsedUrl.toString());
     },
   };
