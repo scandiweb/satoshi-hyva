@@ -69,7 +69,7 @@ export const RangeSlider = (
       const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
 
       // @ts-ignore
-      this.selectFilter(FILTER_PRICE, newUrl);
+      this.selectFilter(FILTER_PRICE, `${this.currentMinValue}-${this.currentMaxValue}`, newUrl, true);
     },
 
     onThumbDrag(side: 'left' | 'right') {
