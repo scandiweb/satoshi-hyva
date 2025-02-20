@@ -8,6 +8,8 @@ use Magento\Catalog\Model\Layer\Filter\Item as BaseItem;
 
 class Item extends BaseItem
 {
+    use FilterTypeTrait;
+
     /**
      * Get the URL for the filter item
      *
@@ -25,15 +27,20 @@ class Item extends BaseItem
             parse_str($queryString, $queryParams);
         }
 
-        $currentFilterValues = isset($queryParams[$filterName]) ? explode(',', $queryParams[$filterName]) : [];
+        if ($this->isRadioFilter($this->getName())) {
+            $queryParams[$filterName] = $filterValue;
+        } else {
+            // For checkboxes filters, handle comma-separated values
+            $currentFilterValues = isset($queryParams[$filterName]) ? explode(',', $queryParams[$filterName]) : [];
 
-        // Only add the filter value if it's not already selected
-        if (!in_array($filterValue, $currentFilterValues)) {
-            $currentFilterValues[] = $filterValue;
+            // Only add the filter value if it's not already selected
+            if (!in_array($filterValue, $currentFilterValues)) {
+                $currentFilterValues[] = $filterValue;
+            }
+
+            // Update the URL query parameter with the updated filter values (comma-separated)
+            $queryParams[$filterName] = implode(',', $currentFilterValues);
         }
-
-        // Update the URL with the new filter values
-        $queryParams[$filterName] = implode(',', $currentFilterValues);
 
         return str_replace('%2C', ',', $this->_url->getUrl('*/*/*', [
             '_current' => true,

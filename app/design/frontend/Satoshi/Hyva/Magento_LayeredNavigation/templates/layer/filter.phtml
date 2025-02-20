@@ -19,7 +19,7 @@ $catalogHelper = $this->helper(Data::class);
 /** @var FilterInterface $filter */
 /** @var Template $template */
 
-$isRadioType = $filter->getName() === 'Price';
+$isRadioType = $filter->isRadioFilter($filter->getName());
 ?>
 
 <?php if ($escaper->escapeHtml($filter->getName()) === 'Price'): ?>
