@@ -105,7 +105,16 @@ if ($sorter) {
                         <!-- Desktop filters -->
                         <?php foreach ($block->getFilters() as $filter): ?>
                             <?php if ($filter->getItemsCount()): ?>
-                                <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(false, 300)">
+                                <fieldset
+                                    class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden"
+                                    id="<?= $escaper->escapeJs(($filter->getName())) ?>-filter-container"
+                                    x-data="Accordion(false, 300)"
+                                    x-init="$nextTick(() => {
+                                        if (isFilterNameSelected('<?= $escaper->escapeJs($filter->getName()) ?>')) {
+                                            $refs.AccordionButton.click();
+                                        }
+                                    })"
+                                >
                                     <div class="group hidden h-11 w-full cursor-pointer items-center rounded-md py-3 md:flex md:px-2" x-ref="AccordionButton">
                                         <h2 class="grow text-left text-text-500"><?= $escaper->escapeHtml(__($filter->getName())) ?></h2>
                                         <button class="button button--outline-secondary icon-button icon-button--size-xs group-hoverable" type="button" aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>">

@@ -53,6 +53,7 @@ $isRadioType = $filter->isRadioFilter($filter->getName());
                                 <?= $isRadioType ? 'true' : 'false' ?>,
                                 $event.target.checked
                             )"
+                            x-init="() => setSelectedFilterNames('<?= $escaper->escapeJs($filterItem->getParamKey() . $filterItem->getValueString()) ?>', '<?= $escaper->escapeJs($filter->getName()) ?>')"
                             <?php if ($isRadioType): ?>
                                 :checked="selectedFilters['<?= $escaper->escapeJs($filterItem->getParamKey()) ?>'] === '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>'"
                             <?php else: ?>
