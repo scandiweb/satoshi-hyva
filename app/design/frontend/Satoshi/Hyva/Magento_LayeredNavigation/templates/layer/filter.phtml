@@ -8,12 +8,14 @@ use Magento\Catalog\Model\Layer\Filter\FilterInterface;
 use Magento\Framework\Escaper;
 use Magento\LayeredNavigation\Block\Navigation\FilterRenderer;
 use Satoshi\Theme\Block\Template;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var FilterRenderer $block */
 /** @var Escaper $escaper */
 /** @var LocaleFormatter $localeFormatter */
 
 $catalogHelper = $this->helper(Data::class);
+$hyvaicons = $viewModels->require(SvgIcons::class);
 
 /** @var array $filterItems */
 /** @var FilterInterface $filter */
@@ -71,8 +73,9 @@ $isRadioType = $filter->isRadioFilter($filter->getName());
                                 style="background-color: <?= $escaper->escapeHtml($filterItem->getSwatchValue()) ?>;"
                             ></span>
                         <?php else: ?>
-                            <span class="<?= $isRadioType ? 'radio__control' : 'checkbox__control' ?>"
-                                  aria-hidden="true"></span>
+                            <span class="<?= $isRadioType ? 'radio__control' : 'checkbox__control' ?>" aria-hidden="true">
+                                  <?= $isRadioType ? '' : $hyvaicons->renderHtml('checkmark') ?>
+                            </span>
                         <?php endif; ?>
                     <?php endif; ?>
                     <span
