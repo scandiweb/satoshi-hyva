@@ -4,6 +4,7 @@ import { ProductListType } from "./ProductList";
 export type FiltersType = {
   [key: string | symbol]: any;
   selectedFilters: Record<string, string>;
+  selectedFilterNames: string[];
   selectedSort: Record<string, string>;
   isTopLevel: boolean;
   currentName: string;
@@ -27,6 +28,8 @@ export type FiltersType = {
   loadSelectedFilters(): void;
   updateFilterUrl(filterName: string, filterValue: string, filterUrl: string): string;
   updateMobileFilterUrl(filterName: string, filterValue: string): string;
+  isFilterNameSelected(filterName: string): boolean;
+  setSelectedFilterNames(filterKey: string, filterName: string): void;
 } & ProductListType;
 
 const POPUP_FILTERS = "filters";
@@ -74,6 +77,7 @@ export const Filters = (
 ) =>
   <FiltersType>{
     selectedFilters: {},
+    selectedFilterNames: [] as string[],
     selectedSort: initialSort,
     isTopLevel: false,
     currentName: "",
@@ -158,11 +162,15 @@ export const Filters = (
       if (Alpine.store("main").isMobile) {
         this.currentFilterName = filterName;
         this.currentFilterValue = filterValue;
+
         if (isRadioType) {
-          this.appliedFilterUrl = filterUrl;
-        } else if (isInputChecked) {
-          this.appliedFilterUrl = filterName ? this.updateMobileFilterUrl(filterName, filterValue) : filterUrl;
+          return this.appliedFilterUrl = filterUrl;
         }
+
+        if (isInputChecked) {
+          return this.appliedFilterUrl = filterName ? this.updateMobileFilterUrl(filterName, filterValue) : filterUrl;
+        }
+
         return;
       }
 
@@ -207,6 +215,7 @@ export const Filters = (
       this.$store.popup.hidePopup(POPUP_FILTERS);
       this.isTopLevel = false;
       this.currentName = "";
+      this.selectedFilterNames = [];
     },
 
     onResetButtonClick() {
@@ -278,5 +287,19 @@ export const Filters = (
       }
 
       return decodeURIComponent(parsedUrl.toString());
+    },
+
+    isFilterNameSelected(filterName) {
+      return this.selectedFilterNames.includes(filterName);
+    },
+
+    setSelectedFilterNames(filterKey, filterName) {
+      if (this.isFilterSelected(filterKey) && !this.isFilterNameSelected(filterName)) {
+        return this.selectedFilterNames.push(filterName);
+      }
+
+      if (filterName === FILTER_PRICE && window.location.search.includes(FILTER_PRICE_PARAM_NAME)) {
+        this.selectedFilterNames.push(filterName);
+      }
     },
   };

@@ -1,5 +1,5 @@
 import type { Magics } from "alpinejs";
-import { FILTER_PRICE, FILTER_PRICE_PARAM_NAME } from "./Filters";
+import { FILTER_PRICE_PARAM_NAME } from "./Filters";
 
 export type RangeSliderType = {
   isRightThumbActive: boolean;
@@ -69,7 +69,7 @@ export const RangeSlider = (
       const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
 
       // @ts-ignore
-      this.selectFilter(FILTER_PRICE, `${this.currentMinValue}-${this.currentMaxValue}`, newUrl, true);
+      this.selectFilter(FILTER_PRICE_PARAM_NAME, `${this.currentMinValue}-${this.currentMaxValue}`, newUrl, true);
     },
 
     onThumbDrag(side: 'left' | 'right') {
