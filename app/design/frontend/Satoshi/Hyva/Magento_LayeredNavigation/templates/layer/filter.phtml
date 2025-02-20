@@ -7,30 +7,60 @@ use Magento\Catalog\Helper\Data;
 use Magento\Catalog\Model\Layer\Filter\FilterInterface;
 use Magento\Framework\Escaper;
 use Magento\LayeredNavigation\Block\Navigation\FilterRenderer;
+use Satoshi\Theme\Block\Template;
+use Hyva\Theme\ViewModel\SvgIcons;
 
 /** @var FilterRenderer $block */
 /** @var Escaper $escaper */
 /** @var LocaleFormatter $localeFormatter */
 
 $catalogHelper = $this->helper(Data::class);
+$hyvaicons = $viewModels->require(SvgIcons::class);
 
 /** @var array $filterItems */
 /** @var FilterInterface $filter */
+/** @var Template $template */
+
+$isRadioType = $filter->isRadioFilter($filter->getName());
 ?>
 
-<div aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>" role="radiogroup">
+<?php if ($escaper->escapeHtml($filter->getName()) === 'Price'): ?>
+    <?=
+    $template
+        ->setData([
+            'min_price_range' => $escaper->escapeHtml($filter->getMinRange()),
+            'max_price_range' => $escaper->escapeHtml($filter->getMaxRange()),
+        ])
+        ->render('Magento_LayeredNavigation::html/filter-price-range-slider.phtml')
+    ?>
+<?php endif; ?>
+
+<div aria-label="<?= $escaper->escapeHtml(__($filter->getName())) ?>"
+     role="<?= $isRadioType ? 'group' : 'radiogroup' ?>">
     <?php foreach ($filterItems as $filterItem): ?>
         <div class="relative h-11 w-full">
-            <label for="filter-item-<?= $filterItem->getName() ?>-<?= $filterItem->getValueString() ?>" class="radio mb-0 h-full w-full py-1 flex justify-between items-center">
+            <label for="filter-item-<?= $filterItem->getName() ?>-<?= $filterItem->getValueString() ?>"
+                   class="<?= $isRadioType ? 'radio' : 'checkbox' ?> mb-0 h-full w-full py-1 flex justify-between items-center">
                 <div class="flex items-center">
                     <?php if ($filterItem->getCount() > 0): ?>
                         <input
-                            type="radio"
+                            type="<?= $isRadioType ? 'radio' : 'checkbox' ?>"
                             name="filter-item-<?= $filter->getName() ?>"
                             id="filter-item-<?= $filterItem->getName() ?>-<?= $filterItem->getValueString() ?>"
-                            class="radio__input"
-                            @change="selectFilter('<?= $escaper->escapeJs($filter->getName()) ?>', '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>')"
-                            :checked="selectedFilters['<?= $escaper->escapeJs($filter->getName()) ?>'] === '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>'"
+                            class="<?= $isRadioType ? 'radio__input' : 'checkbox__input' ?>"
+                            @change="selectFilter(
+                                '<?= $escaper->escapeJs($filterItem->getParamKey()) ?>',
+                                '<?= !$isRadioType ? $escaper->escapeJs($filterItem->getValueString()) : '' ?>',
+                                '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>',
+                                <?= $isRadioType ? 'true' : 'false' ?>,
+                                $event.target.checked
+                            )"
+                            x-init="() => setSelectedFilterNames('<?= $escaper->escapeJs($filterItem->getParamKey() . $filterItem->getValueString()) ?>', '<?= $escaper->escapeJs($filter->getName()) ?>')"
+                            <?php if ($isRadioType): ?>
+                                :checked="selectedFilters['<?= $escaper->escapeJs($filterItem->getParamKey()) ?>'] === '<?= $escaper->escapeUrl($filterItem->getUrl()) ?>'"
+                            <?php else: ?>
+                                :checked="isFilterSelected('<?= $escaper->escapeJs($filterItem->getParamKey() . $filterItem->getValueString()) ?>')"
+                            <?php endif; ?>
                             <?php if ((int) $filterItem->getCount() === 1): ?>
                                 aria-label="<?= $escaper->escapeHtmlAttr(__('%1 filter, 1 available product', strip_tags((string)$filterItem->getLabel()))) ?>"
                             <?php else: ?>
@@ -39,14 +69,18 @@ $catalogHelper = $this->helper(Data::class);
                         />
                         <?php if ($filterItem->getSwatchValue()): ?>
                             <span
-                                class="w-6 h-6 mr-5 p-1 rounded border border-gray-300"
+                                class="checkbox__swatch"
                                 style="background-color: <?= $escaper->escapeHtml($filterItem->getSwatchValue()) ?>;"
                             ></span>
                         <?php else: ?>
-                            <span class="radio__control mr-5" aria-hidden="true"></span>
+                            <span class="<?= $isRadioType ? 'radio__control' : 'checkbox__control' ?>" aria-hidden="true">
+                                  <?= $isRadioType ? '' : $hyvaicons->renderHtml('checkmark') ?>
+                            </span>
                         <?php endif; ?>
                     <?php endif; ?>
-                    <span class="radio__label ml-0"><?= /* @noEscape */ $filterItem->getLabel() ?></span>
+                    <span
+                        class="<?= $isRadioType ? 'radio__label' : 'checkbox__label' ?>"><?= /* @noEscape */
+                        $filterItem->getLabel() ?></span>
                 </div>
                 <?php if ($catalogHelper->shouldDisplayProductCountOnLayer()): ?>
                     <span>(<?= /* @noEscape */ $localeFormatter->formatNumber((int)$filterItem->getCount()) ?>)</span>
