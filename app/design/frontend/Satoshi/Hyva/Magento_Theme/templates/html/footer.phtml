@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\SvgIcons;
+use Hyva\Theme\ViewModel\Currency;
 use Magento\Framework\Escaper;
 use Satoshi\Theme\Block\Html\Footer;
 
@@ -13,6 +14,11 @@ use Satoshi\Theme\Block\Html\Footer;
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
+
+/** @var Currency $currencyViewModel */
+$currencyViewModel = $viewModels->require(Currency::class);
+
+$block->setCacheKey('footer_currency_' . $currencyViewModel->getCurrentCurrencyCode());
 ?>
 
 <template x-portal="document.getElementById('footer-portal')">
