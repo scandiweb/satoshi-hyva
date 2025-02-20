@@ -58,7 +58,7 @@ export type ProductPageType = {
     optionConfig: OptionConfig,
   ): void;
   optionIsEnabled(attributeId: number, optionId: string): boolean;
-  getSwatchBackgroundStyle(attributeId: number, optionId: string): string;
+  getSwatchBackgroundStyle(attributeId: number, optionId: string, modifyOpacity: boolean): string;
   optionIsActive(attributeId: number, optionId: string): boolean;
   getAllowedAttributeOptions(attributeId: number): AllowedAttributeOption[];
   findAllowedAttributeOptions(): void;
@@ -80,6 +80,8 @@ export type ProductPageType = {
   getSwatchText(attributeId: number, optionId: string): string;
   getOptionLabelFromOptionConfig(attributeId: number, optionId: string): string;
   getAllAttributeOptions(attributeId: number): Record<string, any>[];
+  getTruncatedAttributeOptions(attributeId: number): Record<string, any>[];
+  getMoreAttributeOptionsText(attributeId: number): string;
   getVisualSwatchType(attributeId: number, targetOptionId: string): string;
   getTypeOfFirstOption(attributeId: number): string | void;
   mapSwatchTypeNumberToTypeCode(typeNumber: number): string;
@@ -122,6 +124,7 @@ type AllowedAttributeOption = {
 };
 
 const POPUP_BOTTOM_ACTIONS = "product_bottom_actions";
+const TRUNCATED_ATTRIBUTE_OPTIONS_MAX_NUMBER = 5;
 
 export const ProductPage = () =>
   <ProductPageType>{
@@ -507,7 +510,7 @@ export const ProductPage = () =>
       }
       return false;
     },
-    getSwatchBackgroundStyle(attributeId, optionId) {
+    getSwatchBackgroundStyle(attributeId, optionId, modifyOpacity) {
       const config = this.getSwatchConfig(
         attributeId,
         optionId,
@@ -515,7 +518,7 @@ export const ProductPage = () =>
       const type = this.getSwatchType(attributeId, optionId);
 
       let opacity = "";
-      if (this.selectedValues[attributeId] === optionId) {
+      if (modifyOpacity && this.selectedValues[attributeId] === optionId) {
         opacity = "95";
       }
 
@@ -705,6 +708,24 @@ export const ProductPage = () =>
           this.optionConfig!.attributes[attributeId].options) ||
         []
       );
+    },
+
+    getTruncatedAttributeOptions(attributeId) {
+      const attributeOptions = this.getAllAttributeOptions(attributeId);
+
+      return attributeOptions.length > TRUNCATED_ATTRIBUTE_OPTIONS_MAX_NUMBER
+        ? attributeOptions.slice(0, TRUNCATED_ATTRIBUTE_OPTIONS_MAX_NUMBER)
+        : attributeOptions;
+    },
+
+    getMoreAttributeOptionsText(attributeId) {
+      const attributeOptions = this.getAllAttributeOptions(attributeId);
+
+      if (attributeOptions.length > TRUNCATED_ATTRIBUTE_OPTIONS_MAX_NUMBER) {
+        return `+${attributeOptions.length - TRUNCATED_ATTRIBUTE_OPTIONS_MAX_NUMBER}`;
+      }
+
+      return "";
     },
 
     getVisualSwatchType(attributeId, targetOptionId) {
