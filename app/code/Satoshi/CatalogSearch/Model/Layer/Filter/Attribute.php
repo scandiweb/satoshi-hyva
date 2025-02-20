@@ -12,12 +12,15 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Filter\StripTags;
 use Magento\Swatches\Helper\Data as SwatchHelper;
 use Satoshi\Catalog\Model\Layer\Filter\Item;
+use Satoshi\Catalog\Model\Layer\Filter\FilterTypeTrait;
 
 /**
  * Layer attribute filter
  */
 class Attribute extends BaseAttribute
 {
+    use FilterTypeTrait;
+
     /**
      * @var StripTags
      */

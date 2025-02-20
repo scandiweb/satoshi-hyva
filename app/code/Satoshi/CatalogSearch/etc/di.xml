@@ -17,4 +17,8 @@
         for="Magento\CatalogSearch\Model\Layer\Filter\Price"
         type="Satoshi\CatalogSearch\Model\Layer\Filter\Price"
     />
+    <preference
+        for="Magento\CatalogSearch\Model\Layer\Filter\Category"
+        type="Satoshi\CatalogSearch\Model\Layer\Filter\Category"
+    />
 </config>
