@@ -203,15 +203,17 @@ if ($product) {
                                     'id' => 'quick-buy-' . $product->getId(),
                                     'isFocused' => true,
                                 ])
-                                    ->setChildHtml($block->getProductDetailsHtml($product))
+                                    ->setChildHtml($block->getProductDetailsHtml($product, false))
                                     ->render() ?>
                             <?php endif; ?>
                         </form>
                     <?php endif ?>
                 </div>
 
+                <?= $block->getProductDetailsHtml($product, true) ?>
+
                 <div
-                    class="z-10 flex items-center gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
+                    class="z-10 flex items-center min-h-6 gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
                     <?php if ($isSearch) : ?>
                         <template
                             x-if="product.price_range.minimum_price.final_price.value < product.price_range.minimum_price.regular_price.value">
