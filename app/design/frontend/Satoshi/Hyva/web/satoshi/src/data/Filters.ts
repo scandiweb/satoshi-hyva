@@ -4,21 +4,32 @@ import { ProductListType } from "./ProductList";
 export type FiltersType = {
   [key: string | symbol]: any;
   selectedFilters: Record<string, string>;
+  selectedFilterNames: string[];
   selectedSort: Record<string, string>;
   isTopLevel: boolean;
   currentName: string;
+  currentFilterName: string;
+  currentFilterValue: string;
+  appliedFilterUrl: string;
   isTopFilterVisible: null | boolean;
 
   init(): void;
+  setupPopupWatcher(): void;
   selectSort(sortKey: string, sortDir: string): void;
   applySort(): void;
   removeSort(): void;
-  selectFilter(filterName: string, filterUrl: string): void;
-  applyFilters(filterName: string): void;
+  selectFilter(filterName: string, filterValue: string, filterUrl: string, isRadioType?: boolean, isInputChecked?: boolean): void;
+  applyFilters(filterName: string, filterValue: string, isRadioType?: boolean): void;
   showFilters(isTopLevel?: boolean, currentName?: string): void;
   hideFilters(): void;
   onResetButtonClick(): void;
   clearAllFilters(): void;
+  isFilterSelected(filterKey: string): boolean;
+  loadSelectedFilters(): void;
+  updateFilterUrl(filterName: string, filterValue: string, filterUrl: string): string;
+  updateMobileFilterUrl(filterName: string, filterValue: string): string;
+  isFilterNameSelected(filterName: string): boolean;
+  setSelectedFilterNames(filterKey: string, filterName: string): void;
 } & ProductListType;
 
 const POPUP_FILTERS = "filters";
@@ -27,9 +38,7 @@ const POPUP_BOTTOM_FILTERS = "bottom-filters";
 export const FILTER_SORT_KEY = "product_list_order";
 export const FILTER_SORT_DIR = "product_list_dir";
 export const FILTER_PRICE = "Price";
-export const FILTER_PRICE_PARAM_NAME = "filter.v.price";
-export const FILTER_PRICE_MIN = "filter.v.price.gte";
-export const FILTER_PRICE_MAX = "filter.v.price.lte";
+export const FILTER_PRICE_PARAM_NAME = "price";
 
 export const modifyUrlParams = (
   url: string,
@@ -68,14 +77,25 @@ export const Filters = (
 ) =>
   <FiltersType>{
     selectedFilters: {},
+    selectedFilterNames: [] as string[],
     selectedSort: initialSort,
     isTopLevel: false,
     currentName: "",
+    currentFilterName: "",
+    appliedFilterUrl: "",
+    currentFilterValue: "",
     isTopFilterVisible: null,
 
     init() {
+      this.loadSelectedFilters();
+      this.setupPopupWatcher();
+    },
+
+    setupPopupWatcher() {
       // Change popup height on content change
       this.$watch("currentName", (value, oldValue) => {
+        // Reset the updated filter URL when closing the current filter, specifically on mobile devices
+        this.appliedFilterUrl = window.location.href;
         if (value != oldValue) {
           this.$nextTick(() => {
             // setTimeout fixes content height calculations in some cases
@@ -102,10 +122,7 @@ export const Filters = (
     },
 
     selectSort(sortKey, sortDir) {
-      this.selectedSort = {
-        key: sortKey,
-        dir: sortDir,
-      };
+      this.selectedSort = {key: sortKey, dir: sortDir};
 
       if (!Alpine.store("main").isMobile) {
         this.applySort();
@@ -135,15 +152,32 @@ export const Filters = (
       navigateWithTransition(newUrl);
     },
 
-    selectFilter(filterName, filterUrl) {
-      this.selectedFilters[filterName] = filterUrl;
+    selectFilter(filterName, filterValue, filterUrl, isRadioType = false, isInputChecked = false) {
+      this.selectedFilters[filterName + filterValue] = filterUrl;
 
-      if (!Alpine.store("main").isMobile) {
-        this.applyFilters(filterName);
+      if (!isInputChecked && !isRadioType) {
+        this.appliedFilterUrl = this.updateFilterUrl(filterName, filterValue, filterUrl);
       }
+
+      if (Alpine.store("main").isMobile) {
+        this.currentFilterName = filterName;
+        this.currentFilterValue = filterValue;
+
+        if (isRadioType) {
+          return this.appliedFilterUrl = filterUrl;
+        }
+
+        if (isInputChecked) {
+          return this.appliedFilterUrl = filterName ? this.updateMobileFilterUrl(filterName, filterValue) : filterUrl;
+        }
+
+        return;
+      }
+
+      this.applyFilters(filterName, filterValue, isRadioType);
     },
 
-    applyFilters(filterName) {
+    applyFilters(filterName, filterValue = '', isRadioType = false) {
       const url = window.location.href;
 
       this.hideFilters();
@@ -155,7 +189,17 @@ export const Filters = (
         return navigateWithTransition(newUrl);
       }
 
-      const filterUrl = this.selectedFilters[filterName];
+      if (this.appliedFilterUrl && (Alpine.store("main").isMobile || !this.isFilterSelected(filterName + filterValue))) {
+        return navigateWithTransition(this.appliedFilterUrl);
+      }
+
+      if (isRadioType) {
+        const filterUrl = this.selectedFilters[filterName + filterValue];
+        if (filterUrl) navigateWithTransition(filterUrl);
+        return;
+      }
+
+      const filterUrl = this.selectedFilters[filterName + filterValue];
       if (filterUrl) {
         navigateWithTransition(filterUrl);
       }
@@ -171,6 +215,7 @@ export const Filters = (
       this.$store.popup.hidePopup(POPUP_FILTERS);
       this.isTopLevel = false;
       this.currentName = "";
+      this.selectedFilterNames = [];
     },
 
     onResetButtonClick() {
@@ -185,5 +230,76 @@ export const Filters = (
       ]);
 
       navigateWithTransition(url);
+    },
+
+    isFilterSelected(filterKey) {
+      return this.selectedFilters.hasOwnProperty(filterKey);
+    },
+
+    loadSelectedFilters() {
+      const url = window.location.href;
+      this.appliedFilterUrl = url;
+      const parsedUrl = new URL(url);
+      const searchParams = parsedUrl.searchParams;
+
+      searchParams.forEach((value, key) => {
+        const filterValues = value.split(',');
+
+        filterValues.forEach(filterValue => {
+          this.selectedFilters[`${key}${filterValue}`] = url;
+        });
+      });
+    },
+
+    updateFilterUrl(filterName: string, filterValue: string, filterUrl: string) {
+      const parsedUrl = new URL(filterUrl);
+      const queryParams = parsedUrl.searchParams;
+      const selectedValues = queryParams.get(filterName);
+
+      if (selectedValues) {
+        const selectedValuesArray = selectedValues.split(',').filter(value => value !== filterValue);
+        if (selectedValuesArray.length > 0) {
+          queryParams.set(filterName, selectedValuesArray.join(','));
+        } else {
+          queryParams.delete(filterName);
+        }
+      }
+
+      return decodeURIComponent(parsedUrl.toString());
+    },
+
+    // This method was created since on mobile we may apply multiple filters at once
+    updateMobileFilterUrl(filterName: string, filterValue: string) {
+      const parsedUrl = new URL(this.appliedFilterUrl || window.location.href);
+      const queryParams = parsedUrl.searchParams;
+      const selectedValues = queryParams.get(filterName);
+
+      // If the filter already exists in the URL, we update it by adding the filterValue
+      if (selectedValues) {
+        const selectedValuesArray = selectedValues.split(',');
+        if (!selectedValuesArray.includes(filterValue)) {
+          selectedValuesArray.push(filterValue);
+          queryParams.set(filterName, selectedValuesArray.join(','));
+        }
+      } else {
+        // If the filter doesn't exist, create a new filter with the filterValue
+        queryParams.append(filterName, filterValue);
+      }
+
+      return decodeURIComponent(parsedUrl.toString());
+    },
+
+    isFilterNameSelected(filterName) {
+      return this.selectedFilterNames.includes(filterName);
+    },
+
+    setSelectedFilterNames(filterKey, filterName) {
+      if (this.isFilterSelected(filterKey) && !this.isFilterNameSelected(filterName)) {
+        return this.selectedFilterNames.push(filterName);
+      }
+
+      if (filterName === FILTER_PRICE && window.location.search.includes(FILTER_PRICE_PARAM_NAME)) {
+        this.selectedFilterNames.push(filterName);
+      }
     },
   };

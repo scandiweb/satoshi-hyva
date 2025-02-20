@@ -105,10 +105,7 @@ $sorter = $block->getData('sorter') ?? [];
 
             <div>
                 <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5" x-show="currentName === 'Sort by'">
-                    <div
-                        id="filter-sort_by"
-                        key="filter-sort_by"
-                    >
+                    <div id="filter-sort_by">
                         <div role="radiogroup" aria-label="<?= $escaper->escapeHtmlAttr(__('Sort by')) ?>">
                             <?php foreach ($sortOptions as $sortOption): ?>
                                 <div class="relative h-11 w-full">
@@ -166,7 +163,7 @@ $sorter = $block->getData('sorter') ?? [];
                         <button
                             type="button"
                             class="button button--filled-primary grow"
-                            @click="applyFilters(currentName)"
+                            @click="applyFilters(currentName === 'Sort by' ? CurrentName : currentFilterName, currentFilterValue)"
                         >
                             <?= $escaper->escapeHtml(__('Apply')) ?>
                         </button>

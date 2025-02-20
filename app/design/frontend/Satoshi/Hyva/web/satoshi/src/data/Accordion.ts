@@ -82,11 +82,11 @@ export const Accordion = (
     _update() {
       if (this._panelRef) {
         this._panelRef.style.opacity = this.isExpanded ? "1" : "0";
-        const containerMaxheight = this._panelRef.scrollHeight
+        const containerMaxHeight = this._panelRef.scrollHeight
           ? `${String(this._panelRef.scrollHeight)}px`
           : "10000px";
         this._panelRef.style.maxHeight = this.isExpanded
-          ? containerMaxheight
+          ? containerMaxHeight
           : "0";
       }
 

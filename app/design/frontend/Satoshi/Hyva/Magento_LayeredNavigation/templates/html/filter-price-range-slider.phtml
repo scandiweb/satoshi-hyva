@@ -1,0 +1,118 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template as Block;
+use Satoshi\Theme\Block\Template;
+
+/** @var Block $block */
+/** @var Template $template */
+/** @var Escaper $escaper */
+
+$minPriceRange = (int)$block->getData('min_price_range') ?? 0;
+$maxPriceRange = (int)$block->getData('max_price_range') ?? '';
+?>
+
+<div x-data="RangeSlider(<?= $minPriceRange ?>, <?= $maxPriceRange ?>)">
+    <div class="grid grid-cols-2 gap-3 mb-5">
+        <label for="filter-current-min-price" class="range-slider-input">
+            <div class="range-slider-input-label">
+                <p><?= __('Min') ?></p>
+            </div>
+            <input
+                name="min-price"
+                id="filter-current-min-price"
+                class="input__field range-slider-input-field"
+                type="number"
+                :min="minRange"
+                :max="currentMaxValue"
+                :value="currentMinValue"
+                x-model="currentMinValue"
+                @input.blur="updateThumbPositions"
+                aria-label="<?= __('Min') ?>"
+            />
+        </label>
+
+        <label for="filter-current-max-price" class="range-slider-input">
+            <div class="range-slider-input-label">
+                <p><?= __('Max') ?></p>
+            </div>
+            <input
+                name="max-price"
+                id="filter-current-max-price"
+                class="input__field range-slider-input-field"
+                type="number"
+                :min="currentMinValue"
+                :max="maxRange"
+                :value="currentMaxValue"
+                x-model="currentMaxValue"
+                @input.blur="updateThumbPositions"
+                aria-label="<?= __('Max') ?>"
+            />
+        </label>
+    </div>
+
+    <div class="range-slider-container relative h-8">
+        <div tabindex="-1" class="relative inline-block h-full w-full touch-none select-none py-4 outline-0">
+            <label for="filter-max-price-range" class="sr-only tracking-widest">From</label>
+            <input type="range" step="1" :min="minRange" :max="currentMaxValue" class="range-slider-hidden-input"
+                   :value="currentMinValue" aria-label="<?= __('From') ?>" id="filter-max-price-range" tabindex="-1"/>
+
+            <label for="filter-min-price-range" class="sr-only tracking-widest">To</label>
+            <input type="range" step="1" :min="currentMinValue" :max="maxRange" class="range-slider-hidden-input"
+                   :value="currentMaxValue" aria-label="<?= __('To') ?>" id="filter-min-price-range" tabindex="-1"/>
+
+            <div class="range-slider-track">
+                <div class="range-slider-track-filled" :style="{
+                    left: `${ ((currentMinValue - minRange) * 100) / (maxRange - minRange) }%`,
+                    right: `${ ((maxRange - currentMaxValue) * 100) / (maxRange - minRange) }%`
+                }"></div>
+            </div>
+        </div>
+
+        <!-- Left Thumb -->
+        <div
+            role="slider"
+            tabindex="0"
+            class="range-slider-thumb range-slider-thumb_left cursor-pointer"
+            :class="{ 'active': isLeftThumbActive }"
+            :style="{
+                left: `calc(${((currentMinValue - minRange) * 100) / (maxRange - minRange) }% - (32px * ${ ((currentMinValue - minRange) ) / (maxRange - minRange)}))`,
+            }"
+            aria-label="<?= __('From') ?>"
+            :aria-valuemin="minRange"
+            :aria-valuemax="maxRange"
+            :aria-valuenow="currentMinValue"
+            :aria-valuetext="currentMinValue + ''"
+            @mousedown="onThumbDrag('left')"
+            @touchstart="onThumbDrag('left')"
+            @keydown.left="currentMinValue > minRange && (currentMinValue--, updateThumbPositions())"
+            @keydown.right="currentMinValue < currentMaxValue - rangeMinSpace && (currentMinValue++, updateThumbPositions())"
+            @keydown.down.prevent="currentMinValue = minRange; updateThumbPositions()"
+            @keydown.up.prevent="currentMinValue = currentMaxValue - rangeMinSpace; updateThumbPositions()"
+        ></div>
+
+        <!-- Right Thumb -->
+        <div
+            role="slider"
+            tabindex="0"
+            class="range-slider-thumb range-slider-thumb_right cursor-pointer"
+            :class="{ 'active': isRightThumbActive }"
+            :style="{
+                right: `calc(${((maxRange - currentMaxValue) * 100) / (maxRange - minRange) }% - (32px * ${ ((maxRange - currentMaxValue) ) / (maxRange - minRange)}))`,
+            }"
+            aria-label="<?= __('To') ?>"
+            :aria-valuemin="minRange"
+            :aria-valuemax="maxRange"
+            :aria-valuenow="currentMaxValue"
+            :aria-valuetext="currentMaxValue + ''"
+            @mousedown="onThumbDrag('right')"
+            @touchstart="onThumbDrag('right')"
+            @keydown.left="currentMaxValue > currentMinValue + rangeMinSpace && (currentMaxValue--, updateThumbPositions())"
+            @keydown.right="currentMaxValue < maxRange && (currentMaxValue++, updateThumbPositions())"
+            @keydown.down.prevent="currentMaxValue = currentMinValue + rangeMinSpace; updateThumbPositions()"
+            @keydown.up.prevent="currentMaxValue = maxRange; updateThumbPositions()"
+        ></div>
+    </div>
+</div>
