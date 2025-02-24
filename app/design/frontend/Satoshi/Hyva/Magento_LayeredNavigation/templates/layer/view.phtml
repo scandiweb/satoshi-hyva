@@ -51,7 +51,7 @@ if ($sorter) {
             >
                 <?= $block->getChildBlock('state')->setData(['selected_sort' => $selectedSort])->toHtml() ?>
 
-                <template x-if="!$store.main.isMobile">
+                <template x-if="!$store.main.isMobile && isDesktopContentInitialized">
                     <div class="contents">
                         <!-- Desktop Sort -->
                         <fieldset class="flex-1 md:border-t md:border-bg-600 md:py-5 max-md:hidden" x-data="Accordion(true, 300)">
