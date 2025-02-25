@@ -70,7 +70,7 @@ $isProductInCart = in_array($productType, ['simple', 'virtual']) && $this->helpe
                 <?php $attributeId = $attribute->getAttributeId(); ?>
                 <?php $productAttribute = $attribute->getProductAttribute(); ?>
 
-                <?php if (!$productAttribute->getUsedInProductListing()) {
+                <?php if (!$productAttribute->getUsedInProductListing() || $productAttribute->getAttributeCode() !== 'color' ) {
                     continue;
                 } ?>
 
