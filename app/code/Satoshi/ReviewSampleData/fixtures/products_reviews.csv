@@ -1,5 +1,4 @@
 sku,rating_code,rating_value,title,review,reviewer,email
-SFCC,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SFCC,Rating,5,"Amazing craftsmanship","The craftsmanship is impeccable. Every detail has been thought through and it shows. I’m thoroughly impressed.","Benjamin, Elite Shopper",
 SFCC,Rating,5,"Exceeded My Expectations","Absolutely love it! The quality is outstanding and the price is unbeatable. Will definitely shop here again.","Olivia, Discerning Customer",
 SFCC,Rating,5,"Couldn’t be happier","This is hands down one of the best purchases I’ve made in a while. It works like a charm!","Scarlett, Elite Client",
@@ -49,7 +48,6 @@ LFO,Rating,5,"Great Value Purchase","This product has truly changed the way I do
 LFO,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
 LFO,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
 LFO,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of elegance to my collection. I can’t stop showing it off!","Sophia, Design Enthusiast",
-LFO,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 LFO,Rating,5,"Perfect for my needs","This product is exactly what I was looking for. It delivers on every promise and has been perfect for my daily use.","George, Elite Reviewer",
 LFO,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
 LFO,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper",
@@ -98,7 +96,6 @@ LFS,Rating,5,"Impressive quality","Overall, I’m very happy with the quality an
 LFS,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
 LFS,Rating,5,"Best Purchase Ever","Exceeded all my expectations. Quick delivery and perfect packaging. This store knows how to treat customers!","Mason, Tech Enthusiast",
 LFS,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
-LFS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store."
 RFCJ,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper",
 RFCJ,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
 RFCJ,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
@@ -150,7 +147,6 @@ RFCS,Rating,5,"Best Purchase Ever","Exceeded all my expectations. Quick delivery
 RFCS,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
 RFCS,Rating,5,"Couldn’t be happier","This is hands down one of the best purchases I’ve made in a while. It works like a charm!","Scarlett, Elite Client",
 RFCS,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
-RFCS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RFCS,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfectly. It’s reliable and elegant. I would recommend it to anyone.","Oscar, Elite Professional",
 RFCS,Rating,5,"Impressive quality","Overall, I’m very happy with the quality and functionality. It performs well and looks sleek.","Grace, Design Expert",
 RFCS,Rating,5,"Very Satisfied","Solid product, good value for the money. Would definitely recommend to friends and family.","Michael, Luxury Client",
@@ -198,7 +194,6 @@ RFWJ,Rating,5,"The Ultimate Choice","After trying many others, this is the only 
 RFWJ,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
 RFWJ,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It looks fantastic and works fine, but could have a few enhancements.","Charlotte, Luxury Enthusiast",
 RFWJ,Rating,5,"Great Value Purchase","This product has truly changed the way I do things. It’s a must-have for anyone serious about quality.","Liam, Elite Professional",
-RFWJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store."
 RFWZC,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen anything like it—well worth the investment.","Lucas, Design Professional",
 RFWZC,Rating,5,"Couldn’t be happier","This is hands down one of the best purchases I’ve made in a while. It works like a charm!","Scarlett, Elite Client",
 RFWZC,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
@@ -261,7 +256,6 @@ SFJ,Rating,5,"Worth Every Penny","The product is perfect and the service is exce
 SFJ,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. Everything from ordering to delivery was smooth.","Matthew, Frequent Shopper",
 SFJ,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
 SFJ,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
-SFJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SFJ,Rating,5,"Outstanding Quality","Top quality product and amazing customer service. The ordering process was smooth and delivery was faster than expected.","Chloe, Professional Shopper"
 RFPS,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
 RFPS,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
@@ -272,7 +266,6 @@ RFPS,Rating,5,"Outstanding Quality","Top quality product and amazing customer se
 RFPS,Rating,5,"Superior Shopping Experience","It does the job but could really use a couple more features to make it stand out.","Ava, Professional Reviewer",
 RFPS,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
 RFPS,Rating,5,"Couldn’t be happier","This is hands down one of the best purchases I’ve made in a while. It works like a charm!","Scarlett, Elite Client",
-RFPS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RFPS,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper"
 LPJ,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
 LPJ,Rating,5,"Superior Shopping Experience","It does the job but could really use a couple more features to make it stand out.","Ava, Professional Reviewer",
@@ -307,7 +300,6 @@ RFCC,Rating,5,"Outstanding Quality","Top quality product and amazing customer se
 RFCC,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
 RFCC,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer"
 SFCPT,Rating,5,"The Perfect Choice","Very impressed with both the product and the service. Checkout was easy and delivery was prompt.","Sebastian, Disappointed Buyer",
-SFCPT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SFCPT,Rating,5,"Superb Shopping Experience","Couldn't be happier with my purchase! The product is exactly as described and the shipping was lightning fast.","Charlotte, Elite Buyer",
 SFCPT,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
 SFCPT,Rating,5,"Exceptional Quality","This product exceeded my expectations. The craftsmanship is top-notch, and it feels premium in every way.","Samantha, Elite Reviewer",
@@ -470,7 +462,6 @@ RFO,Rating,5,"Impressive quality","Overall, I’m very happy with the quality an
 RFO,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
 RFO,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
 RFO,Rating,5,"Exceptional Quality","This product exceeded my expectations. The craftsmanship is top-notch, and it feels premium in every way.","Samantha, Elite Reviewer",
-RFO,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RFO,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen anything like it—well worth the investment.","Lucas, Design Professional"
 SFSS,Rating,5,"Top Notch!","Simply the best! Everything works as promised and more. Worth every penny for those who appreciate quality.","Evelyn, Luxury Client",
 SFSS,Rating,5,"Great Value Purchase","This product has truly changed the way I do things. It’s a must-have for anyone serious about quality.","Liam, Elite Professional",
@@ -481,7 +472,6 @@ SFSS,Rating,5,"Outstanding Quality","Top quality product and amazing customer se
 SFSS,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of elegance to my collection. I can’t stop showing it off!","Sophia, Design Enthusiast",
 SFSS,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
 SFSS,Rating,5,"Top-Notch Quality","Great quality and even better service. The checkout process was simple and my item arrived earlier than expected.","Grace, Budget-Conscious Shopper",
-SFSS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SFSS,Rating,5,"Exceptional Quality","This product exceeded my expectations. The craftsmanship is top-notch, and it feels premium in every way.","Samantha, Elite Reviewer"
 SFPCS,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. Everything from ordering to delivery was smooth.","Matthew, Frequent Shopper",
 SFPCS,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
@@ -566,7 +556,6 @@ CRFS,Rating,5,"Impressive quality","Overall, I’m very happy with the quality a
 CRFS,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional",
 CRFS,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper",
 CRFS,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper",
-CRFS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 CRFS,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
 CRFS,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast"
 CTS,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
@@ -601,12 +590,10 @@ RFLS,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen 
 RFLS,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. Everything from ordering to delivery was smooth.","Matthew, Frequent Shopper",
 RFLS,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
 RFLS,Rating,5,"Quality product","Very good quality overall. It could benefit from a few upgrades, but still worth it.","Victoria, Luxury Lifestyle",
-RFLS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store."
 SRJ,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
 SRJ,Rating,5,"Superb Shopping Experience","Couldn't be happier with my purchase! The product is exactly as described and the shipping was lightning fast.","Charlotte, Elite Buyer",
 SRJ,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of elegance to my collection. I can’t stop showing it off!","Sophia, Design Enthusiast",
 SRJ,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper",
-SRJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SRJ,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
 SRJ,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
 SRJ,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
@@ -640,14 +627,12 @@ BLJ,Rating,5,"Worth Every Penny","The product is perfect and the service is exce
 BLJ,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
 BLJ,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen anything like it—well worth the investment.","Lucas, Design Professional",
 BLJ,Rating,5,"Top-Notch Quality","Great quality and even better service. The checkout process was simple and my item arrived earlier than expected.","Grace, Budget-Conscious Shopper",
-BLJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 BLJ,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer",
 BLJ,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
 BLJ,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
 BLJ,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
 BLJ,Rating,5,"Premium Quality Item","Best online shopping experience I've had. The product is perfect and arrived in pristine condition. Very impressed!","Nathan, Disappointed Buyer",
 BLJ,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. Everything from ordering to delivery was smooth.","Matthew, Frequent Shopper"
-BJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 BJ,Rating,5,"Perfect for my needs","This product is exactly what I was looking for. It delivers on every promise and has been perfect for my daily use.","George, Elite Reviewer",
 BJ,Rating,5,"Premium Quality Item","Best online shopping experience I've had. The product is perfect and arrived in pristine condition. Very impressed!","Nathan, Disappointed Buyer",
 BJ,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper",
@@ -761,7 +746,6 @@ OPT,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of e
 OPT,Rating,5,"Top Notch!","Simply the best! Everything works as promised and more. Worth every penny for those who appreciate quality.","Evelyn, Luxury Client",
 OPT,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
 OPT,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
-OPT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 OPT,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper",
 OPT,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer",
 OPT,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
@@ -801,7 +785,6 @@ WOT,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't mee
 WOT,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
 WOT,Rating,5,"Couldn’t be happier","This is hands down one of the best purchases I’ve made in a while. It works like a charm!","Scarlett, Elite Client"
 MLJ,Rating,5,"Superior Shopping Experience","It does the job but could really use a couple more features to make it stand out.","Ava, Professional Reviewer",
-MLJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 MLJ,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
 MLJ,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper",
 MLJ,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It looks fantastic and works fine, but could have a few enhancements.","Charlotte, Luxury Enthusiast",
@@ -880,7 +863,6 @@ DZSH,Rating,5,"Top-Notch Quality","Great quality and even better service. The ch
 DZSH,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
 DZSH,Rating,5,"Outstanding Quality","Top quality product and amazing customer service. The ordering process was smooth and delivery was faster than expected.","Chloe, Professional Shopper",
 DZSH,Rating,5,"Quality product","Very good quality overall. It could benefit from a few upgrades, but still worth it.","Victoria, Luxury Lifestyle"
-LIG,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 LIG,Rating,5,"Great value","Really impressed with the product’s value. It looks fantastic and performs well too.","Aiden, Fashion Enthusiast",
 LIG,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfectly. It’s reliable and elegant. I would recommend it to anyone.","Oscar, Elite Professional",
 LIG,Rating,5,"Best Purchase Ever","Exceeded all my expectations. Quick delivery and perfect packaging. This store knows how to treat customers!","Mason, Tech Enthusiast",
@@ -940,7 +922,6 @@ DCBS,Rating,5,"Amazing craftsmanship","The craftsmanship is impeccable. Every de
 DCBS,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
 DCBS,Rating,5,"Very Satisfied","Solid product, good value for the money. Would definitely recommend to friends and family.","Michael, Luxury Client",
 DCBS,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
-DCBS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 DCBS,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper"
 RG,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
 RG,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
@@ -962,9 +943,7 @@ SS,Rating,5,"Perfect for my needs","This product is exactly what I was looking f
 SS,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
 SS,Rating,5,"Top-Notch Quality","Great quality and even better service. The checkout process was simple and my item arrived earlier than expected.","Grace, Budget-Conscious Shopper",
 SS,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper",
-SS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SS,Rating,5,"The Perfect Choice","Very impressed with both the product and the service. Checkout was easy and delivery was prompt.","Sebastian, Disappointed Buyer"
-FRT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 FRT,Rating,5,"Amazing craftsmanship","The craftsmanship is impeccable. Every detail has been thought through and it shows. I’m thoroughly impressed.","Benjamin, Elite Shopper",
 FRT,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper",
 FRT,Rating,5,"Best Purchase Ever","Exceeded all my expectations. Quick delivery and perfect packaging. This store knows how to treat customers!","Mason, Tech Enthusiast",
@@ -975,7 +954,6 @@ FRT,Rating,5,"Great but a little heavy","It’s a great product, though a little
 FRT,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
 FRT,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional"
 RIPJ,Rating,5,"Couldn’t be happier","This is hands down one of the best purchases I’ve made in a while. It works like a charm!","Scarlett, Elite Client",
-RIPJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RIPJ,Rating,5,"Premium Quality Item","Best online shopping experience I've had. The product is perfect and arrived in pristine condition. Very impressed!","Nathan, Disappointed Buyer",
 RIPJ,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer",
 RIPJ,Rating,5,"Outstanding Quality","Top quality product and amazing customer service. The ordering process was smooth and delivery was faster than expected.","Chloe, Professional Shopper",
@@ -1018,7 +996,6 @@ LIJ,Rating,5,"Very Satisfied","Solid product, good value for the money. Would de
 LIJ,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
 LIJ,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
 LIJ,Rating,5,"Perfect for my needs","This product is exactly what I was looking for. It delivers on every promise and has been perfect for my daily use.","George, Elite Reviewer",
-LIJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 LIJ,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer",
 LIJ,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle"
 DCT,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
@@ -1050,7 +1027,6 @@ HT,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experie
 HT,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
 HT,Rating,5,"Premium Quality Item","Best online shopping experience I've had. The product is perfect and arrived in pristine condition. Very impressed!","Nathan, Disappointed Buyer",
 HT,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
-HT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 HT,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
 HT,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
 HT,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
@@ -1159,7 +1135,6 @@ ILT,Rating,5,"Excellent Service and Product","For the price, I expected a lot mo
 B,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
 B,Rating,5,"Great value","Really impressed with the product’s value. It looks fantastic and performs well too.","Aiden, Fashion Enthusiast",
 B,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
-B,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 B,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
 B,Rating,5,"Premium Quality Item","Best online shopping experience I've had. The product is perfect and arrived in pristine condition. Very impressed!","Nathan, Disappointed Buyer",
 B,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
@@ -1174,7 +1149,6 @@ F,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me wi
 F,Rating,5,"Great Value Purchase","This product has truly changed the way I do things. It’s a must-have for anyone serious about quality.","Liam, Elite Professional",
 F,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
 F,Rating,5,"Premium Quality Item","Best online shopping experience I've had. The product is perfect and arrived in pristine condition. Very impressed!","Nathan, Disappointed Buyer",
-F,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 F,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper"
 LFBJ,Rating,5,"Couldn’t be happier","This is hands down one of the best purchases I’ve made in a while. It works like a charm!","Scarlett, Elite Client",
 LFBJ,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
@@ -1194,7 +1168,6 @@ WPG,Rating,5,"Great but a little heavy","It’s a great product, though a little
 WPG,Rating,5,"Great value","Really impressed with the product’s value. It looks fantastic and performs well too.","Aiden, Fashion Enthusiast",
 WPG,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
 WPG,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
-WPG,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 WPG,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper",
 WPG,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert"
 RFDJ,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
@@ -1261,7 +1234,6 @@ RFPDJ,Rating,5,"Premium Quality Item","Best online shopping experience I've had.
 RFPDJ,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer",
 RFPDJ,Rating,5,"The Perfect Choice","Very impressed with both the product and the service. Checkout was easy and delivery was prompt.","Sebastian, Disappointed Buyer",
 RFPDJ,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen anything like it—well worth the investment.","Lucas, Design Professional"
-FWCC,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 FWCC,Rating,5,"Best Purchase Ever","Exceeded all my expectations. Quick delivery and perfect packaging. This store knows how to treat customers!","Mason, Tech Enthusiast",
 FWCC,Rating,5,"Very Satisfied","Solid product, good value for the money. Would definitely recommend to friends and family.","Michael, Luxury Client",
 FWCC,Rating,5,"Perfect in Every Way","Outstanding quality and value. The store has great prices and the shipping is always reliable and quick.","Isaac, Luxury Shopper",
@@ -1293,7 +1265,6 @@ OWC,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfect
 OWC,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
 OWC,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
 OWC,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
-OWC,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store."
 DWC,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
 DWC,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional",
 DWC,Rating,5,"Couldn’t be happier","This is hands down one of the best purchases I’ve made in a while. It works like a charm!","Scarlett, Elite Client",
@@ -1311,7 +1282,6 @@ QBJ,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering p
 QBJ,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfectly. It’s reliable and elegant. I would recommend it to anyone.","Oscar, Elite Professional",
 QBJ,Rating,5,"Outstanding Quality","Top quality product and amazing customer service. The ordering process was smooth and delivery was faster than expected.","Chloe, Professional Shopper",
 QBJ,Rating,5,"Exceptional Quality","This product exceeded my expectations. The craftsmanship is top-notch, and it feels premium in every way.","Samantha, Elite Reviewer",
-QBJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 QBJ,Rating,5,"Superior Shopping Experience","It does the job but could really use a couple more features to make it stand out.","Ava, Professional Reviewer",
 QBJ,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
 QBJ,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. Everything from ordering to delivery was smooth.","Matthew, Frequent Shopper",
@@ -1431,7 +1401,6 @@ RFCPS,Rating,5,"First-Class Product","It’s good but didn’t completely blow m
 RFCPS,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It looks fantastic and works fine, but could have a few enhancements.","Charlotte, Luxury Enthusiast"
 OFJJ,Rating,5,"Great Value Purchase","This product has truly changed the way I do things. It’s a must-have for anyone serious about quality.","Liam, Elite Professional",
 OFJJ,Rating,5,"Outstanding Quality","Top quality product and amazing customer service. The ordering process was smooth and delivery was faster than expected.","Chloe, Professional Shopper",
-OFJJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 OFJJ,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
 OFJJ,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
 OFJJ,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfectly. It’s reliable and elegant. I would recommend it to anyone.","Oscar, Elite Professional",
@@ -1449,7 +1418,6 @@ SFCJ,Rating,5,"Premium Quality Item","Best online shopping experience I've had. 
 SFCJ,Rating,5,"The Perfect Choice","Very impressed with both the product and the service. Checkout was easy and delivery was prompt.","Sebastian, Disappointed Buyer",
 SFCJ,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
 SFCJ,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper",
-SFCJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SFCJ,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. Everything from ordering to delivery was smooth.","Matthew, Frequent Shopper"
 RFTJ,Rating,5,"Outstanding Quality","Top quality product and amazing customer service. The ordering process was smooth and delivery was faster than expected.","Chloe, Professional Shopper",
 RFTJ,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
@@ -1515,7 +1483,6 @@ RFRZJ,Rating,5,"Perfect in Every Way","Outstanding quality and value. The store 
 RFRZJ,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of elegance to my collection. I can’t stop showing it off!","Sophia, Design Enthusiast",
 RFRZJ,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
 RFRZJ,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
-RFRZJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RFRZJ,Rating,5,"Couldn’t be happier","This is hands down one of the best purchases I’ve made in a while. It works like a charm!","Scarlett, Elite Client",
 RFRZJ,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer"
 RFJ,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
@@ -1527,7 +1494,6 @@ RFJ,Rating,5,"Impressive quality","Overall, I’m very happy with the quality an
 RFJ,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
 RFJ,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
 RFJ,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer",
-RFJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RFJ,Rating,5,"Perfect for my needs","This product is exactly what I was looking for. It delivers on every promise and has been perfect for my daily use.","George, Elite Reviewer"
 KJMF,Rating,5,"Superior Shopping Experience","It does the job but could really use a couple more features to make it stand out.","Ava, Professional Reviewer",
 KJMF,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
@@ -1536,7 +1502,6 @@ KJMF,Rating,5,"Great value","Really impressed with the product’s value. It loo
 KJMF,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
 KJMF,Rating,5,"Premium Quality Item","Best online shopping experience I've had. The product is perfect and arrived in pristine condition. Very impressed!","Nathan, Disappointed Buyer",
 KJMF,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper",
-KJMF,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 KJMF,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfectly. It’s reliable and elegant. I would recommend it to anyone.","Oscar, Elite Professional",
 KJMF,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It looks fantastic and works fine, but could have a few enhancements.","Charlotte, Luxury Enthusiast",
 KJMF,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
@@ -1554,7 +1519,6 @@ RFJJ,Rating,5,"Exceptional Quality","This product exceeded my expectations. The 
 RFJJ,Rating,5,"Exceeded My Expectations","Absolutely love it! The quality is outstanding and the price is unbeatable. Will definitely shop here again.","Olivia, Discerning Customer"
 SFPCT,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
 SFPCT,Rating,5,"Top Notch!","Simply the best! Everything works as promised and more. Worth every penny for those who appreciate quality.","Evelyn, Luxury Client",
-SFPCT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SFPCT,Rating,5,"Exceeded My Expectations","Absolutely love it! The quality is outstanding and the price is unbeatable. Will definitely shop here again.","Olivia, Discerning Customer",
 SFPCT,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper",
 SFPCT,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
@@ -1670,7 +1634,6 @@ SFJT,Rating,5,"Impressive quality","Overall, I’m very happy with the quality a
 SFJT,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
 SFJT,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper",
 SFJT,Rating,5,"Quality product","Very good quality overall. It could benefit from a few upgrades, but still worth it.","Victoria, Luxury Lifestyle",
-SFJT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SFJT,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional",
 SFJT,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
 SFJT,Rating,5,"Top-Notch Quality","Great quality and even better service. The checkout process was simple and my item arrived earlier than expected.","Grace, Budget-Conscious Shopper",
@@ -1709,7 +1672,6 @@ SFRT,Rating,5,"Top-tier product","Everything from the build quality to the usabi
 SFRT,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
 SFRT,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
 SFRT,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer"
-RFPJT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RFPJT,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. Everything from ordering to delivery was smooth.","Matthew, Frequent Shopper",
 RFPJT,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
 RFPJT,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
@@ -1723,7 +1685,6 @@ RFPJT,Rating,5,"Worth Every Penny","The product is perfect and the service is ex
 2LFT,Rating,5,"Impressive quality","Overall, I’m very happy with the quality and functionality. It performs well and looks sleek.","Grace, Design Expert",
 2LFT,Rating,5,"Exceeded My Expectations","Absolutely love it! The quality is outstanding and the price is unbeatable. Will definitely shop here again.","Olivia, Discerning Customer",
 2LFT,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
-2LFT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 2LFT,Rating,5,"Amazing craftsmanship","The craftsmanship is impeccable. Every detail has been thought through and it shows. I’m thoroughly impressed.","Benjamin, Elite Shopper",
 2LFT,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
 2LFT,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfectly. It’s reliable and elegant. I would recommend it to anyone.","Oscar, Elite Professional",
@@ -1751,7 +1712,6 @@ RFVT,Rating,5,"Superb Shopping Experience","Couldn't be happier with my purchase
 3SFT,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional",
 3SFT,Rating,5,"Superb Shopping Experience","Couldn't be happier with my purchase! The product is exactly as described and the shipping was lightning fast.","Charlotte, Elite Buyer",
 3SFT,Rating,5,"Exceptional Quality","This product exceeded my expectations. The craftsmanship is top-notch, and it feels premium in every way.","Samantha, Elite Reviewer",
-3SFT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 3SFT,Rating,5,"Premium Quality Item","Best online shopping experience I've had. The product is perfect and arrived in pristine condition. Very impressed!","Nathan, Disappointed Buyer",
 3SFT,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast"
 RFET,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
@@ -1779,7 +1739,6 @@ RFH,Rating,5,"Top-Notch Quality","Great quality and even better service. The che
 RFH,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of elegance to my collection. I can’t stop showing it off!","Sophia, Design Enthusiast"
 RFZH,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional",
 RFZH,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
-RFZH,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RFZH,Rating,5,"Great Value Purchase","This product has truly changed the way I do things. It’s a must-have for anyone serious about quality.","Liam, Elite Professional",
 RFZH,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
 RFZH,Rating,5,"Superb Shopping Experience","Couldn't be happier with my purchase! The product is exactly as described and the shipping was lightning fast.","Charlotte, Elite Buyer",
@@ -1921,7 +1880,6 @@ SFNCJ,Rating,5,"The Perfect Choice","Very impressed with both the product and th
 SFNCJ,Rating,5,"Superb Shopping Experience","Couldn't be happier with my purchase! The product is exactly as described and the shipping was lightning fast.","Charlotte, Elite Buyer",
 SFNCJ,Rating,5,"Impressive quality","Overall, I’m very happy with the quality and functionality. It performs well and looks sleek.","Grace, Design Expert",
 SFNCJ,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
-SFNCJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SFNCJ,Rating,5,"Quality product","Very good quality overall. It could benefit from a few upgrades, but still worth it.","Victoria, Luxury Lifestyle",
 SFNCJ,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper",
 SFNCJ,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen anything like it—well worth the investment.","Lucas, Design Professional"
@@ -1929,7 +1887,6 @@ SFT,Rating,5,"Unmatched Performance","I’ve used many similar products, but thi
 SFT,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper",
 SFT,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
 SFT,Rating,5,"Outstanding Quality","Top quality product and amazing customer service. The ordering process was smooth and delivery was faster than expected.","Chloe, Professional Shopper",
-SFT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SFT,Rating,5,"Best Purchase Ever","Exceeded all my expectations. Quick delivery and perfect packaging. This store knows how to treat customers!","Mason, Tech Enthusiast",
 SFT,Rating,5,"Top Notch!","Simply the best! Everything works as promised and more. Worth every penny for those who appreciate quality.","Evelyn, Luxury Client",
 SFT,Rating,5,"Amazing craftsmanship","The craftsmanship is impeccable. Every detail has been thought through and it shows. I’m thoroughly impressed.","Benjamin, Elite Shopper",
@@ -1956,7 +1913,6 @@ RFTLT,Rating,5,"Great but a little heavy","It’s a great product, though a litt
 RFTLT,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
 RFTLT,Rating,5,"Superior Shopping Experience","It does the job but could really use a couple more features to make it stand out.","Ava, Professional Reviewer",
 RFTLT,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
-RFTLT,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store."
 RFCT,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of elegance to my collection. I can’t stop showing it off!","Sophia, Design Enthusiast",
 RFCT,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
 RFCT,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper",
@@ -1973,7 +1929,6 @@ RFST,Rating,5,"Quality product","Very good quality overall. It could benefit fro
 RFST,Rating,5,"Top-Notch Quality","Great quality and even better service. The checkout process was simple and my item arrived earlier than expected.","Grace, Budget-Conscious Shopper",
 RFST,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
 RFST,Rating,5,"The Perfect Choice","Very impressed with both the product and the service. Checkout was easy and delivery was prompt.","Sebastian, Disappointed Buyer",
-RFST,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RFST,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional",
 RFST,Rating,5,"Superior Shopping Experience","It does the job but could really use a couple more features to make it stand out.","Ava, Professional Reviewer",
 RFST,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer"
@@ -1986,11 +1941,9 @@ RFBJ,Rating,5,"Perfect for my needs","This product is exactly what I was looking
 RFBJ,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
 RFBJ,Rating,5,"Perfect in Every Way","Outstanding quality and value. The store has great prices and the shipping is always reliable and quick.","Isaac, Luxury Shopper",
 RFBJ,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
-RFBJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 RFBJ,Rating,5,"Top Notch!","Simply the best! Everything works as promised and more. Worth every penny for those who appreciate quality.","Evelyn, Luxury Client",
 RFBJ,Rating,5,"Best Purchase Ever","Exceeded all my expectations. Quick delivery and perfect packaging. This store knows how to treat customers!","Mason, Tech Enthusiast"
 LFLJ,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
-LFLJ,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 LFLJ,Rating,5,"Perfect in Every Way","Outstanding quality and value. The store has great prices and the shipping is always reliable and quick.","Isaac, Luxury Shopper",
 LFLJ,Rating,5,"Best Purchase Ever","Exceeded all my expectations. Quick delivery and perfect packaging. This store knows how to treat customers!","Mason, Tech Enthusiast",
 LFLJ,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
@@ -2024,7 +1977,6 @@ SFST,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. Thi
 SFST,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfectly. It’s reliable and elegant. I would recommend it to anyone.","Oscar, Elite Professional"
 VSC,Rating,5,"The Perfect Choice","Very impressed with both the product and the service. Checkout was easy and delivery was prompt.","Sebastian, Disappointed Buyer",
 VSC,Rating,5,"Top Notch!","Simply the best! Everything works as promised and more. Worth every penny for those who appreciate quality.","Evelyn, Luxury Client",
-VSC,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 VSC,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen anything like it—well worth the investment.","Lucas, Design Professional",
 VSC,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper",
 VSC,Rating,5,"Top-Notch Quality","Great quality and even better service. The checkout process was simple and my item arrived earlier than expected.","Grace, Budget-Conscious Shopper",
@@ -2120,7 +2072,6 @@ MDG,Rating,5,"Perfect in Every Way","Outstanding quality and value. The store ha
 MDG,Rating,5,"Great Value Purchase","This product has truly changed the way I do things. It’s a must-have for anyone serious about quality.","Liam, Elite Professional",
 MDG,Rating,5,"Impressive quality","Overall, I’m very happy with the quality and functionality. It performs well and looks sleek.","Grace, Design Expert",
 MDG,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper"
-LPTR,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 LPTR,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
 LPTR,Rating,5,"Very Satisfied","Solid product, good value for the money. Would definitely recommend to friends and family.","Michael, Luxury Client",
 LPTR,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
@@ -2157,7 +2108,6 @@ CVSC,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It
 CVSC,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
 CVSC,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional",
 CVSC,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of elegance to my collection. I can’t stop showing it off!","Sophia, Design Enthusiast",
-CVSC,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 CVSC,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
 CVSC,Rating,5,"Great Value Purchase","This product has truly changed the way I do things. It’s a must-have for anyone serious about quality.","Liam, Elite Professional",
 CVSC,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper",
@@ -2195,7 +2145,6 @@ PCC,Rating,5,"Top Notch!","Simply the best! Everything works as promised and mor
 2PCC,Rating,5,"The Perfect Choice","Very impressed with both the product and the service. Checkout was easy and delivery was prompt.","Sebastian, Disappointed Buyer",
 2PCC,Rating,5,"Exceptional Quality","This product exceeded my expectations. The craftsmanship is top-notch, and it feels premium in every way.","Samantha, Elite Reviewer",
 2PCC,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
-2PCC,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store."
 FFCC,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper",
 FFCC,Rating,5,"Great value","Really impressed with the product’s value. It looks fantastic and performs well too.","Aiden, Fashion Enthusiast",
 FFCC,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
@@ -2236,7 +2185,6 @@ CVCC,Rating,5,"Good but needs some tweaks","While overall a solid product, there
 3CC,Rating,5,"Top Notch!","Simply the best! Everything works as promised and more. Worth every penny for those who appreciate quality.","Evelyn, Luxury Client",
 3CC,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
 3CC,Rating,5,"Superior Shopping Experience","It does the job but could really use a couple more features to make it stand out.","Ava, Professional Reviewer",
-3CC,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 3CC,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
 3CC,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
 3CC,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen anything like it—well worth the investment.","Lucas, Design Professional",
@@ -2288,7 +2236,6 @@ PCCC,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't me
 CDDCS,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
 CDDCS,Rating,5,"Unmatched Performance","I’ve used many similar products, but this one has the best performance hands down. Truly outstanding.","Elena, High-End Shopper",
 CDDCS,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper",
-CDDCS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 CDDCS,Rating,5,"Quality product","Very good quality overall. It could benefit from a few upgrades, but still worth it.","Victoria, Luxury Lifestyle",
 CDDCS,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
 CDDCS,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. Everything from ordering to delivery was smooth.","Matthew, Frequent Shopper",
@@ -2325,7 +2272,6 @@ LDDCS,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of
 LDDCS,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It looks fantastic and works fine, but could have a few enhancements.","Charlotte, Luxury Enthusiast",
 LDDCS,Rating,5,"Exceeded My Expectations","Absolutely love it! The quality is outstanding and the price is unbeatable. Will definitely shop here again.","Olivia, Discerning Customer",
 LDDCS,Rating,5,"Great value","Really impressed with the product’s value. It looks fantastic and performs well too.","Aiden, Fashion Enthusiast",
-LDDCS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 LDDCS,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfectly. It’s reliable and elegant. I would recommend it to anyone.","Oscar, Elite Professional",
 LDDCS,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
 LDDCS,Rating,5,"Flawless in every way","From design to performance, this product has been flawless. Truly a premium experience that’s worth every penny.","Amelia, Luxury Lifestyle",
@@ -2372,7 +2318,6 @@ QB,Rating,5,"Beyond expectations","This product has far surpassed my expectation
 QB,Rating,5,"Exceeded My Expectations","Absolutely love it! The quality is outstanding and the price is unbeatable. Will definitely shop here again.","Olivia, Discerning Customer",
 QB,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
 QB,Rating,5,"Amazing craftsmanship","The craftsmanship is impeccable. Every detail has been thought through and it shows. I’m thoroughly impressed.","Benjamin, Elite Shopper",
-QB,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store."
 PCFS,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
 PCFS,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
 PCFS,Rating,5,"Outstanding Quality","Top quality product and amazing customer service. The ordering process was smooth and delivery was faster than expected.","Chloe, Professional Shopper",
@@ -2390,7 +2335,6 @@ LDSDCS,Rating,5,"Outstanding Quality","Top quality product and amazing customer 
 LDSDCS,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
 LDSDCS,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
 LDSDCS,Rating,5,"Worth Every Penny","The product is perfect and the service is exceptional. Will definitely be a returning customer!","Megan, Regular Shopper",
-LDSDCS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 LDSDCS,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
 LDSDCS,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
 LDSDCS,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper"
@@ -2421,7 +2365,6 @@ WLP,Rating,5,"Exceptional Quality","This product exceeded my expectations. The c
 FCS,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
 FCS,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer",
 FCS,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
-FCS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 FCS,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
 FCS,Rating,5,"Exceptional Quality","This product exceeded my expectations. The craftsmanship is top-notch, and it feels premium in every way.","Samantha, Elite Reviewer",
 FCS,Rating,5,"Superior Shopping Experience","It does the job but could really use a couple more features to make it stand out.","Ava, Professional Reviewer",
@@ -2453,7 +2396,6 @@ VB,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering pr
 VB,Rating,5,"Amazing craftsmanship","The craftsmanship is impeccable. Every detail has been thought through and it shows. I’m thoroughly impressed.","Benjamin, Elite Shopper",
 VB,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper"
 DDCS,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
-DDCS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 DDCS,Rating,5,"Outstanding Quality","Top quality product and amazing customer service. The ordering process was smooth and delivery was faster than expected.","Chloe, Professional Shopper",
 DDCS,Rating,5,"Perfect in Every Way","Outstanding quality and value. The store has great prices and the shipping is always reliable and quick.","Isaac, Luxury Shopper",
 DDCS,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
@@ -2475,7 +2417,6 @@ LTR,Rating,5,"Great value","Really impressed with the product’s value. It look
 TCR,Rating,5,"Quality product","Very good quality overall. It could benefit from a few upgrades, but still worth it.","Victoria, Luxury Lifestyle",
 TCR,Rating,5,"The Ultimate Choice","After trying many others, this is the only one that has stood the test of time and still looks brand new.","Carlos, Luxury Lifestyle",
 TCR,Rating,5,"Exceptional Quality","This product exceeded my expectations. The craftsmanship is top-notch, and it feels premium in every way.","Samantha, Elite Reviewer",
-TCR,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 TCR,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. Everything from ordering to delivery was smooth.","Matthew, Frequent Shopper",
 TCR,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
 TCR,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of elegance to my collection. I can’t stop showing it off!","Sophia, Design Enthusiast",
@@ -2521,7 +2462,6 @@ MCB,Rating,5,"Solid Buy","Fantastic product and wonderful shopping experience. E
 MCB,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer",
 MCB,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
 MCB,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
-MCB,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 MCB,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It looks fantastic and works fine, but could have a few enhancements.","Charlotte, Luxury Enthusiast",
 MCB,Rating,5,"Quality product","Very good quality overall. It could benefit from a few upgrades, but still worth it.","Victoria, Luxury Lifestyle",
 MCB,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper",
@@ -2531,7 +2471,6 @@ MCB,Rating,5,"Top of the line","This product is the definition of luxury. Every 
 MCB,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper"
 3MCB,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen anything like it—well worth the investment.","Lucas, Design Professional",
 3MCB,Rating,5,"First-Class Product","It’s good but didn’t completely blow me away. The material could be a little better for the price.","James, Frequent Buyer",
-3MCB,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 3MCB,Rating,5,"First-Rate Quality","It’s functional, but it doesn’t leave me with that ‘wow’ feeling. I expected more innovation.","David, Regular Shopper",
 3MCB,Rating,5,"Premium Quality Item","Best online shopping experience I've had. The product is perfect and arrived in pristine condition. Very impressed!","Nathan, Disappointed Buyer",
 3MCB,Rating,5,"Top of the line","This product is the definition of luxury. Every aspect is premium. I’m extremely happy with my purchase.","Thomas, Elite Reviewer",
@@ -2557,7 +2496,6 @@ CFS,Rating,5,"Quality product","Very good quality overall. It could benefit from
 CFS,Rating,5,"Amazing craftsmanship","The craftsmanship is impeccable. Every detail has been thought through and it shows. I’m thoroughly impressed.","Benjamin, Elite Shopper",
 CFS,Rating,5,"Very Satisfied","Solid product, good value for the money. Would definitely recommend to friends and family.","Michael, Luxury Client",
 CFS,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional",
-CFS,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 CFS,Rating,5,"Top-tier product","Everything from the build quality to the usability is just superb. I would recommend this to anyone looking for premium quality.","Mia, Design Expert",
 CFS,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer"
 AWM,Rating,5,"Top-Notch Quality","Great quality and even better service. The checkout process was simple and my item arrived earlier than expected.","Grace, Budget-Conscious Shopper",
@@ -2588,7 +2526,6 @@ CMC,Rating,5,"Flawless in every way","From design to performance, this product h
 2SMC,Rating,5,"Stunning Design","The aesthetics are amazing, it adds a touch of elegance to my collection. I can’t stop showing it off!","Sophia, Design Enthusiast",
 2SMC,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper",
 2SMC,Rating,5,"Very Satisfied","Solid product, good value for the money. Would definitely recommend to friends and family.","Michael, Luxury Client",
-2SMC,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 2SMC,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional",
 2SMC,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
 2SMC,Rating,5,"Exceptional Quality","This product exceeded my expectations. The craftsmanship is top-notch, and it feels premium in every way.","Samantha, Elite Reviewer",
@@ -2672,7 +2609,6 @@ CDCS,Rating,5,"Best Purchase Ever","Exceeded all my expectations. Quick delivery
 2PM,Rating,5,"A Real Gem","The product is decent, but I expected more for the price. It’s good, but not mind-blowing.","Isabella, Value Seeker",
 2PM,Rating,5,"The Perfect Choice","Very impressed with both the product and the service. Checkout was easy and delivery was prompt.","Sebastian, Disappointed Buyer",
 2PM,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
-2PM,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store."
 2CSN,Rating,5,"Superb Shopping Experience","Couldn't be happier with my purchase! The product is exactly as described and the shipping was lightning fast.","Charlotte, Elite Buyer",
 2CSN,Rating,5,"Excellent Service and Product","For the price, I expected a lot more. It works, but it’s not as good as other options.","Lily, Luxury Buyer",
 2CSN,Rating,5,"Perfect for my needs","This product is exactly what I was looking for. It delivers on every promise and has been perfect for my daily use.","George, Elite Reviewer",
@@ -2695,7 +2631,6 @@ RLT,Rating,5,"Superb Shopping Experience","Couldn't be happier with my purchase!
 RLT,Rating,5,"Beyond expectations","This product has far surpassed my expectations. The design, functionality, and quality are second to none.","Henry, Elite Professional"
 SPM,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It looks fantastic and works fine, but could have a few enhancements.","Charlotte, Luxury Enthusiast",
 SPM,Rating,5,"Highly Recommended","Amazing quality and super fast shipping. This is how online shopping should be!","Jack, Luxury Shopper",
-SPM,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 SPM,Rating,5,"Great value","Really impressed with the product’s value. It looks fantastic and performs well too.","Aiden, Fashion Enthusiast",
 SPM,Rating,5,"5-Star Excellence","Excellent product and flawless shopping experience. The website is easy to navigate and checkout was a breeze.","Harper, Upscale Shopper",
 SPM,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
@@ -2709,7 +2644,6 @@ CTR,Rating,5,"Very Satisfied","Solid product, good value for the money. Would de
 CTR,Rating,5,"Beyond Impressed","Absolutely amazing product. I’ve never seen anything like it—well worth the investment.","Lucas, Design Professional",
 CTR,Rating,5,"Top Notch!","Simply the best! Everything works as promised and more. Worth every penny for those who appreciate quality.","Evelyn, Luxury Client",
 CTR,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It looks fantastic and works fine, but could have a few enhancements.","Charlotte, Luxury Enthusiast",
-CTR,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 CTR,Rating,5,"Delighted Customer","Perfect from start to finish! Easy ordering process and the product arrived in perfect condition.","Olivia, Upscale Shopper",
 CTR,Rating,5,"Impressive quality","Overall, I’m very happy with the quality and functionality. It performs well and looks sleek.","Grace, Design Expert",
 CTR,Rating,5,"Very good product","It’s a great product, although there’s a little room for improvement in the design.","Zoe, High-End Enthusiast",
@@ -2730,7 +2664,6 @@ LCR,Rating,5,"Satisfying Experience","I’m happy with the purchase overall. It 
 LCR,Rating,5,"Great but a little heavy","It’s a great product, though a little heavier than I’d like. Still, a solid investment.","Leah, High-End Shopper",
 LCR,Rating,5,"Wonderful Discovery","I had high hopes, but the product didn't meet my expectations. The quality is subpar for the cost.","Henry, Luxury Buyer",
 LCR,Rating,5,"Perfect for my lifestyle","This product suits my lifestyle perfectly. It’s reliable and elegant. I would recommend it to anyone.","Oscar, Elite Professional",
-LCR,Rating,5,"Absolutely Amazing Product","This product is simply amazing! The shipping was fast and the customer service was excellent. Highly recommend this store.",
 LCR,Rating,5,"Perfect for my needs","This product is exactly what I was looking for. It delivers on every promise and has been perfect for my daily use.","George, Elite Reviewer",
 LCR,Rating,5,"Top-Notch Quality","Great quality and even better service. The checkout process was simple and my item arrived earlier than expected.","Grace, Budget-Conscious Shopper",
 LCR,Rating,5,"Good but needs some tweaks","While overall a solid product, there are a few design elements that could use improvement for easier usability.","Benjamin, High-End Shopper",
