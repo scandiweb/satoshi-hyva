@@ -28,7 +28,11 @@ export type TransitionStoreType = {
   isAnimating: Boolean;
   isPreviewAnimating: Boolean;
   originalFocusableEl?: HTMLElement | null;
-  _doTransition: (areaId: string, callback: () => void) => Promise<void>;
+  _doTransition: (
+    areaId: string,
+    c1: () => void,
+    callback: () => void
+  ) => Promise<void>;
   _showTransitionFallback: (isPreview: boolean) => void;
   _clearFallback: () => void;
   __activeTransitionAreaRef: string | null;
@@ -45,12 +49,13 @@ const TransitionStore = <TransitionStoreType>{
   __activeTransitionAreaRef: null,
   isPreviewActive: false,
 
-  async _doTransition(areaId, callback) {
+  async _doTransition(areaId, c1, callback) {
     if (
       !Alpine.store("main").isMobile ||
       Alpine.store("main").isReducedMotion
     ) {
       // DO NOT Animate on desktop or if user prefers reduced motion.
+      c1();
       callback();
       return;
     }
@@ -141,9 +146,13 @@ const TransitionStore = <TransitionStoreType>{
       );
     });
 
-    callback();
+    c1();
 
-    await animationPromise;
+    try {
+      await animationPromise;
+    } catch (e) {
+    }
+    callback();
 
     // step 5
     this.isTransitioning = false;
@@ -435,6 +444,23 @@ export const navigateWithTransition = (
   const isAnimating = !!options.animate;
 
   const navigate = async () => {
+    Alpine.nextTick(async () => {
+      const html = await fetchAndCachePage(nextUrl!);
+
+      if (isPreview) {
+        replacePreviewContent(html);
+      } else {
+        // here's the thing.. can we do this only when transition is done??
+        replaceMainContent(html);
+        window.scrollTo(0, 0);
+      }
+
+      Alpine.store("transition")._clearFallback();
+      nProgress.done();
+    });
+  };
+
+  const startNavigating = () => {
     if (options.type && options.data) {
       if (isPreview) {
         Alpine.store("transition").isPreviewAnimating = isAnimating;
@@ -453,23 +479,17 @@ export const navigateWithTransition = (
       Alpine.store("resizable").hideAll();
       history.replaceState({ ...history.state, scrollPosition }, "");
       pushStateAndNotify({ isPreview }, "", nextUrl!);
-      const html = await fetchAndCachePage(nextUrl!);
-
-      if (isPreview) {
-        replacePreviewContent(html);
-      } else {
-        replaceMainContent(html);
-        window.scrollTo(0, 0);
-      }
-
-      Alpine.store("transition")._clearFallback();
-      nProgress.done();
     });
   };
 
   if (options.areaId) {
-    Alpine.store("transition")._doTransition(options.areaId!, navigate);
+    Alpine.store("transition")._doTransition(
+      options.areaId!,
+      startNavigating,
+      navigate
+    );
   } else {
+    startNavigating();
     navigate();
   }
 };
