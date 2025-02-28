@@ -298,12 +298,33 @@
                 </validation>
                 <dataType>text</dataType>
                 <label translate="true">Video URL</label>
+                <notice translate="true">For best results, use an image with a 3:2 aspect ratio.</notice>
                 <tooltip>
                     <description translate="true">Video URLs can be links to videos on YouTube or Vimeo, or HTTP(S)
                         links to files with valid video extensions (we recommend .mp4)
                     </description>
                 </tooltip>
             </settings>
+        </field>
+
+        <!-- Image field -->
+        <field name="image" sortOrder="95" formElement="imageUploader">
+            <settings>
+                <label translate="true">Thumbnail</label>
+                <componentType>imageUploader</componentType>
+                <notice translate="true">For best results, use an image with a 3:2 aspect ratio.</notice>
+            </settings>
+            <formElements>
+                <imageUploader>
+                    <settings>
+                        <allowedExtensions>jpg jpeg gif png</allowedExtensions>
+                        <maxFileSize>4194304</maxFileSize>
+                        <uploaderConfig>
+                            <param xsi:type="string" name="url">pagebuilder/contenttype/image_upload</param>
+                        </uploaderConfig>
+                    </settings>
+                </imageUploader>
+            </formElements>
         </field>
 
         <!-- Video autoplay -->

@@ -45,7 +45,16 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
 <div class="relative overflow-hidden">
     <div class="absolute left-0 top-0 z-10 h-full w-full bg-black" style="opacity: <?= $escaper->escapeHtmlAttr($overlayOpacity) ?>"></div>
     <?php if(str_ends_with($videoUrl, '.mp4')): ?>
-        <video class="absolute left-0 top-0 z-0 h-full w-full object-cover object-center" <?= $muted ? 'muted' : '' ?> <?= $autoplay ? 'autoplay' : 'false' ?> <?= $loop ? 'loop' : '' ?> playsinline>
+        <video
+            class="absolute left-0 top-0 z-0 h-full w-full object-cover object-center bg-cover bg-center"
+            <?php if($block->getData('image')): ?>
+                style="background-image: url('<?= $escaper->escapeUrl($block->getData('image')) ?>');"
+            <?php endif; ?>
+            <?= $muted ? 'muted' : '' ?>
+            <?= $autoplay ? 'autoplay' : 'false' ?>
+            <?= $loop ? 'loop' : '' ?>
+            playsinline
+        >
             <source src="<?= $escaper->escapeUrl($videoUrl) ?>" type="video/mp4">
         </video>
     <?php else: ?>

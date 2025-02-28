@@ -144,6 +144,7 @@ define([
       category_id: data.button_link?.category || null,
       overlay_opacity: +data.overlay_opacity / 100,
       video_source: src,
+      ...(data.image[0] ? { image: data.image[0].url } : {}),
       autoplay: data.autoplay,
       muted: data.muted,
       loop: data.loop,
