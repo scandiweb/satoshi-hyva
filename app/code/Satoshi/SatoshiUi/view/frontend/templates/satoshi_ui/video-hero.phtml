@@ -22,6 +22,8 @@ $linkHelper = $this->helper(LinkHelper::class);
 $decodeHelper = $this->helper(DecodeHelper::class);
 $link_url = $decodeHelper->decodeJSONHTMLEntity($block->getData('button_link'));
 $linkHref = $linkHelper->getLinkHref($block, $link_url);
+$linkType = $block->getData('button_type');
+$category = $block->getCategory() ?? null;
 
 $videoUrl = $block->getData('video_source');
 $heading = $block->getData('heading');
@@ -133,7 +135,15 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
                         target="<?= $escaper->escapeHtmlAttr($linkHelper->getLinkTarget($link_url)); ?>"
                     <?php endif; ?>
                     class="button button--filled-secondary <?= ($hasHeading || $hasDescription) ? 'mt-16' : '' ?>"
-                    x-element-transition-trigger
+                    <?php if($linkType === 'category'): ?>
+                        x-element-transition-trigger:category.animate="{
+                            'title': `<?= $category['name'] ?? '' ?>`,
+                            'url': `<?= $category['url'] ?? '' ?>`,
+                            'img': `<?= $category['image'] ?? '' ?>`
+                        }"
+                    <?php else: ?>
+                        x-element-transition-trigger
+                    <?php endif; ?>
                 >
                     <?= $escaper->escapeHtml($block->getData('button_label')) ?>
                 </a>
