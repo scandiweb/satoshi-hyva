@@ -111,11 +111,11 @@ define([
     let src = data.video_source;
     const youtubeRegExp = new RegExp(
       "^(?:https?://|//)?(?:www\\.|m\\.)?" +
-      "(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|watch\\?v=|watch\\?.+&v=))([\\w-]{11})(?![\\w-])"
+        "(?:youtu\\.be/|youtube\\.com/(?:embed/|v/|watch\\?v=|watch\\?.+&v=))([\\w-]{11})(?![\\w-])"
     );
     const vimeoRegExp = new RegExp(
       "https?://(?:www\\.|player\\.)?vimeo.com/(?:channels/" +
-      "(?:\\w+/)?|groups/([^/]*)/videos/|album/(\\d+)/video/|video/|)(\\d+)(?:$|/|\\?)"
+        "(?:\\w+/)?|groups/([^/]*)/videos/|album/(\\d+)/video/|video/|)(\\d+)(?:$|/|\\?)"
     );
     if (youtubeRegExp.test(src)) {
       src =
@@ -140,6 +140,8 @@ define([
       description: data.description,
       button_label: data.button_label,
       button_link: JSON.stringify(tidyLink(data.button_link)),
+      button_type: data.button_link?.type || "",
+      category_id: data.button_link?.category || null,
       overlay_opacity: +data.overlay_opacity / 100,
       video_source: src,
       autoplay: data.autoplay,
