@@ -99,6 +99,14 @@
                         <attribute name="loop" storage_key="loop" source="loop"
                                    converter="Magento_PageBuilder/js/content-type/video/converter/attribute/autoplay"/>
                     </element>
+                    <element name="image">
+                        <attribute
+                            name="image"
+                            source="src"
+                            converter="Magento_PageBuilder/js/converter/attribute/src"
+                            preview_converter="Magento_PageBuilder/js/converter/attribute/preview/src"
+                        />
+                    </element>
 
                     <element name="block_directive">
                         <html name="block_directive" converter="Magento_PageBuilder/js/converter/html/tag-escaper"/>
