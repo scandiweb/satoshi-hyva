@@ -20,7 +20,7 @@
 
 ## Demo
 
-Demo for `Satoshi` can be found on [hyva.satoshitheme.com](https://hyva.satoshitheme.com/), but if you can't wait, here's a sneak peak! 😉
+You can check out the `Satoshi` demo at [hyva.satoshitheme.com](https://hyva.satoshitheme.com/). But if you're eager to see it in action, here's a sneak peek! 😉
 
 // Maybe add a short video of demo site
 
