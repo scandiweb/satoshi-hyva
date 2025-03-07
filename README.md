@@ -40,8 +40,8 @@ Refer to the [License file](https://github.com/satoshiux/hyva/blob/production/LI
 
 Satoshi follow semantic versioning. Here's what major.minor.patch (eg. 6.0.1) means for us:
 
-major - breaking changes, major new features, complete rewrites.
-minor - new features, released in backwards-compatible ways.
+major - breaking changes, major new features, complete rewrites.\
+minor - new features, released in backwards-compatible ways.\
 patch - bug fixes & small non-breaking changes.
 
 ## Contributing guidelines
