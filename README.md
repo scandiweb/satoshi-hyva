@@ -1,81 +1,53 @@
-# Satoshi theme for Hyva
+[![Logo](logo.png)](https://www.satoshitheme.com/hyva)
 
-## Installation
+<h3 align="center">Enhance exceptional Hyvä performance with outstanding Satoshi UX.</h3>
 
-1. `git clone git@github.com:satoshiux/hyva.git`
-2. `cd hyva`
-3. Copy `auth.json` content from slack.
-4. `npm install`
-5. `npm run start`
+<p align="center">
+  <img src="https://img.shields.io/github/last-commit/satoshiux/hyva">
+  <img src="https://img.shields.io/github/license/satoshiux/hyva">
+</p>
 
-## Work guide and tips
+// Animated introduction video?
 
-- Disable magento cache for full_page and block_html.
-  - `npm run cli` then `m cache:disable full_page block_html`
-- Run Vite to watch your changes in alpine & scss files.
-  - `cd app/design/frontend/Satoshi/Hyva/web/satoshi`
-  - `npm install`
-  - `npm run dev`
+## Features
 
-## Tips
+// List features..
 
-We try to reduce the cases where we need to work with layout xml files, so we've introduced some utilities that will help stay away of them.
+## Links
 
-- `$template`: This variable is shared across all `.phtml` templates, it generates a block instance where you can use to import another template.
-  Usage:
+[Website](https://www.satoshitheme.com/hyva) • [Documentation](#)
+// Add documentation link
 
-```php
-$template
-  ->setData([]) // If needs to pass data
-  ->render('Magento_Theme:path/to/template.phtml');
-```
+## Demo
 
-- `$resizable`: In Satoshi we have reusable components, one of them is resizables, ie: menu, cart, and search resizables on desktop. we introduced a utility to be used directly from any template.
-  Usage:
+Demo for `Satoshi` can be found on [hyva.satoshitheme.com](https://hyva.satoshitheme.com/), but if you can't wait, here's a sneak peak! 😉
 
-```php
-$resizable
-  ->setData([
-    'id' => 'menu-desktop',
-    'initialWidth' => 105,
-    'initialHeight' => 56,
-    'cssClass' => 'resizable--menu md:pointer-events-auto',
-  ])
-  ->setChildTemplate('Magento_Theme::html/header/menu/menu-button.phtml')
-  ->render()
-```
+// Maybe add a short video of demo site
 
-- `$popup`: Popups are the alternatives for resizables on mobile.
-  Usage:
+## Getting started
 
-```php
-$popup
-  ->setData([
-    'id' => 'menu',
-    'isFocused' => true,
-    'isFullScreen' => true,
-    'desktopTarget' => 'menu-desktop',
-  ])
-  ->setChildTemplate('Magento_Theme::html/header/menu/menu.phtml')
-  ->render()
-```
+Start with the [Introduction](#) page in our [documentation](#)—it provides an overview of what you can achieve with Satoshi and guides you through the learning process.
 
-## Features to implement
+## Changelog
 
-### Product card
+Refer to the [Releases](https://github.com/satoshiux/hyva/releases) tab for details.
 
-1. Add to wishlist
-2. Add to compare
-3. Quick buy on desktop?
-4. Ratings results
-5. Add a setting to allow merchant to choose object-fit between cover and contain?
+## License
 
-### PLP
+Refer to the [License file](https://github.com/satoshiux/hyva/blob/production/LICENSE.md) for more details.
 
-1. Add an option to switch between grid and list layout
+## Versioning
 
-### PDP
+Satoshi follow semantic versioning. Here's what major.minor.patch (eg. 6.0.1) means for us:
 
-1. email to a friend
-2. add to compare
-3. add to cart shortcuts (ie: pay later paypal btn)
+major - breaking changes, major new features, complete rewrites.
+minor - new features, released in backwards-compatible ways.
+patch - bug fixes & small non-breaking changes.
+
+## Contributing guidelines
+
+To be added
+
+## Credits
+
+Team & roles worked on it, To be added
