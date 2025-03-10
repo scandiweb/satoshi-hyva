@@ -21,11 +21,6 @@ const defaultWidthHeight = {
 module.exports = hyvaModules.mergeTailwindConfig({
   theme: {
     extend: {
-      truncate: {
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-      },
       aspectRatio: {
         product: "var(--product-aspect-ratio)",
       },
@@ -112,9 +107,13 @@ module.exports = hyvaModules.mergeTailwindConfig({
       maxWidth: {
         screen: "100vw",
       },
-      fonts: {
+      fontFamily: {
         heading: "var(--font-heading-family)",
         body: "var(--font-body-family)",
+      },
+      fontWeight: {
+        "w-heading": "var(--font-heading-weight)",
+        "w-body": "var(--font-body-weight)",
       },
       fontSize: {
         "2xs": "0.625rem",

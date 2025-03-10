@@ -21,7 +21,9 @@ img {
 }
 
 body {
-  @apply overflow-x-hidden text-md text-text-700;
+  @apply overflow-x-hidden font-body text-md font-w-body text-text-700;
+
+  font-style: var(--font-body-style);
 }
 
 svg {
@@ -31,9 +33,9 @@ svg {
 h1,
 h2,
 h3 {
-  font-family: var(--font-heading-family);
+  @apply font-heading font-w-heading;
+
   font-style: var(--font-heading-style);
-  font-weight: var(--font-heading-weight);
 }
 
 .main-wrapper {
