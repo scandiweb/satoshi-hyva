@@ -7,26 +7,31 @@
   <img src="https://img.shields.io/github/license/satoshiux/hyva">
 </p>
 
-// Animated introduction video?
-
 ## Features
 
-// List features..
+1. An app-like user journey
+2. Page transitions & animations
+3. Dynamic template rendering
+4. Product preview peeks
+5. PDP with instant add to cart
+6. Image zoom to see products in detail
+7. Seamless filtering & sorting
+8. Endless Pagination
+9. Smooth checkout experience
 
 ## Links
 
-[Website](https://www.satoshitheme.com/hyva) • [Documentation](#)
-// Add documentation link
+[Website](https://www.satoshitheme.com/hyva) • [Documentation](https://www.notion.so/scandiweb/Hyva-Satoshi-theme-documentation-1adc346d72c080ffb1b2faa454d6739d)
 
 ## Demo
 
 You can check out the `Satoshi` demo at [hyva.satoshitheme.com](https://hyva.satoshitheme.com/). But if you're eager to see it in action, here's a sneak peek! 😉
 
-// Maybe add a short video of demo site
+https://github.com/user-attachments/assets/46f1f487-4436-4a8c-9399-5f22a15f27c8
 
 ## Getting started
 
-Start with the [Introduction](#) page in our [documentation](#)—it provides an overview of what you can achieve with Satoshi and guides you through the learning process.
+Start with the [Introduction](https://www.notion.so/scandiweb/Introduction-1afc346d72c080909963c20e86b1e1a0) page in our [documentation](https://www.notion.so/scandiweb/Hyva-Satoshi-theme-documentation-1adc346d72c080ffb1b2faa454d6739d)—it provides an overview of what you can achieve with Satoshi and guides you through the learning process.
 
 ## Changelog
 
@@ -38,16 +43,21 @@ Refer to the [License file](https://github.com/satoshiux/hyva/blob/production/LI
 
 ## Versioning
 
-Satoshi follow semantic versioning. Here's what major.minor.patch (eg. 6.0.1) means for us:
+Satoshi follows semantic versioning. Here's what `major.minor.patch` (eg. `6.0.1`) means for us:
 
-major - breaking changes, major new features, complete rewrites.\
-minor - new features, released in backwards-compatible ways.\
-patch - bug fixes & small non-breaking changes.
+`major` - breaking changes, major new features, complete rewrites.\
+`minor` - new features, released in backwards-compatible ways.\
+`patch` - bug fixes & small non-breaking changes.
 
 ## Contributing guidelines
 
-To be added
+We welcome contributions! Please see the [Contributing Guidelines](CONTRIBUTING.md).
 
 ## Credits
 
-Team & roles worked on it, To be added
+- [Alfreds Genkins](https://github.com/alfredsgenkins) - founder & maintainer
+- [Mahmoud Shiref](https://github.com/SH1R3F) - team lead & maintainer
+- [Aleksandrs Kondratjevs](https://github.com/AleksandrsKondratjevs) - maintainer
+- [Mohamed Idris](https://github.com/edriso) - maintainer
+- [Nika Beridze](https://github.com/nikaberidze1337) - maintainer
+- [Reza Mohseni](https://github.com/reza-mohseni-1) - maintainer
