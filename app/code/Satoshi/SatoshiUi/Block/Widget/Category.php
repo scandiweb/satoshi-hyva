@@ -22,6 +22,7 @@ use Magento\Framework\View\LayoutFactory;
 use Magento\Rule\Model\Condition\Combine;
 use Magento\Rule\Model\Condition\Sql\Builder as SqlBuilder;
 use Magento\Widget\Helper\Conditions;
+use Hyva\Theme\ViewModel\Currency;
 
 /**
  * Category widget block
@@ -45,6 +46,11 @@ class Category extends ProductsList
     public $category;
 
     /**
+     * @var Currency
+     */
+    protected $currencyViewModel;
+
+    /**
      * @var CategoryRepositoryInterface
      */
     private $categoryRepository;
@@ -57,6 +63,7 @@ class Category extends ProductsList
      * @param SqlBuilder $sqlBuilder
      * @param Rule $rule
      * @param Conditions $conditionsHelper
+     * @param Currency $currencyViewModel
      * @param array $data
      * @param Json|null $json
      * @param LayoutFactory|null $layoutFactory
@@ -73,6 +80,7 @@ class Category extends ProductsList
         SqlBuilder        $sqlBuilder,
         Rule              $rule,
         Conditions        $conditionsHelper,
+        Currency          $currencyViewModel,
         array             $data = [],
         Json              $json = null,
         LayoutFactory     $layoutFactory = null,
@@ -80,6 +88,7 @@ class Category extends ProductsList
         CategoryRepositoryInterface $categoryRepository = null
     )
     {
+        $this->currencyViewModel = $currencyViewModel;
         $this->categoryRepository = $categoryRepository ?? ObjectManager::getInstance()->get(CategoryRepositoryInterface::class);
         parent::__construct(
             $context,
@@ -247,6 +256,7 @@ class Category extends ProductsList
             $this->getData('view_all_button'),
             $this->getData('auto_resize_items'),
             $this->getData('max_products_count'),
+            $this->currencyViewModel->getCurrentCurrencyCode(),
         ];
     }
 }
