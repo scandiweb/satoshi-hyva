@@ -52,12 +52,3 @@ Satoshi follows semantic versioning. Here's what `major.minor.patch` (eg. `6.0.1
 ## Contributing guidelines
 
 We welcome contributions! Please see the [Contributing Guidelines](CONTRIBUTING.md).
-
-## Credits
-
-- [Alfreds Genkins](https://github.com/alfredsgenkins) - founder & maintainer
-- [Mahmoud Shiref](https://github.com/SH1R3F) - team lead & maintainer
-- [Aleksandrs Kondratjevs](https://github.com/AleksandrsKondratjevs) - maintainer
-- [Mohamed Idris](https://github.com/edriso) - maintainer
-- [Nika Beridze](https://github.com/nikaberidze1337) - maintainer
-- [Reza Mohseni](https://github.com/reza-mohseni-1) - maintainer
