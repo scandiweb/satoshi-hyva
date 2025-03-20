@@ -26,11 +26,17 @@ $attributesViewModel = $viewModels->require(ProductAttributes::class);
 $product = $productViewModel->getProduct();
 $productType = $product->getTypeId();
 $productId = $product->getId();
+$productManufacturer = $product->getAttributeText('manufacturer');
 
 /** @var SvgIcons $hyvaicons */
 $hyvaicons = $viewModels->require(SvgIcons::class);
 $cartErrMsg = $escaper->escapeHtml($block->getCartErrorMessage());
 ?>
+<?php if ($productManufacturer): ?>
+    <span class="mb-1 ps-4 md:px-0 max-md:pe-[--price-width]">
+        <?= $escaper->escapeHtml($productManufacturer) ?>
+    </span>
+<?php endif; ?>
 <h1 class="heading mb-1 ps-4 text-md leading-tight text-text-500 md:px-0 md:text-4xl max-md:pe-[--price-width]">
     <?= $block->getChildBlock('product.title')->getPageHeading() ?>
 </h1>

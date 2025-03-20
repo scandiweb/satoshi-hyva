@@ -435,6 +435,7 @@ export const navigateWithTransition = (
   const isAnimating = !!options.animate;
 
   const navigate = async () => {
+    console.log("options in navigate", options);
     if (options.type && options.data) {
       if (isPreview) {
         Alpine.store("transition").isPreviewAnimating = isAnimating;

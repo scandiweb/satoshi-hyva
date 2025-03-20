@@ -65,19 +65,22 @@ if ($product) {
     <a
         <?php if ($product): ?>
             x-element-transition-trigger:product.preview.animate="
-            {
-                <?php if ($product->getImage()): ?>
-                    'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
-                <?php endif ?>
-                'title': `<?= $escaper->escapeHtmlAttr($product->getName()) ?>`,
-                'mediaCount': <?= $product?->getMediaGalleryImages()->count() ?? 3 ?>,
-                'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
-                'finalPrice': <?= $product->getFinalPrice() ?>,
-                <?php if ($product->getPrice()): ?>
-                    'regularPrice': <?= $product->getPrice() ?>,
-                <?php endif; ?>
-            }
-        "
+                {
+                    <?php if ($product->getImage()): ?>
+                        'productImg': '<?= $escaper->escapeUrl($imageUrl) ?>',
+                    <?php endif ?>
+                    'title': `<?= $escaper->escapeHtmlAttr($product->getName()) ?>`,
+                    'mediaCount': <?= $product?->getMediaGalleryImages()->count() ?? 3 ?>,
+                    'breadcrumbs': <?= $escaper->escapeHtmlAttr(json_encode($breadcrumbs)) ?>,
+                    'finalPrice': <?= $product->getFinalPrice() ?>,
+                    <?php if ($product->getPrice()): ?>
+                        'regularPrice': <?= $product->getPrice() ?>,
+                    <?php endif; ?>
+                    <?php if ($product->getAttributeText('manufacturer')): ?>
+                        'manufacturer': '<?= $product->getAttributeText('manufacturer') ?>',
+                    <?php endif; ?>
+                }
+            "
             href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>"
         <?php else: ?>
             :href="`/${product.url_rewrites?.[0].url}`"
