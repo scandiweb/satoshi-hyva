@@ -21,7 +21,7 @@
 
 ## Links
 
-[Website](https://www.satoshitheme.com/hyva) • [Documentation](https://www.notion.so/scandiweb/Hyva-Satoshi-theme-documentation-1adc346d72c080ffb1b2faa454d6739d)
+[Website](https://www.satoshitheme.com/hyva) • [Documentation](https://scandiweb.notion.site/Hyv-Satoshi-theme-documentation-1adc346d72c080ffb1b2faa454d6739d)
 
 ## Demo
 
@@ -31,7 +31,7 @@ https://github.com/user-attachments/assets/46f1f487-4436-4a8c-9399-5f22a15f27c8
 
 ## Getting started
 
-Start with the [Introduction](https://www.notion.so/scandiweb/Introduction-1afc346d72c080909963c20e86b1e1a0) page in our [documentation](https://www.notion.so/scandiweb/Hyva-Satoshi-theme-documentation-1adc346d72c080ffb1b2faa454d6739d)—it provides an overview of what you can achieve with Satoshi and guides you through the learning process.
+Start with the [Developer Guide](https://scandiweb.notion.site/Hyv-Satoshi-theme-documentation-1adc346d72c080ffb1b2faa454d6739d?pvs=4#1b5c346d72c080bda053ee8412188e5f) section in our [documentation](https://scandiweb.notion.site/Hyv-Satoshi-theme-documentation-1adc346d72c080ffb1b2faa454d6739d)—it provides an overview of what you can achieve with Satoshi and guides you through the learning process.
 
 ## Changelog
 
