@@ -28,12 +28,18 @@ $block->setData('cache_tags', $blockCacheViewModel->collectBlockChildrenCacheTag
 >
     <div
         class="contents text-text-50"
+        :class="{
+            'invisible': isMenuVisible,
+        }"
         x-show="!isMenuVisible"
     >
         <?= $hyvaicons->renderHtml('menu') ?>
     </div>
     <div
         class="contents"
+        :class="{
+            'invisible': !isMenuVisible,
+        }"
         x-show="isMenuVisible"
         style="display: none;"
     >
