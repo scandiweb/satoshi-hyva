@@ -496,7 +496,20 @@ export const navigateWithTransition = (
 
 const prefetchedLinks = new Set();
 
+const NON_PREFETCHABLE_PATTERNS = [
+  /^\/customer\//,
+];
+
+export const shouldPrefetchLink = (link: string): boolean => {
+  const path = new URL(link, window.location.origin).pathname;
+  return !NON_PREFETCHABLE_PATTERNS.some(pattern => pattern.test(path));
+};
+
 export const prefetchLink = (link: string) => {
+  if (!shouldPrefetchLink(link)) {
+    return;
+  }
+
   const prefetchLink = document.createElement("link");
   prefetchLink.rel = "prefetch";
   prefetchLink.href = link;
@@ -504,13 +517,14 @@ export const prefetchLink = (link: string) => {
   document.head.appendChild(prefetchLink);
   prefetchedLinks.add(link);
 };
+
 const prefetchObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
       const element = entry.target as any;
       const href = element.getAttribute("href");
-      if (!href) return;
+      if (!href || !shouldPrefetchLink(href)) return;
       let timeoutId = element.timeoutId;
       if (entry.isIntersecting && !timeoutId) {
         element.timeoutId = setTimeout(() => {
