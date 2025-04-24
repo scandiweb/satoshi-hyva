@@ -49,7 +49,11 @@
       /* comes before the active container */
       --b-tr-radius: theme(borderRadius.md);
       --b-br-radius: theme(borderRadius.md);
-      --b-delay: 0ms;
+
+      .resizable__corner--tr,
+      .resizable__corner--br {
+        --b-delay: 0ms;
+      }
     }
 
     &--visible {
@@ -62,7 +66,11 @@
         /* comes after the active container */
         --b-tl-radius: theme(borderRadius.md);
         --b-bl-radius: theme(borderRadius.md);
-        --b-delay: 0ms;
+
+        .resizable__corner--tl,
+        .resizable__corner--bl {
+          --b-delay: 0ms;
+        }
       }
     }
 
