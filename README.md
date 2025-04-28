@@ -1,4 +1,4 @@
-[![Logo](logo.png)](https://www.satoshitheme.com/hyva)
+<p align="center"><a href="https://www.satoshitheme.com/hyva" target="_blank" rel="noopener noreferrer"><img width="400px" src="logo.png"></a></p>
 
 <h3 align="center">Enhance exceptional Hyvä performance with outstanding Satoshi UX.</h3>
 
@@ -6,6 +6,9 @@
   <img src="https://img.shields.io/github/last-commit/satoshiux/hyva">
   <img src="https://img.shields.io/github/license/satoshiux/hyva">
 </p>
+
+> [!IMPORTANT]  
+> **Satoshi is currently in public beta**. We’d love to hear your feedback — [join the discussion and share your thoughts here](https://github.com/scandiweb/satoshi-hyva/discussions/categories/improvement-ideas).
 
 ## Features
 
