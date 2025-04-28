@@ -93,9 +93,17 @@ export default function (Alpine: AlpineType) {
         first?.focus();
       };
 
+      const removeTrapFocus = () => {
+        document.removeEventListener("keydown", onKeyDown);
+        el.removeAttribute("role");
+        el.removeAttribute("aria-modal");
+        el.removeAttribute("aria-labelledby");
+      };
+
       effect(() => {
         getIsTrapped((trapped) => {
           if (!trapped) {
+            removeTrapFocus();
             return;
           }
 
@@ -114,12 +122,7 @@ export default function (Alpine: AlpineType) {
         });
       });
 
-      cleanup(() => {
-        document.removeEventListener("keydown", onKeyDown);
-        el.removeAttribute("role");
-        el.removeAttribute("aria-modal");
-        el.removeAttribute("aria-labelledby");
-      });
+      cleanup(removeTrapFocus);
     },
   );
 
