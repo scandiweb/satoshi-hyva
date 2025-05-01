@@ -163,7 +163,7 @@ $sorter = $block->getData('sorter') ?? [];
                         <button
                             type="button"
                             class="button button--filled-primary grow"
-                            @click="applyFilters(currentName === 'Sort by' ? CurrentName : currentFilterName, currentFilterValue)"
+                            @click="applyFilters(currentName === 'Sort by' ? currentName : currentFilterName, currentFilterValue)"
                         >
                             <?= $escaper->escapeHtml(__('Apply')) ?>
                         </button>

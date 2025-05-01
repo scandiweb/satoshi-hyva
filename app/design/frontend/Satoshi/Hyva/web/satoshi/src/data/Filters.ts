@@ -12,8 +12,10 @@ export type FiltersType = {
   currentFilterValue: string;
   appliedFilterUrl: string;
   isTopFilterVisible: null | boolean;
+  isDesktopContentInitialized: boolean;
 
   init(): void;
+  initDesktopContent(): void;
   setupPopupWatcher(): void;
   selectSort(sortKey: string, sortDir: string): void;
   applySort(): void;
@@ -85,10 +87,20 @@ export const Filters = (
     appliedFilterUrl: "",
     currentFilterValue: "",
     isTopFilterVisible: null,
+    isDesktopContentInitialized: false,
 
     init() {
       this.loadSelectedFilters();
       this.setupPopupWatcher();
+      // By calling initDesktopContent method here we ensure that when switching from mobile to desktop
+      // the desktop content gets initialized after Filters component is initialized
+      this.initDesktopContent();
+    },
+
+    initDesktopContent() {
+      if (!Alpine.store("main").isMobile && !this.isDesktopContentInitialized) {
+        this.isDesktopContentInitialized = true;
+      }
     },
 
     setupPopupWatcher() {
