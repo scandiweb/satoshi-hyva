@@ -12,36 +12,39 @@ use Satoshi\Theme\Block\Template;
 /** @var ViewModelRegistry $viewModels */
 /** @var Currency $currencyViewModel */
 $currencyViewModel = $viewModels->require(Currency::class);
-$currencies = $currencyViewModel->getCurrencies();
-$currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode();
-
-$options = [];
-foreach ($currencies as $code => $currency) {
-    $name = __($currency['name']);
-    $symbol = $currency['symbol'] ? "({$currency['symbol']})" : '';
-    $label = "
-        <span>{$escaper->escapeHtml($name)}</span>
-        <span>{$escaper->escapeHtml("$code $symbol")}</span>
-    ";
-
-    $options[] = [
-        'value' => $escaper->escapeHtml($code),
-        'label' => $label,
-        'on_click' => "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})",
-        'is_active' => $code === $currentCurrencyCode,
-    ];
-}
-
-$currency = $currencies[$currentCurrencyCode];
-if ($currency) {
-    $currentSymbol = !empty($currency['symbol']) ? " ({$currency['symbol']})" : '';
-    $currentLabel = __($currency['name']) . " | {$currentCurrencyCode}{$currentSymbol}";
-} else {
-    $currentLabel = $currentCurrencyCode;
-}
 ?>
 
 <?php if ($currencyViewModel->getCurrencyCount() > 1): ?>
+    <?php
+    $currencies = $currencyViewModel->getCurrencies();
+    $currentCurrencyCode = $currencyViewModel->getCurrentCurrencyCode();
+
+    $options = [];
+    foreach ($currencies as $code => $currency) {
+        $name = __($currency['name']);
+        $symbol = $currency['symbol'] ? "({$currency['symbol']})" : '';
+        $label = "
+            <span>{$escaper->escapeHtml($name)}</span>
+            <span>{$escaper->escapeHtml("$code $symbol")}</span>
+        ";
+
+        $options[] = [
+            'value' => $escaper->escapeHtml($code),
+            'label' => $label,
+            'on_click' => "hyva.postForm({$currencyViewModel->getSwitchCurrencyPostData($code)})",
+            'is_active' => $code === $currentCurrencyCode,
+        ];
+    }
+
+    $currency = $currencies[$currentCurrencyCode];
+    if ($currency) {
+        $currentSymbol = !empty($currency['symbol']) ? " ({$currency['symbol']})" : '';
+        $currentLabel = __($currency['name']) . " | {$currentCurrencyCode}{$currentSymbol}";
+    } else {
+        $currentLabel = $currentCurrencyCode;
+    }
+    ?>
+
     <?=
     $template
         ->setData([
