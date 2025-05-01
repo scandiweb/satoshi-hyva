@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Satoshi\Theme\Block\ThemeConfig;
+
+/** @var ThemeConfig $block */
+/** @var Escaper $escaper */
+?>
+
+<script>
+    window.navigationType = '<?= $escaper->escapeHtmlAttr($block->getThemeConfig('navigation_type')); ?>';
+    window.isContain = '<?= $escaper->escapeHtmlAttr($block->getThemeConfig('is_contain')); ?>';
+</script>

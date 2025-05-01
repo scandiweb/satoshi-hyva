@@ -39,6 +39,7 @@ declare global {
     };
 
     onYouTubeIframeAPIReady?: () => void;
+    navigationType: "MPA" | "SPA";
 
     [key: string]: any;
   }
