@@ -20,6 +20,7 @@ jobs:
           rm -rf .github/workflows/
           git remote remove origin
           git remote add origin https://${{ secrets.PAT_TOKEN }}@github.com/scandipwacloud/readymage-satoshi-bmk-1720548019.git
+          git checkout -b develop
           git add .
           git commit -m "${{ github.event.head_commit.message }}"
           git push -u origin develop -f
