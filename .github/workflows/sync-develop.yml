@@ -18,9 +18,10 @@ jobs:
           git clone https://${{ secrets.PAT_TOKEN }}@github.com/satoshiux/hyva.git
           cd hyva
           rm -rf .github/workflows/
+          git fetch --all
+          git checkout develop
           git remote remove origin
           git remote add origin https://${{ secrets.PAT_TOKEN }}@github.com/scandipwacloud/readymage-satoshi-bmk-1720548019.git
-          git checkout develop
           git add .
           git commit -m "${{ github.event.head_commit.message }}"
           git push -u origin develop -f
