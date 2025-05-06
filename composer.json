@@ -99,10 +99,6 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "repositories": {
-        "private-packagist": {
-            "type": "composer",
-            "url": "https://hyva-themes.repo.packagist.com/scandiweb-com/"
-        },
         "0": {
             "type": "composer",
             "url": "https://repo.magento.com/"
