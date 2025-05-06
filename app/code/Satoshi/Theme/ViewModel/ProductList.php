@@ -52,18 +52,25 @@ class ProductList extends SourceProductList
      */
     private $categoryIdFilter;
 
+    /**
+     * @var ProductLinkFactory
+     */
+    private $productLinkFactory;
 
     /**
      * @var CatalogConfig
      */
     private $catalogConfig;
 
+    /**
+     * @var ProductLinkCollectionFactory
+     */
+    private $productLinkCollectionFactory;
 
     /**
      * @var CollectionProcessorInterface
      */
     private $collectionProcessor;
-
 
     /**
      * @var ReviewSummaryResource
@@ -99,7 +106,6 @@ class ProductList extends SourceProductList
      * @var ProductVisibility
      */
     private $productVisibility;
-
 
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
@@ -140,8 +146,6 @@ class ProductList extends SourceProductList
           $useAnchorAttribute
         );
         $this->searchCriteriaBuilder        = $searchCriteriaBuilder;
-        $this->filterBuilder                = $filterBuilder;
-        $this->sortOrderBuilder             = $sortOrderBuilder;
         $this->productCollectionFactory     = $productCollectionFactory;
         $this->productLinkFactory           = $productLinkFactory;
         $this->catalogConfig                = $catalogConfig;
@@ -149,10 +153,7 @@ class ProductList extends SourceProductList
         $this->collectionProcessor          = $collectionProcessor;
         $this->reviewSummaryResource        = $reviewSummaryResource;
         $this->productVisibility            = $productVisibility;
-        $this->entityMetadataPool           = $entityMetadataPool;
-        $this->scopeConfig                  = $scopeConfig;
         $this->isIncludingReviewSummary     = $isIncludingReviewSummary;
-        $this->maxCrosssellItemCount        = $maxCrosssellItemCount;
         $this->categoryFactory              = $categoryFactory;
         $this->categoryRepository           = $categoryRepository;
         $this->useAnchorAttribute           = $useAnchorAttribute;
