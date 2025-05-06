@@ -1,6 +1,6 @@
 import type { Alpine as AlpineType } from "alpinejs";
 
-type IntersectionModifiers = Array<string | number>;
+type IntersectionModifiers = Array<string>;
 
 export default function (Alpine: AlpineType) {
   Alpine.directive(
@@ -104,7 +104,7 @@ export function getRootMargin(modifiers: IntersectionModifiers) {
   // Grab the 4 subsequent length values after it: x-intersect.margin.300px.0.50%.0
   let values = [];
   for (let i = 1; i < 5; i++) {
-    values.push(getLengthValue(String(modifiers[index + i]) || ""));
+    values.push(getLengthValue(modifiers[index + i] || ""));
   }
 
   // Filter out undefined values (not a valid length)
