@@ -67,7 +67,6 @@ class NewAction extends SourceNewAction
         $this->customerRepository = $customerRepository ?: ObjectManager::getInstance()
             ->get(CustomerRepositoryInterface::class);
         $this->jsonFactory = $jsonFactory;
-        $this->customerSession = $customerSession;
         parent::__construct(
             $context,
             $subscriberFactory,
