@@ -2,8 +2,6 @@ import type { Magics } from "alpinejs";
 import { ARROW_LEFT_KEY, ARROW_RIGHT_KEY } from "../utils/keyboard-keys";
 
 export type BeforeAfterType = {
-  [key: string | symbol]: any;
-
   wrapperRect?: DOMRect | null;
   wrapperEl?: HTMLElement | null;
   exposure: number;

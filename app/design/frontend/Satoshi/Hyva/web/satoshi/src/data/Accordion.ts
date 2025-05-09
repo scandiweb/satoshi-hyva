@@ -1,8 +1,6 @@
 import type { Magics } from "alpinejs";
 
 export type AccordionType = {
-  [key: string | symbol]: any;
-
   _buttonRef: HTMLElement | null;
   _panelRef: HTMLElement | null;
   _iconRef: HTMLElement | null;

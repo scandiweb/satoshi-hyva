@@ -22,45 +22,55 @@ function calculateCustomOptionPrices(activeCustomOptions, customOptionPrices) {
   );
 }
 
+export type TierPrice = {
+  qty: number;
+  price_qty: number;
+  price_incl_tax: number;
+  price_excl_tax: number;
+  basePrice: number;
+  price: number;
+  percentage_value: number;
+};
+
 type PriceData = {
   baseOldPrice?: { amount: number };
   basePrice?: { amount: number };
   finalPrice?: { amount: number };
   msrpPrice?: { amount: number };
   oldPrice?: { amount: number };
-  tierPrices?: any[];
+  tierPrices?: TierPrice[];
   isMinimalPrice?: boolean;
 };
 
 type CatalogPriceProps = {
   productId: any;
-  displayTax: any;
-  finalPrice: any;
-  tierPrices: any;
-  showRegularPriceLabel: any;
-  finalPriceExclTax: any;
-  calculatedBasePrice: any;
+  displayTax: boolean;
+  finalPrice: number;
+  tierPrices: TierPrice[];
+  showRegularPriceLabel: boolean;
+  finalPriceExclTax: number;
+  calculatedBasePrice: number;
   customOptionBasePrices: any;
-  calculatedBasePriceWithCustomOptions: any;
-  displayPriceInclAndExclTax: any;
-  configurableAndExclTax: any;
-  isSaleable: any;
+  calculatedBasePriceWithCustomOptions: number;
+  displayPriceInclAndExclTax: boolean;
+  configurableAndExclTax: boolean;
+  isSaleable: boolean;
 };
 
 export type CatalogPriceType = {
-  regularPriceKey: any;
-  finalPriceKey: any;
-  activeProductsPriceData: any;
-  initialFinalPrice: any;
+  regularPriceKey: string;
+  finalPriceKey: string;
+  activeProductsPriceData: PriceData | false;
+  initialFinalPrice: number;
   calculatedFinalPrice: any;
   calculatedFinalPriceWithCustomOptions: any;
-  initialTierPrices: any;
-  showRegularPriceLabel: any;
+  initialTierPrices: TierPrice[];
+  showRegularPriceLabel: boolean;
   customOptionPrices: any;
-  initialBasePrice: any;
-  calculatedBasePrice: any;
+  initialBasePrice: number;
+  calculatedBasePrice: number;
   customOptionBasePrices: any;
-  calculatedBasePriceWithCustomOptions: any;
+  calculatedBasePriceWithCustomOptions: number;
   activeCustomOptions: any;
   qty: any;
   eventListeners: any;

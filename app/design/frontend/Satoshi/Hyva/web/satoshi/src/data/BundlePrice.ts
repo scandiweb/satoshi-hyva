@@ -1,35 +1,36 @@
 import { Magics } from "alpinejs";
+import { TierPrice } from "./CatalogPrice";
 
 export type BundlePriceType = {
   initialFinalPrice: number;
-  initialTierPrices: Array<any>;
+  initialTierPrices: TierPrice[];
   initialBasePrice?: number;
-  calculatedBasePrice?: boolean;
+  calculatedBasePrice?: number;
   customOptionBasePrices?: Array<any>;
   calculatedBasePriceWithCustomOptions?: boolean;
   activeProductsPriceData: Record<string, any> | false;
-  calculatedFinalPrice: boolean;
+  calculatedFinalPrice: number | false;
   calculatedFinalPriceWithCustomOptions: boolean;
   customOptionPrices: any;
   activeCustomOptions: any;
   qty: number;
-  eventListeners: any;
+  eventListeners: Record<string, Function>;
 
   init(): void;
   updateCustomOptionActive(data: any): void;
   updateCustomOptionPrices(prices: any, basePrices: any): void;
   calculateFinalPrice(): void;
-  calculateFinalPriceWithCustomOptions(): any;
-  getFormattedFinalPrice(): any;
-  getFormattedBasePrice(): any;
+  calculateFinalPriceWithCustomOptions(): void;
+  getFormattedFinalPrice(): string;
+  getFormattedBasePrice(): string;
 } & Magics<{}>;
 
 type BundlePriceProps = {
   productId: number;
   initialFinalPrice: number;
-  initialTierPrices: Array<any>;
+  initialTierPrices: TierPrice[];
   initialBasePrice?: number;
-  calculatedBasePrice?: boolean;
+  calculatedBasePrice?: number;
   customOptionBasePrices?: Array<any>;
   calculatedBasePriceWithCustomOptions?: boolean;
   displayPriceInclAndExclTax: boolean;
@@ -123,7 +124,7 @@ export const BundlePrice = ({
     calculateFinalPrice() {
       /* This function only applies the tier price discounts for the bundled product. */
       /* The tier prices of associated products are already included in this.activeProductsPriceData */
-      const calcPrice = (price: any) => {
+      const calcPrice = (price: number) => {
         return this.initialTierPrices.reduce((currentValue, tierPrice) => {
           if (this.qty >= tierPrice.price_qty) {
             const discount = price * (tierPrice.percentage_value / 100);
