@@ -1,8 +1,9 @@
 import { Magics } from "alpinejs";
+import { TierPrice } from "./CatalogPrice";
 
 export type BundlePriceType = {
   initialFinalPrice: number;
-  initialTierPrices: Array<any>;
+  initialTierPrices: TierPrice[];
   initialBasePrice?: number;
   calculatedBasePrice?: boolean;
   customOptionBasePrices?: Array<any>;
@@ -13,21 +14,21 @@ export type BundlePriceType = {
   customOptionPrices: any;
   activeCustomOptions: any;
   qty: number;
-  eventListeners: any;
+  eventListeners: Record<string, Function>;
 
   init(): void;
   updateCustomOptionActive(data: any): void;
   updateCustomOptionPrices(prices: any, basePrices: any): void;
   calculateFinalPrice(): void;
-  calculateFinalPriceWithCustomOptions(): any;
-  getFormattedFinalPrice(): any;
-  getFormattedBasePrice(): any;
+  calculateFinalPriceWithCustomOptions(): void;
+  getFormattedFinalPrice(): string;
+  getFormattedBasePrice(): string;
 } & Magics<{}>;
 
 type BundlePriceProps = {
   productId: number;
   initialFinalPrice: number;
-  initialTierPrices: Array<any>;
+  initialTierPrices: TierPrice[];
   initialBasePrice?: number;
   calculatedBasePrice?: boolean;
   customOptionBasePrices?: Array<any>;

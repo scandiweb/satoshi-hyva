@@ -1,8 +1,6 @@
 import { Magics } from "alpinejs";
 
 export type SliderType = {
-  [key: string | symbol]: any;
-
   remainingDays: number;
   remainingHours: number;
   remainingMinutes: number;
