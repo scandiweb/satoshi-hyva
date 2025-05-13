@@ -60,10 +60,10 @@ type CatalogPriceProps = {
 export type CatalogPriceType = {
   regularPriceKey: string;
   finalPriceKey: string;
-  activeProductsPriceData: PriceData | false;
+  activeProductsPriceData: any;
   initialFinalPrice: number;
-  calculatedFinalPrice: any;
-  calculatedFinalPriceWithCustomOptions: any;
+  calculatedFinalPrice: number | false;
+  calculatedFinalPriceWithCustomOptions: number | false;
   initialTierPrices: TierPrice[];
   showRegularPriceLabel: boolean;
   customOptionPrices: any;
@@ -72,20 +72,19 @@ export type CatalogPriceType = {
   customOptionBasePrices: any;
   calculatedBasePriceWithCustomOptions: number;
   activeCustomOptions: any;
-  qty: any;
+  qty: number;
   eventListeners: any;
 
-  init(): any;
-  updateCustomOptionActive(data: any): any;
-  updateCustomOptionPrices(prices: any, basePrices: any): any;
-  calculateFinalPrice(): any;
-  calculatePriceLabelVisibility(): any;
-  calculateFinalPriceWithCustomOptions(): any;
-  getCustomOptionPrice(): any;
+  updateCustomOptionActive(data: any): void;
+  updateCustomOptionPrices(prices: any, basePrices: any): void;
+  calculateFinalPrice(): void;
+  calculatePriceLabelVisibility(): void;
+  calculateFinalPriceWithCustomOptions(): void;
+  getCustomOptionPrice(): number;
   getCustomOptionBasePrice(): any;
-  getFormattedFinalPrice(): any;
-  getFormattedBasePrice(): any;
-  isPriceHidden(): any;
+  getFormattedFinalPrice(): string;
+  getFormattedBasePrice(): string | undefined;
+  isPriceHidden(): boolean;
 } & Magics<{}>;
 
 export const CatalogPrice = ({
