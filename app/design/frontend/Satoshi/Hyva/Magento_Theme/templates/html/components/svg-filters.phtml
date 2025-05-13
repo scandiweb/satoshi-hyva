@@ -1,44 +1,43 @@
 <svg
-  xmlns="http://www.w3.org/2000/svg"
-  preserveAspectRatio="xMinYMin meet"
-  role="img"
-  class="sr-only"
+    xmlns="http://www.w3.org/2000/svg"
+    preserveAspectRatio="xMinYMin meet"
+    class="sr-only"
 >
-  <defs>
-    <filter
-      id="border"
-      x="-50%"
-      y="-50%"
-      width="200%"
-      height="200%"
-    >
-      <!-- Apply the color from the CSS variable -->
-      <feFlood
-        flood-color="var(--color-background-500)"
-        result="color"
-      />
+    <defs>
+        <filter
+            id="border"
+            x="-50%"
+            y="-50%"
+            width="200%"
+            height="200%"
+        >
+            <!-- Apply the color from the CSS variable -->
+            <feFlood
+                flood-color="var(--color-background-500)"
+                result="color"
+            />
 
-      <!-- Use feMorphology to create a sharper outline -->
-      <feMorphology
-        in="SourceAlpha"
-        operator="dilate"
-        radius="1.5"
-        result="dilated"
-      />
+            <!-- Use feMorphology to create a sharper outline -->
+            <feMorphology
+                in="SourceAlpha"
+                operator="dilate"
+                radius="1.5"
+                result="dilated"
+            />
 
-      <!-- Composite the color with the dilated result -->
-      <feComposite
-        in="color"
-        in2="dilated"
-        operator="in"
-        result="coloredDilated"
-      />
+            <!-- Composite the color with the dilated result -->
+            <feComposite
+                in="color"
+                in2="dilated"
+                operator="in"
+                result="coloredDilated"
+            />
 
-      <!-- Merge the original graphic with the colored dilated result -->
-      <feMerge>
-        <feMergeNode in="coloredDilated" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  </defs>
+            <!-- Merge the original graphic with the colored dilated result -->
+            <feMerge>
+                <feMergeNode in="coloredDilated" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+    </defs>
 </svg>

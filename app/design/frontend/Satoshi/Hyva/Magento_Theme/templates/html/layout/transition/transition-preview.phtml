@@ -38,6 +38,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </div>
         <div
             x-ref="scrollContainer"
+            :aria-hidden="!isActive"
             class="transition-preview__scroll"
             x-a11y-trap.watch="isActive"
         >
