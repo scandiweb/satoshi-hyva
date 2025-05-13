@@ -37,7 +37,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             :class="{
                 'w-5 rounded-xs border border-secondary-700': !isTextSwatch(<?= (int)$attributeId ?>, item.id),
             }"
-            aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
             :style="getSwatchBackgroundStyle(<?= (int)$attributeId ?>, item.id, false)"
         >
             <template x-if="isTextSwatch(<?= (int)$attributeId ?>, item.id)">
@@ -62,7 +61,6 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 'button--outline-secondary': selectedValues[<?= (int)$attributeId ?>] !== item.id,
             }"
             aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
-            :aria-checked="selectedValues[<?= (int)$attributeId ?>] ? (selectedValues[<?= (int)$attributeId ?>] === item.id ? 'true' : 'false') : (index === 0)"
             :style="getSwatchBackgroundStyle(<?= (int)$attributeId ?>, item.id, true)"
             <?php if ($configurableViewModel->getShowSwatchTooltip()): ?>
                 @mouseenter.self="activeTooltipItem = {
@@ -84,12 +82,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 :checked="selectedValues[<?= (int)$attributeId ?>] === item.id"
                 name="super_attribute[<?= (int)$attributeId ?>]"
                 class="-z-10 absolute opacity-0 [&:disabled]:cursor-not-allowed"
-                type="radio"
                 :required="getAllowedAttributeOptions(<?= (int)$attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
                 :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
-                aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
+                aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId.'-'.$attributeId) ?>"
                 form="<?= $escaper->escapeHtmlAttr($formId) ?>"
                 role="radio"
+                :aria-checked="selectedValues[<?= (int)$attributeId ?>] ? (selectedValues[<?= (int)$attributeId ?>] === item.id ? 'true' : 'false') : (index === 0)"
                 :tabindex="selectedValues[<?= (int)$attributeId ?>] ? (selectedValues[<?= (int)$attributeId ?>] === item.id ? '0' : '-1') : (index === 0) - 1"
                 :disabled="!optionIsActive(<?= (int)$attributeId ?>, item.id)"
                 x-a11y-radio
@@ -105,10 +103,13 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
             </template>
             <template x-if="!isTextSwatch(<?= (int)$attributeId ?>, item.id)">
                 <div class="contents">
-                    <div class="absolute inset-0 flex opacity-0 items-center justify-center transition-opacity" :class="{ '!opacity-100': !isTextSwatch(<?= (int)$attributeId ?>, item.id) && !optionIsActive(<?= (int)$attributeId ?>, item.id) }">
+                    <div class="absolute inset-0 flex opacity-0 items-center justify-center transition-opacity"
+                         :class="{ '!opacity-100': !isTextSwatch(<?= (int)$attributeId ?>, item.id) && !optionIsActive(<?= (int)$attributeId ?>, item.id) }">
                         <div class="relative w-full h-full">
-                            <div class="absolute top-1/2 left-1/2 w-3/4 h-0.5 bg-bg-400 transform -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-full"></div>
-                            <div class="absolute top-1/2 left-1/2 w-3/4 h-0.5 bg-bg-400 transform -translate-x-1/2 -translate-y-1/2 -rotate-45 rounded-full"></div>
+                            <div
+                                class="absolute top-1/2 left-1/2 w-3/4 h-0.5 bg-bg-400 transform -translate-x-1/2 -translate-y-1/2 rotate-45 rounded-full"></div>
+                            <div
+                                class="absolute top-1/2 left-1/2 w-3/4 h-0.5 bg-bg-400 transform -translate-x-1/2 -translate-y-1/2 -rotate-45 rounded-full"></div>
                         </div>
                     </div>
                     <span
