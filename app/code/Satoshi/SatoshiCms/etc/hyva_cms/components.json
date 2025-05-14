@@ -1,0 +1,42 @@
+{
+  "before_and_after": {
+    "label": "Before & After",
+    "category": "Satoshi",
+    "template": "Satoshi_SatoshiCms::before-and-after.phtml",
+    "content": {
+      "before_image": {
+        "type": "image",
+        "label": "Before Image",
+        "attributes": {
+          "required": true
+        }
+      },
+      "after_image": {
+        "type": "image",
+        "label": "After Image",
+        "attributes": {
+          "required": true
+        }
+      },
+      "section_height": {
+        "type": "select",
+        "label": "Section Height",
+        "default_value": "large",
+        "options": [
+          {
+            "label": "Small",
+            "value": "small"
+          },
+          {
+            "label": "Medium",
+            "value": "medium"
+          },
+          {
+            "label": "Large",
+            "value": "large"
+          }
+        ]
+      }
+    }
+  }
+}
