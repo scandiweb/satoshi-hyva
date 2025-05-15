@@ -48,14 +48,13 @@ class ThemeConfig extends Template
     }
 
     /**
-     * Get a theme-specific configuration value by key
+     * Get navigation type configuration value
      *
-     * @param string $key
-     * @return mixed
+     * @return string
      */
-    public function getThemeConfig(string $key): mixed
+    public function getNavigationType(): string
     {
-        $path = 'satoshi_theme/theme_config/' . $key;
+        $path = 'satoshi_theme_general/navigation/type';
         return $this->getConfig($path);
     }
 }
