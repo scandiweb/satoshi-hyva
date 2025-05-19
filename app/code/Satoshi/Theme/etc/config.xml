@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <satoshi_theme_general>
+            <navigation>
+                <type>SPA</type>
+            </navigation>
+        </satoshi_theme_general>
+    </default>
+</config>
