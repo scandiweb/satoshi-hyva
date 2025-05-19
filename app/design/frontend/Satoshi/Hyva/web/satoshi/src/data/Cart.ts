@@ -2,8 +2,6 @@ import { MainStoreType } from "../store/Main";
 import { replaceElement } from "../utils/morph";
 
 export type CartType = {
-  [key: string | symbol]: any;
-
   isTotalsExpanded: boolean;
   isCartPopupVisible: boolean;
   isLoading: boolean;
