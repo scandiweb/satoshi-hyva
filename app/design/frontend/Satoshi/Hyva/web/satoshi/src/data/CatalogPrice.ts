@@ -22,60 +22,69 @@ function calculateCustomOptionPrices(activeCustomOptions, customOptionPrices) {
   );
 }
 
+export type TierPrice = {
+  qty: number;
+  price_qty: number;
+  price_incl_tax: number;
+  price_excl_tax: number;
+  basePrice: number;
+  price: number;
+  percentage_value: number;
+};
+
 type PriceData = {
   baseOldPrice?: { amount: number };
   basePrice?: { amount: number };
   finalPrice?: { amount: number };
   msrpPrice?: { amount: number };
   oldPrice?: { amount: number };
-  tierPrices?: any[];
+  tierPrices?: TierPrice[];
   isMinimalPrice?: boolean;
 };
 
 type CatalogPriceProps = {
   productId: any;
-  displayTax: any;
-  finalPrice: any;
-  tierPrices: any;
-  showRegularPriceLabel: any;
-  finalPriceExclTax: any;
-  calculatedBasePrice: any;
+  displayTax: boolean;
+  finalPrice: number;
+  tierPrices: TierPrice[];
+  showRegularPriceLabel: boolean;
+  finalPriceExclTax: number;
+  calculatedBasePrice: number;
   customOptionBasePrices: any;
-  calculatedBasePriceWithCustomOptions: any;
-  displayPriceInclAndExclTax: any;
-  configurableAndExclTax: any;
-  isSaleable: any;
+  calculatedBasePriceWithCustomOptions: number;
+  displayPriceInclAndExclTax: boolean;
+  configurableAndExclTax: boolean;
+  isSaleable: boolean;
 };
 
 export type CatalogPriceType = {
-  regularPriceKey: any;
-  finalPriceKey: any;
+  regularPriceKey: string;
+  finalPriceKey: string;
   activeProductsPriceData: any;
-  initialFinalPrice: any;
-  calculatedFinalPrice: any;
-  calculatedFinalPriceWithCustomOptions: any;
-  initialTierPrices: any;
-  showRegularPriceLabel: any;
+  initialFinalPrice: number;
+  calculatedFinalPrice: number | false;
+  calculatedFinalPriceWithCustomOptions: number | false;
+  initialTierPrices: TierPrice[];
+  showRegularPriceLabel: boolean;
   customOptionPrices: any;
-  initialBasePrice: any;
-  calculatedBasePrice: any;
+  initialBasePrice: number;
+  calculatedBasePrice: number;
   customOptionBasePrices: any;
-  calculatedBasePriceWithCustomOptions: any;
+  calculatedBasePriceWithCustomOptions: number;
   activeCustomOptions: any;
-  qty: any;
+  qty: number;
   eventListeners: any;
 
-  init(): any;
-  updateCustomOptionActive(data: any): any;
-  updateCustomOptionPrices(prices: any, basePrices: any): any;
-  calculateFinalPrice(): any;
-  calculatePriceLabelVisibility(): any;
-  calculateFinalPriceWithCustomOptions(): any;
-  getCustomOptionPrice(): any;
+  updateCustomOptionActive(data: any): void;
+  updateCustomOptionPrices(prices: any, basePrices: any): void;
+  calculateFinalPrice(): void;
+  calculatePriceLabelVisibility(): void;
+  calculateFinalPriceWithCustomOptions(): void;
+  getCustomOptionPrice(): number;
   getCustomOptionBasePrice(): any;
-  getFormattedFinalPrice(): any;
-  getFormattedBasePrice(): any;
-  isPriceHidden(): any;
+  getFormattedFinalPrice(): string;
+  getFormattedBasePrice(): string | undefined;
+  isPriceHidden(): boolean;
 } & Magics<{}>;
 
 export const CatalogPrice = ({
