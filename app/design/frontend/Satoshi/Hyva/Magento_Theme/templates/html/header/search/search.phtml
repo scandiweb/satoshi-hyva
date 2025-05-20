@@ -51,6 +51,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 :class="{
                     'md:hidden': !$store.resizable.isVisible('search-desktop')
                 }"
+                x-a11y-trap-target.initial="$store.resizable.isVisible('search-desktop')"
                 x-a11y-trap-target.start="getIsSearchActive()"
             >
             <div
