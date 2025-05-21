@@ -6,7 +6,7 @@ playbooks:
     - npm:
         command: run build
 environments:
-  - name: readymage-satoshi-bmk-1720548019-var-umj
+  - name: readymage-satoshi-bmk-1720548019-dev-ddo
     build:
       themes:
         Magento/backend:

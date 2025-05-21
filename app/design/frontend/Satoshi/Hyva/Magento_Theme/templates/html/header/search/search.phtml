@@ -81,7 +81,10 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
 
     <div
         x-show="getIsSearchActive()"
-        class="flex flex-col gap-3 overflow-x-hidden pt-2 transition-opacity duration-0 md:inset-x-0 md:top-full md:max-h-[calc(100dvh-125px)] md:rounded-t-none md:pt-0 md:duration-300 md:rounded-none"
+        class="
+            flex flex-col gap-3 overflow-x-hidden pt-2 transition-opacity duration-0 md:inset-x-0 md:top-full
+            md:max-h-[calc(100dvh-125px)] md:rounded-t-none md:pt-0 md:duration-300 md:rounded-none md:bg-bg-400
+        "
         x-transition:enter="md:delay-450"
         x-transition:enter-start="md:opacity-0"
         x-transition:enter-end="md:opacity-100"
