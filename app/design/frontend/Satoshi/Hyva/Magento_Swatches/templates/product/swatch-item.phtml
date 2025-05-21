@@ -82,6 +82,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 :checked="selectedValues[<?= (int)$attributeId ?>] === item.id"
                 name="super_attribute[<?= (int)$attributeId ?>]"
                 class="-z-10 absolute opacity-0 [&:disabled]:cursor-not-allowed"
+                type="radio"
                 :required="getAllowedAttributeOptions(<?= (int)$attributeId ?>).filter(attributeOption => selectedValues[attributeOption]).length === 0"
                 :aria-label="getSwatchText(<?= (int)$attributeId ?>, item.id)"
                 aria-describedby="attribute-label-<?= $escaper->escapeHtmlAttr($productId.'-'.$attributeId) ?>"
