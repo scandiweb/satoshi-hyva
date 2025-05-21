@@ -1,7 +1,9 @@
 name: Push to Readymage
 on:
   push:
-    branches: production
+    branches:
+      - production
+      - develop
 
 permissions:
   contents: write
@@ -13,13 +15,29 @@ jobs:
       - name: Sync repos
         shell: bash
         run: |
+          # Set Git configuration
           git config --global user.email "bot@satoshi.com"
           git config --global user.name "Satoshi bot"
+
+          # Clone the repository
           git clone https://${{ secrets.PAT_TOKEN }}@github.com/satoshiux/hyva.git
           cd hyva
+
+          # Get the branch name that triggered the workflow
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+
+          # If branch is develop, checkout develop
+          if [ "$BRANCH_NAME" = "develop" ]; then
+            git fetch --all
+            git checkout develop
+          fi
+
+          # Remove workflows directory
           rm -rf .github/workflows/
+
+          # Change remote and push
           git remote remove origin
           git remote add origin https://${{ secrets.PAT_TOKEN }}@github.com/scandipwacloud/readymage-satoshi-bmk-1720548019.git
           git add .
           git commit -m "${{ github.event.head_commit.message }}"
-          git push -u origin production -f
+          git push -u origin $BRANCH_NAME -f
