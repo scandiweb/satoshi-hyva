@@ -257,6 +257,7 @@ class Category extends ProductsList
             $this->getData('auto_resize_items'),
             $this->getData('max_products_count'),
             $this->currencyViewModel->getCurrentCurrencyCode(),
+            $this->getRequest()->getFullActionName(),
         ];
     }
 }
