@@ -1,0 +1,30 @@
+{
+    "name": "@satoshi/theme-development",
+    "version": "1.0.0",
+    "description": "Development environment for Satoshi theme package",
+    "scripts": {
+        "start": "magento-scripts start",
+        "stop": "magento-scripts stop",
+        "cli": "magento-scripts cli",
+        "logs": "magento-scripts logs",
+        "link": "magento-scripts link",
+        "status": "magento-scripts status",
+        "exec": "magento-scripts exec",
+        "import-db": "magento-scripts import-db",
+        "setup-theme": "chmod +x post-install.sh && ./post-install.sh"
+    },
+    "devDependencies": {
+        "@scandipwa/magento-scripts": "2.4.2"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "keywords": [
+        "magento2",
+        "hyva",
+        "theme",
+        "development"
+    ],
+    "author": "Scandiweb",
+    "license": "proprietary"
+}
