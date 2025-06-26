@@ -26,6 +26,8 @@ mv CHANGELOG.md satoshi-theme/
 mv logo.png satoshi-theme/
 mv .github satoshi-theme/ 2>/dev/null || echo "No .github directory"
 mv .prettierrc satoshi-theme/
+mv .cursorignore satoshi-theme/
+mv post-install.sh satoshi-theme/
 
 # Move git repository to theme package
 mv .git satoshi-theme/
