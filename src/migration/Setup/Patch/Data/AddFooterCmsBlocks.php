@@ -3,7 +3,7 @@
 namespace Satoshi\Migration\Setup\Patch\Data;
 
 use Magento\Cms\Model\BlockFactory;
-use Magento\Framework\Filesystem\DirectoryList;
+use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 
@@ -20,25 +20,25 @@ class AddFooterCmsBlocks implements DataPatchInterface
     private $moduleDataSetup;
 
     /**
-     * @var DirectoryList
+     * @var ComponentRegistrar
      */
-    private $directoryList;
+    private $componentRegistrar;
 
     /**
      * Constructor
      *
      * @param BlockFactory $blockFactory
      * @param ModuleDataSetupInterface $moduleDataSetup
-     * @param DirectoryList $directoryList
+     * @param ComponentRegistrar $componentRegistrar
      */
     public function __construct(
         BlockFactory $blockFactory,
         ModuleDataSetupInterface $moduleDataSetup,
-        DirectoryList $directoryList
+        ComponentRegistrar $componentRegistrar
     ) {
         $this->blockFactory = $blockFactory;
         $this->moduleDataSetup = $moduleDataSetup;
-        $this->directoryList = $directoryList;
+        $this->componentRegistrar = $componentRegistrar;
     }
 
     /**
@@ -48,7 +48,9 @@ class AddFooterCmsBlocks implements DataPatchInterface
     {
         $this->moduleDataSetup->getConnection()->startSetup();
 
-        $basePath = $this->directoryList->getRoot() . '/app/code/Satoshi/Migration/view/data/html/cms/block/';
+        // Get the module path dynamically (works for both app/code and vendor locations)
+        $modulePath = $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, 'Satoshi_Migration');
+        $basePath = $modulePath . '/view/data/html/cms/block/';
 
         // Check if the block already exists
         $existingBlock = $this->blockFactory->create()->load('footer', 'identifier');
@@ -86,8 +88,5 @@ class AddFooterCmsBlocks implements DataPatchInterface
         return [];
     }
 
-    public function getVersion()
-    {
-
-    }
+    public function getVersion() {}
 }
