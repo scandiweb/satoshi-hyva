@@ -11,8 +11,7 @@
         "status": "magento-scripts status",
         "exec": "magento-scripts exec",
         "import-db": "magento-scripts import-db",
-        "setup-theme": "chmod +x post-install.sh && ./post-install.sh",
-        "build": "cd satoshi-theme/src/satoshi-theme/web/satoshi && npm install && npm run build"
+        "setup-theme": "chmod +x post-install.sh && ./post-install.sh"
     },
     "devDependencies": {
         "@scandipwa/magento-scripts": "2.4.2"

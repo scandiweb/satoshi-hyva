@@ -28,6 +28,8 @@ mv .github satoshi-theme/ 2>/dev/null || echo "No .github directory"
 mv .prettierrc satoshi-theme/
 mv .cursorignore satoshi-theme/
 mv post-install.sh satoshi-theme/
+mv auth.json.sample satoshi-theme/
+mv composer.json.sample satoshi-theme/
 
 # Move git repository to theme package
 mv .git satoshi-theme/
