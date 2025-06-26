@@ -30,8 +30,7 @@ class ThemeConfig extends Template
         Context              $context,
         ScopeConfigInterface $scopeConfig,
         array                $data = []
-    )
-    {
+    ) {
         parent::__construct($context, $data);
         $this->scopeConfig = $scopeConfig;
     }
@@ -55,6 +54,6 @@ class ThemeConfig extends Template
     public function getNavigationType(): string
     {
         $path = 'satoshi_theme_general/navigation/type';
-        return $this->getConfig($path);
+        return $this->getConfig($path) ?: 'SPA';
     }
 }
