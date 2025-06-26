@@ -14,6 +14,7 @@ fi
 # 1. Move current package content into satoshi-theme subdirectory
 echo "📦 Moving Satoshi theme package into ./satoshi-theme/"
 mkdir -p satoshi-theme
+git update-index --assume-unchanged package.json
 
 # Move theme package files
 mv src satoshi-theme/
