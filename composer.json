@@ -46,7 +46,7 @@
             "src/swatches/registration.php",
             "src/theme/registration.php",
             "src/wishlist/registration.php",
-            "src/hyva/registration.php"
+            "src/satoshi-theme/registration.php"
         ],
         "psr-4": {
             "Satoshi\\Core\\": "src/core/",
