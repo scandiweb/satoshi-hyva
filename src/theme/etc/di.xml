@@ -23,4 +23,11 @@
         for="Magento\Theme\Block\Html\Footer"
         type="Satoshi\Theme\Block\Html\Footer"
     />
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="satoshi_theme_create_child" xsi:type="object">Satoshi\Theme\Console\Command\CreateChildTheme</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
