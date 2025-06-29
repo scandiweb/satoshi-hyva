@@ -167,7 +167,7 @@ module.exports = hyvaModules.mergeTailwindConfig({
       },
     },
   },
-  // Examples for excluding patterns from purge
+  // plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
   content: [
     // this theme's phtml and layout XML files
     "../../**/*.phtml",

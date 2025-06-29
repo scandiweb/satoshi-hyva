@@ -16,107 +16,98 @@ class CreateChildTheme extends Command
 {
     private const VENDOR_ARGUMENT = 'vendor';
     private const NAME_ARGUMENT = 'name';
+    
+    private const PARENT_THEME_PATH = 'vendor/scandiweb/satoshi/src/satoshi-theme/web';
+    private const THEME_BASE_PATH = 'app/design/frontend';
 
     private Filesystem $filesystem;
     private WriteInterface $directoryWrite;
 
-    public function __construct(
-        Filesystem $filesystem
-    ) {
+    public function __construct(Filesystem $filesystem)
+    {
         $this->filesystem = $filesystem;
         $this->directoryWrite = $this->filesystem->getDirectoryWrite(DirectoryList::ROOT);
         parent::__construct();
     }
 
-    /**
-     * Configure the command
-     */
-    protected function configure(): void
+    protected function configure()
     {
-        $this->setName('satoshi:theme:create-child');
-        $this->setDescription('Create a child theme that inherits from Satoshi theme');
-        $this->addArgument(
-            self::VENDOR_ARGUMENT,
-            InputArgument::REQUIRED,
-            'Vendor name for the child theme (e.g., MyCompany)'
-        );
-        $this->addArgument(
-            self::NAME_ARGUMENT,
-            InputArgument::REQUIRED,
-            'Theme name for the child theme (e.g., CustomTheme)'
-        );
+        $this->setName('satoshi:theme:create-child')
+            ->setDescription('Create a child theme that inherits from Satoshi theme')
+            ->addArgument(
+                self::VENDOR_ARGUMENT,
+                InputArgument::REQUIRED,
+                'Vendor name for the child theme (e.g., MyCompany)'
+            )
+            ->addArgument(
+                self::NAME_ARGUMENT,
+                InputArgument::REQUIRED,
+                'Theme name for the child theme (e.g., CustomTheme)'
+            );
         
         parent::configure();
     }
 
-    /**
-     * Execute the command
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $exitCode = 0;
-        
         try {
             $vendor = $input->getArgument(self::VENDOR_ARGUMENT);
             $name = $input->getArgument(self::NAME_ARGUMENT);
             
-            $output->writeln('<info>Creating child theme...</info>');
-            $output->writeln(sprintf('<info>Vendor: %s</info>', $vendor));
-            $output->writeln(sprintf('<info>Name: %s</info>', $name));
+            $this->outputIntroduction($output, $vendor, $name);
+            $this->createThemeStructure($vendor, $name, $output);
+            $this->outputSuccess($output, $vendor, $name);
             
-            // Implement core theme scaffolding
-            $this->createThemeDirectoryStructure($vendor, $name, $output);
-            $this->generateThemeXml($vendor, $name, $output);
-            $this->generateRegistrationPhp($vendor, $name, $output);
-            $this->generateComposerJson($vendor, $name, $output);
-            
-            // Implement frontend build system scaffolding (Checkpoint 3 - Minimal Approach)
-            $this->scaffoldBuildSystem($vendor, $name, $output);
-            
-            $output->writeln('<info>Child theme created successfully!</info>');
-            $output->writeln(sprintf(
-                '<comment>Theme location: app/design/frontend/%s/%s</comment>',
-                $vendor,
-                $name
-            ));
-            $output->writeln('<comment>Next steps:</comment>');
-            $output->writeln('<comment>1. Run: bin/magento setup:upgrade</comment>');
-            $output->writeln('<comment>2. Navigate to Admin > Content > Design > Themes to see your new theme</comment>');
-            $output->writeln(sprintf('<comment>3. Navigate to build directory: app/design/frontend/%s/%s/web/satoshi</comment>', $vendor, $name));
-            $output->writeln('<comment>4. Run: npm install && npm run build</comment>');
-            $output->writeln('<comment>5. The build system will automatically detect and inherit from parent Satoshi theme</comment>');
+            return Command::SUCCESS;
             
         } catch (LocalizedException $e) {
-            $output->writeln(sprintf(
-                '<error>%s</error>',
-                $e->getMessage()
-            ));
-            $exitCode = 1;
+            $output->writeln("<error>{$e->getMessage()}</error>");
+            return Command::FAILURE;
         } catch (\Exception $e) {
-            $output->writeln(sprintf(
-                '<error>An unexpected error occurred: %s</error>',
-                $e->getMessage()
-            ));
-            $exitCode = 1;
+            $output->writeln("<error>An unexpected error occurred: {$e->getMessage()}</error>");
+            return Command::FAILURE;
         }
-        
-        return $exitCode;
     }
 
-    /**
-     * Create the theme directory structure (excluding web directory - copied from parent)
-     */
-    private function createThemeDirectoryStructure(string $vendor, string $name, OutputInterface $output): void
+    private function outputIntroduction(OutputInterface $output, string $vendor, string $name)
     {
-        $themePath = sprintf('app/design/frontend/%s/%s', $vendor, $name);
+        $output->writeln('<info>Creating child theme...</info>');
+        $output->writeln("<info>Vendor: {$vendor}</info>");
+        $output->writeln("<info>Name: {$name}</info>");
+    }
+
+    private function createThemeStructure(string $vendor, string $name, OutputInterface $output)
+    {
+        $this->createThemeDirectoryStructure($vendor, $name, $output);
+        $this->generateThemeFiles($vendor, $name, $output);
+        $this->scaffoldBuildSystem($vendor, $name, $output);
+    }
+
+    private function outputSuccess(OutputInterface $output, string $vendor, string $name)
+    {
+        $themePath = $this->getThemePath($vendor, $name);
         
-        $output->writeln(sprintf('<info>Creating base theme structure at: %s</info>', $themePath));
+        $output->writeln('<info>Child theme created successfully!</info>');
+        $output->writeln("<comment>Theme location: {$themePath}</comment>");
+        $output->writeln('<comment>Next steps:</comment>');
+        $output->writeln('<comment>1. Run: bin/magento setup:upgrade</comment>');
+        $output->writeln('<comment>2. Navigate to Admin > Content > Design > Themes to see your new theme</comment>');
+        $output->writeln("<comment>3. Navigate to build directory: {$themePath}/web/satoshi</comment>");
+        $output->writeln('<comment>4. Run: pnpm install && pnpm run build</comment>');
+        $output->writeln('<comment>5. The build system will automatically detect and inherit from parent Satoshi theme</comment>');
+    }
+
+    private function getThemePath(string $vendor, string $name)
+    {
+        return sprintf('%s/%s/%s', self::THEME_BASE_PATH, $vendor, $name);
+    }
+
+    private function createThemeDirectoryStructure(string $vendor, string $name, OutputInterface $output)
+    {
+        $themePath = $this->getThemePath($vendor, $name);
         
-        // Create main theme directory
+        $output->writeln("<info>Creating base theme structure at: {$themePath}</info>");
+        
         if (!$this->directoryWrite->isDirectory($themePath)) {
             $this->directoryWrite->create($themePath);
         }
@@ -124,52 +115,210 @@ class CreateChildTheme extends Command
         $output->writeln('<info>Base structure created</info>');
     }
 
-    /**
-     * Generate theme.xml file
-     */
-    private function generateThemeXml(string $vendor, string $name, OutputInterface $output): void
+    private function generateThemeFiles(string $vendor, string $name, OutputInterface $output)
     {
-        $themePath = sprintf('app/design/frontend/%s/%s', $vendor, $name);
-        $themeXmlPath = $themePath . '/theme.xml';
-        
-        $themeXmlContent = $this->getThemeXmlTemplate($name);
-        
-        $this->directoryWrite->writeFile($themeXmlPath, $themeXmlContent);
-        $output->writeln(sprintf('<info>Created theme.xml at: %s</info>', $themeXmlPath));
+        $this->generateThemeXml($vendor, $name, $output);
+        $this->generateRegistrationPhp($vendor, $name, $output);
+        $this->generateComposerJson($vendor, $name, $output);
     }
 
-    /**
-     * Generate registration.php file
-     */
-    private function generateRegistrationPhp(string $vendor, string $name, OutputInterface $output): void
+    private function generateThemeXml(string $vendor, string $name, OutputInterface $output)
     {
-        $themePath = sprintf('app/design/frontend/%s/%s', $vendor, $name);
-        $registrationPath = $themePath . '/registration.php';
+        $themePath = $this->getThemePath($vendor, $name);
+        $themeXmlPath = "{$themePath}/theme.xml";
         
-        $registrationContent = $this->getRegistrationPhpTemplate($vendor, $name);
+        $content = $this->getThemeXmlTemplate($name);
+        $this->writeFile($themeXmlPath, $content);
         
-        $this->directoryWrite->writeFile($registrationPath, $registrationContent);
-        $output->writeln(sprintf('<info>Created registration.php at: %s</info>', $registrationPath));
+        $output->writeln("<info>Created theme.xml at: {$themeXmlPath}</info>");
     }
 
-    /**
-     * Generate composer.json file
-     */
-    private function generateComposerJson(string $vendor, string $name, OutputInterface $output): void
+    private function generateRegistrationPhp(string $vendor, string $name, OutputInterface $output)
     {
-        $themePath = sprintf('app/design/frontend/%s/%s', $vendor, $name);
-        $composerPath = $themePath . '/composer.json';
+        $themePath = $this->getThemePath($vendor, $name);
+        $registrationPath = "{$themePath}/registration.php";
         
-        $composerContent = $this->getComposerJsonTemplate($vendor, $name);
+        $content = $this->getRegistrationPhpTemplate($vendor, $name);
+        $this->writeFile($registrationPath, $content);
         
-        $this->directoryWrite->writeFile($composerPath, $composerContent);
-        $output->writeln(sprintf('<info>Created composer.json at: %s</info>', $composerPath));
+        $output->writeln("<info>Created registration.php at: {$registrationPath}</info>");
     }
 
-    /**
-     * Get theme.xml template content
-     */
-    private function getThemeXmlTemplate(string $name): string
+    private function generateComposerJson(string $vendor, string $name, OutputInterface $output)
+    {
+        $themePath = $this->getThemePath($vendor, $name);
+        $composerPath = "{$themePath}/composer.json";
+        
+        $content = $this->getComposerJsonTemplate($vendor, $name);
+        $this->writeFile($composerPath, $content);
+        
+        $output->writeln("<info>Created composer.json at: {$composerPath}</info>");
+    }
+
+    private function writeFile(string $path, string $content)
+    {
+        $this->directoryWrite->writeFile($path, $content);
+    }
+
+    private function scaffoldBuildSystem(string $vendor, string $name, OutputInterface $output)
+    {
+        $output->writeln('<info>Setting up build system with dynamic parent resolution...</info>');
+        
+        $this->copyParentWebDirectory($vendor, $name, $output);
+        $this->generateBuildFiles($vendor, $name, $output);
+        
+        $output->writeln('<info>✅ Minimal build system scaffolded successfully!</info>');
+        $output->writeln('<info>🔧 The child theme will automatically detect and inherit from parent theme</info>');
+    }
+
+    private function generateBuildFiles(string $vendor, string $name, OutputInterface $output)
+    {
+        $this->generateChildTailwindConfig($vendor, $name, $output);
+        $this->generateChildViteConfig($vendor, $name, $output);
+        $this->generateChildTailwindSource($vendor, $name, $output);
+        $this->generateChildThemeCss($vendor, $name, $output);
+    }
+
+    private function copyParentWebDirectory(string $vendor, string $name, OutputInterface $output)
+    {
+        $output->writeln('<info>Copying specific files from parent web directory...</info>');
+        
+        $parentWebPath = $this->locateParentWebDirectory($output);
+        if (!$parentWebPath) {
+            throw new LocalizedException(
+                __('Could not locate satoshi-theme web directory. Expected in %1', self::PARENT_THEME_PATH)
+            );
+        }
+        
+        $targetWebPath = $this->getThemePath($vendor, $name) . '/web';
+        $this->copySpecificFiles($parentWebPath, $targetWebPath, $output);
+        
+        $output->writeln("<info>Copied specific files to: {$targetWebPath}</info>");
+    }
+
+    private function locateParentWebDirectory(OutputInterface $output)
+    {
+        if ($this->directoryWrite->isDirectory(self::PARENT_THEME_PATH)) {
+            $output->writeln('<info>Found parent theme in vendor location</info>');
+            return self::PARENT_THEME_PATH;
+        }
+        
+        return null;
+    }
+
+    private function copySpecificFiles(string $source, string $destination, OutputInterface $output)
+    {
+        $filesToCopy = [
+            'fonts', // entire directory
+            'satoshi/.gitignore',
+            'satoshi/.npmrc',
+            'satoshi/package.json',
+            'satoshi/pnpm-lock.yaml',
+            'satoshi/postcss.config.js',
+            'satoshi/tsconfig.json',
+        ];
+
+        foreach ($filesToCopy as $fileOrDir) {
+            $this->copyFileOrDirectory($source, $destination, $fileOrDir, $output);
+        }
+    }
+
+    private function copyFileOrDirectory(string $source, string $destination, string $item, OutputInterface $output)
+    {
+        $sourcePath = "{$source}/{$item}";
+        $destPath = "{$destination}/{$item}";
+
+        if ($this->directoryWrite->isDirectory($sourcePath)) {
+            $output->writeln("<info>Copying directory: {$item}</info>");
+            $this->copyDirectoryRecursively($sourcePath, $destPath, $output);
+        } elseif ($this->directoryWrite->isFile($sourcePath)) {
+            $output->writeln("<info>Copying file: {$item}</info>");
+            $this->copyFile($sourcePath, $destPath);
+        } else {
+            $output->writeln("<comment>Skipping missing file/directory: {$item}</comment>");
+        }
+    }
+
+    private function copyFile(string $sourcePath, string $destPath)
+    {
+        $destDir = dirname($destPath);
+        if (!$this->directoryWrite->isDirectory($destDir)) {
+            $this->directoryWrite->create($destDir);
+        }
+        
+        $content = $this->directoryWrite->readFile($sourcePath);
+        $this->directoryWrite->writeFile($destPath, $content);
+    }
+
+    private function copyDirectoryRecursively(string $source, string $destination, OutputInterface $output)
+    {
+        if (!$this->directoryWrite->isDirectory($destination)) {
+            $this->directoryWrite->create($destination);
+        }
+        
+        $sourceFiles = $this->directoryWrite->read($source);
+        
+        foreach ($sourceFiles as $file) {
+            $file = str_replace($source, '', $file);
+            $sourceFile = $source . $file;
+            $destFile = $destination . $file;
+            
+            if ($this->directoryWrite->isDirectory($sourceFile)) {
+                $this->copyDirectoryRecursively($sourceFile, $destFile, $output);
+            } else {
+                $content = $this->directoryWrite->readFile($sourceFile);
+                $this->directoryWrite->writeFile($destFile, $content);
+            }
+        }
+    }
+
+    private function generateChildTailwindConfig(string $vendor, string $name, OutputInterface $output)
+    {
+        $themePath = $this->getThemePath($vendor, $name);
+        $configPath = "{$themePath}/web/satoshi/tailwind.config.js";
+        
+        $content = $this->getTailwindConfigTemplate();
+        $this->writeFile($configPath, $content);
+        
+        $output->writeln("<info>Generated child tailwind.config.js at: {$configPath}</info>");
+    }
+
+    private function generateChildViteConfig(string $vendor, string $name, OutputInterface $output)
+    {
+        $themePath = $this->getThemePath($vendor, $name);
+        $configPath = "{$themePath}/web/satoshi/vite.config.js";
+        
+        $content = $this->getViteConfigTemplate();
+        $this->writeFile($configPath, $content);
+        
+        $output->writeln("<info>Generated child vite.config.js at: {$configPath}</info>");
+    }
+
+    private function generateChildTailwindSource(string $vendor, string $name, OutputInterface $output)
+    {
+        $themePath = $this->getThemePath($vendor, $name);
+        $sourcePath = "{$themePath}/web/satoshi/tailwind-source.css";
+        
+        $content = '@import "@satoshi-theme/tailwind-source.css";';
+        $this->writeFile($sourcePath, $content);
+        
+        $output->writeln("<info>Generated child tailwind-source.css at: {$sourcePath}</info>");
+    }
+
+    private function generateChildThemeCss(string $vendor, string $name, OutputInterface $output)
+    {
+        $themePath = $this->getThemePath($vendor, $name);
+        $cssPath = "{$themePath}/web/satoshi/theme.css";
+        
+        $content = '@import "@satoshi-theme/theme.css";';
+        $this->writeFile($cssPath, $content);
+        
+        $output->writeln("<info>Generated child theme.css at: {$cssPath}</info>");
+    }
+
+    // Template methods
+
+    private function getThemeXmlTemplate(string $name)
     {
         return <<<XML
 <?xml version="1.0"?>
@@ -181,10 +330,7 @@ class CreateChildTheme extends Command
 XML;
     }
 
-    /**
-     * Get registration.php template content
-     */
-    private function getRegistrationPhpTemplate(string $vendor, string $name): string
+    private function getRegistrationPhpTemplate(string $vendor, string $name)
     {
         return <<<PHP
 <?php
@@ -198,10 +344,7 @@ declare(strict_types=1);
 PHP;
     }
 
-    /**
-     * Get composer.json template content
-     */
-    private function getComposerJsonTemplate(string $vendor, string $name): string
+    private function getComposerJsonTemplate(string $vendor, string $name)
     {
         $packageName = strtolower($vendor) . '/' . strtolower($name);
         
@@ -225,108 +368,7 @@ PHP;
 JSON;
     }
 
-    /**
-     * Scaffold minimal build system with dynamic resolution
-     */
-    private function scaffoldBuildSystem(string $vendor, string $name, OutputInterface $output): void
-    {
-        $output->writeln('<info>Setting up build system with dynamic parent resolution...</info>');
-        
-        // Copy the whole web directory from the parent theme
-        $this->copyParentWebDirectory($vendor, $name, $output);
-        
-        // Generate child tailwind config with inheritance
-        $this->generateChildTailwindConfig($vendor, $name, $output);
-        
-        $output->writeln('<info>✅ Minimal build system scaffolded successfully!</info>');
-        $output->writeln('<info>🔧 The child theme will automatically detect and inherit from parent theme</info>');
-    }
-
-    /**
-     * Copy parent web directory from satoshi-theme source
-     */
-    private function copyParentWebDirectory(string $vendor, string $name, OutputInterface $output): void
-    {
-        $themePath = sprintf('app/design/frontend/%s/%s', $vendor, $name);
-        
-        $output->writeln('<info>Copying parent web directory...</info>');
-        
-        // Locate parent satoshi-theme web directory
-        $parentWebPath = $this->locateParentWebDirectory($output);
-        
-        if (!$parentWebPath) {
-            throw new LocalizedException(__('Could not locate satoshi-theme web directory. Expected in src/satoshi-theme/web or vendor/scandiweb/satoshi/src/satoshi-theme/web'));
-        }
-        
-        // Copy entire web directory to child theme
-        $targetWebPath = $themePath . '/web';
-        $this->copyDirectoryRecursively($parentWebPath, $targetWebPath, $output);
-        $output->writeln(sprintf('<info>Copied web directory to: %s</info>', $targetWebPath));
-    }
-
-    /**
-     * Locate parent satoshi-theme web directory
-     */
-    private function locateParentWebDirectory(OutputInterface $output): ?string
-    {   
-        $vendorPath = 'vendor/scandiweb/satoshi/src/satoshi-theme/web';
-
-        if ($this->directoryWrite->isDirectory($vendorPath)) {
-            $output->writeln('<info>Found parent theme in vendor location</info>');
-            return $vendorPath;
-        }
-        
-        return null;
-    }
-
-    /**
-     * Copy directory recursively
-     */
-    private function copyDirectoryRecursively(string $source, string $destination, OutputInterface $output): void
-    {
-        // Create destination directory
-        if (!$this->directoryWrite->isDirectory($destination)) {
-            $this->directoryWrite->create($destination);
-        }
-        
-        // Get all files and subdirectories in source
-        $sourceFiles = $this->directoryWrite->read($source);
-        
-        foreach ($sourceFiles as $file) {
-            $file = str_replace($source, '', $file); // Remove source path prefix for relative paths
-
-            $sourceFile = $source . $file;
-            $destFile = $destination . $file;
-            
-            if ($this->directoryWrite->isDirectory($sourceFile)) {
-                // Recursively copy subdirectory
-                $this->copyDirectoryRecursively($sourceFile, $destFile, $output);
-            } else {
-                // Copy file
-                $content = $this->directoryWrite->readFile($sourceFile);
-                $this->directoryWrite->writeFile($destFile, $content);
-            }
-        }
-    }
-
-    /**
-     * Generate child tailwind config with dynamic parent detection
-     */
-    private function generateChildTailwindConfig(string $vendor, string $name, OutputInterface $output): void
-    {
-        $themePath = sprintf('app/design/frontend/%s/%s', $vendor, $name);
-        $tailwindConfigPath = $themePath . '/web/satoshi/tailwind.config.js';
-        
-        $tailwindConfigContent = $this->getSmartTailwindConfigTemplate();
-        
-        $this->directoryWrite->writeFile($tailwindConfigPath, $tailwindConfigContent);
-        $output->writeln(sprintf('<info>Generated child tailwind.config.js at: %s</info>', $tailwindConfigPath));
-    }
-
-    /**
-     * Get smart tailwind config template with dynamic parent detection
-     */
-    private function getSmartTailwindConfigTemplate(): string
+    private function getTailwindConfigTemplate()
     {
         return <<<JS
 const { mergeTailwindConfig } = require("@hyva-themes/hyva-modules");
@@ -360,4 +402,37 @@ module.exports = mergeTailwindConfig({
 });
 JS;
     }
-} 
+
+    private function getViteConfigTemplate()
+    {
+        return <<<JS
+import { defineConfig } from "vite";
+import path from "path";
+import { satoshiAliases } from "../../../../../../../vendor/scandiweb/satoshi/src/satoshi-theme/web/satoshi/vite.config";
+
+export default defineConfig({
+    build: {
+        rollupOptions: {
+            input: {
+                app: path.resolve(__dirname, "src/app.ts"),
+                styles: path.resolve(__dirname, "tailwind-source.css"),
+            },
+            output: {
+                dir: path.resolve(__dirname, "../"),
+                entryFileNames: "assets/[name].js",
+                chunkFileNames: "assets/[name].js",
+                assetFileNames: "css/[name].[ext]",
+            },
+        },
+        assetsInlineLimit: 0,
+        emptyOutDir: false,
+    },
+    resolve: {
+        alias: {
+            ...satoshiAliases(),
+        },
+    },
+});
+JS;
+    }
+}

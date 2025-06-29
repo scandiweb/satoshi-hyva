@@ -1,24 +1,32 @@
 /* purgecss start ignore */
 @import "tailwindcss/base";
 @import "tailwindcss/components";
-@import "theme.css";
 
-@import url(components/category-page.css);
-@import url(components/product-prices.css);
-@import url(components/cart.css);
-@import url(components/customer.css);
-@import url(components/messages.css);
-@import url(components/wishlist.css);
-@import url(components/modal.css);
-@import url(components/slider.css);
-@import url(components/structure.css);
-@import url(components/swatches.css);
-@import url(components/button.css);
-@import url(components/theming.css);
-@import url(components/transitions.css);
-@import url(components/typography.css);
-@import url(components/page-builder.css);
+@import url(@satoshi/layout/base.css);
+@import url(@satoshi/layout/utilities.css);
+@import url(@satoshi/components/image.css);
+@import url(@satoshi/components/price.css);
+@import url(@satoshi/components/content-wrapper.css);
+@import url(@satoshi/components/checkbox.css);
+@import url(@satoshi/components/radio.css);
+@import url(@satoshi/components/input.css);
+@import url(@satoshi/components/divider.css);
+@import url(@satoshi/components/range-slider.css);
+@import url(@satoshi/components/header.css);
+@import url(@satoshi/components/popup.css);
+@import url(@satoshi/components/button.css);
+@import url(@satoshi/components/icon-button.css);
+@import url(@satoshi/components/menu.css);
+@import url(@satoshi/components/resizable.css);
+@import url(@satoshi/components/transition.css);
+@import url(@satoshi/components/slider.css);
+/* TODO: Replace with Prose */
+@import url(@satoshi/components/rte.css);
+@import url(@satoshi/components/card-product.css);
+@import url(@satoshi/components/link.css);
+@import url(@satoshi/components/page-builder.css);
+@import url(@satoshi/components/progress-bar.css);
 
 /* purgecss end ignore */
-
 @import "tailwindcss/utilities";
+@import "@satoshi/theme.css";

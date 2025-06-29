@@ -1,0 +1,69 @@
+@layer components {
+  .range-slider {
+    &-input {
+      @apply relative isolate flex w-full;
+  
+      &-label {
+        @apply absolute left-0 top-0 z-10 flex h-full w-16 items-center justify-start pl-5 text-md text-text-500;
+      }
+  
+      &-field {
+        @apply w-full grow pl-16 pr-[calc(1rem+8px)] text-right text-text-500;
+      }
+  
+      &-suffix {
+        @apply absolute right-0 top-0 z-10 mr-3 flex h-full w-4 items-center justify-center text-md text-text-500;
+      }
+    }
+  
+    &-hidden-input {
+      @apply pointer-events-none absolute z-20 h-2 w-full cursor-pointer appearance-none bg-transparent opacity-0 hidden;
+  
+      /* Slider thumb styles */
+      @apply /* Chrome */
+      /*
+      Firefix
+      */
+      [&::-moz-range-thumb]:pointer-events-auto
+      [&::-moz-range-thumb]:h-8
+      [&::-moz-range-thumb]:w-8 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full
+      [&::-webkit-slider-thumb]:pointer-events-auto
+      [&::-webkit-slider-thumb]:h-8
+      [&::-webkit-slider-thumb]:w-8
+      [&::-webkit-slider-thumb]:appearance-none
+      [&::-webkit-slider-thumb]:rounded-full;
+    }
+  
+    &-track {
+      @apply absolute top-1/2 h-[1px] w-full -translate-y-1/2 rounded-sm bg-primary-100;
+  
+      &-filled {
+        @apply pointer-events-none absolute top-1/2 h-full -translate-y-1/2 bg-primary-500;
+  
+        &.transitioning {
+          @apply transition-all duration-300;
+        }
+      }
+    }
+  
+    &-thumb {
+      @apply absolute top-1/2 h-8 w-8 -translate-y-1/2 touch-none select-none rounded-full border border-primary-500 bg-bg-500 transition-transform duration-200;
+  
+      &_left {
+        @apply left-0;
+      }
+  
+      &_right {
+        @apply right-0;
+      }
+  
+      &.active {
+        @apply scale-[1.15] md:bg-bg-400;
+      }
+  
+      &.transitioning {
+        @apply transition-all duration-300;
+      }
+    }
+  }
+}

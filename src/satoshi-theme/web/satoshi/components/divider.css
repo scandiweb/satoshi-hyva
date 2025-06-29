@@ -1,0 +1,9 @@
+@layer components {
+  .divider {
+    @apply bg-bg-600 h-[1px] min-w-full;
+  
+    &--vertical {
+      @apply h-full min-h-full w-[1px] min-w-[1px];
+    }
+  }
+}

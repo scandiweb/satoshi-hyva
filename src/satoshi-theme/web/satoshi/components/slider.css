@@ -1,4 +1,5 @@
-.snap {
+@layer components {
+  .snap {
     -ms-scroll-snap-type: x mandatory;
     scroll-snap-type: x mandatory;
     -ms-overflow-style: none;
@@ -12,4 +13,5 @@
     & > div {
         scroll-snap-align: start;
     }
+  }
 }
