@@ -332,12 +332,12 @@ class CreateChildTheme extends Command
     private function generateChildTsConfig(string $vendor, string $name, OutputInterface $output)
     {
         $themePath = $this->getThemePath($vendor, $name);
-        $cssPath = "{$themePath}/web/satoshi/src/app.ts";
+        $cssPath = "{$themePath}/web/satoshi/tsconfig.json";
         
         $content = $this->getTsConfigTemplate();
         $this->writeFile($cssPath, $content);
         
-        $output->writeln("<info>Generated child app.ts at: {$cssPath}</info>");
+        $output->writeln("<info>Generated child tsconfig.json at: {$cssPath}</info>");
     }
 
     private function getTsConfigTemplate()
