@@ -211,7 +211,7 @@ class CreateChildTheme extends Command
     private function copySpecificFiles(string $source, string $destination, OutputInterface $output)
     {
         $filesToCopy = [
-            'fonts', // entire directory
+            'fonts',
             'satoshi/.gitignore',
             'satoshi/.npmrc',
             'satoshi/package.json',
@@ -329,7 +329,18 @@ class CreateChildTheme extends Command
         $output->writeln("<info>Generated child app.ts at: {$cssPath}</info>");
     }
 
-    private function generateChildTsConfig(string $name)
+    private function generateChildTsConfig(string $vendor, string $name, OutputInterface $output)
+    {
+        $themePath = $this->getThemePath($vendor, $name);
+        $cssPath = "{$themePath}/web/satoshi/src/app.ts";
+        
+        $content = $this->getTsConfigTemplate();
+        $this->writeFile($cssPath, $content);
+        
+        $output->writeln("<info>Generated child app.ts at: {$cssPath}</info>");
+    }
+
+    private function getTsConfigTemplate()
     {
         return <<<JSON
             {
@@ -343,8 +354,7 @@ class CreateChildTheme extends Command
                     "module": "ESNext",
                     "lib": ["ES2020", "DOM", "DOM.Iterable"],
                     "skipLibCheck": true,
-                    "baseUrl": ".",
-    
+
                     /* Bundler mode */
                     "moduleResolution": "bundler",
                     "allowImportingTsExtensions": true,
@@ -352,6 +362,7 @@ class CreateChildTheme extends Command
                     "isolatedModules": true,
                     "noEmit": true,
                     "allowJs": true,
+
                     /* Linting */
                     "strict": true,
                     "noUnusedLocals": true,
