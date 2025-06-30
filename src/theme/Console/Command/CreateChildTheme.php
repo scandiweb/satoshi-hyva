@@ -177,6 +177,8 @@ class CreateChildTheme extends Command
         $this->generateChildViteConfig($vendor, $name, $output);
         $this->generateChildTailwindSource($vendor, $name, $output);
         $this->generateChildThemeCss($vendor, $name, $output);
+        $this->generateChildTsConfig($vendor, $name, $output);
+        $this->generateChildAppTs($vendor, $name, $output);
     }
 
     private function copyParentWebDirectory(string $vendor, string $name, OutputInterface $output)
@@ -316,7 +318,51 @@ class CreateChildTheme extends Command
         $output->writeln("<info>Generated child theme.css at: {$cssPath}</info>");
     }
 
-    // Template methods
+    private function generateChildAppTs(string $vendor, string $name, OutputInterface $output)
+    {
+        $themePath = $this->getThemePath($vendor, $name);
+        $cssPath = "{$themePath}/web/satoshi/src/app.ts";
+        
+        $content = 'import "@satoshi-theme/src/app";';
+        $this->writeFile($cssPath, $content);
+        
+        $output->writeln("<info>Generated child app.ts at: {$cssPath}</info>");
+    }
+
+    private function generateChildTsConfig(string $name)
+    {
+        return <<<JSON
+            {
+                "compilerOptions": {
+                    "paths": {
+                        "@satoshi-theme/*": ["../../../../../../../vendor/scandiweb/satoshi/src/satoshi-theme/web/satoshi/*"],
+                        "@satoshi/*": ["./*", "../../../../../../../vendor/scandiweb/satoshi/src/satoshi-theme/web/satoshi/*"],
+                    },
+                    "target": "ES2020",
+                    "useDefineForClassFields": true,
+                    "module": "ESNext",
+                    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+                    "skipLibCheck": true,
+                    "baseUrl": ".",
+    
+                    /* Bundler mode */
+                    "moduleResolution": "bundler",
+                    "allowImportingTsExtensions": true,
+                    "resolveJsonModule": true,
+                    "isolatedModules": true,
+                    "noEmit": true,
+                    "allowJs": true,
+                    /* Linting */
+                    "strict": true,
+                    "noUnusedLocals": true,
+                    "noUnusedParameters": true,
+                    "noFallthroughCasesInSwitch": true
+                },
+                "include": ["src/**/*", "src/global.d.ts", "../../../../../../../vendor/scandiweb/satoshi/src/satoshi-theme/web/satoshi/src/**/*", "../../../../../../../vendor/scandiweb/satoshi/src/satoshi-theme/web/satoshi/src/global.d.ts"],
+                "exclude": ["tailwind.config.js", "vite.config.js", "assets", "postcss.config.js", "browser-sync.config.js"]
+            }
+        JSON;
+    }
 
     private function getThemeXmlTemplate(string $name)
     {
@@ -418,18 +464,18 @@ export default defineConfig({
                 styles: path.resolve(__dirname, "tailwind-source.css"),
             },
             output: {
-                dir: path.resolve(__dirname, "../"),
+                dir: path.resolve(__dirname, "../dist"),
                 entryFileNames: "assets/[name].js",
                 chunkFileNames: "assets/[name].js",
                 assetFileNames: "css/[name].[ext]",
-            },
+            }
         },
         assetsInlineLimit: 0,
         emptyOutDir: false,
     },
     resolve: {
         alias: {
-            ...satoshiAliases(),
+            ...satoshiAliases(__dirname),
         },
     },
 });

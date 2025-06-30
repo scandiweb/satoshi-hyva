@@ -1,6 +1,6 @@
 import type { Magics } from "alpinejs";
-import { navigateWithTransition } from "../plugins/Transition";
-import { searchQuery } from "../graphql/searchQuery";
+import { navigateWithTransition } from "@satoshi/src/plugins/Transition";
+import { searchQuery } from "@satoshi/src/graphql/searchQuery";
 
 export type SearchType = {
   [key: string | symbol]: any;

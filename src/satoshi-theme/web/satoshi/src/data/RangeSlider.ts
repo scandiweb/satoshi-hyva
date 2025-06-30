@@ -1,5 +1,5 @@
 import type { Magics } from "alpinejs";
-import { FILTER_PRICE_PARAM_NAME } from "./Filters";
+import { FILTER_PRICE_PARAM_NAME } from "@satoshi/src/data/Filters";
 
 export type RangeSliderType = {
   isRightThumbActive: boolean;

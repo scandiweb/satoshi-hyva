@@ -1,6 +1,6 @@
 import type { Magics } from "alpinejs";
-import { isMobile } from "../utils/device";
-import { unfreezeScroll } from "../utils/scroll2";
+import { isMobile } from "@satoshi/src/utils/device";
+import { unfreezeScroll } from "@satoshi/src/utils/scroll2";
 
 export type PrivateContentData = {
   cart: {

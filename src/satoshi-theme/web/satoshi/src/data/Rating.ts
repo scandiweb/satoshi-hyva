@@ -1,5 +1,5 @@
 import { Magics } from "alpinejs";
-import { SELECTOR_LIST } from "../plugins/Accessibility.ts";
+import { SELECTOR_LIST } from "@satoshi/src/plugins/Accessibility.ts";
 
 export type RatingType = {
   reviewsSection: HTMLElement | null;

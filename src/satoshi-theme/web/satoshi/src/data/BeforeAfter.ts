@@ -1,5 +1,5 @@
 import type { Magics } from "alpinejs";
-import { ARROW_LEFT_KEY, ARROW_RIGHT_KEY } from "../utils/keyboard-keys";
+import { ARROW_LEFT_KEY, ARROW_RIGHT_KEY } from "@satoshi/src/utils/keyboard-keys";
 
 export type BeforeAfterType = {
   wrapperRect?: DOMRect | null;

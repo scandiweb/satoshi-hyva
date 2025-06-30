@@ -2,19 +2,30 @@ import { defineConfig } from "vite";
 import path from "path";
 import fs from "fs";
 
-export const satoshiAliases = () => ({
+const fileExists = (basePath) => {
+  const extensions = ['', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'];
+  return extensions.some(ext => fs.existsSync(basePath + ext));
+};
+
+export const satoshiAliases = (directory = __dirname) => ({
   "@": path.resolve(__dirname, "src"),
   "@satoshi": (alias, options, id) => {
-    const satoshiTheme =
-        "../../../../../../../vendor/scandiweb/satoshi/src/satoshi-theme/web/satoshi";
+    const satoshiTheme = "../../../../../../../vendor/scandiweb/satoshi/src/satoshi-theme/web/satoshi";
     const importPath = id.replace("@satoshi/", "");
-    const localPath = path.resolve(__dirname, importPath);
-    if (fs.existsSync(localPath)) return path.resolve(__dirname);
-    const fallbackPath = path.resolve(satoshiTheme, importPath);
-    if (fs.existsSync(fallbackPath)) return path.resolve(__dirname, satoshiTheme);
-    return path.resolve(__dirname);
+    const localPath = path.resolve(directory, importPath);
+
+    if (fileExists(localPath)) {
+      return path.resolve(directory)
+    };
+
+    const fallbackPath = path.resolve(satoshiTheme, importPath);  
+    if (fileExists(fallbackPath)) {
+      return path.resolve(directory, satoshiTheme)
+    };
+
+    return path.resolve(directory);
   },
-  "@satoshi-theme": path.resolve(__dirname, "../../../../../../../vendor/scandiweb/satoshi/src/satoshi-theme/web/satoshi"),
+  "@satoshi-theme": path.resolve(directory, "../../../../../../../vendor/scandiweb/satoshi/src/satoshi-theme/web/satoshi"),
 })
 
 
@@ -26,7 +37,7 @@ export default defineConfig({
         styles: path.resolve(__dirname, "tailwind-source.css"),
       },
       output: {
-        dir: path.resolve(__dirname, "../"),
+        dir: path.resolve(__dirname, "../dist"),
         entryFileNames: "assets/[name].js",
         chunkFileNames: "assets/[name].js",
         assetFileNames: "css/[name].[ext]",
@@ -37,7 +48,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      ...satoshiAliases(),
+      ...satoshiAliases(__dirname),
     },
   },
 });

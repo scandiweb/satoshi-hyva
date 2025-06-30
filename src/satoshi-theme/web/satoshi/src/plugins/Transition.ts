@@ -1,7 +1,7 @@
 import type { Alpine as AlpineType } from "alpinejs";
-import { freezeScroll, unfreezeScroll } from "../utils/scroll2";
-import { doElementTransitionFromSrcToDest } from "../utils/element-transition";
-import { replaceElement } from "../utils/morph";
+import { freezeScroll, unfreezeScroll } from "@satoshi/src/utils/scroll2";
+import { doElementTransitionFromSrcToDest } from "@satoshi/src/utils/element-transition";
+import { replaceElement } from "@satoshi/src/utils/morph";
 import nProgress from "nprogress";
 
 nProgress.configure({ showSpinner: false });

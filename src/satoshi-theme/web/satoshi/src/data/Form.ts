@@ -1,4 +1,4 @@
-import {replaceMainContentWithTransition} from "../plugins/Transition";
+import {replaceMainContentWithTransition} from "@satoshi/src/plugins/Transition";
 
 type PostParams = {
   action: string;

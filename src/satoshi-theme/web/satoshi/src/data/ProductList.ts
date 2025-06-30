@@ -1,5 +1,5 @@
 import type { Magics } from "alpinejs";
-import { replaceElement } from "../utils/morph";
+import { replaceElement } from "@satoshi/src/utils/morph";
 
 export type ProductListType = {
   [key: string | symbol]: any;

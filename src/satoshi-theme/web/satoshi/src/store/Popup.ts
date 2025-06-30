@@ -5,10 +5,10 @@ import {
   makeElementNotScrollable,
   makeElementScrollable,
   unfreezeScroll,
-} from "../utils/scroll2";
-import { isMobile } from "../utils/device";
-import { ESC_KEY } from "../utils/keyboard-keys";
-import { SELECTOR_LIST } from "../plugins/Accessibility";
+} from "@satoshi/src/utils/scroll2";
+import { isMobile } from "@satoshi/src/utils/device";
+import { ESC_KEY } from "@satoshi/src/utils/keyboard-keys";
+import { SELECTOR_LIST } from "@satoshi/src/plugins/Accessibility";
 
 // const POPUP_CONTENT_CHANGE_REQUEST_EVENT = "popup-content-change-request";
 export const POPUP_OVERLAY_CLICK_EVENT = "popup-overlay-click";

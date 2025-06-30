@@ -1,6 +1,6 @@
 import type { Magics } from "alpinejs";
-import { navigateWithTransition } from "../plugins/Transition";
-import { CartItem } from "../store/Cart.ts";
+import { navigateWithTransition } from "@satoshi/src/plugins/Transition";
+import { CartItem } from "@satoshi/src/store/Cart.ts";
 
 export type RecentOrdersType = {
   reorderProducts: { items: any[]; data_id: number } | null;

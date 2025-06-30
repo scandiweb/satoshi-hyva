@@ -11,8 +11,8 @@
  *  - x-a11y-trap-element="condition" if extra elements needs to be added to focus trap. i.e: product preview needs to allow tabbing into header elements
  */
 import type { Alpine as AlpineType } from "alpinejs";
-import { TAB_KEY } from "../utils/keyboard-keys";
-import { isMobile } from "../utils/device";
+import { TAB_KEY } from "@satoshi/src/utils/keyboard-keys";
+import { isMobile } from "@satoshi/src/utils/device";
 
 export const SELECTOR_LIST =
   "a, button, textarea, input, select, [role=radio][aria-checked]";

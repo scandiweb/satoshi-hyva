@@ -1,4 +1,4 @@
-import { ProductPageType } from "./ProductPage.ts";
+import { ProductPageType } from "@satoshi/src/data/ProductPage.ts";
 
 export type OptionSelection = {
   qty: number;

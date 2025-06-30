@@ -1,12 +1,12 @@
-import { SELECTOR_LIST } from "../plugins/Accessibility";
-import { ESC_KEY } from "../utils/keyboard-keys";
-import { isDocumentFreezed, makeElementScrollable } from "../utils/scroll2";
+import { SELECTOR_LIST } from "@satoshi/src/plugins/Accessibility";
+import { ESC_KEY } from "@satoshi/src/utils/keyboard-keys";
+import { isDocumentFreezed, makeElementScrollable } from "@satoshi/src/utils/scroll2";
 
-type ResizableConfig = {
+export type ResizableConfig = {
   id: string;
 };
 
-type ResizableContainer = {
+export type ResizableContainer = {
   width: number;
   height: number;
 };
@@ -27,7 +27,7 @@ export type ResizableStoreType = {
   __onResize: (entries: ResizeObserverEntry[]) => void;
 };
 
-let _all: Record<string, ResizableConfig> = {};
+export let _all: Record<string, ResizableConfig> = {};
 
 export const ResizableStore = <ResizableStoreType>{
   _current: {},
