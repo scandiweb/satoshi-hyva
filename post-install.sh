@@ -37,11 +37,11 @@ mv .gitignore satoshi-theme/
 
 # 2. Create auth.json from template
 echo "🔑 Creating auth.json template..."
-cp auth.json.sample auth.json
+cp satoshi-theme/auth.json.sample auth.json
 
 # 3. Create composer.json for Magento project
 echo "📄 Creating Magento composer.json with Satoshi theme repository..."
-cp composer.json.sample composer.json
+cp satoshi-theme/composer.json.sample composer.json
 
 echo "✅ Project structure setup complete!"
 echo ""
@@ -52,10 +52,13 @@ echo "      - YOUR_MAGENTO_PRIVATE_KEY_HERE"
 echo "      - YOUR_HYVA_USERNAME_HERE"
 echo "      - YOUR_HYVA_TOKEN_HERE"
 echo ""
-echo "   2. Run: yarn start"
+echo "   2. Edit composer.json and add your hyva repository url:"
+echo "      - YOUR_HYVA_REPOSITORY_URL_HERE"
+echo ""
+echo "   3. Run: yarn start"
 echo "      (This will install Magento using your configured composer.json)"
 echo ""
-echo "   3. Start developing:"
+echo "   4. Start developing:"
 echo "      - Edit files in: ./satoshi-theme/src/"
 echo "      - Files are automatically symlinked to vendor/"
 echo "      - Only commit changes in ./satoshi-theme/" 

@@ -77,6 +77,10 @@
             "url": "https://repo.magento.com/"
         },
         {
+            "type": "composer",
+            "url": "YOUR_HYVA_REPOSITORY_URL_HERE"
+        },
+        {
             "type": "path",
             "url": "./satoshi-theme",
             "options": {
