@@ -100,7 +100,9 @@ $isCartPage = $block->getData('isCartPage');
             'hidden': isRemoveContent
         }"
     >
-        <div class="flex items-center justify-between overflow-x-hidden bg-bg-500 pb-2 <?= !$isCartPage ? 'px-2 pt-4' : '' ?> text-text-500 max-md:px-3"
+        <div
+            class="flex items-center justify-between overflow-x-hidden bg-bg-500 pb-2 <?= !$isCartPage ? 'px-2 pt-4' : '' ?> text-text-500 max-md:px-3"
+            tabindex="-1"
         >
             <h2><?= __('Grand total') ?></h2>
             <div class="flex translate-x-0 items-center gap-5 transition-transform delay-200 duration-300 motion-reduce:transition-none"

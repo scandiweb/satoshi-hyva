@@ -32,6 +32,7 @@ $categoryUrlSuffix = $breadcrumbsViewModel->getCategoryUrlSuffix();
             <div
                 x-show="categories.length"
                 class="-mx-5 flex gap-3 overflow-x-auto px-5 py-1 md:max-w-[--search-width] max-md:pb-3"
+                tabindex="-1"
             >
                 <template x-for="(category, index) in categories">
                     <a

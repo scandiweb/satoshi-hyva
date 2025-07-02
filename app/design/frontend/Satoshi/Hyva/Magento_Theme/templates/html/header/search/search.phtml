@@ -99,6 +99,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         :class="{
             'md:hidden': !$store.resizable.isVisible('search-desktop')
         }"
+        tabindex="-1"
     >
         <div class="max-md:mt-[50px]">
             <?= $template->render('Magento_Theme::html/header/search/search-suggestions.phtml') ?>
