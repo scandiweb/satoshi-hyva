@@ -58,7 +58,7 @@ use Satoshi\Theme\Block\Template;
             <a
                 class="button button--filled-primary w-full"
                 :href="getSearchUrl('/catalogsearch/result')"
-                x-a11y-trap-target.end="getIsSearchActive()"
+                x-a11y-trap-target.end="getIsSearchActive() && products.length"
                 x-element-transition-trigger:search.animate="{
                     search: searchTermInput
                 }"

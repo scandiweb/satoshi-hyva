@@ -42,7 +42,7 @@ if ($isRight) {
 >
     <div
         class="resizable__wrapper"
-        x-a11y-trap="$store.resizable._current['<?= $id ?>']"
+        x-a11y-trap="$store.resizable._current['<?= $id ?>'] && !$store.main.isMobile"
     >
         <div class="resizable__side resizable__side--l"></div>
         <div class="resizable__corner resizable__corner--tl"></div>

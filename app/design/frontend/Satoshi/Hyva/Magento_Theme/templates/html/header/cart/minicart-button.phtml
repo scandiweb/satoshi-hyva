@@ -28,6 +28,8 @@ $cartTotals = $cart->getSerializedCartTotals();
     id="cart-button"
     class="contrast-border md:button--filled-secondary button ghost-primary icon-button icon-button--size-lg col-start-5"
     x-a11y-trap-element="$store.transition.isPreviewActive && !$store.resizable.isVisible()"
+    x-a11y-trap-target.start="$store.main.isMobile && $store.popup.currentPopup === 'cart' && !$store.cart.cartItems.length"
+    x-a11y-trap-target.end="$store.main.isMobile && $store.popup.currentPopup === 'cart' && !$store.cart.cartItems.length"
     @click="!isCartVisible ? $store.cart.showCart() : $store.cart.hideCart()"
     type="button"
     aria-label="<?= __('View shopping cart') ?>"

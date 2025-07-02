@@ -23,6 +23,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         '--offset-top': offsetTop,
     }"
     x-ref="preview"
+    :inert="!isActive"
 >
     <div
         class="transition-preview__wrapper"

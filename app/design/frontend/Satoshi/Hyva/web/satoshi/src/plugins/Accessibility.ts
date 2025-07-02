@@ -81,10 +81,6 @@ export default function (Alpine: AlpineType) {
           return computedStyle.display !== "none";
         });
 
-        if (isMobile()) {
-          return;
-        }
-
         // Focus on first element!
         const first = (trapStart ||
           trapInitial ||
@@ -133,23 +129,25 @@ export default function (Alpine: AlpineType) {
 
       effect(() => {
         getIsTrapped((trapped) => {
-          if (trapped) {
-            if (modifiers.includes("start")) {
-              trapStart = el;
-            } else if (modifiers.includes("end")) {
-              trapEnd = el;
-            } else if (modifiers.includes("initial")) {
-              trapInitial = el;
+          Alpine.nextTick(() => {
+            if (trapped) {
+              if (modifiers.includes("start")) {
+                trapStart = el;
+              } else if (modifiers.includes("end")) {
+                trapEnd = el;
+              } else if (modifiers.includes("initial")) {
+                trapInitial = el;
+              }
+            } else {
+              if (modifiers.includes("start") && trapStart === el) {
+                trapStart = null;
+              } else if (modifiers.includes("end") && trapEnd === el) {
+                trapEnd = null;
+              } else if (modifiers.includes("initial") && trapInitial === el) {
+                trapInitial = null;
+              }
             }
-          } else {
-            if (modifiers.includes("start") && trapStart === el) {
-              trapStart = null;
-            } else if (modifiers.includes("end") && trapEnd === el) {
-              trapEnd = null;
-            } else if (modifiers.includes("initial") && trapInitial === el) {
-              trapInitial = null;
-            }
-          }
+          });
         });
       });
 

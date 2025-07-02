@@ -158,12 +158,17 @@ export const CartStore = <CartStoreType>{
         this.removingItemId = null;
         this.cartItems = this.cartItems.filter((item) => item.qty);
 
-        // Open minicart if there is an error message
         Alpine.nextTick(() => {
           const isCartPageOpen = window.location.pathname.includes("/checkout/cart");
 
+          // Open minicart if there is an error message
           if (this.errorMessage && !isCartPageOpen) {
             this.showCart();
+          }
+
+          // Focus on #cart-button if on mobile the minicart is open and there are no items in the cart
+          if (Alpine.store("main").isMobile && Alpine.store("popup").currentPopup === CART_POPUP_ID && !this.cartItems.length) {
+            document.getElementById('cart-button')?.focus();
           }
         });
       })

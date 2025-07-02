@@ -36,9 +36,9 @@ use Satoshi\Theme\Block\Template;
 
                     if (history.length) {
                         const level = history[history.length - 1]
-                        document.querySelector(`[data-menu-level='${level}'] a`)?.focus();
+                        document.querySelector(`[data-menu-level='${level}'] .menu-item`)?.focus();
                     }
-                }, 300);
+                }, $store.main.isMobile ? 0 : 300);
             }
         }"
         x-show="!$store.main.isMobile || !getIsSearchActive()"

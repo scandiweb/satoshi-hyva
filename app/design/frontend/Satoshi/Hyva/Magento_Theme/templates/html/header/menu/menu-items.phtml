@@ -24,6 +24,7 @@ $menuItems = $block->getData('menuItems');
 $breadcrumbs = $block->getData('breadcrumbs') ?? [];
 $url = $block->getData('url');
 $level = $block->getData('level') ?? 1;
+$shouldRenderViewAll = $url && $id !== 'all';
 if (!$menuItems) {
     $menuItems = $viewModelNavigation->getNavigation(4);
     $block->setData('cache_tags', $viewModelNavigation->getIdentities());
@@ -63,7 +64,7 @@ if (!$menuItems) {
             <?php endif; ?>
 
             <button
-                @click="history.pop()"
+                @click="setHistory(history.slice(0, -1))"
                 type="button"
                 aria-label="<?= __('Go to back to previous menu page') ?>"
                 class="menu__back-button py-3 motion-reduce:max-md:animate-none"
@@ -105,9 +106,15 @@ if (!$menuItems) {
                         <?php if ($index === 0): ?>
                             x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
                         <?php elseif ($index === count($menuItems) - 1): ?>
-                            x-a11y-trap-target.end="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
+                            x-a11y-trap-target.end="
+                                $store.main.isMobile
+                                ?
+                                $store.popup.currentPopup === 'menu' && !'<?= $shouldRenderViewAll ?>' && history.length > 0 && history[history.length - 1] === '<?= $id ?>' && !getIsSearchActive()
+                                :
+                                $store.resizable.isVisible('menu-desktop') && history.length > 0 && history[history.length - 1] === '<?= $id ?>'
+                            "
                         <?php endif; ?>
-                        class="menu__link group"
+                        class="menu-item menu__link group"
                         @click="setHistory([...'<?= $path ?>'.split(','), '<?= $menuItem['id'] ?>'])"
                         :class="{ 'menu__link--active': history.includes('<?= $menuItem['id'] ?>') }"
                         role="button"
@@ -145,7 +152,13 @@ if (!$menuItems) {
                         <?php if ($index === 0): ?>
                             x-a11y-trap-target.initial="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
                         <?php elseif ($index === count($menuItems) - 1): ?>
-                            x-a11y-trap-target.end="$store.resizable.isVisible('menu-desktop') && !$store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>'"
+                            x-a11y-trap-target.end="
+                                $store.main.isMobile
+                                ?
+                                $store.popup.currentPopup === 'menu' && !'<?= $shouldRenderViewAll ?>' && history.length > 0 && history[history.length - 1] === '<?= $id ?>' && !getIsSearchActive()
+                                :
+                                $store.resizable.isVisible('menu-desktop') && history.length > 0 && history[history.length - 1] === '<?= $id ?>'
+                            "
                         <?php endif; ?>
                         href="<?= $menuItem['url'] ?>"
                         role="link"
@@ -156,7 +169,7 @@ if (!$menuItems) {
                             'img': '<?= $menuItem['image'] ?>',
                             'description': `<?= $escaper->escapeUrl($menuItem['description'] ?? '') ?>`,
                         }"
-                        class="focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1"
+                        class="menu-item focus-visible:focus-ring group flex min-h-11 items-center justify-between py-1"
                         :class="{
                             'text-primary-500 font-semibold': history.includes('<?= $menuItem['id'] ?>')
                         }"
@@ -174,7 +187,7 @@ if (!$menuItems) {
     </ul>
 
     <div class="h-20 md:hidden"></div>
-    <?php if ($url && $id !== 'all'): ?>
+    <?php if ($shouldRenderViewAll): ?>
         <template
             x-portal="$store.main.isMobile ? document.getElementById('popup-fixed-content-portal') : document.getElementById('menu-actions-<?= $id ?>')"
         >
@@ -188,6 +201,7 @@ if (!$menuItems) {
                     x-element-transition-trigger
                     :class="$store.main.isMobile ? 'button button--filled-primary w-full': 'flex items-center'"
                     href="<?= $url ?>"
+                    x-a11y-trap-target.end="$store.popup.currentPopup === 'menu' && $store.main.isMobile && history.length > 0 && history[history.length - 1] === '<?= $id ?>' && !getIsSearchActive()"
                 >
                     <template x-if="$store.main.isMobile">
                         <span><?= __('View All') ?> <span class="lowercase"><?= $title ?></span></span>

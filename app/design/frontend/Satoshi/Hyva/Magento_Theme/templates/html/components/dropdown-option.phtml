@@ -26,6 +26,7 @@ $url = $block->getData('url');
     <?php endif; ?>
     <?php if ($onClick): ?>
     @click.prevent="<?= $escaper->escapeHtmlAttr($onClick) ?>"
+    @keydown.enter.prevent="<?= $escaper->escapeHtmlAttr($onClick) ?>"
     <?php endif; ?>
     <?php if ($isActive): ?>
     aria-current="true"

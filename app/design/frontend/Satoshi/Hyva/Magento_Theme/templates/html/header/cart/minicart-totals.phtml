@@ -120,6 +120,7 @@ $isCartPage = $block->getData('isCartPage');
                         :aria-label="isTotalsExpanded ? `<?= __('Collapse') ?>` : `<?= __('Expand') ?>`"
                         @click="isTotalsExpanded = !isTotalsExpanded"
                         @transitionend.stop
+                        :tabindex="<?= $isCartPage ? '$store.main.isMobile && ' : '' ?>isTotalsExpanded ? -1 : 0"
                 >
                     <span :class="{ 'rotate-180': isTotalsExpanded }">
                         <?= $hyvaicons->renderHtml('chevron-up') ?>

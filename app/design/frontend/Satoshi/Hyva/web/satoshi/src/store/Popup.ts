@@ -254,8 +254,12 @@ export const PopupStore = <PopupStoreType>{
 
     document.removeEventListener("keydown", this._onKeyDown);
 
-    this.originalFocusableEl?.focus({ preventScroll: true });
-    this.originalFocusableEl = null;
+    this.originalFocusableEl?.blur();
+
+    Alpine.nextTick(() => {
+      this.originalFocusableEl?.focus({ preventScroll: true });
+      this.originalFocusableEl = null;
+    });
 
     const popup = this.__currentPopupRef;
     const popupConfig = __popups.find((p) => p.id === popup);

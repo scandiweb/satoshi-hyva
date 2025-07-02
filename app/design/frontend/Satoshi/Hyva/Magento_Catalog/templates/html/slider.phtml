@@ -50,6 +50,7 @@ $viewAllUrl = $block->getData('view_all_url') ?? '';
     <?= $isCustomSliderXData ? '' : 'x-data="Slider()"' ?>
     <?= $id ? "id='$id'" : '' ?>
     style="--slide-gap: <?= $gap ?>px; <?= $convertedSlidesAmountInView ?>"
+    tabindex="-1"
 >
     <?php if (!$isHeaderDisabled && ($title || !$isActionsDisabled)): ?>
         <div class="slider__header">
@@ -95,6 +96,7 @@ $viewAllUrl = $block->getData('view_all_url') ?? '';
             : '' ?>"
         x-ref="slider"
         @scroll="handleManualScroll"
+        tabindex="-1"
     >
         <?= $slides ?>
     </div>

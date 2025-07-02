@@ -33,7 +33,7 @@ $categoryUrlSuffix = $breadcrumbsViewModel->getCategoryUrlSuffix();
                 x-show="categories.length"
                 class="-mx-5 flex gap-3 overflow-x-auto px-5 py-1 md:max-w-[--search-width] max-md:pb-3"
             >
-                <template x-for="category in categories">
+                <template x-for="(category, index) in categories">
                     <a
                         :href="`/${category.url_path}<?= $escaper->escapeUrl($categoryUrlSuffix) ?>`"
                         class="button button--outline-secondary"
@@ -41,6 +41,7 @@ $categoryUrlSuffix = $breadcrumbsViewModel->getCategoryUrlSuffix();
                             'title': category.name,
                         }"
                         x-text="category.name"
+                        x-a11y-trap-target.end="getIsSearchActive() && !products.length && categories.length && index === categories.length - 1"
                     ></a>
                 </template>
             </div>

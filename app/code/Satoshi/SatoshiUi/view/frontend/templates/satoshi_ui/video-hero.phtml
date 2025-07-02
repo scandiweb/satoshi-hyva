@@ -54,6 +54,7 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
             <?= $autoplay ? 'autoplay' : 'false' ?>
             <?= $loop ? 'loop' : '' ?>
             playsinline
+            tabindex="-1"
         >
             <source src="<?= $escaper->escapeUrl($videoUrl) ?>" type="video/mp4">
         </video>

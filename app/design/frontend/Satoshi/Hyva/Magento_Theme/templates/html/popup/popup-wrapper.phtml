@@ -37,7 +37,7 @@
           'popup__wrapper--visible': $store.popup._isPopupVisible,
         }
       "
-      x-a11y-trap="$store.popup._isPopupVisible"
+      x-a11y-trap="$store.popup._isPopupVisible && $store.main.isMobile"
     >
       <div class="popup__content-wrapper">
         <div

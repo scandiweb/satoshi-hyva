@@ -69,10 +69,15 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
                 aria-label="<?= __('Clear search') ?>"
                 x-show="!!searchTerm"
                 @click="resetSearchTerm"
-                :tabindex="$store.resizable.isVisible('search-desktop') ? 0 : -1"
+                :tabindex="
+                    $store.main.isMobile ?
+                        ($store.popup.currentPopup === 'menu' ? 0 : -1) :
+                        ($store.resizable.isVisible('search-desktop') ? 0 : -1)
+                "
                 :class="{
                     'md:hidden': !$store.resizable.isVisible('search-desktop')
                 }"
+                x-a11y-trap-target.end="getIsSearchActive() && !products.length && !categories.length && !suggestions.length && !!searchTerm"
             >
                 <?= $hyvaicons->renderHtml('close', attributes: ['title' => 'Clear']); ?>
             </button>
