@@ -171,6 +171,7 @@ module.exports = hyvaModules.mergeTailwindConfig({
   content: [
     // this theme's phtml and layout XML files
     "../../../**/*.phtml",
+    "../../../**/*.xml",
     // parent theme in Vendor (if this is a child-theme)
     "../../../../../../hyva-themes/magento2-default-theme/**/*.phtml",
     "../../../../../../hyva-themes/magento2-default-theme/*/layout/*.xml",

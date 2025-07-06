@@ -1,3 +1,5 @@
+import "../tailwind-source.css";
+
 import persist from "@alpinejs/persist";
 import morph from "@alpinejs/morph";
 

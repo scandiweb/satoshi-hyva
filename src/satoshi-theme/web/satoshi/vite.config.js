@@ -5,16 +5,19 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        app: path.resolve(__dirname, "src/app.ts"),
-        styles: path.resolve(__dirname, "tailwind-source.css"),
+        app: path.resolve(__dirname, "src/app.ts")
       },
       output: {
-        dir: path.resolve(__dirname, "../dist"),
+        dir: path.resolve(__dirname, "../"),
         entryFileNames: "assets/[name].js",
         chunkFileNames: "assets/[name].js",
-        assetFileNames: "css/[name].[ext]",
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === "style.css") return "css/styles.css";
+          return assetInfo.name;
+        },
       },
     },
+    cssCodeSplit: false,
     assetsInlineLimit: 0,
     emptyOutDir: false,
   },
