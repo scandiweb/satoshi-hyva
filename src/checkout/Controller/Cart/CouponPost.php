@@ -7,6 +7,47 @@ use Magento\Checkout\Controller\Cart\CouponPost as CoreCouponPost;
 class CouponPost extends CoreCouponPost
 {
     /**
+     * @var \Satoshi\Core\Helper\IsThemeActive
+     */
+    private $isThemeActive;
+
+    /**
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
+     * @param \Magento\Checkout\Model\Cart $cart
+     * @param \Magento\SalesRule\Model\CouponFactory $couponFactory
+     * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository
+     * @param \Satoshi\Core\Helper\IsThemeActive $isThemeActive
+     * @codeCoverageIgnore
+     */
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Checkout\Model\Session $checkoutSession,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
+        \Magento\Checkout\Model\Cart $cart,
+        \Magento\SalesRule\Model\CouponFactory $couponFactory,
+        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+        \Satoshi\Core\Helper\IsThemeActive $isThemeActive
+    ) {
+        parent::__construct(
+            $context,
+            $scopeConfig,
+            $checkoutSession,
+            $storeManager,
+            $formKeyValidator,
+            $cart,
+            $couponFactory,
+            $quoteRepository
+        );
+        $this->isThemeActive = $isThemeActive;
+    }
+
+    /**
      * Initialize coupon
      *
      * @return \Magento\Framework\Controller\Result\Redirect
@@ -15,6 +56,10 @@ class CouponPost extends CoreCouponPost
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         $couponCode = $this->getRequest()->getParam('remove') == 1
             ? ''
             : trim($this->getRequest()->getParam('coupon_code', ''));

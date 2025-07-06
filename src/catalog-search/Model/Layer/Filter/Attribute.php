@@ -13,6 +13,7 @@ use Magento\Framework\Filter\StripTags;
 use Magento\Swatches\Helper\Data as SwatchHelper;
 use Satoshi\Catalog\Model\Layer\Filter\Item;
 use Satoshi\Catalog\Model\Layer\Filter\FilterTypeTrait;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Layer attribute filter
@@ -32,12 +33,18 @@ class Attribute extends BaseAttribute
     private SwatchHelper $swatchHelper;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param ItemFactory $filterItemFactory
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Catalog\Model\Layer $layer
      * @param \Satoshi\Catalog\Model\Layer\Filter\Item\DataBuilder $itemDataBuilder
      * @param StripTags $tagFilter
      * @param SwatchHelper $swatchHelper
+     * @param IsThemeActive $isThemeActive
      * @param array $data
      */
     public function __construct(
@@ -47,11 +54,13 @@ class Attribute extends BaseAttribute
         \Magento\Catalog\Model\Layer\Filter\Item\DataBuilder $itemDataBuilder,
         StripTags                                       $tagFilter,
         SwatchHelper                                    $swatchHelper,
+        IsThemeActive                                   $isThemeActive,
         array                                           $data = []
     )
     {
         $this->tagFilter = $tagFilter;
         $this->swatchHelper = $swatchHelper;
+        $this->isThemeActive = $isThemeActive;
 
         parent::__construct(
             $filterItemFactory,
@@ -73,6 +82,10 @@ class Attribute extends BaseAttribute
      */
     public function apply(RequestInterface $request)
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::apply($request);
+        }
+
         $attributeValue = $request->getParam($this->_requestVar);
         if (empty($attributeValue) && !is_numeric($attributeValue)) {
             return $this;
@@ -149,6 +162,10 @@ class Attribute extends BaseAttribute
      */
     protected function _getItemsData()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::_getItemsData();
+        }
+
         $attribute = $this->getAttributeModel();
         /** @var Collection $productCollection */
         $productCollection = $this->getLayer()
@@ -183,6 +200,10 @@ class Attribute extends BaseAttribute
      */
     private function buildOptionData($option, $isAttributeFilterable, $optionsFacetedData)
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::buildOptionData($option, $isAttributeFilterable, $optionsFacetedData);
+        }
+
         $value = $this->getOptionValue($option);
         if ($value === false) {
             return;

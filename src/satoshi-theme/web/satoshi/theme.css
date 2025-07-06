@@ -1,3 +1,3 @@
-@import "@satoshi/theme/components/style/view-transition.css";
-@import "@satoshi/theme/components/page.css";
-@import "@satoshi/theme/components/product.css";
+@import "theme/components/style/view-transition.css";
+@import "theme/components/page.css";
+@import "theme/components/product.css";

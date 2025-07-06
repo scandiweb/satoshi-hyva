@@ -24,6 +24,11 @@ class Price extends BasePrice
     private $resource;
 
     /**
+     * @var \Satoshi\Core\Helper\IsThemeActive
+     */
+    private $isThemeActive;
+
+    /**
      * @param \Magento\Catalog\Model\Layer\Filter\ItemFactory $filterItemFactory
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Catalog\Model\Layer $layer
@@ -34,6 +39,7 @@ class Price extends BasePrice
      * @param \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency
      * @param \Magento\Catalog\Model\Layer\Filter\Dynamic\AlgorithmFactory $algorithmFactory
      * @param \Magento\Catalog\Model\Layer\Filter\DataProvider\PriceFactory $dataProviderFactory
+     * @param \Satoshi\Core\Helper\IsThemeActive $isThemeActive
      * @param array $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -49,10 +55,12 @@ class Price extends BasePrice
         \Magento\Framework\Pricing\PriceCurrencyInterface             $priceCurrency,
         \Magento\Catalog\Model\Layer\Filter\Dynamic\AlgorithmFactory  $algorithmFactory,
         \Magento\Catalog\Model\Layer\Filter\DataProvider\PriceFactory $dataProviderFactory,
+        \Satoshi\Core\Helper\IsThemeActive                            $isThemeActive,
         array                                                         $data = []
     )
     {
         $this->_requestVar = 'price';
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $filterItemFactory,
             $storeManager,
@@ -98,6 +106,10 @@ class Price extends BasePrice
      */
     protected function _getItemsData()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::_getItemsData();
+        }
+
         $attribute = $this->getAttributeModel();
         $this->_requestVar = $attribute->getAttributeCode();
 

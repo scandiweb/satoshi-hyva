@@ -1,7 +1,7 @@
 import type { Magics } from "alpinejs";
-import { freezeScroll, makeElementScrollable, unfreezeScroll, } from "@satoshi/src/utils/scroll2";
-import { isMobile } from "@satoshi/src/utils/device";
-import { ESC_KEY } from "@satoshi/src/utils/keyboard-keys";
+import { freezeScroll, makeElementScrollable, unfreezeScroll, } from "@/utils/scroll2";
+import { isMobile } from "@/utils/device";
+import { ESC_KEY } from "@/utils/keyboard-keys";
 
 export type TransitionPreviewType = {
   [key: string | symbol]: any;

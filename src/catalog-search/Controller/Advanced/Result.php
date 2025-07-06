@@ -9,6 +9,7 @@ use Magento\CatalogSearch\Model\Advanced as ModelAdvanced;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\UrlFactory;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Implement session-based message.
@@ -21,20 +22,28 @@ class Result extends SourceResult
     protected $_customerSession;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * Construct
      *
      * @param Context $context
      * @param ModelAdvanced $catalogSearchAdvanced
      * @param UrlFactory $urlFactory
      * @param Session $customerSession
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         Context $context,
         ModelAdvanced $catalogSearchAdvanced,
         UrlFactory $urlFactory,
         Session $customerSession,
+        IsThemeActive $isThemeActive
     ) {
         $this->_customerSession = $customerSession;
+        $this->isThemeActive = $isThemeActive;
 
         parent::__construct(
             $context,
@@ -48,6 +57,10 @@ class Result extends SourceResult
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         try {
             $this->_catalogSearchAdvanced->addFilters($this->getRequest()->getQueryValue());
             $this->_view->getPage()->initLayout();

@@ -32,6 +32,7 @@ use Magento\Framework\Exception\SessionException;
 use Magento\Framework\Exception\State\UserLockedException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class EditPost extends SourceEditPost
 {
@@ -82,12 +83,18 @@ class EditPost extends SourceEditPost
     private Url $customerUrl;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param Context $context
      * @param Session $customerSession
      * @param AccountManagementInterface $accountManagement
      * @param CustomerRepositoryInterface $customerRepository
      * @param Validator $formKeyValidator
      * @param CustomerExtractor $customerExtractor
+     * @param IsThemeActive $isThemeActive
      * @param Escaper|null $escaper
      * @param AddressRegistry|null $addressRegistry
      * @param Filesystem|null $filesystem
@@ -102,12 +109,13 @@ class EditPost extends SourceEditPost
         CustomerRepositoryInterface $customerRepository,
         Validator                   $formKeyValidator,
         CustomerExtractor           $customerExtractor,
+        IsThemeActive               $isThemeActive,
         ?Escaper                    $escaper = null,
         ?AddressRegistry            $addressRegistry = null,
         ?Filesystem                 $filesystem = null,
         ?SessionCleanerInterface    $sessionCleaner = null,
         ?AccountConfirmation        $accountConfirmation = null,
-        ?Url                        $customerUrl = null
+        ?Url                        $customerUrl = null,
     )
     {
         $this->escaper = $escaper ?: ObjectManager::getInstance()->get(Escaper::class);
@@ -116,7 +124,7 @@ class EditPost extends SourceEditPost
         $this->sessionCleaner = $sessionCleaner ?: ObjectManager::getInstance()->get(SessionCleanerInterface::class);
         $this->accountConfirmation = $accountConfirmation ?: ObjectManager::getInstance()->get(AccountConfirmation::class);
         $this->customerUrl = $customerUrl ?: ObjectManager::getInstance()->get(Url::class);
-
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $context,
             $customerSession,
@@ -171,6 +179,10 @@ class EditPost extends SourceEditPost
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         $resultRedirect = $this->resultRedirectFactory->create();
         $validFormKey = $this->formKeyValidator->validate($this->getRequest());
 

@@ -5,10 +5,33 @@ declare(strict_types=1);
 namespace Satoshi\Catalog\Model\Layer\Filter;
 
 use Magento\Catalog\Model\Layer\Filter\Item as BaseItem;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class Item extends BaseItem
 {
     use FilterTypeTrait;
+
+    /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
+     * Construct
+     *
+     * @param \Magento\Framework\UrlInterface $url
+     * @param \Magento\Theme\Block\Html\Pager $htmlPagerBlock
+     * @param array $data
+     */
+    public function __construct(
+        \Magento\Framework\UrlInterface $url,
+        \Magento\Theme\Block\Html\Pager $htmlPagerBlock,
+        IsThemeActive $isThemeActive,
+        array $data = []
+    ) {
+        parent::__construct($url, $htmlPagerBlock, $data);
+        $this->isThemeActive = $isThemeActive;
+    }
 
     /**
      * Get the URL for the filter item
@@ -17,6 +40,10 @@ class Item extends BaseItem
      */
     public function getUrl(): string
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::getUrl();
+        }
+
         $filterName = $this->getFilter()->getRequestVar();
         $filterValue = $this->getValue();
 
@@ -56,6 +83,10 @@ class Item extends BaseItem
      */
     public function getRemoveUrl()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::getRemoveUrl();
+        }
+
         $filterName = $this->getFilter()->getRequestVar();
         $filterValue = $this->getValue();
 

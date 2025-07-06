@@ -20,6 +20,7 @@ use Magento\Framework\Validator\ValidateException;
 use Magento\Framework\Validator\ValidatorChain;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Wishlist\Controller\Index\Send as SourceSend;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class Send extends SourceSend
 {
@@ -39,6 +40,11 @@ class Send extends SourceSend
     private $captchaStringResolver;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param Action\Context $context
      * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
      * @param \Magento\Customer\Model\Session $customerSession
@@ -53,6 +59,7 @@ class Send extends SourceSend
      * @param CaptchaHelper|null $captchaHelper
      * @param CaptchaStringResolver|null $captchaStringResolver
      * @param Escaper|null $escaper
+     * @param IsThemeActive $isThemeActive
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -67,6 +74,7 @@ class Send extends SourceSend
         WishlistSession                                        $wishlistSession,
         ScopeConfigInterface                                   $scopeConfig,
         StoreManagerInterface                                  $storeManager,
+        IsThemeActive                                          $isThemeActive,
         ?CaptchaHelper                                         $captchaHelper = null,
         ?CaptchaStringResolver                                 $captchaStringResolver = null,
         Escaper                                                $escaper = null
@@ -79,7 +87,7 @@ class Send extends SourceSend
         $this->escaper = $escaper ?? ObjectManager::getInstance()->get(
             Escaper::class
         );
-
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $context,
             $formKeyValidator,
@@ -109,6 +117,10 @@ class Send extends SourceSend
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         $captchaForName = 'share_wishlist_form';

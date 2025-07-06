@@ -16,12 +16,18 @@ use Magento\Framework\Message\ManagerInterface as MessageManager;
 use Magento\Framework\UrlInterface;
 use Magento\Wishlist\Helper\Data as WishlistHelper;
 use Magento\Wishlist\Model\ItemCarrier as SourceItemCarrier;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Implement session-based message.
  */
 class ItemCarrier extends SourceItemCarrier
 {
+    /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
     /**
      * @param Session $customerSession
      * @param LocaleQuantityProcessor $quantityProcessor
@@ -32,6 +38,7 @@ class ItemCarrier extends SourceItemCarrier
      * @param UrlInterface $urlBuilder
      * @param MessageManager $messageManager
      * @param RedirectInterface $redirector
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         Session $customerSession,
@@ -42,8 +49,10 @@ class ItemCarrier extends SourceItemCarrier
         CartHelper $cartHelper,
         UrlInterface $urlBuilder,
         MessageManager $messageManager,
-        RedirectInterface $redirector
+        RedirectInterface $redirector,
+        IsThemeActive $isThemeActive
     ) {
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $customerSession,
             $quantityProcessor,
@@ -69,6 +78,10 @@ class ItemCarrier extends SourceItemCarrier
      */
     public function moveAllToCart(\Magento\Wishlist\Model\Wishlist $wishlist, $qtys)
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::moveAllToCart($wishlist, $qtys);
+        }
+
         $isOwner = $wishlist->isOwner($this->customerSession->getCustomerId());
 
         $messages = [];

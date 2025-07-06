@@ -170,14 +170,10 @@ module.exports = hyvaModules.mergeTailwindConfig({
   // plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
   content: [
     // this theme's phtml and layout XML files
-    "../../**/*.phtml",
-    "../../*/layout/*.xml",
-    "../../*/page_layout/override/base/*.xml",
+    "../../../**/*.phtml",
     // parent theme in Vendor (if this is a child-theme)
-    "../../../../../../../vendor/hyva-themes/magento2-default-theme/**/*.phtml",
-    "../../../../../../../vendor/hyva-themes/magento2-default-theme/*/layout/*.xml",
-    "../../../../../../../vendor/hyva-themes/magento2-default-theme/*/page_layout/override/base/*.xml",
-    // app/code phtml files (if need tailwind classes from app/code modules)
-    "../../../../../../../app/code/**/*.phtml",
+    "../../../../../../hyva-themes/magento2-default-theme/**/*.phtml",
+    "../../../../../../hyva-themes/magento2-default-theme/*/layout/*.xml",
+    "../../../../../../hyva-themes/magento2-default-theme/*/page_layout/override/base/*.xml",
   ],
 });

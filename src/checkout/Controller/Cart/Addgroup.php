@@ -8,6 +8,7 @@ use Magento\Checkout\Model\Cart as CustomerCart;
 use Magento\Framework\Escaper;
 use Magento\Sales\Model\Order\Item;
 use Magento\Checkout\Controller\Cart\Addgroup as SourceAddgroup;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class Addgroup extends SourceAddgroup
 {
@@ -17,12 +18,18 @@ class Addgroup extends SourceAddgroup
     protected $_customerSession;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param \Magento\Framework\App\Action\Context $context
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
      * @param CustomerCart $cart
+     * @param IsThemeActive $isThemeActive
      * @param Escaper|null $escaper
      */
     public function __construct(
@@ -32,6 +39,7 @@ class Addgroup extends SourceAddgroup
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
         CustomerCart $cart,
+        IsThemeActive $isThemeActive,
         Escaper $escaper = null
     ) {
         parent::__construct(
@@ -45,6 +53,7 @@ class Addgroup extends SourceAddgroup
         );
 
         $this->_customerSession = $this->cart->getCustomerSession();
+        $this->isThemeActive = $isThemeActive;
     }
 
     /**
@@ -54,6 +63,10 @@ class Addgroup extends SourceAddgroup
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         $orderItemIds = $this->getRequest()->getPost('order_items');
         if (is_array($orderItemIds)) {
             $itemsCollection = $this->_objectManager->create(\Magento\Sales\Model\Order\Item::class)

@@ -17,6 +17,7 @@ use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Escaper;
 use Magento\Framework\Filter\LocalizedToNormalized;
 use Magento\Store\Model\StoreManagerInterface;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Controller for processing add to cart action.
@@ -31,6 +32,11 @@ class Add extends SourceAdd
     protected $productRepository;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @var RequestQuantityProcessor
      */
     private $quantityProcessor;
@@ -43,6 +49,7 @@ class Add extends SourceAdd
      * @param Validator $formKeyValidator
      * @param CustomerCart $cart
      * @param ProductRepositoryInterface $productRepository
+     * @param IsThemeActive $isThemeActive
      * @param RequestQuantityProcessor|null $quantityProcessor
      * @codeCoverageIgnore
      */
@@ -54,6 +61,7 @@ class Add extends SourceAdd
         Validator $formKeyValidator,
         CustomerCart $cart,
         ProductRepositoryInterface $productRepository,
+        IsThemeActive $isThemeActive,
         ?RequestQuantityProcessor $quantityProcessor = null
     ) {
         parent::__construct(
@@ -69,6 +77,7 @@ class Add extends SourceAdd
         $this->productRepository = $productRepository;
         $this->quantityProcessor = $quantityProcessor
             ?? ObjectManager::getInstance()->get(RequestQuantityProcessor::class);
+        $this->isThemeActive = $isThemeActive;
     }
 
     /**
@@ -79,6 +88,10 @@ class Add extends SourceAdd
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         if (!$this->_formKeyValidator->validate($this->getRequest())) {
             $this->messageManager->addErrorMessage(
                 __('Your session has expired')

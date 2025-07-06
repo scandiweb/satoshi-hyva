@@ -2,31 +2,31 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 
-@import url(@satoshi/layout/base.css);
-@import url(@satoshi/layout/utilities.css);
-@import url(@satoshi/components/image.css);
-@import url(@satoshi/components/price.css);
-@import url(@satoshi/components/content-wrapper.css);
-@import url(@satoshi/components/checkbox.css);
-@import url(@satoshi/components/radio.css);
-@import url(@satoshi/components/input.css);
-@import url(@satoshi/components/divider.css);
-@import url(@satoshi/components/range-slider.css);
-@import url(@satoshi/components/header.css);
-@import url(@satoshi/components/popup.css);
-@import url(@satoshi/components/button.css);
-@import url(@satoshi/components/icon-button.css);
-@import url(@satoshi/components/menu.css);
-@import url(@satoshi/components/resizable.css);
-@import url(@satoshi/components/transition.css);
-@import url(@satoshi/components/slider.css);
+@import url(layout/base.css);
+@import url(layout/utilities.css);
+@import url(components/image.css);
+@import url(components/price.css);
+@import url(components/content-wrapper.css);
+@import url(components/checkbox.css);
+@import url(components/radio.css);
+@import url(components/input.css);
+@import url(components/divider.css);
+@import url(components/range-slider.css);
+@import url(components/header.css);
+@import url(components/popup.css);
+@import url(components/button.css);
+@import url(components/icon-button.css);
+@import url(components/menu.css);
+@import url(components/resizable.css);
+@import url(components/transition.css);
+@import url(components/slider.css);
 /* TODO: Replace with Prose */
-@import url(@satoshi/components/rte.css);
-@import url(@satoshi/components/card-product.css);
-@import url(@satoshi/components/link.css);
-@import url(@satoshi/components/page-builder.css);
-@import url(@satoshi/components/progress-bar.css);
+@import url(components/rte.css);
+@import url(components/card-product.css);
+@import url(components/link.css);
+@import url(components/page-builder.css);
+@import url(components/progress-bar.css);
 
 /* purgecss end ignore */
 @import "tailwindcss/utilities";
-@import "@satoshi/theme.css";
+@import "theme.css";

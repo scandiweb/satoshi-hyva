@@ -1,5 +1,5 @@
 {
-  "name": "@satoshi/hyva",
+  "name": "@scandiweb/satoshi",
   "version": "1.0.0",
   "main": "tailwind.config.js",
   "dependencies": {

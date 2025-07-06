@@ -1,5 +1,5 @@
 import type { Magics } from "alpinejs";
-import { ESC_KEY } from "@satoshi/src/utils/keyboard-keys";
+import { ESC_KEY } from "@/utils/keyboard-keys";
 
 export type DropdownType = {
   isDropdownVisible: boolean;

@@ -9,6 +9,7 @@ use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Newsletter\Model\SubscriptionManagerInterface;
 use Magento\Newsletter\Controller\Manage\Save as SourceSave;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class Save extends SourceSave
 {
@@ -16,6 +17,11 @@ class Save extends SourceSave
      * @var SubscriptionManagerInterface
      */
     private $subscriptionManager;
+
+    /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
 
     /**
      * Initialize dependencies.
@@ -26,6 +32,7 @@ class Save extends SourceSave
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param CustomerRepository $customerRepository
      * @param SubscriptionManagerInterface $subscriptionManager
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
@@ -33,7 +40,8 @@ class Save extends SourceSave
         \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         CustomerRepository $customerRepository,
-        SubscriptionManagerInterface $subscriptionManager
+        SubscriptionManagerInterface $subscriptionManager,
+        IsThemeActive $isThemeActive
     ) {
         parent::__construct(
             $context,
@@ -44,6 +52,7 @@ class Save extends SourceSave
             $subscriptionManager
         );
         $this->subscriptionManager = $subscriptionManager;
+        $this->isThemeActive = $isThemeActive;
     }
 
     /**
@@ -53,6 +62,10 @@ class Save extends SourceSave
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         if (!$this->formKeyValidator->validate($this->getRequest())) {
             return $this->_redirect('customer/account/');
         }

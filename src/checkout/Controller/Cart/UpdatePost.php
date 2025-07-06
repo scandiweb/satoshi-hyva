@@ -14,6 +14,7 @@ use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Post update shopping cart.
@@ -22,6 +23,12 @@ use Psr\Log\LoggerInterface;
  */
 class UpdatePost extends SourceUpdatePost
 {
+
+    /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
     /**
      * @var RequestQuantityProcessor
      */
@@ -34,6 +41,7 @@ class UpdatePost extends SourceUpdatePost
      * @param StoreManagerInterface $storeManager
      * @param Validator $formKeyValidator
      * @param Cart $cart
+     * @param IsThemeActive $isThemeActive
      * @param RequestQuantityProcessor|null $quantityProcessor
      */
     public function __construct(
@@ -43,6 +51,7 @@ class UpdatePost extends SourceUpdatePost
         StoreManagerInterface    $storeManager,
         Validator                $formKeyValidator,
         Cart                     $cart,
+        IsThemeActive            $isThemeActive,
         RequestQuantityProcessor $quantityProcessor = null
     )
     {
@@ -55,6 +64,7 @@ class UpdatePost extends SourceUpdatePost
             $cart,
             $quantityProcessor
         );
+        $this->isThemeActive = $isThemeActive;
         $this->quantityProcessor = $quantityProcessor ?: $this->_objectManager->get(RequestQuantityProcessor::class);
     }
 
@@ -65,6 +75,10 @@ class UpdatePost extends SourceUpdatePost
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         if (!$this->_formKeyValidator->validate($this->getRequest())) {
             return $this->resultRedirectFactory->create()->setPath('*/*/');
         }

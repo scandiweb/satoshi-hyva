@@ -16,6 +16,7 @@ use Magento\Framework\Exception\SecurityViolationException;
 use Magento\Framework\Validator\EmailAddress;
 use Magento\Framework\Validator\ValidateException;
 use Magento\Framework\Validator\ValidatorChain;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class ForgotPasswordPost extends SourceForgotPasswordPost
 {
@@ -30,11 +31,17 @@ class ForgotPasswordPost extends SourceForgotPasswordPost
     protected $session;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param Context $context
      * @param Session $customerSession
      * @param AccountManagementInterface $customerAccountManagement
      * @param Escaper $escaper
      * @param JsonFactory $jsonFactory
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         Context                    $context,
@@ -42,9 +49,11 @@ class ForgotPasswordPost extends SourceForgotPasswordPost
         AccountManagementInterface $customerAccountManagement,
         Escaper                    $escaper,
         JsonFactory                $jsonFactory,
+        IsThemeActive              $isThemeActive
     ) {
         $this->jsonFactory = $jsonFactory;
         $this->session = $customerSession;
+        $this->isThemeActive = $isThemeActive;
         parent::__construct($context, $customerSession, $customerAccountManagement, $escaper);
     }
 
@@ -54,6 +63,10 @@ class ForgotPasswordPost extends SourceForgotPasswordPost
      */
     public function execute(): Redirect
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         $resultRedirect = $this->resultRedirectFactory->create();
         $email = (string)$this->getRequest()->getPost('email');
 

@@ -12,6 +12,7 @@ use Magento\Wishlist\Controller\WishlistProviderInterface;
 use Magento\Wishlist\Model\Item;
 use Magento\Wishlist\Model\Product\AttributeValueProvider;
 use Magento\Wishlist\Controller\Index\Remove as SourceRemove;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Implement session-based message.
@@ -29,11 +30,17 @@ class Remove extends SourceRemove
     private $attributeValueProvider;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param Action\Context $context
      * @param WishlistProviderInterface $wishlistProvider
      * @param Validator $formKeyValidator
      * @param AttributeValueProvider|null $attributeValueProvider
      * @param \Magento\Customer\Model\Session $customerSession
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         Action\Context $context,
@@ -41,7 +48,8 @@ class Remove extends SourceRemove
         Validator $formKeyValidator,
         AttributeValueProvider $attributeValueProvider = null,
         \Magento\Customer\Model\Session $customerSession,
-        protected \Psr\Log\LoggerInterface $logger
+        protected \Psr\Log\LoggerInterface $logger,
+        IsThemeActive $isThemeActive
     ) {
         $this->_customerSession = $customerSession;
         $this->attributeValueProvider = $attributeValueProvider
@@ -53,6 +61,7 @@ class Remove extends SourceRemove
             $formKeyValidator,
             $attributeValueProvider,
         );
+        $this->isThemeActive = $isThemeActive;
     }
 
     /**
@@ -63,6 +72,10 @@ class Remove extends SourceRemove
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if (!$this->formKeyValidator->validate($this->getRequest())) {

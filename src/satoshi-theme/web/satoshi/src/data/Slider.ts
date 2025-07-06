@@ -1,5 +1,5 @@
 import { Magics } from "alpinejs";
-import { SELECTOR_LIST } from "@satoshi/src/plugins/Accessibility";
+import { SELECTOR_LIST } from "@/plugins/Accessibility";
 
 type SlidesAmountInViewType = {
   xs: number;

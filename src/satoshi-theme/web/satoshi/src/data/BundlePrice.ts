@@ -1,5 +1,5 @@
 import { Magics } from "alpinejs";
-import { TierPrice } from "@satoshi/src/data/CatalogPrice";
+import { TierPrice } from "@/data/CatalogPrice";
 
 export type BundlePriceType = {
   initialFinalPrice: number;

@@ -12,6 +12,7 @@ use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Image\Placeholde
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Returns media url
@@ -31,17 +32,25 @@ class Url extends SourceUrl
     private $placeholderProvider;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param ImageFactory $productImageFactory
      * @param PlaceholderProvider $placeholderProvider
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         ImageFactory        $productImageFactory,
-        PlaceholderProvider $placeholderProvider
+        PlaceholderProvider $placeholderProvider,
+        IsThemeActive $isThemeActive
     )
     {
         parent::__construct($productImageFactory, $placeholderProvider);
         $this->productImageFactory = $productImageFactory;
         $this->placeholderProvider = $placeholderProvider;
+        $this->isThemeActive = $isThemeActive;
     }
 
     /**
@@ -55,6 +64,10 @@ class Url extends SourceUrl
         array       $args = null
     )
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::resolve($field, $context, $info, $value, $args);
+        }
+
         if (!isset($value['image_type']) && !isset($value['file'])) {
             throw new LocalizedException(__('"image_type" value should be specified'));
         }
@@ -84,6 +97,10 @@ class Url extends SourceUrl
      */
     private function getImageUrl(string $imageType, ?string $imagePath): string
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::getImageUrl($imageType, $imagePath);
+        }
+
         if (empty($imagePath) && !empty($this->placeholderCache[$imageType])) {
             return $this->placeholderCache[$imageType];
         }

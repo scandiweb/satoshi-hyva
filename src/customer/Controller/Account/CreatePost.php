@@ -32,6 +32,7 @@ use Magento\Framework\Stdlib\Cookie\PhpCookieManager;
 use Magento\Framework\UrlFactory;
 use Magento\Newsletter\Model\SubscriberFactory;
 use Magento\Store\Model\StoreManagerInterface;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Post create customer action
@@ -63,6 +64,11 @@ class CreatePost extends SourceCreatePost
     private $formKeyValidator;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param Context $context
      * @param Session $customerSession
      * @param ScopeConfigInterface $scopeConfig
@@ -83,6 +89,7 @@ class CreatePost extends SourceCreatePost
      * @param AccountRedirect $accountRedirect
      * @param CustomerRepository $customerRepository
      * @param  Validator  $formKeyValidator
+     * @param IsThemeActive $isThemeActive
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -106,11 +113,12 @@ class CreatePost extends SourceCreatePost
         DataObjectHelper $dataObjectHelper,
         AccountRedirect $accountRedirect,
         CustomerRepository $customerRepository,
-        Validator $formKeyValidator = null
+        Validator $formKeyValidator = null,
+        IsThemeActive $isThemeActive
     ) {
         $this->formKeyValidator = $formKeyValidator ?: ObjectManager::getInstance()->get(Validator::class);
         $this->accountRedirect = $accountRedirect;
-
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $context,
             $customerSession,
@@ -144,6 +152,10 @@ class CreatePost extends SourceCreatePost
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($this->session->isLoggedIn() || !$this->registration->isAllowed()) {

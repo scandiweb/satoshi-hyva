@@ -1,5 +1,5 @@
 import type { Magics } from 'alpinejs';
-import { replaceMainContentWithTransition } from "@satoshi/src/plugins/Transition.ts";
+import { replaceMainContentWithTransition } from "@/plugins/Transition.ts";
 
 interface PostCodeSpec {
   pattern: string;

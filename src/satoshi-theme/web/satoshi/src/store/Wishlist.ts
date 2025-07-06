@@ -1,4 +1,4 @@
-import {navigateWithTransition} from "@satoshi/src/plugins/Transition";
+import {navigateWithTransition} from "@/plugins/Transition";
 
 export type ImageType = {
   src: string;

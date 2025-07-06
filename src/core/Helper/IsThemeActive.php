@@ -115,14 +115,14 @@ class IsThemeActive extends AbstractHelper
         }
 
         // Check if this is directly the Satoshi theme
-        if ($theme->getCode() === 'Satoshi/Hyva') {
+        if ($theme->getCode() === 'Satoshi/hyva') {
             return true;
         }
 
         // Check if this theme inherits from Satoshi (check parent themes)
         $parentTheme = $theme->getParentTheme();
         while ($parentTheme) {
-            if ($parentTheme->getCode() === 'Satoshi/Hyva') {
+            if ($parentTheme->getCode() === 'Satoshi/hyva') {
                 return true;
             }
             $parentTheme = $parentTheme->getParentTheme();

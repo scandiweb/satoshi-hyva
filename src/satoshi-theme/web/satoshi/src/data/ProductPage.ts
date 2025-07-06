@@ -1,6 +1,6 @@
 import { withXAttributes } from "alpinejs";
-import { POPUP_OVERLAY_CLICK_EVENT } from "@satoshi/src/store/Popup";
-import { CartItem } from "@satoshi/src/store/Cart";
+import { POPUP_OVERLAY_CLICK_EVENT } from "@/store/Popup";
+import { CartItem } from "@/store/Cart";
 
 export type ProductPageType = {
   [key: string | symbol]: any;

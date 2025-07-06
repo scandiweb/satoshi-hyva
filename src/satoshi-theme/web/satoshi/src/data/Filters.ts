@@ -1,5 +1,5 @@
-import { navigateWithTransition } from "@satoshi/src/plugins/Transition";
-import { ProductListType } from "@satoshi/src/data/ProductList";
+import { navigateWithTransition } from "@/plugins/Transition";
+import { ProductListType } from "@/data/ProductList";
 
 export type FiltersType = {
   [key: string | symbol]: any;

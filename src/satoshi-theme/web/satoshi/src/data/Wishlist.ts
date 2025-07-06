@@ -1,6 +1,6 @@
 import { Magics } from "alpinejs";
-import { CartItem } from "@satoshi/src/store/Cart.ts";
-import { replaceMainContentWithTransition } from "@satoshi/src/plugins/Transition";
+import { CartItem } from "@/store/Cart.ts";
+import { replaceMainContentWithTransition } from "@/plugins/Transition";
 
 export type WishlistType = {
   actionBtnText: string;

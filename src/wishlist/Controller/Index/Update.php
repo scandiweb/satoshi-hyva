@@ -8,6 +8,7 @@ use Magento\Framework\App\Action;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Wishlist\Controller\Index\Update as SourceUpdate;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Implement session-based message.
@@ -20,11 +21,17 @@ class Update extends SourceUpdate
     protected $_customerSession;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param Action\Context $context
      * @param \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator
      * @param \Magento\Wishlist\Controller\WishlistProviderInterface $wishlistProvider
      * @param \Magento\Wishlist\Model\LocaleQuantityProcessor $quantityProcessor
      * @param \Magento\Customer\Model\Session $customerSession
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         Action\Context $context,
@@ -32,9 +39,10 @@ class Update extends SourceUpdate
         \Magento\Wishlist\Controller\WishlistProviderInterface $wishlistProvider,
         \Magento\Wishlist\Model\LocaleQuantityProcessor $quantityProcessor,
         \Magento\Customer\Model\Session $customerSession,
+        IsThemeActive $isThemeActive,
     ) {
         $this->_customerSession = $customerSession;
-
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $context,
             $formKeyValidator,
@@ -53,6 +61,10 @@ class Update extends SourceUpdate
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if (!$this->_formKeyValidator->validate($this->getRequest())) {

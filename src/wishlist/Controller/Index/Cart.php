@@ -27,6 +27,7 @@ use Magento\Wishlist\Model\ItemFactory;
 use Magento\Wishlist\Model\LocaleQuantityProcessor;
 use Magento\Wishlist\Model\ResourceModel\Item\Option\Collection;
 use Magento\Wishlist\Controller\Index\Cart as SourceCart;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Implement session-based message.
@@ -54,6 +55,11 @@ class Cart extends SourceCart
     protected $_customerSession;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param Action\Context $context
      * @param WishlistProviderInterface $wishlistProvider
      * @param LocaleQuantityProcessor $quantityProcessor
@@ -68,6 +74,7 @@ class Cart extends SourceCart
      * @param CookieManagerInterface|null $cookieManager
      * @param CookieMetadataFactory|null $cookieMetadataFactory
      * @param \Magento\Customer\Model\Session $customerSession
+     * @param IsThemeActive $isThemeActive
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -84,6 +91,7 @@ class Cart extends SourceCart
         CartHelper $cartHelper,
         Validator $formKeyValidator,
         \Magento\Customer\Model\Session $customerSession,
+        IsThemeActive $isThemeActive,
         ?CookieManagerInterface $cookieManager = null,
         ?CookieMetadataFactory $cookieMetadataFactory = null
     ) {
@@ -92,7 +100,7 @@ class Cart extends SourceCart
         $this->cookieMetadataFactory = $cookieMetadataFactory ?:
             ObjectManager::getInstance()->get(CookieMetadataFactory::class);
         $this->_customerSession = $customerSession;
-
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $context,
             $wishlistProvider,
@@ -123,6 +131,10 @@ class Cart extends SourceCart
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         if (!$this->formKeyValidator->validate($this->getRequest())) {

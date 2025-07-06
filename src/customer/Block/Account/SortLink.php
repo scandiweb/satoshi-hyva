@@ -5,9 +5,34 @@ declare(strict_types=1);
 namespace Satoshi\Customer\Block\Account;
 
 use Magento\Customer\Block\Account\SortLink as SourceSortLink;
+use Magento\Framework\App\DefaultPathInterface;
+use Magento\Framework\View\Element\Template\Context;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class SortLink extends SourceSortLink
 {
+    /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
+     * Constructor
+     *
+     * @param Context $context
+     * @param DefaultPathInterface $defaultPath
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        DefaultPathInterface $defaultPath,
+        IsThemeActive $isThemeActive,
+        array $data = []
+    ) {
+        parent::__construct($context, $defaultPath, $data);
+        $this->isThemeActive = $isThemeActive;
+    }
+
     /**
      * Render block HTML
      *
@@ -15,6 +40,10 @@ class SortLink extends SourceSortLink
      */
     protected function _toHtml()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::_toHtml();
+        }
+
         if (false != $this->getTemplate()) {
             return parent::_toHtml();
         }

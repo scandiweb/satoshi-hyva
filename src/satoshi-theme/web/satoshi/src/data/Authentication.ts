@@ -1,8 +1,8 @@
-import { MainStoreType } from "@satoshi/src/store/Main";
+import { MainStoreType } from "@/store/Main";
 import {
   replaceMainContentWithTransition,
   navigateWithTransition,
-} from "@satoshi/src/plugins/Transition";
+} from "@/plugins/Transition";
 
 type RegisterProps = {
   telephoneErrorMessage: string;

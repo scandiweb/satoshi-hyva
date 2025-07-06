@@ -1,5 +1,5 @@
 import type { Magics } from "alpinejs";
-import { fetchShippingMethodsUrl, fetchTotalsUrl } from "@satoshi/src/utils/magento-api";
+import { fetchShippingMethodsUrl, fetchTotalsUrl } from "@/utils/magento-api";
 
 export type Data = {
   cart: any;

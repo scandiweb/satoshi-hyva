@@ -1,5 +1,5 @@
 import { Magics } from "alpinejs";
-import { FormType } from "@satoshi/src/data/Form";
+import { FormType } from "@/data/Form";
 
 export type AccountInformationType = {
   showEmailField: boolean;

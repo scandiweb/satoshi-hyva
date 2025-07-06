@@ -24,6 +24,7 @@ use Magento\Sales\Helper\Guest as SourceGuest;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderFactory;
 use Magento\Store\Model\StoreManagerInterface;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Class Guest
@@ -45,6 +46,11 @@ class Guest extends SourceGuest
      */
     private $storeManager;
 
+    /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
     private $inputExceptionMessage = 'You entered incorrect data. Please try again.';
 
     /**
@@ -61,6 +67,7 @@ class Guest extends SourceGuest
      * @param RedirectFactory $resultRedirectFactory
      * @param OrderRepositoryInterface|null $orderRepository
      * @param SearchCriteriaBuilder|null $searchCriteria
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         App\Helper\Context $context,
@@ -72,6 +79,7 @@ class Guest extends SourceGuest
         ManagerInterface $messageManager,
         OrderFactory $orderFactory,
         RedirectFactory $resultRedirectFactory,
+        IsThemeActive $isThemeActive,
         OrderRepositoryInterface $orderRepository = null,
         SearchCriteriaBuilder $searchCriteria = null
     ) {
@@ -79,7 +87,7 @@ class Guest extends SourceGuest
         $this->storeManager = $storeManager;
         $this->orderRepository = $orderRepository ?: ObjectManager::getInstance()->get(OrderRepositoryInterface::class);
         $this->searchCriteriaBuilder = $searchCriteria ?: ObjectManager::getInstance()->get(SearchCriteriaBuilder::class);
-
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $context,
             $storeManager,
@@ -107,6 +115,10 @@ class Guest extends SourceGuest
      */
     public function loadValidOrder(App\RequestInterface $request)
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::loadValidOrder($request);
+        }
+
         if ($this->customerSession->isLoggedIn()) {
             return $this->resultRedirectFactory->create()->setPath('sales/order/history');
         }

@@ -19,6 +19,7 @@ use Magento\Newsletter\Model\SubscriptionManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Newsletter\Model\SubscriberFactory;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class NewAction extends SourceNewAction
 {
@@ -38,6 +39,11 @@ class NewAction extends SourceNewAction
     protected $jsonFactory;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * Initialize dependencies.
      *
      * @param Context $context
@@ -50,6 +56,7 @@ class NewAction extends SourceNewAction
      * @param EmailValidator|null $emailValidator
      * @param CustomerRepositoryInterface|null $customerRepository
      * @param JsonFactory $jsonFactory
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         Context $context,
@@ -59,14 +66,16 @@ class NewAction extends SourceNewAction
         CustomerUrl $customerUrl,
         CustomerAccountManagement $customerAccountManagement,
         SubscriptionManagerInterface $subscriptionManager,
-        EmailValidator $emailValidator = null,
-        CustomerRepositoryInterface $customerRepository = null,
         JsonFactory $jsonFactory,
+        IsThemeActive $isThemeActive,
+        EmailValidator $emailValidator = null,
+        CustomerRepositoryInterface $customerRepository = null
     ) {
         $this->subscriptionManager = $subscriptionManager;
         $this->customerRepository = $customerRepository ?: ObjectManager::getInstance()
             ->get(CustomerRepositoryInterface::class);
         $this->jsonFactory = $jsonFactory;
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $context,
             $subscriberFactory,
@@ -104,6 +113,10 @@ class NewAction extends SourceNewAction
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         $resultJson = $this->jsonFactory->create();
         if ($this->getRequest()->isPost() && $this->getRequest()->getPost('email')) {
             $email = (string)$this->getRequest()->getPost('email');

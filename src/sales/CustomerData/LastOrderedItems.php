@@ -15,6 +15,7 @@ use Magento\Sales\Model\ResourceModel\Order\CollectionFactoryInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 use Magento\Sales\CustomerData\LastOrderedItems as SourceLastOrderedItems;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Retrieves the product SKU along with the items array to facilitate animation
@@ -38,6 +39,11 @@ class LastOrderedItems extends SourceLastOrderedItems
     private $logger;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param CollectionFactoryInterface $orderCollectionFactory
      * @param Config $orderConfig
      * @param Session $customerSession
@@ -53,12 +59,13 @@ class LastOrderedItems extends SourceLastOrderedItems
         StockRegistryInterface $stockRegistry,
         StoreManagerInterface $storeManager,
         ProductRepositoryInterface $productRepository,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        IsThemeActive $isThemeActive
     ) {
         $this->_storeManager = $storeManager;
         $this->productRepository = $productRepository;
         $this->logger = $logger;
-
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $orderCollectionFactory,
             $orderConfig,
@@ -78,6 +85,10 @@ class LastOrderedItems extends SourceLastOrderedItems
      */
     protected function getItems(): array
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::getItems();
+        }
+
         $items = [];
         $order = $this->getLastOrder();
         $limit = self::SIDEBAR_ORDER_LIMIT;

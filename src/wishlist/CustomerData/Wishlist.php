@@ -8,9 +8,15 @@ use Magento\Wishlist\CustomerData\Wishlist as SourceWishlist;
 use Magento\Framework\App\ObjectManager;
 use Magento\Wishlist\Model\Item as WishlistItem;
 use Magento\Catalog\Model\Product;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class Wishlist extends SourceWishlist
 {
+    /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
     /**
      * @var \Magento\Catalog\Helper\Product\ConfigurationPool
      */
@@ -34,6 +40,7 @@ class Wishlist extends SourceWishlist
      * @param \Magento\Catalog\Helper\Product\ConfigurationPool $configurationPool
      * @param \Magento\Catalog\Model\Product\Configuration\Item\ItemResolverInterface|null $itemResolver
      * @param \Magento\Framework\Escaper|null $escaper
+     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         \Magento\Wishlist\Helper\Data $wishlistHelper,
@@ -42,13 +49,15 @@ class Wishlist extends SourceWishlist
         \Magento\Framework\App\ViewInterface $view,
         \Magento\Catalog\Helper\Product\ConfigurationPool $configurationPool,
         \Magento\Catalog\Model\Product\Configuration\Item\ItemResolverInterface $itemResolver = null,
-        \Magento\Framework\Escaper $escaper = null
+        \Magento\Framework\Escaper $escaper = null,
+        IsThemeActive $isThemeActive
     ) {
         $this->configurationPool = $configurationPool;
         $this->itemResolver = $itemResolver ?: ObjectManager::getInstance()->get(
             \Magento\Catalog\Model\Product\Configuration\Item\ItemResolverInterface::class
         );
         $this->escaper = $escaper ?: ObjectManager::getInstance()->get(\Magento\Framework\Escaper::class);
+        $this->isThemeActive = $isThemeActive;
         parent::__construct($wishlistHelper, $block, $imageHelperFactory, $view, $itemResolver);
     }
 
@@ -59,6 +68,10 @@ class Wishlist extends SourceWishlist
      */
     protected function getItems()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::getItems();
+        }
+
         $this->view->loadLayout();
 
         $collection = $this->wishlistHelper->getWishlistItemCollection();
@@ -79,6 +92,10 @@ class Wishlist extends SourceWishlist
      */
     protected function getItemData(WishlistItem $wishlistItem)
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::getItemData($wishlistItem);
+        }
+
         $product = $wishlistItem->getProduct();
         return [
             'item_id' => $wishlistItem->getId(),

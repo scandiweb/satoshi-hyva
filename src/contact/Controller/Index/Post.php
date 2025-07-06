@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\DataObject;
 use Magento\Framework\Session\SessionManagerInterface;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class Post extends SourcePost
 {
@@ -37,11 +38,17 @@ class Post extends SourcePost
     private $session;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param Context $context
      * @param ConfigInterface $contactsConfig
      * @param MailInterface $mail
      * @param DataPersistorInterface $dataPersistor
      * @param SessionManagerInterface $session
+     * @param IsThemeActive $isThemeActive
      * @param LoggerInterface $logger
      */
     public function __construct(
@@ -50,6 +57,7 @@ class Post extends SourcePost
         MailInterface $mail,
         DataPersistorInterface $dataPersistor,
         SessionManagerInterface $session,
+        IsThemeActive $isThemeActive,
         LoggerInterface $logger = null
     ) {
         parent::__construct($context, $contactsConfig, $mail, $dataPersistor, $logger);
@@ -57,6 +65,7 @@ class Post extends SourcePost
         $this->mail = $mail;
         $this->logger = $logger ?: ObjectManager::getInstance()->get(LoggerInterface::class);
         $this->session = $session;
+        $this->isThemeActive = $isThemeActive;
     }
 
     /**
@@ -66,6 +75,10 @@ class Post extends SourcePost
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         if (!$this->getRequest()->isPost()) {
             return $this->resultRedirectFactory->create()->setPath('*/*/');
         }

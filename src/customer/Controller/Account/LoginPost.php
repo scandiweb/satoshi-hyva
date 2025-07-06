@@ -19,6 +19,7 @@ use Magento\Framework\Exception\EmailNotConfirmedException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\Cookie\PhpCookieManager;
+use Satoshi\Core\Helper\IsThemeActive;
 
 class LoginPost extends SourceLoginPost
 {
@@ -44,12 +45,18 @@ class LoginPost extends SourceLoginPost
     private $scopeConfig;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param  Context  $context
      * @param  Session  $customerSession
      * @param  AccountManagementInterface  $customerAccountManagement
      * @param  CustomerUrl  $customerHelperData
      * @param  Validator  $formKeyValidator
      * @param  AccountRedirect  $accountRedirect
+     * @param  IsThemeActive  $isThemeActive
      */
     public function __construct(
         Context $context,
@@ -57,9 +64,11 @@ class LoginPost extends SourceLoginPost
         AccountManagementInterface $customerAccountManagement,
         CustomerUrl $customerHelperData,
         Validator $formKeyValidator,
-        AccountRedirect $accountRedirect
+        AccountRedirect $accountRedirect,
+        IsThemeActive $isThemeActive
     ) {
         $this->customerUrl = $customerHelperData;
+        $this->isThemeActive = $isThemeActive;
         parent::__construct(
             $context,
             $customerSession,
@@ -78,6 +87,10 @@ class LoginPost extends SourceLoginPost
      */
     public function execute()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::execute();
+        }
+
         if ($this->session->isLoggedIn() || !$this->formKeyValidator->validate($this->getRequest())) {
             /** @var Redirect $resultRedirect */
             $resultRedirect = $this->resultRedirectFactory->create();

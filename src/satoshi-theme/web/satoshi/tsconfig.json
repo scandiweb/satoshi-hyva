@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "paths": {
-      "@satoshi-theme/*": ["./*"],
-      "@satoshi/*": ["./*"],
+      "@/*": ["./src/*"],
     },
     "target": "ES2020",
     "useDefineForClassFields": true,

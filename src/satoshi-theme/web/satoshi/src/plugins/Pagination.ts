@@ -1,5 +1,5 @@
 import type { Alpine as AlpineType } from "alpinejs";
-import { cachePage, enableFadeInImages, fetchPage } from "@satoshi/src/plugins/Transition";
+import { cachePage, enableFadeInImages, fetchPage } from "@/plugins/Transition";
 
 const appendPaginationContent = (rawContent: string) => {
   const regex =

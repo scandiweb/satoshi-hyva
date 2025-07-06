@@ -3,6 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
     <module name="Satoshi_Contact">
         <sequence>
+            <module name="Satoshi_Core"/>
             <module name="Magento_Contact"/>
         </sequence>
     </module>

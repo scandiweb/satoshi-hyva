@@ -35,6 +35,10 @@ trait AbstractFilterTrait
      */
     protected function _initItems()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::_initItems();
+        }
+        
         $data = $this->_getItemsData();
         $items = [];
         foreach ($data as $itemData) {
@@ -65,6 +69,10 @@ trait AbstractFilterTrait
         $paramKey = null,
     )
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::_createItem($label, $value, $count, $paramKey);
+        }
+
         return $this->_filterItemFactory->create()
             ->setFilter($this)
             ->setLabel($label)

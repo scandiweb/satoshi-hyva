@@ -25,6 +25,11 @@ class Category extends BaseCategory
     private $dataProvider;
 
     /**
+     * @var \Satoshi\Core\Helper\IsThemeActive
+     */
+    private $isThemeActive;
+
+    /**
      * Category constructor.
      *
      * @param \Magento\Catalog\Model\Layer\Filter\ItemFactory $filterItemFactory
@@ -33,6 +38,7 @@ class Category extends BaseCategory
      * @param \Magento\Catalog\Model\Layer\Filter\Item\DataBuilder $itemDataBuilder
      * @param \Magento\Framework\Escaper $escaper
      * @param \Magento\Catalog\Model\Layer\Filter\DataProvider\CategoryFactory $categoryDataProviderFactory
+     * @param \Satoshi\Core\Helper\IsThemeActive $isThemeActive
      * @param array $data
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -43,6 +49,7 @@ class Category extends BaseCategory
         \Magento\Catalog\Model\Layer\Filter\Item\DataBuilder             $itemDataBuilder,
         \Magento\Framework\Escaper                                       $escaper,
         \Magento\Catalog\Model\Layer\Filter\DataProvider\CategoryFactory $categoryDataProviderFactory,
+        \Satoshi\Core\Helper\IsThemeActive                               $isThemeActive,
         array                                                            $data = []
     )
     {
@@ -56,6 +63,7 @@ class Category extends BaseCategory
             $data
         );
         $this->escaper = $escaper;
+        $this->isThemeActive = $isThemeActive;
         $this->_requestVar = 'cat';
         $this->dataProvider = $categoryDataProviderFactory->create(['layer' => $this->getLayer()]);
     }
@@ -68,6 +76,10 @@ class Category extends BaseCategory
      */
     public function apply(\Magento\Framework\App\RequestInterface $request)
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::apply($request);
+        }
+
         $categoryId = $request->getParam($this->_requestVar) ?: $request->getParam('id');
         if (!empty($categoryId)) {
             $this->dataProvider->setCategoryId($categoryId);
@@ -106,6 +118,10 @@ class Category extends BaseCategory
      */
     protected function _getItemsData()
     {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::_getItemsData();
+        }
+
         /** @var \Magento\CatalogSearch\Model\ResourceModel\Fulltext\Collection $productCollection */
         $productCollection = $this->getLayer()->getProductCollection();
         $optionsFacetedData = $productCollection->getFacetedData('category');
