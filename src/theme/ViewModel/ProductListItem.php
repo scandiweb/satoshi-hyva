@@ -12,6 +12,7 @@ use Magento\Catalog\Model\Product;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\LayoutInterface;
+use Satoshi\Core\Helper\IsThemeActive;
 
 /**
  * Extend to pass loop index, and breadcrumbs to product card
@@ -29,6 +30,11 @@ class ProductListItem extends CoreProductListItem
     private BlockCache $blockCache;
 
     /**
+     * @var IsThemeActive
+     */
+    private IsThemeActive $isThemeActive;
+
+    /**
      * @param  LayoutInterface  $layout
      * @param  ProductPage  $productViewModel
      * @param  CurrentCategory  $currentCategory
@@ -40,11 +46,13 @@ class ProductListItem extends CoreProductListItem
         ProductPage $productViewModel,
         CurrentCategory $currentCategory,
         BlockCache $blockCache,
-        CustomerSession $customerSession
+        CustomerSession $customerSession,
+        IsThemeActive $isThemeActive
     ) {
         parent::__construct($layout, $productViewModel, $currentCategory, $blockCache, $customerSession);
         $this->layout = $layout;
         $this->blockCache = $blockCache;
+        $this->isThemeActive = $isThemeActive;
     }
 
 
@@ -69,6 +77,10 @@ class ProductListItem extends CoreProductListItem
         int $index = null,
         array $breadcrumbs = []
     ): string {
+        if (!$this->isThemeActive->isSatoshiTheme()) {
+            return parent::getItemHtml($product, $parentBlock, $viewMode, $templateType, $imageDisplayArea, $showDescription);
+        }
+        
         /** @var AbstractBlock $itemRendererBlock */
         $itemRendererBlock = $this->layout->getBlock('product_list_item');
 
