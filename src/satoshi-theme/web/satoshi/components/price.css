@@ -1,0 +1,20 @@
+.price-box {
+    @apply flex flex-col gap-1 md:gap-2;
+  
+    .sticky-actions & {
+      @apply flex-row;
+    }
+  }
+  
+  .price {
+    @apply text-primary-600;
+  
+    .old-price & {
+      @apply text-inherit line-through;
+    }
+  }
+  
+  .special-price .price-label,
+  .old-price .price-label {
+    @apply sr-only;
+  }

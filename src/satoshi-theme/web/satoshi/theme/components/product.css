@@ -1,0 +1,7 @@
+.product-info-main {
+  @apply max-md:pb-10;
+}
+
+.cart-main + .product-slider {
+  @apply max-md:mb-28;
+}

@@ -1,0 +1,36 @@
+@layer utilities {
+  .focus-ring {
+    @apply shadow-outline outline outline-2 outline-offset-2 outline-transparent;
+  }
+
+  .icon {
+    @apply fill-current stroke-current stroke-0;
+
+    height: 1em;
+    width: 1em;
+  }
+
+  .contrast-border {
+    @apply contrast-more:border contrast-more:border-current;
+  }
+
+  .scrollbar-hidden {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  
+    &::-webkit-scrollbar {
+      /* Chrome, Safari and Opera */
+      display: none;
+    }
+  }
+
+  .order-cell {
+    @apply whitespace-nowrap before:mb-2 before:flex-1 before:text-text-500 before:content-[attr(data-label)]  md:before:block max-md:mb-2 max-md:flex;
+  }
+
+  /* TODO: Move to template */
+  .skip-to-content-link:focus-visible {
+    @apply not-sr-only fixed left-6 top-6 z-40 h-auto w-auto bg-bg-500 p-4 text-base font-semibold shadow-outline;
+    clip: auto;
+  }
+}

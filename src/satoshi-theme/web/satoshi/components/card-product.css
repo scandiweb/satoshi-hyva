@@ -1,0 +1,31 @@
+@layer components {
+  .card-product {
+    &__badge-container {
+      @apply absolute border-black;
+  
+      &.top {
+        @apply top-3;
+      }
+  
+      &.bottom {
+        @apply bottom-3;
+      }
+  
+      &.left {
+        @apply left-0;
+  
+        border-radius: 0 40px 40px 0;
+      }
+  
+      &.right {
+        @apply right-0;
+  
+        border-radius: 40px 0 0 40px;
+      }
+    }
+  }
+
+  .card-hover {
+    @apply relative cursor-pointer before:absolute before:-inset-3 before:size-[calc(100%+16px)] before:overflow-hidden before:rounded-2xl before:bg-secondary-500 before:p-3 before:opacity-0 before:transition-opacity before:duration-300 before:content-[''] md:hover:before:opacity-100;
+  }
+}

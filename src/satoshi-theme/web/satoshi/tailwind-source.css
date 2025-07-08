@@ -1,0 +1,32 @@
+/* purgecss start ignore */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+
+@import url(layout/base.css);
+@import url(layout/utilities.css);
+@import url(components/image.css);
+@import url(components/price.css);
+@import url(components/content-wrapper.css);
+@import url(components/checkbox.css);
+@import url(components/radio.css);
+@import url(components/input.css);
+@import url(components/divider.css);
+@import url(components/range-slider.css);
+@import url(components/header.css);
+@import url(components/popup.css);
+@import url(components/button.css);
+@import url(components/icon-button.css);
+@import url(components/menu.css);
+@import url(components/resizable.css);
+@import url(components/transition.css);
+@import url(components/slider.css);
+/* TODO: Replace with Prose */
+@import url(components/rte.css);
+@import url(components/card-product.css);
+@import url(components/link.css);
+@import url(components/page-builder.css);
+@import url(components/progress-bar.css);
+
+/* purgecss end ignore */
+@import "tailwindcss/utilities";
+@import "theme.css";

@@ -1,0 +1,84 @@
+@layer components {
+  input[type="number"] {
+    /* Firefox */
+    -moz-appearance: textfield;
+  
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      @apply appearance-none;
+    }
+  }
+  
+  input[type="search"] {
+    @apply -outline-offset-2;
+    -webkit-appearance: textfield;
+  
+    &::-webkit-search-cancel-button {
+      @apply hidden;
+    }
+  }
+  
+  .input {
+    &--error {
+      & .input__field {
+        @apply border-red-500 shadow-error;
+      }
+  
+      & .input__message {
+        @apply text-red-500;
+      }
+    }
+  
+    &__field {
+      @apply md:focus-visible:focus-ring relative h-11 w-full min-w-0 appearance-none rounded-sm border-1 border-solid border-text-700 bg-bg-500 px-4 text-[16px] text-text-700 transition-[background,color,border-color] duration-200 placeholder:text-text-700 md:hover:border-primary-500 md:hover:bg-bg-400 md:hover:text-primary-500 md:focus-visible:bg-bg-100;
+  
+      &:focus-visible {
+        @apply border-primary-500 shadow-input;
+      }
+  
+      &--outline {
+        @apply border-text-700 bg-transparent;
+      }
+  
+      &--filled {
+        @apply bg-secondary-500 text-text-500;
+      }
+  
+      &--ghost {
+        @apply bg-transparent;
+      }
+    }
+  
+    &__message {
+      @apply ml-3 text-sm text-secondary-500;
+    }
+  
+    .field-error & {
+      &__field {
+        @apply border-red-500 shadow-error;
+      }
+    }
+  }
+  
+  .field {
+    &-success {
+      @apply text-primary-700;
+    }
+  
+    &-error {
+      @apply text-error;
+    }
+  
+    &-success,
+    &-error {
+      a {
+        @apply border-b-1 border-current;
+      }
+  
+      .messages {
+        @apply text-[14px];
+      }
+    }
+  }
+}

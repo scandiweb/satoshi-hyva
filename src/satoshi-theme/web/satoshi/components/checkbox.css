@@ -1,0 +1,71 @@
+@layer components {
+  .checkbox {
+    @apply mb-4 flex cursor-pointer items-center;
+  
+    &__input {
+      @apply absolute h-1 w-1 overflow-hidden whitespace-nowrap border-0 p-0;
+  
+      margin: -1px;
+      clip: rect(0px, 0px, 0px, 0px);
+  
+      &:focus-visible + .checkbox__control {
+        @apply focus-ring;
+      }
+  
+      &:checked + {
+        .radio__control,
+        .checkbox__control {
+          @apply border-primary-500 bg-primary-500;
+  
+          svg {
+            @apply scale-100 transform opacity-100;
+  
+            stroke-dashoffset: 0;
+          }
+        }
+      }
+  
+      &:checked ~ {
+        .radio__label,
+        .checkbox__label {
+          @apply font-semibold text-primary-500;
+        }
+  
+        .checkbox__swatch {
+          @apply border-primary-500;
+        }
+      }
+    }
+  
+    &__control {
+      @apply inline-flex h-6 w-6 mr-5 cursor-pointer items-center justify-center rounded-xs border border-solid border-text-400 text-md text-bg-500 transition-colors duration-200;
+  
+      svg {
+        @apply scale-50 stroke-current stroke-2 opacity-0 transition-transform duration-200;
+  
+        width: 70%;
+        stroke-dasharray: 16;
+      }
+  
+      .checkbox:hover & {
+        @apply md:bg-bg-400 md:text-primary-500;
+      }
+    }
+  
+    &__label {
+      @apply cursor-pointer transition-colors duration-200;
+  
+      .checkbox:hover & {
+        @apply md:text-primary-500;
+      }
+    }
+  
+    &__swatch {
+      @apply w-6 h-6 mr-5 p-1 rounded border border-gray-300 transition-colors duration-200;
+  
+      .checkbox:hover & {
+        @apply md:border-primary-500;
+      }
+    }
+  }
+}

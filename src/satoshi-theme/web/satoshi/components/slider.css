@@ -1,0 +1,166 @@
+@layer components {
+  .slider {
+    --slide-count: var(--slide-count-xs);
+    @apply relative;
+  
+    @screen sm {
+      --slide-count: var(--slide-count-sm);
+    }
+  
+    @screen md {
+      --slide-count: var(--slide-count-md);
+    }
+  
+    @screen lg {
+      --slide-count: var(--slide-count-lg);
+    }
+  
+    @screen xl {
+      --slide-count: var(--slide-count-xl);
+    }
+  
+    @screen 2xl {
+      --slide-count: var(--slide-count-xxl);
+    }
+  
+    &__header {
+      @apply mx-auto flex items-center justify-between text-text-500;
+    }
+  
+    &__title {
+      @apply text-lg font-bold;
+    }
+  
+    &__actions {
+      @apply ml-auto flex gap-3 pt-2 z-20;
+    }
+  
+    &__slides {
+      @apply flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth py-7;
+  
+      gap: var(--slide-gap);
+    }
+  
+    &__slide {
+      @apply snap-start;
+  
+      flex: 0 0 calc(
+        (100% - (var(--slide-gap) * (var(--slide-count) - 1))) /
+        var(--slide-count)
+      );
+      max-width: calc(
+        (100% - (var(--slide-gap) * (var(--slide-count) - 1))) /
+        var(--slide-count)
+      );
+    }
+  
+    /* TODO: maybe be more abstract and use content-wrapper */
+    &--full-width:not(.transition-preview .slider--full-width),
+    [data-appearance*='full'] &--pagebuilder:not(.transition-preview .slider--full-width) {
+      @apply overflow-x-hidden;
+  
+      --content-wrapper-padding-x: 32px;
+      --slide-max-width: 100%;
+  
+      @screen sm {
+        --slide-max-width: theme(screens.sm);
+      }
+  
+      @screen md {
+        --slide-max-width: theme(screens.md);
+      }
+  
+      @screen lg {
+        --slide-max-width: theme(screens.lg);
+      }
+  
+      @screen xl {
+        --slide-max-width: theme(screens.xl);
+      }
+  
+      @screen 2xl {
+        --slide-max-width: theme(screens.2xl);
+      }
+  
+      .slider {
+        &__header {
+          @apply content-wrapper;
+        }
+  
+        &__slides {
+          scroll-padding: calc(var(--content-wrapper-padding-x) / 2);
+  
+          &::before,
+          &::after {
+            @apply relative block h-auto content-[""];
+          }
+  
+          @screen sm {
+            scroll-padding: calc(
+              ((100vw - var(--slide-max-width)) / 2) +
+              (var(--content-wrapper-padding-x) / 2)
+            );
+  
+            &::before,
+            &::after {
+              min-width: calc(
+                ((100vw - var(--slide-max-width)) / 2) +
+                (var(--content-wrapper-padding-x) / 2) - var(--slide-gap)
+              );
+            }
+          }
+        }
+  
+        &__slide {
+          flex: 0 0 calc(
+            (100% - var(--content-wrapper-padding-x) -
+            (var(--slide-gap) * (var(--slide-count) - 1))) / var(--slide-count)
+          );
+          max-width: calc(
+            (var(--slide-max-width) - var(--content-wrapper-padding-x) -
+            (var(--slide-gap) * (var(--slide-count) - 1))) / var(--slide-count)
+          );
+        }
+      }
+  
+      @screen sm {
+        &::before,
+        &::after {
+          @apply pointer-events-none absolute top-0 z-20 block h-full w-full max-w-screen content-[""];
+        }
+  
+        &::after {
+          right: calc(
+            -100% - ((var(--slide-max-width) - var(--content-wrapper-padding-x) -
+            (var(--slide-gap) * (var(--slide-count) - 1))) / var(--slide-count) * 1 / 3) + calc(((100vw - var(--slide-max-width)) / 2) +
+            (var(--content-wrapper-padding-x) / 2))
+          );
+          background: linear-gradient(
+              90deg,
+              transparent 0%,
+              var(--color-background-500) calc(
+                (var(--slide-max-width) - var(--content-wrapper-padding-x) -
+                (var(--slide-gap) * (var(--slide-count) - 1))) / var(--slide-count) * 2 / 3
+              )
+          );
+        }
+  
+        &::before {
+          left: calc(
+            -100% - ((var(--slide-max-width) - var(--content-wrapper-padding-x) -
+            (var(--slide-gap) * (var(--slide-count) - 1))) / var(--slide-count) * 1 / 3) + calc(((100vw - var(--slide-max-width)) / 2) +
+            (var(--content-wrapper-padding-x) / 2))
+          );
+          background: linear-gradient(
+              270deg,
+              transparent 0%,
+              var(--color-background-500) calc(
+                (var(--slide-max-width) - var(--content-wrapper-padding-x) -
+                (var(--slide-gap) * (var(--slide-count) - 1))) / var(--slide-count) * 2 / 3
+              )
+          );
+        }
+      }
+    }
+  }
+}

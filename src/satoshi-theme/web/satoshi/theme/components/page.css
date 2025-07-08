@@ -1,0 +1,36 @@
+.main-wrapper {
+  @apply -mt-[72px] pb-10 md:pb-7 flex-1 md:-mt-[89px] max-md:overflow-hidden;
+}
+
+.page-wrapper {
+  @apply -mt-[88px] flex-1 max-md:overflow-hidden;
+}
+
+.breadcrumb {
+  @apply inline font-semibold;
+}
+
+.grid-columns {
+  @apply h-full flex flex-col md:grid grid-rows-[auto_minmax(0,1fr)] gap-x-8 gap-y-5;
+  grid-template-columns: 275px repeat(2, minmax(0, 1fr)) 275px;
+
+  &:has(.sidebar-additional-hidden) {
+    grid-template-columns: 275px repeat(2, minmax(0, 1fr));
+  }
+}
+
+.grid-columns-plp {
+  @apply h-full flex flex-col-reverse md:flex-row gap-y-5;
+}
+
+.main-sidebar {
+  @apply relative col-span-1 transition-all mb-5;
+}
+
+.grid-columns-plp .main-sidebar {
+  @apply md:pr-8;
+}
+
+.sidebar-additional {
+  @apply transition-all md:max-w-[275px] md:whitespace-nowrap md:overflow-hidden;
+}

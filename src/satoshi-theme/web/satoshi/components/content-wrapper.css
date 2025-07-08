@@ -1,0 +1,5 @@
+@layer components {
+  .content-wrapper {
+    @apply container px-5;
+  }
+}
