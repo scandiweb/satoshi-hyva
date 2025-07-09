@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c9025c051c71233b730e8ef613c677bc",
+    "content-hash": "5b2c325ff8f69b290fe4f643d38adb01",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -21027,6 +21027,95 @@
             "time": "2024-07-01T07:33:21+00:00"
         },
         {
+            "name": "scandiweb/satoshi",
+            "version": "dev-production",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scandiweb/satoshi-hyva.git",
+                "reference": "6d0197a98b61dfc7a2109b57ccfd3eace56e81f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/6d0197a98b61dfc7a2109b57ccfd3eace56e81f5",
+                "reference": "6d0197a98b61dfc7a2109b57ccfd3eace56e81f5",
+                "shasum": ""
+            },
+            "require": {
+                "hyva-themes/magento2-default-theme": "^1.3",
+                "hyva-themes/magento2-luma-checkout": "^1.1",
+                "php": ">=8.1"
+            },
+            "default-branch": true,
+            "type": "magento2-theme",
+            "autoload": {
+                "files": [
+                    "src/core/registration.php",
+                    "src/bundle/registration.php",
+                    "src/catalog/registration.php",
+                    "src/catalog-graph-ql/registration.php",
+                    "src/catalog-search/registration.php",
+                    "src/checkout/registration.php",
+                    "src/contact/registration.php",
+                    "src/customer/registration.php",
+                    "src/framework/registration.php",
+                    "src/layered-navigation/registration.php",
+                    "src/migration/registration.php",
+                    "src/newsletter/registration.php",
+                    "src/sales/registration.php",
+                    "src/satoshi-ui/registration.php",
+                    "src/swatches/registration.php",
+                    "src/theme/registration.php",
+                    "src/wishlist/registration.php",
+                    "src/satoshi-theme/registration.php"
+                ],
+                "psr-4": {
+                    "Satoshi\\Core\\": "src/core/",
+                    "Satoshi\\Sales\\": "src/sales/",
+                    "Satoshi\\Theme\\": "src/theme/",
+                    "Satoshi\\Bundle\\": "src/bundle/",
+                    "Satoshi\\Catalog\\": "src/catalog/",
+                    "Satoshi\\Contact\\": "src/contact/",
+                    "Satoshi\\Checkout\\": "src/checkout/",
+                    "Satoshi\\Customer\\": "src/customer/",
+                    "Satoshi\\Swatches\\": "src/swatches/",
+                    "Satoshi\\Wishlist\\": "src/wishlist/",
+                    "Satoshi\\Framework\\": "src/framework/",
+                    "Satoshi\\Migration\\": "src/migration/",
+                    "Satoshi\\SatoshiUi\\": "src/satoshi-ui/",
+                    "Satoshi\\Newsletter\\": "src/newsletter/",
+                    "Satoshi\\CatalogSearch\\": "src/catalog-search/",
+                    "Satoshi\\CatalogGraphQl\\": "src/catalog-graph-ql/",
+                    "Satoshi\\LayeredNavigation\\": "src/layered-navigation/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Scandiweb",
+                    "email": "info@scandiweb.com",
+                    "homepage": "https://scandiweb.com"
+                }
+            ],
+            "description": "Satoshi Theme for Magento 2 on Hyva - High-performance, user experience-focused theme",
+            "keywords": [
+                "ecommerce",
+                "frontend",
+                "hyva",
+                "magento2",
+                "performance",
+                "theme"
+            ],
+            "support": {
+                "issues": "https://github.com/scandiweb/satoshi-hyva/issues",
+                "source": "https://github.com/scandiweb/satoshi-hyva/tree/production"
+            },
+            "time": "2025-07-09T09:35:27+00:00"
+        },
+        {
             "name": "seld/jsonlint",
             "version": "1.10.2",
             "source": {
@@ -29262,10 +29351,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "scandiweb/satoshi": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.2.0"
 }

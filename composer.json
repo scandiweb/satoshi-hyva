@@ -18,8 +18,6 @@
     },
     "version": "2.4.6-p3",
     "require": {
-        "readymage/logger": "^1.1",
-        "readymage/maintenance": "^1.0",
         "hyva-themes/magento2-default-theme": "^1.3",
         "hyva-themes/magento2-luma-checkout": "^1.1",
         "magento/composer-dependency-version-audit-plugin": "~0.1",
@@ -45,7 +43,10 @@
         "magento/module-widget-sample-data": "100.4.*",
         "magento/module-wishlist-sample-data": "100.4.*",
         "magento/product-community-edition": "2.4.6-p3",
-        "magento/sample-data-media": "100.4.*"
+        "magento/sample-data-media": "100.4.*",
+        "readymage/logger": "^1.1",
+        "readymage/maintenance": "^1.0",
+        "scandiweb/satoshi": "dev-production"
     },
     "autoload": {
         "exclude-from-classmap": [
