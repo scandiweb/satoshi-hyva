@@ -70,7 +70,7 @@
         </arguments>
     </virtualType>
 
-    <!-- <type name="Magento\PageBuilder\Model\Config\ContentType\AdditionalData\Provider\Wysiwyg\Config">
+    <type name="Magento\PageBuilder\Model\Config\ContentType\AdditionalData\Provider\Wysiwyg\Config">
         <arguments>
             <argument name="editors" xsi:type="array">
                 <item name="mage/adminhtml/wysiwyg/tiny_mce/tinymceAdapter" xsi:type="array">
@@ -90,5 +90,5 @@
                 </item>
             </argument>
         </arguments>
-    </type> -->
+    </type>
 </config>

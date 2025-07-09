@@ -1,8 +1,4 @@
 @layer components {
-  /**
-  * Layout
-  */
-
   /* Rows */
   [data-content-type="row"] {
     @apply box-border;
@@ -33,6 +29,10 @@
   [data-content-type="column-group"],
   [data-content-type="column-line"] {
     @apply flex-wrap md:flex-nowrap;
+  }
+
+  [data-content-type="column-line"] {
+    @apply md:gap-5;
   }
 
   /* Columns */
@@ -541,4 +541,4 @@
       @apply hidden;
     }
   }
-  }
+}

@@ -18,6 +18,7 @@
     "@types/alpinejs__morph": "^3.13.4",
     "@types/alpinejs__persist": "^3.13.4",
     "@types/grecaptcha": "^3.0.9",
+    "@types/node": "^24.0.12",
     "@types/nprogress": "^0.2.3",
     "autoprefixer": "^10.4.13",
     "browser-sync": "^2.27.10",
