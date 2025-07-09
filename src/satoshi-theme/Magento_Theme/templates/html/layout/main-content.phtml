@@ -17,6 +17,7 @@ $class = match($page_type) {
 
 ?>
 
+<!-- main-content -->
 <main id="MainContent"
       class="content-for-layout focus-none flex h-full origin-top flex-col transition-transform duration-500 will-change-transform motion-reduce:transition-none"
       :class="{
@@ -31,8 +32,7 @@ $class = match($page_type) {
         }"
       @scroll.window="$store.main.setTransformValues"
 >
-    <!-- main-content -->
     <div class="<?= $class ?>"></div>
     <?= $block->getChildHtml() ?>
-    <!-- end-main-content -->
 </main>
+<!-- end-main-content -->
