@@ -46,9 +46,59 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "${{ github.event.head_commit.message }}"
+            git commit -m "$COMMIT_MESSAGE"
             git push origin demo-develop
           fi
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+
+  # handle-tag-creation:
+  #   if: github.event_name == 'create' && github.ref_type == 'tag'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         fetch-depth: 0
+
+  #     - name: Setup Git
+  #       run: |
+  #         git config --global user.email "bot@satoshi.com"
+  #         git config --global user.name "Satoshi bot"
+
+  #     - name: Switch to demo-production branch
+  #       run: |
+  #         git fetch origin
+  #         git checkout demo-production
+  #         git reset --hard origin/demo-production
+
+  #     - name: Setup PHP
+  #       uses: shivammathur/setup-php@v2
+  #       with:
+  #         php-version: "8.1"
+  #         tools: composer
+
+  #     - name: Update scandiweb/satoshi to specific version
+  #       run: |
+  #         # Extract version from tag name (assuming tag format like v1.0.0)
+  #         TAG_NAME="${{ github.ref_name }}"
+  #         VERSION="${TAG_NAME#v}"  # Remove 'v' prefix if present
+
+  #         # Update to specific version
+  #         composer config --global http-basic.repo.magento.com ${{ secrets.MAGENTO_PUB_KEY }} ${{ secrets.MAGENTO_SECRET_KEY }}
+  #         composer config --global http-basic.hyva-themes.repo.packagist.com token ${{ secrets.HYVA_SECRET_KEY }}
+  #         composer require scandiweb/satoshi:"^${VERSION}" --no-interaction --optimize-autoloader --no-install
+
+  #     - name: Commit changes
+  #       run: |
+  #         git add composer.json composer.lock
+  #         if git diff --staged --quiet; then
+  #           echo "No changes to commit"
+  #         else
+  #           git commit -m "Upgrade scandiweb/satoshi to version ${VERSION}"
+  #           git push origin demo-production
+  #         fi
 
   sync-demo-branches:
     if: github.ref == 'refs/heads/demo-develop' || github.ref == 'refs/heads/demo-production'
@@ -72,5 +122,8 @@ jobs:
       - name: Sync to target repository
         run: |
           # Push current branch to target repository
+          rm -rf .github/workflows/
+          git add .github/workflows/
+          git commit --amend --no-edit
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          git push target $BRANCH_NAME --force-with-lease
+          git push target $BRANCH_NAME -f
