@@ -46,7 +46,7 @@
         "magento/sample-data-media": "100.4.*",
         "readymage/logger": "^1.1",
         "readymage/maintenance": "^1.0",
-        "scandiweb/satoshi": "dev-production"
+        "scandiweb/satoshi": "dev-main#88626969eeb2209b35558525ef6e35d207c5777d"
     },
     "autoload": {
         "exclude-from-classmap": [
