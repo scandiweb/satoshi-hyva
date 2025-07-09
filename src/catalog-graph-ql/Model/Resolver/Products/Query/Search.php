@@ -18,7 +18,6 @@ use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\GraphQl\Model\Query\ContextInterface;
 use Magento\Search\Api\SearchInterface;
 use Magento\Search\Model\Search\PageSizeProvider;
-use Satoshi\Core\Helper\IsThemeActive;
 
 class Search extends MagentoSearch
 {
@@ -58,11 +57,6 @@ class Search extends MagentoSearch
     private $searchCriteriaBuilder;
 
     /**
-     * @var IsThemeActive
-     */
-    private $isThemeActive;
-
-    /**
      * @var Suggestions
      */
     private $suggestions;
@@ -90,7 +84,6 @@ class Search extends MagentoSearch
         FieldSelection $fieldSelection,
         ProductSearch $productsProvider,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        IsThemeActive $isThemeActive,
         ArgumentsProcessorInterface $argsSelection = null,
         Suggestions $suggestions = null,
         QueryPopularity $queryPopularity = null
@@ -101,7 +94,6 @@ class Search extends MagentoSearch
         $this->fieldSelection = $fieldSelection;
         $this->productsProvider = $productsProvider;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->isThemeActive = $isThemeActive;
         $this->argsSelection = $argsSelection ?: ObjectManager::getInstance()
             ->get(ArgumentsProcessorInterface::class);
         $this->suggestions = $suggestions ?: ObjectManager::getInstance()
@@ -123,10 +115,6 @@ class Search extends MagentoSearch
         ResolveInfo $info,
         ContextInterface $context
     ): SearchResult {
-        if (!$this->isThemeActive->isSatoshiTheme()) {
-            return parent::getResult($args, $info, $context);
-        }
-
         $searchCriteria = $this->buildSearchCriteria($args, $info);
 
         $realPageSize = $searchCriteria->getPageSize();
@@ -190,10 +178,6 @@ class Search extends MagentoSearch
      */
     private function buildSearchCriteria(array $args, ResolveInfo $info): SearchCriteriaInterface
     {
-        if (!$this->isThemeActive->isSatoshiTheme()) {
-            return parent::buildSearchCriteria($args, $info);
-        }
-
         $productFields = (array)$info->getFieldSelection(1);
         $includeAggregations = isset($productFields['filters']) || isset($productFields['aggregations']);
         $fieldName = $info->fieldName ?? "";
