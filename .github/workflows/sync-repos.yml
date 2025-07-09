@@ -1,0 +1,76 @@
+name: Branch Management and Sync
+
+on:
+  push:
+    branches:
+      - main
+      - demo-develop
+      - demo-production
+
+jobs:
+  handle-main-commit:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Git
+        run: |
+          git config --global user.email "bot@satoshi.com"
+          git config --global user.name "Satoshi bot"
+
+      - name: Switch to demo-develop branch
+        run: |
+          git checkout demo-develop
+          git pull origin demo-develop
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+          tools: composer
+
+      - name: Update scandiweb/satoshi package
+        run: |
+          composer config --global http-basic.repo.magento.com ${{ secrets.MAGENTO_PUB_KEY }} ${{ secrets.MAGENTO_SECRET_KEY }}
+          composer config --global http-basic.hyva-themes.repo.packagist.com token ${{ secrets.HYVA_SECRET_KEY }}
+          composer update scandiweb/satoshi --no-interaction --optimize-autoloader --no-install
+
+      - name: Commit changes
+        run: |
+          git add composer.json composer.lock
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "${{ github.event.head_commit.message }}"
+            git push origin demo-develop
+          fi
+
+  sync-demo-branches:
+    if: github.ref == 'refs/heads/demo-develop' || github.ref == 'refs/heads/demo-production'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Git
+        run: |
+          git config --global user.email "bot@satoshi.com"
+          git config --global user.name "Satoshi bot"
+
+      - name: Add remote repository
+        run: |
+          git remote add target https://${{ secrets.PAT_TOKEN }}@github.com/scandipwacloud/readymage-satoshi-bmk-1720548019.git
+
+      - name: Sync to target repository
+        run: |
+          # Push current branch to target repository
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          git push target $BRANCH_NAME --force-with-lease
