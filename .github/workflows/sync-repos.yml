@@ -74,4 +74,4 @@ jobs:
           # Push current branch to target repository
           rm -rf .github/workflows/
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          git push target $BRANCH_NAME --force-with-lease
+          git push target $BRANCH_NAME -f
