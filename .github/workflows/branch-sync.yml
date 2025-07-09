@@ -47,27 +47,27 @@ jobs:
             git push origin demo-develop
           fi
 
-  sync-demo-branches:
-    if: github.ref == 'refs/heads/demo-develop' || github.ref == 'refs/heads/demo-production'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          fetch-depth: 0
+  # sync-demo-branches:
+  #   if: github.ref == 'refs/heads/demo-develop' || github.ref == 'refs/heads/demo-production'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout source repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         token: ${{ secrets.PAT_TOKEN }}
+  #         fetch-depth: 0
 
-      - name: Setup Git
-        run: |
-          git config --global user.email "bot@satoshi.com"
-          git config --global user.name "Satoshi bot"
+  #     - name: Setup Git
+  #       run: |
+  #         git config --global user.email "bot@satoshi.com"
+  #         git config --global user.name "Satoshi bot"
 
-      - name: Add remote repository
-        run: |
-          git remote add target https://${{ secrets.SYNC_TOKEN }}@github.com/scandipwacloud/readymage-satoshi-bmk-1720548019.git
+  #     - name: Add remote repository
+  #       run: |
+  #         git remote add target https://${{ secrets.SYNC_TOKEN }}@github.com/scandipwacloud/readymage-satoshi-bmk-1720548019.git
 
-      - name: Sync to target repository
-        run: |
-          # Push current branch to target repository
-          BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          git push target $BRANCH_NAME --force-with-lease
+  #     - name: Sync to target repository
+  #       run: |
+  #         # Push current branch to target repository
+  #         BRANCH_NAME=${GITHUB_REF#refs/heads/}
+  #         git push target $BRANCH_NAME --force-with-lease
