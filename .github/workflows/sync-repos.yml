@@ -73,5 +73,7 @@ jobs:
         run: |
           # Push current branch to target repository
           rm -rf .github/workflows/
+          git add .github/workflows/
+          git commit -m "Exclude workflows"
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
           git push target $BRANCH_NAME -f
