@@ -16,6 +16,7 @@
         <!-- Attributes in body element which required to show correct color of logo text -->
         <attribute name="class" value="gradient" />
         <attribute name="class" value="bg-bg-500" />
+        <attribute name="x-data" value="{}" />
 
         <referenceContainer name="root">
             <block class="Magento\Framework\View\Element\Template" name="svg.filters" template="Magento_Theme::html/components/svg-filters.phtml" before="-" />
