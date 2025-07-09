@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5b2c325ff8f69b290fe4f643d38adb01",
+    "content-hash": "daccc17e63b9c9b6aec522d8b3dba475",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -21028,16 +21028,16 @@
         },
         {
             "name": "scandiweb/satoshi",
-            "version": "dev-production",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scandiweb/satoshi-hyva.git",
-                "reference": "6d0197a98b61dfc7a2109b57ccfd3eace56e81f5"
+                "reference": "88626969eeb2209b35558525ef6e35d207c5777d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/6d0197a98b61dfc7a2109b57ccfd3eace56e81f5",
-                "reference": "6d0197a98b61dfc7a2109b57ccfd3eace56e81f5",
+                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/88626969eeb2209b35558525ef6e35d207c5777d",
+                "reference": "88626969eeb2209b35558525ef6e35d207c5777d",
                 "shasum": ""
             },
             "require": {
@@ -21111,9 +21111,9 @@
             ],
             "support": {
                 "issues": "https://github.com/scandiweb/satoshi-hyva/issues",
-                "source": "https://github.com/scandiweb/satoshi-hyva/tree/production"
+                "source": "https://github.com/scandiweb/satoshi-hyva/tree/main"
             },
-            "time": "2025-07-09T09:35:27+00:00"
+            "time": "2025-07-09T16:00:52+00:00"
         },
         {
             "name": "seld/jsonlint",
