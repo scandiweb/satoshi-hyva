@@ -21032,12 +21032,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/scandiweb/satoshi-hyva.git",
-                "reference": "9a4a1392b49f900471daa1c51da725ab17de48e1"
+                "reference": "7a7757bd1f4ca09a967f3a70784a50f2273288ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/9a4a1392b49f900471daa1c51da725ab17de48e1",
-                "reference": "9a4a1392b49f900471daa1c51da725ab17de48e1",
+                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/7a7757bd1f4ca09a967f3a70784a50f2273288ed",
+                "reference": "7a7757bd1f4ca09a967f3a70784a50f2273288ed",
                 "shasum": ""
             },
             "require": {
@@ -21113,7 +21113,7 @@
                 "issues": "https://github.com/scandiweb/satoshi-hyva/issues",
                 "source": "https://github.com/scandiweb/satoshi-hyva/tree/main"
             },
-            "time": "2025-07-09T23:21:55+00:00"
+            "time": "2025-07-09T23:39:26+00:00"
         },
         {
             "name": "seld/jsonlint",
