@@ -28,6 +28,7 @@ $product = $block->getData('product');
 $imageUrl = $this->helper(Image::class)->init($product, 'product_page_image_medium')
     ->getUrl();
 $placeholderImageUrl = $this->helper(Image::class)->getDefaultPlaceholderUrl('image');
+$lazyLoad = $block->getData('lazy_load') ?? false;
 $breadcrumbs = $block->getData('breadcrumbs') ?? [];
 
 // Calculating is large
@@ -121,7 +122,11 @@ if ($product) {
                         <img
                             class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
                             src="<?= $escaper->escapeUrl($imageUrl) ?>"
-                            alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>">
+                            alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
+                            <?php if ($lazyLoad): ?>
+                                loading="lazy"
+                            <?php endif; ?>
+                        />
                     </div>
                 <?php else: ?>
                     <div
@@ -133,6 +138,9 @@ if ($product) {
                             width=""
                             height=""
                             alt=""
+                            <?php if ($lazyLoad): ?>
+                                loading="lazy"
+                            <?php endif; ?>
                         />
                     </div>
                 <?php endif ?>

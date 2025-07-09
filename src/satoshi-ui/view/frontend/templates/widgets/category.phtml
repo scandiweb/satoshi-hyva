@@ -23,6 +23,8 @@ $displayViewAll = $block->getData('view_all_button') === 'true';
 $autoResize = $block->getData('auto_resize_items') === 'true';
 
 if ($exists) {
+    $sliderItemRenderer->setData('lazy_load', true);
+
     $slidesHtml = array_reduce($products,
         function ($acc, $product) use ($productListItemViewModel, $sliderItemRenderer, $block) {
             $card = $productListItemViewModel->getItemHtmlWithRenderer(
