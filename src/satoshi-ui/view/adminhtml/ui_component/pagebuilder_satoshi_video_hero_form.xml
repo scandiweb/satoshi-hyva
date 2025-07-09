@@ -338,7 +338,7 @@
                 <dataType>boolean</dataType>
                 <label translate="true">Autoplay</label>
                 <dataScope>autoplay</dataScope>
-                <notice translate="true">Youtube autoplay works only if video is muted or after user interaction.
+                <notice translate="true">Autoplay works only if video is muted.
                 </notice>
             </settings>
             <formElements>

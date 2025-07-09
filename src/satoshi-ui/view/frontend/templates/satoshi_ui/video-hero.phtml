@@ -42,9 +42,9 @@ $desktopAlignment = $block->getData('desktop_content_position');
 $mobileAlignment = $block->getData('mobile_content_alignment');
 
 ?>
-<div class="relative overflow-hidden">
+<div class="relative overflow-hidden" x-data="{ loaded: false }">
     <div class="absolute left-0 top-0 z-10 h-full w-full bg-black" style="opacity: <?= $escaper->escapeHtmlAttr($overlayOpacity) ?>"></div>
-    <div class="absolute inset-0 z-[5]" :class="'opacity-0'">
+    <div class="absolute inset-0 z-[5] transition-opacity" :class="{ 'opacity-0': loaded }">
         <img
             src="<?= $escaper->escapeUrl($block->getData('image')) ?>"
             class="h-full w-full object-cover object-center"
@@ -60,6 +60,7 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
             <?= $loop ? 'loop' : '' ?>
             playsinline
             preload="none"
+            @loadstart="loaded = true"
         >
             <source src="<?= $escaper->escapeUrl($videoUrl) ?>" type="video/mp4">
         </video>
@@ -74,6 +75,8 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
             allow="autoplay; encrypted-media"
             allowfullscreen
             title="<?= $escaper->escapeHtml($heading) ?>"
+            loading="lazy"
+            @load="loaded = true"
         ></iframe>
     <?php endif; ?>
     <div
