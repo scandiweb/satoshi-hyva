@@ -27,8 +27,12 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
     <?= __('This is a demo store made by <a href="https://scandiweb.com/" tabindex="1" class="hover:underline">Scandiweb</a>') ?>
 </div>
 
-<div x-intersect:enter="$store.main.isHeaderShadowVisible = false"
-     x-intersect:leave="$store.main.isHeaderShadowVisible = true"></div>
+<div
+    x-data
+    x-intersect:enter="$store.main.isHeaderShadowVisible = false"
+    x-intersect:leave="$store.main.isHeaderShadowVisible = true"
+    @private-content-loaded.window="$store.main.updatePrivateContent($event.detail.data)"
+></div>
 
 <header x-data="{
             isMenuVisible: false,
