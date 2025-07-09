@@ -4,6 +4,8 @@ on:
     branches:
       - production
       - develop
+      - demo-develop
+      - demo-production
 
 permissions:
   contents: write
