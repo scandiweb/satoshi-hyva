@@ -28,6 +28,7 @@ $product = $block->getData('product');
 $imageUrl = $this->helper(Image::class)->init($product, 'product_page_image_medium')
     ->getUrl();
 $placeholderImageUrl = $this->helper(Image::class)->getDefaultPlaceholderUrl('image');
+$loading = $block->getData('loading');
 $breadcrumbs = $block->getData('breadcrumbs') ?? [];
 
 // Calculating is large
@@ -108,8 +109,16 @@ if ($product) {
             <?php endif ?>
         >
             <!-- this image is needed to avoid blink in preview on desktop as there, the select variant is shown, not featured image -->
-            <img width="0" height="0" class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
-                 src="<?= $escaper->escapeUrl($imageUrl) ?>" alt="">
+            <img
+                width="0"
+                height="0"
+                class="pointer-events-none invisible absolute hidden h-0 w-0 md:block"
+                src="<?= $escaper->escapeUrl($imageUrl) ?>"
+                alt=""
+                <?php if ($loading): ?>
+                    loading="<?= $escaper->escapeHtmlAttr($loading) ?>"
+                <?php endif; ?>
+            />
 
             <div class="relative overflow-hidden rounded-md bg-[--fade-in-bg]" x-element-transition-src="img"
                  style="transform: translateZ(0)">
@@ -121,7 +130,11 @@ if ($product) {
                         <img
                             class="mix-blend-darken object-center max-h-full md:group-hover:scale-105 <?= $isContain ? 'object-contain rounded-md p-[2%]' : 'object-cover h-full w-full' ?>"
                             src="<?= $escaper->escapeUrl($imageUrl) ?>"
-                            alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>">
+                            alt="<?= $escaper->escapeHtmlAttr($product->getName()) ?>"
+                            <?php if ($loading): ?>
+                                loading="<?= $escaper->escapeHtmlAttr($loading) ?>"
+                            <?php endif; ?>
+                        />
                     </div>
                 <?php else: ?>
                     <div
@@ -133,6 +146,9 @@ if ($product) {
                             width=""
                             height=""
                             alt=""
+                            <?php if ($loading): ?>
+                                loading="<?= $escaper->escapeHtmlAttr($loading) ?>"
+                            <?php endif; ?>
                         />
                     </div>
                 <?php endif ?>
