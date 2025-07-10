@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "daccc17e63b9c9b6aec522d8b3dba475",
+    "content-hash": "081615ebf518e355d7b4dc4ab63af311",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -20962,6 +20962,90 @@
             "time": "2021-09-17T08:50:29+00:00"
         },
         {
+            "name": "readymage/maintenance-page",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/readymage/maintenance-page.git",
+                "reference": "0876a65a5dd49ba79a81243c8ba46f4353da2eb1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/readymage/maintenance-page/zipball/0876a65a5dd49ba79a81243c8ba46f4353da2eb1",
+                "reference": "0876a65a5dd49ba79a81243c8ba46f4353da2eb1",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "*"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "ReadyMage\\MaintenancePage\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Magento 2 module that adds custom maintenance page",
+            "keywords": [
+                "ReadyMage",
+                "magento2"
+            ],
+            "support": {
+                "email": "info@scandiweb.com",
+                "issues": "https://github.com/readymage/maintenance-page/issues",
+                "source": "https://github.com/readymage/maintenance-page/tree/1.0.1"
+            },
+            "time": "2024-03-21T15:10:16+00:00"
+        },
+        {
+            "name": "readymage/prevent-search-engine-discovery",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/readymage/prevent-search-engine-discovery.git",
+                "reference": "bb8429bc6b9979bbfd1d63c4662a4394f6c45e07"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/readymage/prevent-search-engine-discovery/zipball/bb8429bc6b9979bbfd1d63c4662a4394f6c45e07",
+                "reference": "bb8429bc6b9979bbfd1d63c4662a4394f6c45e07",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "*"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ],
+                "psr-4": {
+                    "ReadyMage\\PreventSearchEngineDiscovery\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "Magento 2 module preventing websites from being discovered and indexed by search engines by accident",
+            "keywords": [
+                "ReadyMage",
+                "magento2"
+            ],
+            "support": {
+                "email": "info@scandiweb.com",
+                "issues": "https://github.com/readymage/prevent-search-engine-discovery/issues",
+                "source": "https://github.com/readymage/prevent-search-engine-discovery/tree/1.0.0"
+            },
+            "time": "2024-02-01T10:06:34+00:00"
+        },
+        {
             "name": "sabberworm/php-css-parser",
             "version": "v8.6.0",
             "source": {
@@ -21028,92 +21112,109 @@
         },
         {
             "name": "scandiweb/satoshi",
-            "version": "dev-main",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scandiweb/satoshi-hyva.git",
-                "reference": "8f8a7ed5458acb751ba53a7d532b2ebe67a5070d"
+                "reference": "92522d87dfcec7e03ac5e56f71c310f8d6f6a254"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/8f8a7ed5458acb751ba53a7d532b2ebe67a5070d",
-                "reference": "8f8a7ed5458acb751ba53a7d532b2ebe67a5070d",
+                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/92522d87dfcec7e03ac5e56f71c310f8d6f6a254",
+                "reference": "92522d87dfcec7e03ac5e56f71c310f8d6f6a254",
                 "shasum": ""
             },
             "require": {
                 "hyva-themes/magento2-default-theme": "^1.3",
                 "hyva-themes/magento2-luma-checkout": "^1.1",
-                "php": ">=8.1"
+                "magento/composer-dependency-version-audit-plugin": "~0.1",
+                "magento/composer-root-update-plugin": "~2.0",
+                "magento/module-bundle-sample-data": "100.4.*",
+                "magento/module-catalog-rule-sample-data": "100.4.*",
+                "magento/module-catalog-sample-data": "100.4.*",
+                "magento/module-cms-sample-data": "100.4.*",
+                "magento/module-configurable-sample-data": "100.4.*",
+                "magento/module-customer-sample-data": "100.4.*",
+                "magento/module-downloadable-sample-data": "100.4.*",
+                "magento/module-elasticsearch-8": "^100.4",
+                "magento/module-grouped-product-sample-data": "100.4.*",
+                "magento/module-msrp-sample-data": "100.4.*",
+                "magento/module-offline-shipping-sample-data": "100.4.*",
+                "magento/module-product-links-sample-data": "100.4.*",
+                "magento/module-review-sample-data": "100.4.*",
+                "magento/module-sales-rule-sample-data": "100.4.*",
+                "magento/module-sales-sample-data": "100.4.*",
+                "magento/module-swatches-sample-data": "100.4.*",
+                "magento/module-tax-sample-data": "100.4.*",
+                "magento/module-theme-sample-data": "100.4.*",
+                "magento/module-widget-sample-data": "100.4.*",
+                "magento/module-wishlist-sample-data": "100.4.*",
+                "magento/product-community-edition": "2.4.6-p3",
+                "magento/sample-data-media": "100.4.*",
+                "readymage/logger": "^1.1",
+                "readymage/maintenance": "^1.0",
+                "readymage/maintenance-page": "^1.0",
+                "readymage/prevent-search-engine-discovery": "^1.0"
             },
-            "default-branch": true,
-            "type": "magento2-theme",
+            "conflict": {
+                "gene/bluefoot": "*"
+            },
+            "require-dev": {
+                "allure-framework/allure-phpunit": "^2",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+                "dg/bypass-finals": "^1.4",
+                "friendsofphp/php-cs-fixer": "^3.8",
+                "lusitanian/oauth": "^0.8",
+                "magento/magento-coding-standard": "*",
+                "magento/magento2-functional-testing-framework": "^4.2.1",
+                "pdepend/pdepend": "^2.10",
+                "phpmd/phpmd": "^2.12",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^9.5",
+                "sebastian/phpcpd": "^6.0",
+                "symfony/finder": "^5.4"
+            },
+            "type": "project",
+            "extra": {
+                "magento-force": "override",
+                "magento-deploy-ignore": {
+                    "magento/magento2-base": [
+                        "/.gitignore"
+                    ]
+                }
+            },
             "autoload": {
                 "files": [
-                    "src/core/registration.php",
-                    "src/bundle/registration.php",
-                    "src/catalog/registration.php",
-                    "src/catalog-graph-ql/registration.php",
-                    "src/catalog-search/registration.php",
-                    "src/checkout/registration.php",
-                    "src/contact/registration.php",
-                    "src/customer/registration.php",
-                    "src/framework/registration.php",
-                    "src/layered-navigation/registration.php",
-                    "src/migration/registration.php",
-                    "src/newsletter/registration.php",
-                    "src/sales/registration.php",
-                    "src/satoshi-ui/registration.php",
-                    "src/swatches/registration.php",
-                    "src/theme/registration.php",
-                    "src/wishlist/registration.php",
-                    "src/satoshi-theme/registration.php"
+                    "app/etc/NonComposerComponentRegistration.php"
                 ],
+                "psr-0": {
+                    "": [
+                        "app/code/",
+                        "generated/code/"
+                    ]
+                },
                 "psr-4": {
-                    "Satoshi\\Core\\": "src/core/",
-                    "Satoshi\\Sales\\": "src/sales/",
-                    "Satoshi\\Theme\\": "src/theme/",
-                    "Satoshi\\Bundle\\": "src/bundle/",
-                    "Satoshi\\Catalog\\": "src/catalog/",
-                    "Satoshi\\Contact\\": "src/contact/",
-                    "Satoshi\\Checkout\\": "src/checkout/",
-                    "Satoshi\\Customer\\": "src/customer/",
-                    "Satoshi\\Swatches\\": "src/swatches/",
-                    "Satoshi\\Wishlist\\": "src/wishlist/",
-                    "Satoshi\\Framework\\": "src/framework/",
-                    "Satoshi\\Migration\\": "src/migration/",
-                    "Satoshi\\SatoshiUi\\": "src/satoshi-ui/",
-                    "Satoshi\\Newsletter\\": "src/newsletter/",
-                    "Satoshi\\CatalogSearch\\": "src/catalog-search/",
-                    "Satoshi\\CatalogGraphQl\\": "src/catalog-graph-ql/",
-                    "Satoshi\\LayeredNavigation\\": "src/layered-navigation/"
-                }
+                    "Magento\\": "app/code/Magento/",
+                    "Magento\\Setup\\": "setup/src/Magento/Setup/",
+                    "Magento\\Framework\\": "lib/internal/Magento/Framework/"
+                },
+                "exclude-from-classmap": [
+                    "**/dev/**",
+                    "**/update/**",
+                    "**/Test/**"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "OSL-3.0",
                 "AFL-3.0"
             ],
-            "authors": [
-                {
-                    "name": "Scandiweb",
-                    "email": "info@scandiweb.com",
-                    "homepage": "https://scandiweb.com"
-                }
-            ],
-            "description": "Satoshi Theme for Magento 2 on Hyva - High-performance, user experience-focused theme",
-            "keywords": [
-                "ecommerce",
-                "frontend",
-                "hyva",
-                "magento2",
-                "performance",
-                "theme"
-            ],
+            "description": "eCommerce Platform for Growth (Community Edition)",
             "support": {
                 "issues": "https://github.com/scandiweb/satoshi-hyva/issues",
-                "source": "https://github.com/scandiweb/satoshi-hyva/tree/main"
+                "source": "https://github.com/scandiweb/satoshi-hyva/tree/develop"
             },
-            "time": "2025-07-09T22:40:27+00:00"
+            "time": "2025-07-08T21:46:33+00:00"
         },
         {
             "name": "seld/jsonlint",
@@ -29356,7 +29457,7 @@
     },
     "prefer-stable": true,
     "prefer-lowest": false,
-    "platform": {},
-    "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
 }
