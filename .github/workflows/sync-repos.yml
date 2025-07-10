@@ -3,13 +3,13 @@ name: Branch Management and Sync
 on:
   push:
     branches:
-      - main
+      - develop
       - demo-develop
       - demo-production
 
 jobs:
-  handle-main-commit:
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  handle-develop-commit:
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
