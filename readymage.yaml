@@ -9,11 +9,6 @@ environments:
         Magento/luma:
           area: frontend
           languages: ["en_US"]
-        Satoshi/Hyva:
-          area: frontend
-          directory: app/design/frontend/Satoshi/Hyva/web/satoshi
-          playbook: hyva
-          languages: ["en_US"]
   - name: readymage-satoshi-bmk-1720548019-var-umj
     build:
       themes:
