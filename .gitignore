@@ -1,8 +1,0 @@
-# OS generated files
-.DS_Store
-
-vendor/
-
-# Cursor AI workspace files (keep memory bank private)
-.cursor/memory-bank/current-task.md
-.cursor/memory-bank/current-notes.md
