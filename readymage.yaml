@@ -9,6 +9,12 @@ environments:
         Magento/luma:
           area: frontend
           languages: ["en_US"]
+        Hyva/default:
+          area: frontend
+          languages: ["en_US"]
+        Satoshi/hyva:
+          area: frontend
+          languages: ["en_US"]
   - name: readymage-satoshi-bmk-1720548019-var-umj
     build:
       themes:
@@ -16,5 +22,11 @@ environments:
           area: adminhtml
           languages: ["en_US"]
         Magento/luma:
+          area: frontend
+          languages: ["en_US"]
+        Hyva/default:
+          area: frontend
+          languages: ["en_US"]
+        Satoshi/hyva:
           area: frontend
           languages: ["en_US"]
