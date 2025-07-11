@@ -1,10 +1,4 @@
 schema_version: 1.0.0
-playbooks:
-  hyva:
-    - npm:
-        command: ci
-    - npm:
-        command: run build
 environments:
   - name: readymage-satoshi-bmk-1720548019-dev-ddo
     build:
@@ -28,9 +22,4 @@ environments:
           languages: ["en_US"]
         Magento/luma:
           area: frontend
-          languages: ["en_US"]
-        Satoshi/Hyva:
-          area: frontend
-          directory: app/design/frontend/Satoshi/Hyva/web/satoshi
-          playbook: hyva
           languages: ["en_US"]
