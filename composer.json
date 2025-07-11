@@ -16,12 +16,13 @@
         "preferred-install": "dist",
         "sort-packages": true
     },
-    "version": "2.4.6-p3",
+    "version": "2.4.7",
     "require": {
+        "magento/product-community-edition": "2.4.7",
+        "magento/composer-dependency-version-audit-plugin": "~0.1",
+        "magento/composer-root-update-plugin": "^2.0.4",
         "hyva-themes/magento2-default-theme": "^1.3",
         "hyva-themes/magento2-luma-checkout": "^1.1",
-        "magento/composer-dependency-version-audit-plugin": "~0.1",
-        "magento/composer-root-update-plugin": "~2.0",
         "magento/module-bundle-sample-data": "100.4.*",
         "magento/module-catalog-rule-sample-data": "100.4.*",
         "magento/module-catalog-sample-data": "100.4.*",
@@ -42,7 +43,6 @@
         "magento/module-theme-sample-data": "100.4.*",
         "magento/module-widget-sample-data": "100.4.*",
         "magento/module-wishlist-sample-data": "100.4.*",
-        "magento/product-community-edition": "2.4.6-p3",
         "magento/sample-data-media": "100.4.*",
         "readymage/logger": "^1.1",
         "readymage/maintenance": "^1.0",
@@ -103,6 +103,10 @@
         "0": {
             "type": "composer",
             "url": "https://repo.magento.com/"
+        },
+        "1": {
+            "type": "composer",
+            "url": "https://hyva-themes.repo.packagist.com/scandiweb-com/"
         }
     },
     "extra": {
