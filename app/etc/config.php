@@ -392,23 +392,6 @@ return [
         'PayPal_BraintreeGraphQl' => 1,
         'PayPal_BraintreeReward' => 1,
         'ReadyMage_Logger' => 1,
-        'ReadyMage_Maintenance' => 1,
-        'Satoshi_Bundle' => 0,
-        'Satoshi_Core' => 0,
-        'Satoshi_CatalogGraphQl' => 0,
-        'Satoshi_CatalogSearch' => 0,
-        'Satoshi_Checkout' => 0,
-        'Satoshi_Contact' => 0,
-        'Satoshi_Catalog' => 0,
-        'Satoshi_Customer' => 0,
-        'Satoshi_Framework' => 0,
-        'Satoshi_LayeredNavigation' => 0,
-        'Satoshi_Migration' => 0,
-        'Satoshi_Newsletter' => 0,
-        'Satoshi_Sales' => 0,
-        'Satoshi_SatoshiUi' => 0,
-        'Satoshi_Swatches' => 0,
-        'Satoshi_Theme' => 0,
-        'Satoshi_Wishlist' => 0
+        'ReadyMage_Maintenance' => 1
     ]
 ];
