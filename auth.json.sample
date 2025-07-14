@@ -1,0 +1,12 @@
+{
+  "http-basic": {
+    "hyva-themes.repo.packagist.com": {
+      "username": "XX",
+      "password": "XX"
+    },
+    "repo.magento.com": {
+      "username": "XX",
+      "password": "XX"
+    }
+  }
+}
