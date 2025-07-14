@@ -21,7 +21,7 @@ function recFindByExt(base, ext, files, result) {
       if (fs.statSync(newbase).isDirectory()) {
         result = recFindByExt(newbase, ext, fs.readdirSync(newbase), result);
       } else {
-        if (file.substr(-1*(ext.length+1)) == '.' + ext) {
+        if (file.substr(-1*(ext.length+1)) == "." + ext) {
           result.push(newbase);
         }
       }
@@ -36,20 +36,20 @@ function recFindByExt(base, ext, files, result) {
  */
 const purgeContent = () => {
   // Add any sub-directories you wish to be excluded by Tailwind when checking the hyva-default theme
-  const EXCLUDE_FROM_PARENT = []; // e.g. ['Magento_Review']
+  const EXCLUDE_FROM_PARENT = []; // e.g. ["Magento_Review"]
 
   // Declare array to store all paths for hyva-default theme's phtml files
-  let hyvaDefault = recFindByExt('../../../../../vendor/hyva-themes/magento2-default-theme/', 'phtml');
+  let hyvaDefault = recFindByExt("../../../../../vendor/hyva-themes/magento2-default-theme/", "phtml");
 
   // Declare array to store all paths for the current theme's phtml files
-  const currentTheme = recFindByExt('../../../', 'phtml');
+  const currentTheme = recFindByExt("../../../", "phtml");
 
   // Filter the array of templates from hyva-default to remove any templates overridden in the current theme
   hyvaDefault = hyvaDefault.filter(function(item) {
     let isAllowed = true;
 
     for (const key in this) {
-      if (item.includes(this[key].replace(/(\.\.\/)*satoshi-theme\//, ''))) {
+      if (item.includes(this[key].replace(/(\.\.\/)*satoshi-theme\//, ""))) {
         isAllowed = false;
       }
     }
