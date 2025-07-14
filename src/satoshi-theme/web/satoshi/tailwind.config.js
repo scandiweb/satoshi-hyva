@@ -4,6 +4,71 @@ const colors = require("tailwindcss/colors");
 
 const hyvaModules = require("@hyva-themes/hyva-modules");
 
+const path = require("path");
+
+const fs = require("fs");
+
+/**
+ * Finds and lists all files in a directory with a specific extension
+ */
+function recFindByExt(base, ext, files, result) {
+  files = files || fs.readdirSync(base);
+  result = result || [];
+
+  files.forEach(
+    function (file) {
+      const newbase = path.join(base,file);
+      if (fs.statSync(newbase).isDirectory()) {
+        result = recFindByExt(newbase, ext, fs.readdirSync(newbase), result);
+      } else {
+        if (file.substr(-1*(ext.length+1)) == '.' + ext) {
+          result.push(newbase);
+        }
+      }
+    }
+  );
+
+  return result;
+}
+
+/**
+ * Returns an array of all files to be used in tailwind purge content
+ */
+const purgeContent = () => {
+  // Add any sub-directories you wish to be excluded by Tailwind when checking the hyva-default theme
+  const EXCLUDE_FROM_PARENT = []; // e.g. ['Magento_Review']
+
+  // Declare array to store all paths for hyva-default theme's phtml files
+  let hyvaDefault = recFindByExt('../../../../../vendor/hyva-themes/magento2-default-theme/', 'phtml');
+
+  // Declare array to store all paths for the current theme's phtml files
+  const currentTheme = recFindByExt('../../../', 'phtml');
+
+  // Filter the array of templates from hyva-default to remove any templates overridden in the current theme
+  hyvaDefault = hyvaDefault.filter(function(item) {
+    let isAllowed = true;
+
+    for (const key in this) {
+      if (item.includes(this[key].replace(/(\.\.\/)*satoshi-theme\//, ''))) {
+        isAllowed = false;
+      }
+    }
+
+    return isAllowed;
+  }, currentTheme.concat(EXCLUDE_FROM_PARENT));
+
+  // XML files are merged (not overridden) in Magento 2, so include all XML files from both current theme and parent theme without filtering
+  const xmlFiles = [
+    // Current theme XML files
+    "../../../**/*.xml",
+    // Parent theme XML files
+    "../../../../../vendor/hyva-themes/magento2-default-theme/*/layout/*.xml",
+    "../../../../../vendor/hyva-themes/magento2-default-theme/*/page_layout/override/base/*.xml"
+  ];
+
+  return currentTheme.concat(hyvaDefault).concat(xmlFiles);
+};
+
 const defaultWidthHeight = {
   1: "0.25rem",
   2: "0.5rem",
@@ -168,13 +233,5 @@ module.exports = hyvaModules.mergeTailwindConfig({
     },
   },
   // plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
-  content: [
-    // this theme's phtml and layout XML files
-    "../../../**/*.phtml",
-    "../../../**/*.xml",
-    // parent theme in Vendor (if this is a child-theme)
-    "../../../../../../hyva-themes/magento2-default-theme/**/*.phtml",
-    "../../../../../../hyva-themes/magento2-default-theme/*/layout/*.xml",
-    "../../../../../../hyva-themes/magento2-default-theme/*/page_layout/override/base/*.xml",
-  ],
+  content: purgeContent(),
 });
