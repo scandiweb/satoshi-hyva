@@ -21032,12 +21032,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/scandiweb/satoshi-hyva.git",
-                "reference": "012128ed5ebc7cfd4675654e770237b181d22681"
+                "reference": "10b86e8200ade68453d2b254d4d9675db665a100"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/012128ed5ebc7cfd4675654e770237b181d22681",
-                "reference": "012128ed5ebc7cfd4675654e770237b181d22681",
+                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/10b86e8200ade68453d2b254d4d9675db665a100",
+                "reference": "10b86e8200ade68453d2b254d4d9675db665a100",
                 "shasum": ""
             },
             "require": {
@@ -21092,13 +21092,6 @@
                 "OSL-3.0",
                 "AFL-3.0"
             ],
-            "authors": [
-                {
-                    "name": "Scandiweb",
-                    "email": "info@scandiweb.com",
-                    "homepage": "https://scandiweb.com"
-                }
-            ],
             "description": "Satoshi Theme for Magento 2 on Hyva - High-performance, user experience-focused theme",
             "keywords": [
                 "ecommerce",
@@ -21112,7 +21105,7 @@
                 "issues": "https://github.com/scandiweb/satoshi-hyva/issues",
                 "source": "https://github.com/scandiweb/satoshi-hyva/tree/develop"
             },
-            "time": "2025-07-11T01:03:10+00:00"
+            "time": "2025-07-15T13:13:12+00:00"
         },
         {
             "name": "seld/jsonlint",
