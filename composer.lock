@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b80377b7420fd18804cb4972c9050ed1",
+    "content-hash": "68d6bcd4da2f5d953bc63fb4ecc6f56a",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -21028,16 +21028,16 @@
         },
         {
             "name": "scandiweb/satoshi",
-            "version": "2.0.0",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/scandiweb/satoshi-hyva.git",
-                "reference": "7b71f76ce663763d95b3e8eae0d746fa46952cd7"
+                "reference": "0b1786ad73d7d6486c8ae3a986fb3b19a76fe7fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/7b71f76ce663763d95b3e8eae0d746fa46952cd7",
-                "reference": "7b71f76ce663763d95b3e8eae0d746fa46952cd7",
+                "url": "https://api.github.com/repos/scandiweb/satoshi-hyva/zipball/0b1786ad73d7d6486c8ae3a986fb3b19a76fe7fa",
+                "reference": "0b1786ad73d7d6486c8ae3a986fb3b19a76fe7fa",
                 "shasum": ""
             },
             "require": {
@@ -21045,6 +21045,7 @@
                 "hyva-themes/magento2-luma-checkout": "^1.1",
                 "php": ">=8.1"
             },
+            "default-branch": true,
             "type": "magento2-theme",
             "autoload": {
                 "files": [
@@ -21103,9 +21104,9 @@
             ],
             "support": {
                 "issues": "https://github.com/scandiweb/satoshi-hyva/issues",
-                "source": "https://github.com/scandiweb/satoshi-hyva/tree/v2.0.0"
+                "source": "https://github.com/scandiweb/satoshi-hyva/tree/main"
             },
-            "time": "2025-07-11T01:08:56+00:00"
+            "time": "2025-07-15T06:49:05+00:00"
         },
         {
             "name": "seld/jsonlint",
@@ -29343,10 +29344,12 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "scandiweb/satoshi": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.2.0"
 }
