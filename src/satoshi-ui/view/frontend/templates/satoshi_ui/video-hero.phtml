@@ -60,7 +60,7 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
             <?= $loop ? 'loop' : '' ?>
             playsinline
             preload="none"
-            @loadstart="loaded = true"
+            @loadeddata="loaded = true"
         >
             <source src="<?= $escaper->escapeUrl($videoUrl) ?>" type="video/mp4">
         </video>

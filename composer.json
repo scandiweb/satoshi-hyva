@@ -2,17 +2,10 @@
     "name": "scandiweb/satoshi",
     "description": "Satoshi Theme for Magento 2 on Hyva - High-performance, user experience-focused theme",
     "type": "magento2-theme",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
-    ],
-    "authors": [
-        {
-            "name": "Scandiweb",
-            "email": "info@scandiweb.com",
-            "homepage": "https://scandiweb.com"
-        }
     ],
     "keywords": [
         "magento2",

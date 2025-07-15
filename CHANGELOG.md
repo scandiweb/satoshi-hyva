@@ -2,9 +2,7 @@
 
 All notable changes to `Satoshi` will be documented in this file.
 
-## 2.0.0 - 2024-06-26 - Package Release
-
-### Changed
+## 2.0.0 - 2025-07-11 - Package Release
 
 -   Restructured to be a composer package
 
