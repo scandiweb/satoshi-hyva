@@ -9,7 +9,7 @@ We welcome contributions from the community! By following these guidelines, youâ
 
 ### 2. **Create a New Branch**
 
-- We follow the Git flow process, so always create a new branch from the `production` branch for your work. Name it descriptively based on the task you're working on (e.g., `feature/add-dark-theme`, `bugfix/fix-login-issue`).
+- We follow the Git flow process, so always create a new branch from the `main` branch for your work. Name it descriptively based on the task you're working on (e.g., `feature/add-dark-theme`, `bugfix/fix-login-issue`).
 - To create a new branch:
   ```bash
   git checkout -b branch-name
@@ -30,7 +30,7 @@ We welcome contributions from the community! By following these guidelines, youâ
   ```bash
   git push origin branch-name
   ```
-- Open a pull request (PR) against the `production` branch of the original repository.
+- Open a pull request (PR) against the `main` branch of the original repository.
 - Provide a clear description of the changes you've made.
 
 ### 6. **Review and Feedback**
