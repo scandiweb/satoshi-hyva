@@ -60,7 +60,7 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
             <?= $loop ? 'loop' : '' ?>
             playsinline
             preload="none"
-            @loadstart="loaded = true"
+            @loadeddata="loaded = true"
         >
             <source src="<?= $escaper->escapeUrl($videoUrl) ?>" type="video/mp4">
         </video>
@@ -115,7 +115,7 @@ $mobileAlignment = $block->getData('mobile_content_alignment');
     >
         <div
             class="
-                flex max-w-[335px] md:max-w-[510px] flex-col justify-center
+                flex max-w-[335px] md:max-w-[535px] flex-col justify-center
                 <?php if(str_contains($mobileAlignment, 'left')): ?>
                     items-start text-start
                 <?php elseif(str_contains($mobileAlignment, 'right')): ?>
