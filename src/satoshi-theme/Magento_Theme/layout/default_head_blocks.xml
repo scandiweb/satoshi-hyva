@@ -3,7 +3,5 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <css src="css/styles.css"/>
-        <font src="fonts/Satoshi-Medium.woff2"/>
-        <font src="fonts/Satoshi-Bold.woff"/>
     </head>
 </page>
