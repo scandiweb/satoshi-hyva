@@ -49,7 +49,7 @@ class Post extends SourcePost
      * @param DataPersistorInterface $dataPersistor
      * @param SessionManagerInterface $session
      * @param IsThemeActive $isThemeActive
-     * @param LoggerInterface $logger
+     * @param LoggerInterface|null $logger
      */
     public function __construct(
         Context $context,
@@ -58,7 +58,7 @@ class Post extends SourcePost
         DataPersistorInterface $dataPersistor,
         SessionManagerInterface $session,
         IsThemeActive $isThemeActive,
-        LoggerInterface $logger = null
+        ?LoggerInterface $logger = null
     ) {
         parent::__construct($context, $contactsConfig, $mail, $dataPersistor, $logger);
         $this->dataPersistor = $dataPersistor;

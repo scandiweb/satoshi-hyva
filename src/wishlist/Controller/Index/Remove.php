@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Satoshi\Wishlist\Controller\Index;
 
+use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action;
+use Magento\Framework\App\Action\Context;
 use Magento\Framework\Data\Form\FormKey\Validator;
 use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Controller\ResultFactory;
@@ -12,6 +14,7 @@ use Magento\Wishlist\Controller\WishlistProviderInterface;
 use Magento\Wishlist\Model\Item;
 use Magento\Wishlist\Model\Product\AttributeValueProvider;
 use Magento\Wishlist\Controller\Index\Remove as SourceRemove;
+use Psr\Log\LoggerInterface;
 use Satoshi\Core\Helper\IsThemeActive;
 
 /**
@@ -20,7 +23,7 @@ use Satoshi\Core\Helper\IsThemeActive;
 class Remove extends SourceRemove
 {
     /**
-     * @var \Magento\Customer\Model\Session
+     * @var Session
      */
     protected $_customerSession;
 
@@ -35,21 +38,22 @@ class Remove extends SourceRemove
     private IsThemeActive $isThemeActive;
 
     /**
-     * @param Action\Context $context
+     * @param Context $context
      * @param WishlistProviderInterface $wishlistProvider
      * @param Validator $formKeyValidator
-     * @param AttributeValueProvider|null $attributeValueProvider
-     * @param \Magento\Customer\Model\Session $customerSession
+     * @param Session $customerSession
+     * @param LoggerInterface $logger
      * @param IsThemeActive $isThemeActive
+     * @param AttributeValueProvider|null $attributeValueProvider
      */
     public function __construct(
         Action\Context $context,
         WishlistProviderInterface $wishlistProvider,
         Validator $formKeyValidator,
-        AttributeValueProvider $attributeValueProvider = null,
-        \Magento\Customer\Model\Session $customerSession,
-        protected \Psr\Log\LoggerInterface $logger,
-        IsThemeActive $isThemeActive
+        Session $customerSession,
+        protected LoggerInterface $logger,
+        IsThemeActive $isThemeActive,
+        ?AttributeValueProvider $attributeValueProvider = null,
     ) {
         $this->_customerSession = $customerSession;
         $this->attributeValueProvider = $attributeValueProvider
