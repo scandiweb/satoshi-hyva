@@ -10,6 +10,7 @@ use Magento\Catalog\Block\Product\AbstractProduct;
 use Magento\Catalog\Helper\Image;
 use Magento\Catalog\ViewModel\Product\OptionsData as ProductOptionsData;
 use Magento\Framework\Escaper;
+use Satoshi\Catalog\ViewModel\ListItem;
 use Satoshi\Theme\Block\Popup;
 use Satoshi\Theme\Block\Template;
 
@@ -17,10 +18,12 @@ use Satoshi\Theme\Block\Template;
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
 /** @var Popup $popup */
-
 /** @var ProductPage $productViewModel */
+/** @var ProductOptionsData $productOptionsViewmodel */
+/** @var ListItem $listItemViewModel */
 $productViewModel = $viewModels->require(ProductPage::class);
 $productOptionsViewmodel = $viewModels->require(ProductOptionsData::class);
+$listItemViewModel = $viewModels->require(ListItem::class);
 
 /** @var AbstractProduct $block */
 /** @var Magento\Catalog\Model\Product $product */
@@ -30,6 +33,8 @@ $imageUrl = $this->helper(Image::class)->init($product, 'product_page_image_medi
 $placeholderImageUrl = $this->helper(Image::class)->getDefaultPlaceholderUrl('image');
 $loading = $block->getData('loading');
 $breadcrumbs = $block->getData('breadcrumbs') ?? [];
+
+$itemDetailsRenderer = $product ? $block->getDetailsRenderer($product->getTypeId()) : null;
 
 // Calculating is large
 $nthLarge = $block->getData('n_of_large_card') ?? 0;
@@ -213,20 +218,22 @@ if ($product) {
                                 <?= $hyvaicons->renderHtml('cart'); ?>
                             </button>
 
-                            <?php if (!in_array($product->getTypeId(), ['simple', 'virtual'])): ?>
+                            <?php if (!in_array($product->getTypeId(), ['simple', 'virtual']) && $itemDetailsRenderer): ?>
                                 <!-- Quick buy popup -->
                                 <?= $popup->setData([
                                     'id' => 'quick-buy-' . $product->getId(),
                                     'isFocused' => true,
                                 ])
-                                    ->setChildHtml($block->getProductDetailsHtml($product, false))
+                                    ->setChildHtml($listItemViewModel->getProductDetailsHtml($itemDetailsRenderer, $product))
                                     ->render() ?>
                             <?php endif; ?>
                         </form>
                     <?php endif ?>
                 </div>
 
-                <?= $block->getProductDetailsHtml($product, true) ?>
+                <?php if ($itemDetailsRenderer): ?>
+                    <?= $listItemViewModel->getProductDetailsHtml($itemDetailsRenderer, $product, true) ?>
+                <?php endif; ?>
 
                 <div
                     class="z-10 flex items-center min-h-6 gap-2 text-text-500 text-md mt-3 contrast-more:px-3 contrast-more:pb-3 [&>.price-box]:flex-row">
