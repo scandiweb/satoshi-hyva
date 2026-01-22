@@ -88,9 +88,8 @@ class CreatePost extends SourceCreatePost
      * @param DataObjectHelper $dataObjectHelper
      * @param AccountRedirect $accountRedirect
      * @param CustomerRepository $customerRepository
-     * @param  Validator  $formKeyValidator
      * @param IsThemeActive $isThemeActive
-     *
+     * @param Validator|null $formKeyValidator
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -113,8 +112,8 @@ class CreatePost extends SourceCreatePost
         DataObjectHelper $dataObjectHelper,
         AccountRedirect $accountRedirect,
         CustomerRepository $customerRepository,
-        Validator $formKeyValidator = null,
-        IsThemeActive $isThemeActive
+        IsThemeActive $isThemeActive,
+        ?Validator $formKeyValidator = null,
     ) {
         $this->formKeyValidator = $formKeyValidator ?: ObjectManager::getInstance()->get(Validator::class);
         $this->accountRedirect = $accountRedirect;

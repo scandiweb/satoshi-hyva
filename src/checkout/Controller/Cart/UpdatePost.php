@@ -45,14 +45,14 @@ class UpdatePost extends SourceUpdatePost
      * @param RequestQuantityProcessor|null $quantityProcessor
      */
     public function __construct(
-        Context                  $context,
-        ScopeConfigInterface     $scopeConfig,
-        Session                  $checkoutSession,
-        StoreManagerInterface    $storeManager,
-        Validator                $formKeyValidator,
-        Cart                     $cart,
-        IsThemeActive            $isThemeActive,
-        RequestQuantityProcessor $quantityProcessor = null
+        Context                   $context,
+        ScopeConfigInterface      $scopeConfig,
+        Session                   $checkoutSession,
+        StoreManagerInterface     $storeManager,
+        Validator                 $formKeyValidator,
+        Cart                      $cart,
+        IsThemeActive             $isThemeActive,
+        ?RequestQuantityProcessor $quantityProcessor = null
     )
     {
         parent::__construct(

@@ -74,13 +74,13 @@ class ProductListItem extends CoreProductListItem
         string $templateType,
         string $imageDisplayArea,
         bool $showDescription,
-        int $index = null,
+        ?int $index = null,
         array $breadcrumbs = []
     ): string {
         if (!$this->isThemeActive->isSatoshiTheme()) {
             return parent::getItemHtml($product, $parentBlock, $viewMode, $templateType, $imageDisplayArea, $showDescription);
         }
-        
+
         /** @var AbstractBlock $itemRendererBlock */
         $itemRendererBlock = $this->layout->getBlock('product_list_item');
 
@@ -121,7 +121,7 @@ class ProductListItem extends CoreProductListItem
         string $templateType,
         string $imageDisplayArea,
         bool $showDescription,
-        int $index = null,
+        ?int $index = null,
         array $breadcrumbs = []
     ): string {
         return $this->withParentChildLayoutRelationshipExecute($parentBlock, $itemRendererBlock,
@@ -178,7 +178,7 @@ class ProductListItem extends CoreProductListItem
         string $templateType,
         string $imageDisplayArea,
         bool $showDescription,
-        int $index = null,
+        ?int $index = null,
         array $breadcrumbs = []
     ): string {
         // Careful! Temporal coupling!

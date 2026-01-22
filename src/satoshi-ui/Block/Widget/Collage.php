@@ -66,8 +66,8 @@ class Collage extends Template implements BlockInterface
         CategoryRepositoryInterface $categoryRepository,
         ProductRepositoryInterface $productRepository,
         Image $imageHelper,
-        Json $serializer = null,
-        Normalizer $normalizer = null,
+        ?Json $serializer = null,
+        ?Normalizer $normalizer = null,
         array $data = []
     ) {
         $this->categoryRepository = $categoryRepository ?? ObjectManager::getInstance()->get(CategoryRepositoryInterface::class);
