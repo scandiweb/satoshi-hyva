@@ -10,6 +10,9 @@ use Hyva\Theme\ViewModel\ProductListItem as CoreProductListItem;
 use Hyva\Theme\ViewModel\ProductPage;
 use Magento\Catalog\Model\Product;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Http\Context as HttpContext;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\LayoutInterface;
 use Satoshi\Core\Helper\IsThemeActive;
@@ -35,11 +38,14 @@ class ProductListItem extends CoreProductListItem
     private IsThemeActive $isThemeActive;
 
     /**
-     * @param  LayoutInterface  $layout
-     * @param  ProductPage  $productViewModel
-     * @param  CurrentCategory  $currentCategory
-     * @param  BlockCache  $blockCache
-     * @param  CustomerSession  $customerSession
+     * @param LayoutInterface $layout
+     * @param ProductPage $productViewModel
+     * @param CurrentCategory $currentCategory
+     * @param BlockCache $blockCache
+     * @param CustomerSession $customerSession
+     * @param IsThemeActive $isThemeActive
+     * @param ScopeConfigInterface|null $storeConfig
+     * @param HttpContext|null $httpContext
      */
     public function __construct(
         LayoutInterface $layout,
@@ -47,14 +53,18 @@ class ProductListItem extends CoreProductListItem
         CurrentCategory $currentCategory,
         BlockCache $blockCache,
         CustomerSession $customerSession,
-        IsThemeActive $isThemeActive
+        IsThemeActive $isThemeActive,
+        ?ScopeConfigInterface $storeConfig = null,
+        ?HttpContext $httpContext = null
     ) {
-        parent::__construct($layout, $productViewModel, $currentCategory, $blockCache, $customerSession);
         $this->layout = $layout;
         $this->blockCache = $blockCache;
         $this->isThemeActive = $isThemeActive;
-    }
+        $storeConfig = $storeConfig ?? ObjectManager::getInstance()->get(ScopeConfigInterface::class);
+        $httpContext = $httpContext ?? ObjectManager::getInstance()->get(HttpContext::class);
 
+        parent::__construct($layout, $productViewModel, $currentCategory, $blockCache, $customerSession, $storeConfig, $httpContext);
+    }
 
     /**
      * @param  Product  $product
