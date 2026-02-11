@@ -18,6 +18,7 @@ We welcome contributions from the community! By following these guidelines, youâ
 ### 3. **Make Your Changes**
 
 - Make sure to follow the project's coding standards and conventions.
+- Our commits have a style similar to [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/). Take your time to get used to using this style and also explore different repositories using it (You can find good examples mentioned in the previous link).
 - Write clear and concise commit messages. Use the present tense and start with a short description (e.g., "Fix bug in user authentication").
 
 ### 4. **Test Your Changes**
