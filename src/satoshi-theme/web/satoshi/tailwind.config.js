@@ -84,6 +84,9 @@ module.exports = hyvaModules.mergeTailwindConfig({
         sm: "8px",
         md: "12px",
       },
+      dropShadow: {
+        xl: "var(--header-shadow)",
+      },
       spacing: {
         1: "2px",
         2: "4px",

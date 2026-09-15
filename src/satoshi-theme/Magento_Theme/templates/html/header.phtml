@@ -63,7 +63,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
          x-data="{n:0}"
     >
         <div class="transition-all md:flex"
-             :class="{'md:drop-shadow-lg': $store.main.isHeaderShadowVisible}"
+             :class="{'md:drop-shadow-xl': $store.main.isHeaderShadowVisible}"
         >
             <?=
             $resizable
@@ -89,7 +89,7 @@ $hyvaicons = $viewModels->require(SvgIcons::class);
         </div>
         <div class="contents md:flex md:flex-grow md:justify-end">
             <div class="transition-all flex items-center z-10"
-                 :class="{ 'md:drop-shadow-lg': $store.main.isHeaderShadowVisible }"
+                 :class="{'md:drop-shadow-xl': $store.main.isHeaderShadowVisible}"
             >
                 <?=
                 $resizable
