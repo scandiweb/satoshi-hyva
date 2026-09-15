@@ -13,6 +13,8 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\LayoutInterface;
 use Satoshi\Core\Helper\IsThemeActive;
+use Magento\Framework\App\Config\ScopeConfigInterface as StoreConfig;
+use Magento\Framework\App\Http\Context as HttpContext;
 
 /**
  * Extend to pass loop index, and breadcrumbs to product card
@@ -47,9 +49,11 @@ class ProductListItem extends CoreProductListItem
         CurrentCategory $currentCategory,
         BlockCache $blockCache,
         CustomerSession $customerSession,
+		StoreConfig $storeConfig,
+        HttpContext $httpContext,
         IsThemeActive $isThemeActive
     ) {
-        parent::__construct($layout, $productViewModel, $currentCategory, $blockCache, $customerSession);
+        parent::__construct($layout, $productViewModel, $currentCategory, $blockCache, $customerSession, $storeConfig, $httpContext);
         $this->layout = $layout;
         $this->blockCache = $blockCache;
         $this->isThemeActive = $isThemeActive;
