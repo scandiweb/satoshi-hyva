@@ -48,8 +48,8 @@ class ShopTheLook extends Template implements BlockInterface
     public function __construct(
         Context $context,
         CollectionFactory $collectionFactory,
-        Json $serializer = null,
-        Normalizer $normalizer = null,
+        ?Json $serializer = null,
+        ?Normalizer $normalizer = null,
         array $data = []
     ) {
         $this->collectionFactory = $collectionFactory ?? ObjectManager::getInstance()->get(CollectionFactory::class);

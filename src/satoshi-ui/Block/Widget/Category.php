@@ -82,10 +82,10 @@ class Category extends ProductsList
         Conditions        $conditionsHelper,
         Currency          $currencyViewModel,
         array             $data = [],
-        Json              $json = null,
-        LayoutFactory     $layoutFactory = null,
-        EncoderInterface  $urlEncoder = null,
-        CategoryRepositoryInterface $categoryRepository = null
+        ?Json              $json = null,
+        ?LayoutFactory     $layoutFactory = null,
+        ?EncoderInterface  $urlEncoder = null,
+        ?CategoryRepositoryInterface $categoryRepository = null
     )
     {
         $this->currencyViewModel = $currencyViewModel;

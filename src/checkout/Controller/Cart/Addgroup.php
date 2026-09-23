@@ -40,7 +40,7 @@ class Addgroup extends SourceAddgroup
         \Magento\Framework\Data\Form\FormKey\Validator $formKeyValidator,
         CustomerCart $cart,
         IsThemeActive $isThemeActive,
-        Escaper $escaper = null
+        ?Escaper $escaper = null
     ) {
         parent::__construct(
             $context,

@@ -84,9 +84,9 @@ class Search extends MagentoSearch
         FieldSelection $fieldSelection,
         ProductSearch $productsProvider,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        ArgumentsProcessorInterface $argsSelection = null,
-        Suggestions $suggestions = null,
-        QueryPopularity $queryPopularity = null
+        ?ArgumentsProcessorInterface $argsSelection = null,
+        ?Suggestions $suggestions = null,
+        ?QueryPopularity $queryPopularity = null
     ) {
         $this->search = $search;
         $this->searchResultFactory = $searchResultFactory;

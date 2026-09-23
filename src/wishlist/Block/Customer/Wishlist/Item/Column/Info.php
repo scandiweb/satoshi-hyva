@@ -48,8 +48,8 @@ class Info extends SourceInfo
         ReviewCollectionFactory $reviewCollectionFactory,
         RatingFactory $ratingFactory,
         array $data = [],
-        ConfigInterface $config = null,
-        UrlBuilder $urlBuilder = null
+        ?ConfigInterface $config = null,
+        ?UrlBuilder $urlBuilder = null
     ) {
         $this->categoryRepository = $categoryRepository;
         $this->reviewCollectionFactory = $reviewCollectionFactory;

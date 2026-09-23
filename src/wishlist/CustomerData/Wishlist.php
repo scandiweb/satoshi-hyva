@@ -38,9 +38,9 @@ class Wishlist extends SourceWishlist
      * @param \Magento\Catalog\Helper\ImageFactory $imageHelperFactory
      * @param \Magento\Framework\App\ViewInterface $view
      * @param \Magento\Catalog\Helper\Product\ConfigurationPool $configurationPool
+     * @param IsThemeActive $isThemeActive
      * @param \Magento\Catalog\Model\Product\Configuration\Item\ItemResolverInterface|null $itemResolver
      * @param \Magento\Framework\Escaper|null $escaper
-     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         \Magento\Wishlist\Helper\Data $wishlistHelper,
@@ -48,9 +48,9 @@ class Wishlist extends SourceWishlist
         \Magento\Catalog\Helper\ImageFactory $imageHelperFactory,
         \Magento\Framework\App\ViewInterface $view,
         \Magento\Catalog\Helper\Product\ConfigurationPool $configurationPool,
-        \Magento\Catalog\Model\Product\Configuration\Item\ItemResolverInterface $itemResolver = null,
-        \Magento\Framework\Escaper $escaper = null,
-        IsThemeActive $isThemeActive
+        IsThemeActive $isThemeActive,
+        ?\Magento\Catalog\Model\Product\Configuration\Item\ItemResolverInterface $itemResolver = null,
+        ?\Magento\Framework\Escaper $escaper = null,
     ) {
         $this->configurationPool = $configurationPool;
         $this->itemResolver = $itemResolver ?: ObjectManager::getInstance()->get(

@@ -77,7 +77,7 @@ class Send extends SourceSend
         IsThemeActive                                          $isThemeActive,
         ?CaptchaHelper                                         $captchaHelper = null,
         ?CaptchaStringResolver                                 $captchaStringResolver = null,
-        Escaper                                                $escaper = null
+        ?Escaper                                               $escaper = null
     )
     {
         $this->captchaHelper = $captchaHelper ?: ObjectManager::getInstance()->get(CaptchaHelper::class);

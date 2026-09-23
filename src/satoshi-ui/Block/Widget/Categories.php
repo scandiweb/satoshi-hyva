@@ -57,8 +57,8 @@ class Categories extends Template implements BlockInterface
         Context               $context,
         StoreManagerInterface $storeManager,
         CollectionFactory     $categoryCollectionFactory,
-        Json                  $serializer = null,
-        Normalizer            $normalizer = null,
+        ?Json                  $serializer = null,
+        ?Normalizer            $normalizer = null,
         array                 $data = []
     )
     {

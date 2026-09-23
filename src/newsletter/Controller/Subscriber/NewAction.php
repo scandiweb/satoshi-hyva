@@ -53,10 +53,10 @@ class NewAction extends SourceNewAction
      * @param CustomerUrl $customerUrl
      * @param CustomerAccountManagement $customerAccountManagement
      * @param SubscriptionManagerInterface $subscriptionManager
-     * @param EmailValidator|null $emailValidator
-     * @param CustomerRepositoryInterface|null $customerRepository
      * @param JsonFactory $jsonFactory
      * @param IsThemeActive $isThemeActive
+     * @param EmailValidator|null $emailValidator
+     * @param CustomerRepositoryInterface|null $customerRepository
      */
     public function __construct(
         Context $context,
@@ -68,8 +68,8 @@ class NewAction extends SourceNewAction
         SubscriptionManagerInterface $subscriptionManager,
         JsonFactory $jsonFactory,
         IsThemeActive $isThemeActive,
-        EmailValidator $emailValidator = null,
-        CustomerRepositoryInterface $customerRepository = null
+        ?EmailValidator $emailValidator = null,
+        ?CustomerRepositoryInterface $customerRepository = null
     ) {
         $this->subscriptionManager = $subscriptionManager;
         $this->customerRepository = $customerRepository ?: ObjectManager::getInstance()

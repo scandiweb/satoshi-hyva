@@ -65,9 +65,9 @@ class Guest extends SourceGuest
      * @param ManagerInterface $messageManager
      * @param OrderFactory $orderFactory
      * @param RedirectFactory $resultRedirectFactory
+     * @param IsThemeActive $isThemeActive
      * @param OrderRepositoryInterface|null $orderRepository
      * @param SearchCriteriaBuilder|null $searchCriteria
-     * @param IsThemeActive $isThemeActive
      */
     public function __construct(
         App\Helper\Context $context,
@@ -80,8 +80,8 @@ class Guest extends SourceGuest
         OrderFactory $orderFactory,
         RedirectFactory $resultRedirectFactory,
         IsThemeActive $isThemeActive,
-        OrderRepositoryInterface $orderRepository = null,
-        SearchCriteriaBuilder $searchCriteria = null
+        ?OrderRepositoryInterface $orderRepository = null,
+        ?SearchCriteriaBuilder $searchCriteria = null
     ) {
         $this->customerSession = $customerSession;
         $this->storeManager = $storeManager;
