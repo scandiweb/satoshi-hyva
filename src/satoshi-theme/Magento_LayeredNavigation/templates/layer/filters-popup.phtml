@@ -70,19 +70,21 @@ $sorter = $block->getData('sorter') ?? [];
             <!-- Items -->
             <nav class="flex flex-col gap-3 py-3" x-show="isTopLevel"
                  aria-label="<?= $escaper->escapeHtmlAttr(__('Available filters')) ?>">
-                <!-- Sort by -->
-                <button
-                    type="button"
-                    class="flex min-h-10 items-center justify-between py-1"
-                    @click="isTopLevel = false; currentName='Sort by'"
-                >
-                    <p class="grow text-left">
-                        <?= $escaper->escapeHtml(__('Sort by')) ?>
-                    </p>
-                    <p class="icon-button">
-                        <?= $hyvaicons->renderHtml('chevron'); ?>
-                    </p>
-                </button>
+                <?php if ($sorter): ?>
+                    <!-- Sort by -->
+                    <button
+                        type="button"
+                        class="flex min-h-10 items-center justify-between py-1"
+                        @click="isTopLevel = false; currentName='Sort by'"
+                    >
+                        <p class="grow text-left">
+                            <?= $escaper->escapeHtml(__('Sort by')) ?>
+                        </p>
+                        <p class="icon-button">
+                            <?= $hyvaicons->renderHtml('chevron'); ?>
+                        </p>
+                    </button>
+                <?php endif; ?>
 
                 <!-- Filters -->
                 <?php foreach ($filters as $filter): ?>
